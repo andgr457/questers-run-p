@@ -1,0 +1,21 @@
+.animated-text {
+  display: inline-block;
+}
+
+.animated-letter {
+  opacity: 0;
+  display: inline-block;
+  animation: fadeInUp 0.4s forwards;
+  animation-delay: calc(var(--i) * var(--speed));
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,54 @@
+:root {
+  --bg-dark: #1b1b1b;
+  --bg-dark-2: #424242;
+  --gold: #c9a227;
+  --gold-dark: #9f7f1c;
+  --danger: #8b1e1e;
+  --text: #e6e2d3;
+  --border: #7e7e7e;
+
+}
+
+body {
+  all: unset;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-wrap.gap-1 {
+  gap: 5px;
+}
+
+.flex-wrap.gap-2 {
+  gap: 10px;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0%;
+  }
+  50% {
+    opacity: 50%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+@keyframes appearDisappear {
+  0% {
+    opacity: 0%;
+  }
+  50% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
+}

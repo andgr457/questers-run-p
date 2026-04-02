@@ -1,0 +1,35 @@
+
+.nav {
+  display: flex;
+  background-color: var(--bg-dark);
+  color: var(--text);
+  padding: 10px;
+  box-shadow: 0 2px 5px #0000001a;
+  left: 0;
+  position: sticky;
+  top: 0;
+  z-index: 98;
+}
+
+.nav-item {
+  cursor: pointer;
+  height: 100%;
+}
+
+.nav-item:hover {
+  filter: brightness(1.5);
+}
+
+.nav-sub-items {
+  display: flex;
+  gap: 1em;
+  background-color: var(--bg-dark-2);
+  color: var(--text);
+  font-size: smaller;
+  padding: 10px;
+  box-shadow: 0 2px 5px #0000001a;
+  left: 0;
+  position: sticky;
+  top: 39px;
+  z-index: 98;
+}
