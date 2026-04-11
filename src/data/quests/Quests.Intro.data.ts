@@ -22,7 +22,7 @@ export const QUEST_INTRO_IDS = {
 export const QUEST_INTRO_ADVENTURERS_GUILD: Quest = {
   id: QUEST_INTRO_IDS.ADVENTURERS_GUILD_ID,
   title: 'Register at the Adventurers Guild',
-  description: 'Register with the guild to take quests and sell specialty items.',
+  description: 'Register with the adventurers guild to take quests and sell specialty items.',
   groupId: QUEST_GROUP_INTRO_ID,
   cooldownMinutes: QUEST_COOLDOWNS.NOT_REPEATABLE,
   rewards: [

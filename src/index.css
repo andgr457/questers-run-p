@@ -5,7 +5,7 @@
   --bg-dark-3: #555555;
   --gold: #c9a227;
   --gold-dark: #9f7f1c;
-  --green-dark: #119f14;
+  --green-dark: #0c630e;
   --danger: #8b1e1e;
   --text: #e6e2d3;
   --text-dark: #212121;
@@ -84,6 +84,16 @@ button {
   background-color: var(--bg-dark);
   color: var(--text);
   font-size: 0.9em;
+}
+
+button.confirm {
+  background-color: var(--green-dark);
+
+}
+
+button.disabled:hover {
+  filter: unset;
+  cursor: not-allowed;
 }
 
 button.danger {
@@ -177,7 +187,7 @@ select {
 }
 
 .page-main {
-  padding: 10px;
+  padding: 2px;
 }
 
 .page-sections {

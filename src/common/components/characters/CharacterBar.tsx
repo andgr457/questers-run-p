@@ -56,22 +56,33 @@ export default function CharacterBar(props: CharacterCharacterBarProps){
             Lvl {character.level} 
           </div>
           <div className='character-bar-item'>
-            XP {character.xp} / {character.levelNextXP}
+            XP {character.xp.toLocaleString()} / {character.levelNextXP.toLocaleString()}
           </div>
           <div className='character-bar-item'>
-            {character.levelNextXP - character.xp} XP Left
+            {(character.levelNextXP - character.xp).toLocaleString()} XP Left
           </div>
 
         </div>
         
         <div className='flex-wrap gap-2'>
-          {characterStats && Object.getOwnPropertyNames(characterStats).map(propertyName => {
-            //@ts-ignore
-            const stat: Stat = characterStats[propertyName]
-            return <div className='character-bar-item' title={stat.hint}>
-              {stat.name} {stat.value}
-            </div>
-          })}
+          <div className='character-bar-item' title={characterStats?.hp?.hint}>
+            {characterStats?.hp?.name} {characterStats?.hp?.value}
+          </div>
+          <div className='character-bar-item' title={characterStats?.mp?.hint}>
+            {characterStats?.mp?.name} {characterStats?.mp?.value}
+          </div>
+          <div className='character-bar-item' title={characterStats?.stamina?.hint}>
+            {characterStats?.stamina?.name} {characterStats?.stamina?.value}
+          </div>          
+          <div className='character-bar-item' title={characterStats?.agility?.hint}>
+            {characterStats?.agility?.name} {characterStats?.agility?.value}
+          </div>
+          <div className='character-bar-item' title={characterStats?.strength?.hint}>
+            {characterStats?.strength?.name} {characterStats?.strength?.value}
+          </div>
+          <div className='character-bar-item' title={characterStats?.intelligence?.hint}>
+            {characterStats?.intelligence?.name} {characterStats?.intelligence?.value}
+          </div>
         </div>
       </div>
     </div>

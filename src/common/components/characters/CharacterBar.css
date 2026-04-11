@@ -12,4 +12,5 @@
 .character-bar-item {
   font-size: 0.7em;
   padding: 2px;
+  cursor: pointer;
 }

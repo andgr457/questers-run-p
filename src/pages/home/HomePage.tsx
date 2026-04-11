@@ -143,19 +143,20 @@ export default function HomePage(){
           </div>
         </div>
 
-        {mainCharacter && <div className='flex-wrap gap-1'>
+        {mainCharacter && <div className='flex-wrap gap-1 quests-main'>
+          <CharacterQuests 
+            character={mainCharacter as Character} 
+            characterQuestProgressItems={characterQuestProgress} 
+            questGroups={questGroups} 
+            quests={quests}
+            characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
+            />
+            <CharacterHistoryComponent character={mainCharacter as Character} history={history.filter(h => h.characterId === mainCharacter?.id)} />
+        </div>}
+
+        {mainCharacter && <div className='flex-wrap gap-1'>          
           <div className='page-section'>
-            <CharacterQuests 
-              character={mainCharacter as Character} 
-              characterQuestProgressItems={characterQuestProgress} 
-              questGroups={questGroups} 
-              quests={quests}
-              characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
-              />
-          </div>
-          
-          <div className='page-section'>
-            {mainCharacter && <CharacterHistoryComponent character={mainCharacter as Character} history={history.filter(h => h.characterId === mainCharacter?.id)} />}
+            
           </div>
         </div>}
       </div>

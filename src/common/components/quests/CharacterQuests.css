@@ -1,21 +1,18 @@
 .quests-main {
-  padding: 5px;
+  margin: 5px 0 0 0;
+
   overflow: auto;
 }
 
 .quests-groups {
-  display: flex;
-  flex-wrap: wrap;
-    
+  
 }
 
 .quest-group {
-  padding: 15px;
+  margin: 0px 0 5px 0;
+  padding: 10px;
   font-size: 12px;
-  max-height: 300px;
-  width: 350px;
   word-wrap: break-word;
-  overflow: auto;
   background-color: var(--bg-dark);
   color: var(--text);
   border-radius: 3px;
@@ -85,12 +82,13 @@
 }
 
 .quest-item-header {
-  font-size: larger;
+  font-size: 1.5em;
   font-weight: bolder;
 }
 
 .quest-item-description {
-  padding: 5px;
+  padding: 2px;
+  font-size: 1.5em;
 }
 
 .quest-item-requirements-header {
@@ -109,4 +107,9 @@
 
 .quest-item-requirements-item.completed {
   text-decoration: line-through;
+}
+
+.quest-item-date {
+  font-size: 14px;
+  font-weight: 400;
 }

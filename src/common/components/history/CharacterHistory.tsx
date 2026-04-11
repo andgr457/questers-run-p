@@ -15,15 +15,16 @@ export default function CharacterHistoryComponent(props: CharacterHistoryCompone
 
   return <div className='history-main'>
     <div className='header-2'>
-      {props.history?.length} History Records
+      History
     </div>
     <div className='history-items'>
       {props.history.sort((a, b) => {
         return DateTime.fromISO(b.date).toMillis() - DateTime.fromISO(a.date).toMillis();
-      }).map(h => {
+      }).map((h) => {
+        
         return <div className='history-item'>
           <div className='history-item-header'>
-            {DateTime.fromISO(h.date).toLocal().toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)}
+            {DateTime.fromISO(h.date).toLocal().toLocaleString(DateTime.DATE_SHORT)}
           </div>
           <div className='history-description'>
             {h?.description}

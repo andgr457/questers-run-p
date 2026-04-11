@@ -25,7 +25,7 @@ export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
   rewards: [
     {
       itemId: ITEM_CURRENCY_IDS.GOLD,
-      itemAmount: 100
+      itemAmount: 50
     }
   ],
   startRequirements: [
