@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
-import { type CharacterClass, type Character, type Stats, type Stat } from '../../interfaces/characters/Character.types'
 import './CharacterBar.css'
-import { CharacterService } from '../../services/characters/CharacterService'
-import type { Inventory } from '../../interfaces/inventories/Inventory.types'
-import { ITEM_CURRENCY_GOLD } from '../../data/items/currency/Item.Currency.data'
+import { CharacterService } from '../../../services/characters/CharacterService'
+import type { Inventory } from '../../../interfaces/inventories/Inventory.types'
+import type { Character, CharacterClass, Stats } from '../../../interfaces/characters/Character.types'
 
 interface CharacterCharacterBarProps {
   character: Character
@@ -44,16 +43,25 @@ export default function CharacterBar(props: CharacterCharacterBarProps){
   <div>
       <div className='character-bar' >
         <div className='character-bar-item'>
-          Lvl {character.level} {characterClass?.name} {character.name}
+          {character.name}
+        </div>
+        <div className='character-bar-item'>
+          {characterClass?.name} 
         </div>
         <div className='character-bar-item'>
           {characterGold.toLocaleString()} Gold
         </div>
-        <div className='character-bar-item'>
-          XP {character.xp} / {character.levelNextXP}
-        </div>
-        <div className='character-bar-item'>
-          {character.levelNextXP - character.xp} XP Left
+        <div className='flex-wrap gap-2'>
+          <div className='character-bar-item'>
+            Lvl {character.level} 
+          </div>
+          <div className='character-bar-item'>
+            XP {character.xp} / {character.levelNextXP}
+          </div>
+          <div className='character-bar-item'>
+            {character.levelNextXP - character.xp} XP Left
+          </div>
+
         </div>
         
         <div className='flex-wrap gap-2'>

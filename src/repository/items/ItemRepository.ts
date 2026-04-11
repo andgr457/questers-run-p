@@ -1,4 +1,4 @@
-import { ITEM_CURRENCIES } from '../../data/items/currency/Item.Currency.data';
+import { ITEM_CURRENCY_ALL } from '../../data/items/currency/Item.Currency.data';
 import { ITEM_HEALTH_POTIONS } from '../../data/items/potions/Item.Potions.Health.data';
 import { ITEM_MANA_POTIONS } from '../../data/items/potions/Item.Potions.Mana.data';
 import { ITEM_STAMINA_POTIONS } from '../../data/items/potions/Item.Potions.Stamina.data';
@@ -13,7 +13,7 @@ export class ItemRepository {
   ]
 
   private ALL_ITEMS = [
-    ...ITEM_CURRENCIES,
+    ...ITEM_CURRENCY_ALL,
     ...this.POTIONS,
   
   ]

@@ -1,4 +1,4 @@
-import { CURRENCY_ITEM_IDS } from '../../data/items/currency/Item.Currency.data';
+import { ITEM_CURRENCY_IDS } from '../../data/items/currency/Item.Currency.data';
 import type { Character, CharacterClass, Stat, Stats } from '../../interfaces/characters/Character.types';
 import type { Inventory } from '../../interfaces/inventories/Inventory.types';
 
@@ -19,7 +19,7 @@ export class CharacterService {
   getGold(): number {
     let gold = 0
     this.characterInventories.forEach(i => {
-      const goldTransactions = i.transactions.filter(t => t.itemId === CURRENCY_ITEM_IDS.GOLD)
+      const goldTransactions = i.transactions.filter(t => t.itemId === ITEM_CURRENCY_IDS.GOLD)
       goldTransactions.forEach(t => {
         gold += t.quantity
       })

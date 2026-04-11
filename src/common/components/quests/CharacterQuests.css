@@ -1,0 +1,101 @@
+.quests-main {
+  padding: 5px;
+  max-height: 450px;
+  overflow: auto;
+}
+
+.quest-group {
+  padding: 15px;
+  font-size: 12px;
+  max-height: 300px;
+  overflow: auto;
+  background-color: var(--bg-dark);
+  color: var(--text);
+  border-radius: 3px;
+  height: fit-content;
+}
+
+.quest-group-header {
+  letter-spacing: 1px;
+  
+}
+
+.quest-group-header-count {
+  text-align: center;
+}
+
+.quest-group-header-description {
+  padding: 5px;
+  text-align: center;
+}
+
+.quest-items {
+  margin-top: 5px;
+
+}
+
+.quest-item {
+  letter-spacing: 0px;
+  padding: 15px;
+  border: solid var(--gold-dark) 5px;
+  border-radius: 3px;
+  background-color: #ceba8b;
+  color: var(--bg-dark);
+  margin-bottom: 5px;
+  opacity: 80%;
+    transition: 
+    transform 0.2s ease,
+    filter 0.2s ease,
+    opacity 0.2s ease;
+
+  transform: scale(1); /* base state */
+  transition: transform 0.2s ease, filter 0.2s ease;
+  position: relative; /* 👈 REQUIRED for z-index to work */
+  z-index: 0;
+}
+
+.quest-item.cantake {
+  border-color: var(--gold);
+  opacity: 100%;
+  animation: barelyAppearDisappear 3s ease-in-out infinite;
+}
+
+.quest-item.inprogress {
+  border-color: var(--green-dark);
+  opacity: 100%;
+  filter: brightness(1.1);
+  animation: barelyAppearDisappear 1s ease-in-out infinite;
+  
+}
+
+.quest-item:hover {
+  transform: scale(1.1); /* 👈 smooth "grow" */
+  filter: brightness(1.1);
+  cursor: pointer;
+  opacity: 1;
+  z-index: 10; /* 👈 bring to front */
+  animation: unset;
+}
+
+.quest-item-header {
+  font-size: larger;
+  font-weight: bolder;
+}
+
+.quest-item-description {
+  padding: 5px;
+}
+
+.quest-item-requirements-header {
+  font-size: 1.1em;
+  font-weight: bolder;
+  padding: 2px;
+}
+
+.quest-item-requirements-list {
+  padding: 2px;
+}
+
+.quest-item-requirements-item {
+  padding: 2px;
+}

@@ -5,6 +5,7 @@
   --bg-dark-3: #555555;
   --gold: #c9a227;
   --gold-dark: #9f7f1c;
+  --green-dark: #119f14;
   --danger: #8b1e1e;
   --text: #e6e2d3;
   --text-dark: #212121;
@@ -36,6 +37,18 @@
   }
   100% {
     opacity: 0%;
+  }
+}
+
+@keyframes barelyAppearDisappear {
+  0% {
+    opacity: 100%;
+  }
+  50% {
+    opacity: 70%;
+  }
+  100% {
+    opacity: 100%;
   }
 }
 
@@ -170,7 +183,7 @@ select {
 .page-sections {
   margin-top: 5px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(50vh, max-content));
+  grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
   justify-content: center;
   gap: 5px;
   font-size: 0.75em;
@@ -202,4 +215,37 @@ select {
 .page-actions button {
   font-size: 0.75em;
   background-color: var(--bg-dark-3);
+}
+
+.status {
+  background-color: var(--bg-dark-2);
+  color: var(--text);
+  width: fit-content;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+.status.inprogress {
+  background-color: var(--gold);
+  color: var(--bg-dark);
+  width: fit-content;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+.status.complete {
+  background-color: var(--green-dark);
+  color: var(--text);
+  width: fit-content;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+ul {
+  all: unset;
+}
+
+ul li {
+  all: unset;
+  padding: 3px;
 }

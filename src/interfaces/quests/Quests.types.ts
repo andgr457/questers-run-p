@@ -7,10 +7,14 @@ export interface QuestGroup {
 }
 
 export interface QuestCompleteProps {
-  character: Character
-  achievementId: string
-  valueToCheck: unknown
-  expectedValue: unknown
+  character?: Character
+  achievementId?: string
+  valueToCheck?: unknown
+  expectedValue?: unknown
+  gathering: {
+    itemId: string
+    amountRequired: string
+  }
 }
 
 export interface Quest {
@@ -18,25 +22,34 @@ export interface Quest {
   groupId: string
   title: string
   description: string
-  requiresQuestId: string
-  requiresLevel: number
   maxPartyMembers: number
+  rewards: QuestReward[]
+  requirements: QuestRequirement[]
+  cooldownMinutes: number
+  requiredQuestId: string
+  requiredLevel: number
   requiredStats: Stats
-  questRewardIds: QuestReward[]
-  startedDate?: string
-  completedDate?: string
-  canComplete: (props: QuestCompleteProps) => boolean
+}
+
+export interface QuestRequirement{
+  itemId?: string
+  itemAmount?: number
+  achievementId?: string
+  timeMinutes?: number
 }
 
 export interface QuestReward {
-  itemId: string
-  amount: number
+  xp?: number
+  itemId?: string
+  itemAmount?: number
 }
 
 export type QuestProgressStatus = 'in-progress' | 'complete'
 
 export interface QuestProgress {
   questId: string
-  startDate: string
+  characterId: string
   status: QuestProgressStatus
+  startDate: string
+  endDate?: string
 }

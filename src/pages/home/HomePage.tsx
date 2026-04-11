@@ -5,10 +5,15 @@ import { LOCAL_STORAGE_KEYS } from '../../common/constants/LocalStorageKeys'
 import type { CharacterClass, Character } from '../../interfaces/characters/Character.types'
 import type { Inventory } from '../../interfaces/inventories/Inventory.types'
 import { useConfirm } from '../../providers/ConfirmProvider'
-import CharacterBar from '../../common/components/CharacterBar'
 import { CharacterClassRepository } from '../../repository/characters/CharacterClassRepository'
 import type { CharacterHistory } from '../../interfaces/history/History.types'
 import CharacterHistoryComponent from '../../common/components/history/CharacterHistory'
+import CharacterQuests from '../../common/components/quests/CharacterQuests'
+import type { Quest, QuestGroup, QuestProgress } from '../../interfaces/quests/Quests.types'
+import { QuestRepository } from '../../repository/quests/QuestRepository'
+import { QuestGroupRepository } from '../../repository/quests/QuestGroupRepository'
+import { DateTime } from 'luxon'
+import CharacterBar from '../../common/components/characters/CharacterBar'
 
 export default function HomePage(){
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
@@ -16,7 +21,10 @@ export default function HomePage(){
   const [newMainCharacterModalOpen, setNewMainCharacterModalOpen] = useState(false)
   const [inventories, setInventories] = useLocalStorage<Inventory[]>(LOCAL_STORAGE_KEYS.INVENTORIES, [])
   const [history, setHistory] = useLocalStorage<CharacterHistory[]>(LOCAL_STORAGE_KEYS.HISTORY, [])
-
+  const [characterQuestProgress, setCharacterQuestProgress] = useLocalStorage<QuestProgress[]>(LOCAL_STORAGE_KEYS.QUEST_PROGRESS, [])
+  const [quests, setQuests] = useState<Quest[]>([])
+  const [questGroups, setQuestGroups] = useState<QuestGroup[]>([])
+  
   const {showConfirm} = useConfirm()
 
   const handleResetEverything = useCallback(async () => {
@@ -29,6 +37,7 @@ export default function HomePage(){
     setMainCharacter(undefined)
     setInventories([])
     setHistory([])
+    setCharacterQuestProgress([])
   }, [])
 
   useEffect(() => {
@@ -37,6 +46,11 @@ export default function HomePage(){
         const classRepo = new CharacterClassRepository()
         const allClasses = await classRepo.list()
         setMainCharacterClass(allClasses.find(ac => ac.id === mainCharacter.classId))
+
+        const questRepo = new QuestRepository()
+        setQuests(await questRepo.list())
+        const questGroupRepo = new QuestGroupRepository()
+        setQuestGroups(await questGroupRepo.list())
       }
     }
     load()
@@ -64,6 +78,26 @@ export default function HomePage(){
     setInventories(newInventories)
   }, [inventories])
 
+  const handleAddQuest = useCallback(async (quest: Quest, characterId: string) => {
+    const progress = characterQuestProgress?.find(qp => qp.questId === quest.id && qp.characterId === characterId)
+    if(progress && progress.status === 'in-progress'){
+      return
+    }
+
+    const questProgress: QuestProgress = {
+      characterId: characterId as string,
+      questId: quest.id,
+      startDate: DateTime.utc().toISO(),
+      status: 'in-progress'
+    }
+    const newProgress = []
+    newProgress.push(questProgress)
+    for(const p of characterQuestProgress){
+      newProgress.push(p)
+    }
+    setCharacterQuestProgress(newProgress)
+  }, [quests, characterQuestProgress, mainCharacter])
+
   const mainCharacterExists = typeof mainCharacter?.name === 'string'
   return <>
     <HomeNewMainCharacterModal 
@@ -80,6 +114,9 @@ export default function HomePage(){
       }}
       addHistory={async (history: CharacterHistory[]) => {
         handleAddHistory(history)
+      }}
+      addQuest={async (quest: Quest, characterId: string) => {
+        handleAddQuest(quest, characterId)
       }}
     >
       <></>
@@ -106,17 +143,22 @@ export default function HomePage(){
             </div>
         </div>
 
-        <div className='page-sections'>
+        {mainCharacter && <div className='page-sections'>
           <div className='page-section'>
-            1
+            <CharacterQuests 
+              character={mainCharacter as Character} 
+              characterQuestProgressItems={characterQuestProgress} 
+              questGroups={questGroups} 
+              quests={quests}
+              />
           </div>
           <div className='page-section'>
-            2
+            
           </div>
           <div className='page-section'>
             {mainCharacter && <CharacterHistoryComponent character={mainCharacter as Character} history={history.filter(h => h.characterId === mainCharacter?.id)} />}
           </div>
-        </div>
+        </div>}
       </div>
       
 

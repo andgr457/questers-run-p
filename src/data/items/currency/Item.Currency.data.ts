@@ -1,12 +1,12 @@
 import { ITEM_RARITY, ITEM_TYPES, type Item } from '../../../interfaces/items/Item.types'
 import { EMPTY_STATS } from '../../Stats.data'
 
-export const CURRENCY_ITEM_IDS = {
+export const ITEM_CURRENCY_IDS = {
   GOLD: 'i_currency_gold'
 }
 
 export const ITEM_CURRENCY_GOLD: Item = {
-  id: CURRENCY_ITEM_IDS.GOLD,
+  id: ITEM_CURRENCY_IDS.GOLD,
   name: 'Gold',
   description: 'Most accepted currency in the realm.',
   type: ITEM_TYPES.CURRENCY,
@@ -14,6 +14,6 @@ export const ITEM_CURRENCY_GOLD: Item = {
   stats: EMPTY_STATS
 }
 
-export const ITEM_CURRENCIES: Item[] = [
+export const ITEM_CURRENCY_ALL: Item[] = [
   ITEM_CURRENCY_GOLD
 ]

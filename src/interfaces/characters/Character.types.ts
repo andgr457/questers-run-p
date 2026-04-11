@@ -12,6 +12,9 @@ export interface Stat {
   name: string
   value: number
   hint: string
+  level?: number
+  xp?: number
+  nextLevelXP?: number
 }
 
 export type BuffType = 'buff' | 'debuff'
@@ -28,7 +31,6 @@ export interface CharacterClass {
   name: string
   description: string
   stats: Stats
-  
 }
 
 export interface CharacterAchievements {

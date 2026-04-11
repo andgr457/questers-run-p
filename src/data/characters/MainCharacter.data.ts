@@ -14,32 +14,50 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
     agility: {
       name: 'AGI',
       value: 1,
-      hint: ''
+      hint: '',
+      xp: 0,
+      nextLevelXP: 100,
+      level: 1
     },
     hp: {
       name: 'HP',
       value: 100,
-      hint: ''
+      hint: '',
+      xp: 0,
+      nextLevelXP: 100,
+      level: 1
     },
     intelligence: {
       name: 'INT',
       value: 1,
-      hint: ''
+      hint: '',
+      xp: 0,
+      nextLevelXP: 100,
+      level: 1
     },
     mp: {
       name: 'MP',
       value: 10,
-      hint: ''
+      hint: '',
+      xp: 0,
+      nextLevelXP: 100,
+      level: 1
     },
     stamina: {
       name: 'STAM',
       value: 100,
-      hint: ''
+      hint: '',
+      xp: 0,
+      nextLevelXP: 100,
+      level: 1
     },
     strength: {
       name: 'STR',
       value: 1,
-      hint: ''
+      hint: '',
+      xp: 0,
+      nextLevelXP: 100,
+      level: 1
     },
   }
 }

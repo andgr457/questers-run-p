@@ -9,13 +9,16 @@ import { useConfirm } from '../../providers/ConfirmProvider';
 import { DateTime } from 'luxon';
 import type { Inventory } from '../../interfaces/inventories/Inventory.types';
 import { getInventoryIntroCurrencyPouch, getInventoryIntroStarterPouch } from '../../data/inventories/Inventories.Intro.data';
-import CharacterBar from '../../common/components/CharacterBar';
 import type { CharacterHistory } from '../../interfaces/history/History.types';
+import type { Quest } from '../../interfaces/quests/Quests.types';
+import { QUEST_INTRO_ADVENTURERS_GUILD } from '../../data/quests/Quests.Intro.data';
+import CharacterBar from '../../common/components/characters/CharacterBar';
 
 interface HomeNewMainCharacterModalProps extends ModalProps {
   setMainCharacter: (character: Character) => Promise<void>
   addInventory: (inventory: Inventory[]) => Promise<void>
   addHistory: (newHistory: CharacterHistory[]) => Promise<void>
+  addQuest: (quest: Quest, characterId: string) => Promise<void>
   mainCharacter?: Character
 }
 
@@ -92,7 +95,7 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
         id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+100}`,
         characterId: newCharacter?.id as string,
         date: DateTime.utc().toISO(),
-        description: `${newCharacter?.name} isekai\'d and resurrected here.`
+        description: `"${newCharacter?.name}" isekai\'d and resurrected here.`
       })
 
       // Earn Created Main Character Achievement
@@ -115,13 +118,19 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
         id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+300}`,
         characterId: newCharacter?.id as string,
         date: DateTime.utc().toISO(),
-        description: `${currencyPouch.title} pouch received!`
+        description: `"${currencyPouch.title}" pouch received!`
       })
       histories.push({
         id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+400}`,
         characterId: newCharacter?.id as string,
         date: DateTime.utc().toISO(),
-        description: `${starterPouch.title} pouch received!`
+        description: `"${starterPouch.title}" pouch received!`
+      })
+      histories.push({
+        id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+500}`,
+        characterId: newCharacter?.id as string,
+        date: DateTime.utc().toISO(),
+        description: `"${QUEST_INTRO_ADVENTURERS_GUILD.title}" quest received!`
       })
       //Starter Inventories
       const inventories: Inventory[] = []
@@ -129,13 +138,14 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
       inventories.push(starterPouch)
       props.addInventory(inventories)
       props.addHistory(histories)
+      props.addQuest(QUEST_INTRO_ADVENTURERS_GUILD, newCharacter?.id as string)
       props.setMainCharacter(newCharacter as Character)
     } else {
       props.addHistory([{
         id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+100}`,
         characterId: newCharacter?.id as string,
         date: DateTime.utc().toISO(),
-        description: `Renamed ${newCharacter?.name} to ${newName}.`
+        description: `Renamed "${newCharacter?.name}" to "${newName}".`
       }])
       props.setMainCharacter({
         ...newCharacter as Character,
