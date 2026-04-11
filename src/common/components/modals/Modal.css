@@ -19,7 +19,7 @@
   z-index: 9999;
   gap: 0.5em;
   opacity: 0%;
-  animation: slowTextShow 0.2s ease-in forwards;
+  animation: appear .2s ease-in forwards;
 }
 
 .modal-container {
@@ -30,10 +30,9 @@
   padding: 5px;
   overscroll-behavior-y: contain;
   box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-  animation: modalFade .5s ease;
   letter-spacing: 1px;
   opacity: 0%;
-  animation: slowTextShow 0.5s ease-in forwards;
+  animation: appear 0.2s ease-in forwards 0.2s;
 }
 
 .modal-container-info {
@@ -44,8 +43,9 @@
   box-shadow: 0 5px 25px rgba(0,0,0,0.5);
   letter-spacing: 1px;
   opacity: 0%;
-  animation: slowTextShow 1s ease-in forwards;
+  animation: appear 0.5s ease-in forwards 0.5s;
 }
+
 
 @keyframes slowTextShow {
   0% {

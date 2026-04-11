@@ -1,0 +1,31 @@
+.history-main {
+ background-color: var(--bg-dark); 
+ color: var(--text);
+ padding: 2px;
+ max-height: 450px;
+ overflow: auto;
+}
+
+.history-items {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.history-item {
+  margin-top: 8px;
+  border-radius: 3px;
+}
+
+.history-item:hover {
+  background-color: var(--text); 
+  color: var(--bg-dark);
+}
+
+.history-item-header {
+  text-align: center;
+  font-size: 1.1em;
+}
+
+.history-description {
+  text-align: center;
+}

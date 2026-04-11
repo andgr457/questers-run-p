@@ -17,7 +17,16 @@ export const ITEM_RARITY = {
   UNIQUE: 'unique' as ItemRarity,
 }
 
-export type ItemType = 'resource' | 'weapon' | 'armor' | 'currency'
+export type ItemType = 
+  'resource' 
+  | 'weapon' 
+  | 'arrows'
+  | 'bolts'
+  | 'armor' 
+  | 'currency' 
+  | 'consumables'
+  //Everything except currencies
+  | 'general'
 export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'legendary' | 'epic' | 'unique'
 export interface Item {
   id: string

@@ -5,11 +5,35 @@ export const CLASS_WARRIOR: CharacterClass = {
   description: 'A warrior can deal damage solo and optionally tank in a party.',
   name: 'Warrior',
   stats: {
-    agility: 2,
-    intelligence: 1,
-    strength: 3,
-    hp: 10,
-    mp: 0,
-    stamina: 10,
+    agility: {
+      name: 'AGI',
+      value: 2,
+      hint: ''
+    },
+    intelligence: {
+      name: 'INT',
+      value: 1,
+      hint: ''
+    },
+    strength: {
+      name: 'STR',
+      value: 3,
+      hint: ''
+    },
+    hp: {
+      name: 'HP',
+      value: 10,
+      hint: ''
+    },
+    mp: {
+      name: 'MP',
+      value: 1,
+      hint: ''
+    },
+    stamina: {
+      name: 'STAM',
+      value:  10,
+      hint: ''
+    },
   }
 }

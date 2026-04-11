@@ -31,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({
       }
     }}>
       {leftChildren && <div
-        className="modal-container-info"
+        className={`modal-container-info`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">

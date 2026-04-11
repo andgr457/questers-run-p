@@ -1,11 +1,17 @@
 
 export interface Stats {
-  strength?: number
-  intelligence?: number
-  agility?: number
-  stamina?: number
-  hp?: number
-  mp?: number
+  strength?: Stat
+  intelligence?: Stat
+  agility?: Stat
+  stamina?: Stat
+  hp?: Stat
+  mp?: Stat
+}
+
+export interface Stat {
+  name: string
+  value: number
+  hint: string
 }
 
 export type BuffType = 'buff' | 'debuff'
@@ -36,6 +42,7 @@ export interface Character {
   name: string
   level: number
   levelNextXP: number
+  xp: number
   achievements: CharacterAchievements[]
   stats: Stats
 }

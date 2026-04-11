@@ -1,49 +1,125 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import HomeNewMainCharacterModal from './HomeNewMainCharacterModal'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { LOCAL_STORAGE_KEYS } from '../../common/constants/LocalStorageKeys'
-import type { Character } from '../../interfaces/characters/Character.types'
+import type { CharacterClass, Character } from '../../interfaces/characters/Character.types'
 import type { Inventory } from '../../interfaces/inventories/Inventory.types'
+import { useConfirm } from '../../providers/ConfirmProvider'
+import CharacterBar from '../../common/components/CharacterBar'
+import { CharacterClassRepository } from '../../repository/characters/CharacterClassRepository'
+import type { CharacterHistory } from '../../interfaces/history/History.types'
+import CharacterHistoryComponent from '../../common/components/history/CharacterHistory'
 
 export default function HomePage(){
-  const [newMainCharacterModalOpen, setNewMainCharacterModalOpen] = useState(false)
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
+  const [mainCharacterClass, setMainCharacterClass] = useState<CharacterClass | undefined>(undefined)
+  const [newMainCharacterModalOpen, setNewMainCharacterModalOpen] = useState(false)
   const [inventories, setInventories] = useLocalStorage<Inventory[]>(LOCAL_STORAGE_KEYS.INVENTORIES, [])
+  const [history, setHistory] = useLocalStorage<CharacterHistory[]>(LOCAL_STORAGE_KEYS.HISTORY, [])
+
+  const {showConfirm} = useConfirm()
+
+  const handleResetEverything = useCallback(async () => {
+    if(!await showConfirm({
+      title: 'Are you sure?',
+      message: 'This will reset everything in this browser\'s storage for this site. Are you sure you wish to continue?',
+      isYesNo: true
+    })) return
+
+    setMainCharacter(undefined)
+    setInventories([])
+    setHistory([])
+  }, [])
 
   useEffect(() => {
-  }, [])
-  return <div className='home-main'>
+    const load = async function () {
+      if(mainCharacter){
+        const classRepo = new CharacterClassRepository()
+        const allClasses = await classRepo.list()
+        setMainCharacterClass(allClasses.find(ac => ac.id === mainCharacter.classId))
+      }
+    }
+    load()
+  }, [mainCharacter])
+
+  const handleAddHistory = useCallback(async (newHistory: CharacterHistory[]) => {
+    const histories = []
+    for(const h of newHistory){
+      histories.push(h)
+    }
+    for(const h of history){
+      histories.push(h)
+    }
+    setHistory(histories)
+  }, [history])
+
+  const handleAddInventory = useCallback((inventory: Inventory[]) => {
+    const newInventories = []
+    for(const i of inventory){
+      newInventories.push(i)
+    }
+    for(const i of inventories){
+      newInventories.push(i)
+    }
+    setInventories(newInventories)
+  }, [inventories])
+
+  const mainCharacterExists = typeof mainCharacter?.name === 'string'
+  return <>
     <HomeNewMainCharacterModal 
+      mainCharacter={mainCharacter}
       rightTitle={'Create Main Character'}
-      setMainCharacter={setMainCharacter}
-      closeButton={true} //prod = false
       backdropHides={false}
       isOpen={newMainCharacterModalOpen}
-      onClose={() => setNewMainCharacterModalOpen(false)}
+      onClose={() => {setNewMainCharacterModalOpen(false)}}
+      setMainCharacter={async (character: Character) => {
+        setMainCharacter(character)
+      }}
+      addInventory={async (inventory: Inventory[]) => {
+        handleAddInventory(inventory)
+      }}
+      addHistory={async (history: CharacterHistory[]) => {
+        handleAddHistory(history)
+      }}
     >
       <></>
     </HomeNewMainCharacterModal>
-    <div className='header-2'>
-      Home
-    </div>
-    <div>
-      {mainCharacter?.name} {mainCharacter?.level} {mainCharacter?.classId}
-    </div>
-    <div className='home-main-section'>
-      <div className='home-actions'>
-        <div>
-          <button
-            onClick={() => setNewMainCharacterModalOpen(true)}
-          >
-            Create Main Character
-          </button>
-          <button
-            onClick={() => setMainCharacter(undefined)}
-          >
-            Clear Main Character
-          </button>
+    {newMainCharacterModalOpen === false && <div>
+      <div className='page-main'>
+        <div className='header-2'>
+          Welcome Home {mainCharacter?.name}
+        </div>
+        <CharacterBar character={mainCharacter as Character} characterClass={mainCharacterClass as CharacterClass} characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)} />
+        
+        <div className='header-1'>
+            <div className='page-actions'>
+              <button
+                onClick={() => {setNewMainCharacterModalOpen(true)}}
+              >
+                {mainCharacterExists ? `Rename ${mainCharacter.name}`: 'Create Main Character'}
+              </button>
+              <button
+                onClick={() => {handleResetEverything()}}
+              >
+                Reset Everything
+              </button>
+            </div>
+        </div>
+
+        <div className='page-sections'>
+          <div className='page-section'>
+            1
+          </div>
+          <div className='page-section'>
+            2
+          </div>
+          <div className='page-section'>
+            {mainCharacter && <CharacterHistoryComponent character={mainCharacter as Character} history={history.filter(h => h.characterId === mainCharacter?.id)} />}
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+      
+
+    </div>}
+  </>
 }

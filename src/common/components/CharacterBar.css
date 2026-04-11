@@ -1,0 +1,15 @@
+.character-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+  justify-content: center;
+  gap: 5px;
+  background-color: var(--bg-dark-3);
+  color: var(--text);
+  padding: 4px;
+  box-shadow: 0 2px 5px #0000001a;
+}
+
+.character-bar-item {
+  font-size: 0.7em;
+  padding: 2px;
+}

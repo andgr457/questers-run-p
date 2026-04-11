@@ -9,11 +9,13 @@ import './index.css'
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <div >
-        <NavMenu/>
-      </div>
-      <div className='app-main'>
-        <App />
+      <div>
+        <div >
+          <NavMenu/>
+        </div>
+        <div className='app-main'>
+          <App />
+        </div>
       </div>
     </BrowserRouter>
   </React.StrictMode>

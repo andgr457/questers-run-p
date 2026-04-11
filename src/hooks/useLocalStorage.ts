@@ -19,5 +19,5 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
 
 export function getLocalStorage<T>(key: string) {
   const item = localStorage.getItem(key);
-  return item ? JSON.parse(item) as T : []
+  return item ? JSON.parse(item) as T : undefined
 }

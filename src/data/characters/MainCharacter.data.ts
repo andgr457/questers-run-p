@@ -8,13 +8,38 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
   achievements: [],
   classId: CLASS_WARRIOR.id,
   level: 1,
+  xp: 0,
   levelNextXP: 100,
   stats: {
-    agility: 1,
-    hp: 100,
-    intelligence: 1,
-    mp: 10,
-    stamina: 100,
-    strength: 1,
+    agility: {
+      name: 'AGI',
+      value: 1,
+      hint: ''
+    },
+    hp: {
+      name: 'HP',
+      value: 100,
+      hint: ''
+    },
+    intelligence: {
+      name: 'INT',
+      value: 1,
+      hint: ''
+    },
+    mp: {
+      name: 'MP',
+      value: 10,
+      hint: ''
+    },
+    stamina: {
+      name: 'STAM',
+      value: 100,
+      hint: ''
+    },
+    strength: {
+      name: 'STR',
+      value: 1,
+      hint: ''
+    },
   }
 }

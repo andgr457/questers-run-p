@@ -7,6 +7,7 @@ import QuestsPage from './pages/quests/QuestsPage';
 import AdventurersGuildPage from './pages/guild/AdventurersGuildPage';
 
 function App() {
+  
 return (
     <ConfirmProvider>
       <Routes>

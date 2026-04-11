@@ -1,8 +1,14 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import ConfirmModal from '../common/components/ConfirmModal';
+import ConfirmModal from '../common/components/modals/ConfirmModal';
+
+interface ShowConfirmProps {
+  message: string
+  title: string
+  isYesNo: boolean
+}
 
 interface ConfirmContextType {
-  showConfirm: (message: string, title?: string) => Promise<boolean>;
+  showConfirm: (props: ShowConfirmProps) => Promise<boolean>;
 }
 
 const ConfirmContext = createContext<ConfirmContextType | undefined>(undefined);
@@ -12,12 +18,13 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
     isOpen: boolean;
     message: string;
     title: string;
+    isYesNo: boolean
     resolve?: (value: boolean) => void;
-  }>({ isOpen: false, message: "", title: "" });
+  }>({ isOpen: false, message: "", title: "", isYesNo: true });
 
-  const showConfirm = (message: string, title = "Confirm"): Promise<boolean> => {
+  const showConfirm = (props: ShowConfirmProps): Promise<boolean> => {
     return new Promise((resolve) => {
-      setState({ isOpen: true, message, title, resolve });
+      setState({ isOpen: true, message: props.message, title: props.title, isYesNo: props.isYesNo,  resolve });
     });
   };
 
@@ -40,6 +47,7 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
         message={state.message}
         onConfirm={handleConfirm}
         onClose={handleClose}
+        isYesNo={state.isYesNo ?? true}
       />
     </ConfirmContext.Provider>
   );
@@ -48,5 +56,10 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
 export const useConfirm = () => {
   const context = useContext(ConfirmContext);
   if (!context) throw new Error("useConfirm must be used inside ConfirmProvider");
-  return context.showConfirm;
+  return context;
 };
+
+export const CONFIRM_BUTTON_VARIANTS = {
+  YES_NO: true,
+  OK: false
+}

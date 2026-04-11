@@ -1,11 +1,13 @@
 :root {
-  --bg: #fff;
+  --bg: #c8c8c8;
   --bg-dark: #1b1b1b;
   --bg-dark-2: #424242;
+  --bg-dark-3: #555555;
   --gold: #c9a227;
   --gold-dark: #9f7f1c;
   --danger: #8b1e1e;
   --text: #e6e2d3;
+  --text-dark: #212121;
   --input-text: #e6e2d3;
   --label: rgba(0, 0, 0, 0.747);
   --label-dark: rgba(170, 170, 170, 0.747);
@@ -71,6 +73,19 @@ button {
   font-size: 0.9em;
 }
 
+button.danger {
+  all: unset;
+  cursor: pointer;
+  padding: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  border: solid var(--bg-dark-3) 2px;
+  background-color: var(--danger);
+  color: var(--text);
+  font-size: 0.9em;
+}
+
 button:hover {
   filter: brightness(1.5);
 }
@@ -112,7 +127,8 @@ select {
 .header-1 {
   background-color: var(--bg-dark);
   color: var(--text);
-  border-radius: 10px;
+  border-radius: 3px;
+
   text-align: center;
   color: #fff;
   padding: 5px;
@@ -131,13 +147,13 @@ select {
 .header-2 {
   background-color: var(--bg-dark-2);
   color: var(--text);
-  border-radius: 10px;
+  border-radius: 3px;
   text-align: center;
   color: #fff;
   padding: 5px;
   text-shadow:
   0 0 1px #fff
-  ,0 0 2px #d3d3d3
+  ,0 0 2px #ffffff
   /* ,0 0 15px #FFD700
   ,0 0 20px #FFD700
   ,0 0 25px #FFD700
@@ -145,4 +161,45 @@ select {
   ,0 0 3px var(--bg-dark-2)
   ;
   letter-spacing: 3px;
+}
+
+.page-main {
+  padding: 10px;
+}
+
+.page-sections {
+  margin-top: 5px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50vh, max-content));
+  justify-content: center;
+  gap: 5px;
+  font-size: 0.75em;
+}
+
+.page-section {
+  padding: 5px;
+  border: solid 1px var(--bg-dark-2);
+  border-radius: 3px;
+  box-shadow:
+  0 0 1px var(--bg-dark)
+  ,0 0 2px var(--bg-dark-2)
+  /* ,0 0 15px #FFD700
+  ,0 0 20px #FFD700
+  ,0 0 25px #FFD700
+  ,0 0 30px #FFD700 */
+  ,0 0 3px var(--bg-dark-3)
+  ;
+  letter-spacing: 3px;
+}
+
+.page-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+  justify-content: center;
+  gap: 5px;
+}
+
+.page-actions button {
+  font-size: 0.75em;
+  background-color: var(--bg-dark-3);
 }
