@@ -13,7 +13,7 @@ export default function ConfirmModal(props: ConfirmModalProps) {
     isOpen={props.showConfirmModal}
     backdropHides={true}
     onClose={props.onClose}
-    title={props.title}
+    rightTitle={props.title}
   >
     <div className='basic-div'>
       {props.message}

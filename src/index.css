@@ -1,32 +1,16 @@
 :root {
+  --bg: #fff;
   --bg-dark: #1b1b1b;
   --bg-dark-2: #424242;
   --gold: #c9a227;
   --gold-dark: #9f7f1c;
   --danger: #8b1e1e;
   --text: #e6e2d3;
+  --input-text: #e6e2d3;
+  --label: rgba(0, 0, 0, 0.747);
+  --label-dark: rgba(170, 170, 170, 0.747);
   --border: #7e7e7e;
 
-}
-
-body {
-  all: unset;
-  font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
-}
-
-.flex-wrap {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.flex-wrap.gap-1 {
-  gap: 5px;
-}
-
-.flex-wrap.gap-2 {
-  gap: 10px;
 }
 
 @keyframes appear {
@@ -51,4 +35,114 @@ body {
   100% {
     opacity: 0%;
   }
+}
+
+body {
+  all: unset;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  background-color: var(--bg);
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-wrap.gap-1 {
+  gap: 5px;
+}
+
+.flex-wrap.gap-2 {
+  gap: 10px;
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+  padding: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  border: solid var(--bg-dark-2) 2px;
+  background-color: var(--bg-dark);
+  color: var(--text);
+  font-size: 0.9em;
+}
+
+button:hover {
+  filter: brightness(1.5);
+}
+
+input[type='text'] {
+  all: unset;
+  background-color: var(--bg-dark);
+  padding: 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: var(--input-text);
+}
+
+input[type='text']::placeholder {
+  color: var(--label-dark);
+  font-size: 0.7em;
+}
+
+.form-label {
+  color: var(--label);
+}
+
+.description {
+  font-size: 0.9em;
+  padding-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+select {
+  font: unset;
+  letter-spacing: 1.5px;
+  background-color: var(--bg-dark);
+  padding: 6px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  color: var(--input-text);
+}
+
+.header-1 {
+  background-color: var(--bg-dark);
+  color: var(--text);
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  padding: 5px;
+  text-shadow:
+  0 0 1px #fff
+  ,0 0 2px #d3d3d3
+  /* ,0 0 15px #FFD700
+  ,0 0 20px #FFD700
+  ,0 0 25px #FFD700
+  ,0 0 30px #FFD700 */
+  ,0 0 3px var(--bg-dark)
+  ;
+  letter-spacing: 3px;
+}
+
+.header-2 {
+  background-color: var(--bg-dark-2);
+  color: var(--text);
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  padding: 5px;
+  text-shadow:
+  0 0 1px #fff
+  ,0 0 2px #d3d3d3
+  /* ,0 0 15px #FFD700
+  ,0 0 20px #FFD700
+  ,0 0 25px #FFD700
+  ,0 0 30px #FFD700 */
+  ,0 0 3px var(--bg-dark-2)
+  ;
+  letter-spacing: 3px;
 }

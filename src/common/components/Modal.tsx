@@ -3,14 +3,25 @@ import "./Modal.css";
 
 export interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
-  title?: React.ReactNode;
   backdropHides: boolean
-  children: React.ReactNode;
+  onClose: () => void;
   closeButton?: boolean
+  rightTitle?: React.ReactNode;
+  children: React.ReactNode;
+  leftTitle?: React.ReactNode
+  leftChildren?: React.ReactNode
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, backdropHides, closeButton }) => {
+const Modal: React.FC<ModalProps> = ({ 
+  leftTitle, 
+  leftChildren, 
+  isOpen, 
+  onClose, 
+  rightTitle, 
+  children, 
+  backdropHides, 
+  closeButton 
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -19,12 +30,22 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, backdro
         onClose()
       }
     }}>
+      {leftChildren && <div
+        className="modal-container-info"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-header">
+          {leftTitle}
+        </div>
+
+        <div className="modal-body">{leftChildren}</div>
+      </div>}
       <div
         className="modal-container"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
-          {title}
+          {rightTitle}
 
           {closeButton === true && <button className="modal-close" onClick={onClose}>
             ✕
@@ -34,6 +55,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, backdro
         <div className="modal-body">{children}</div>
       </div>
     </div>
+    
   );
 };
 
