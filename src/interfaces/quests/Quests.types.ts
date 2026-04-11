@@ -22,20 +22,28 @@ export interface Quest {
   groupId: string
   title: string
   description: string
-  maxPartyMembers: number
   rewards: QuestReward[]
-  requirements: QuestRequirement[]
+  startRequirements: QuestStartRequirement[]
+  completionRequirements: QuestCompletionRequirement[]
   cooldownMinutes: number
-  requiredQuestId: string
-  requiredLevel: number
-  requiredStats: Stats
 }
 
-export interface QuestRequirement{
+export interface QuestStartRequirement{
+  itemId?: string
+  itemAmount?: number
+  achievementId?: string
+  questId?: string
+  level?: number
+  stats?: Stats
+  completed: boolean
+}
+
+export interface QuestCompletionRequirement{
   itemId?: string
   itemAmount?: number
   achievementId?: string
   timeMinutes?: number
+  completed: boolean
 }
 
 export interface QuestReward {

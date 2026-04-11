@@ -8,8 +8,17 @@ export interface Stats {
   mp?: Stat
 }
 
+export type StatName = 'AGI' | 'STR' | 'INT' | 'HP' | 'MP' | 'STAM'
+export const StatFullName = {
+  'AGI': 'Agility',
+  'STR': 'Strength',
+  'INT': 'Intellect',
+  'HP': 'Health',
+  'MP': 'Mana',
+  'STAM': 'Stamina'
+}
 export interface Stat {
-  name: string
+  name: StatName
   value: number
   hint: string
   level?: number

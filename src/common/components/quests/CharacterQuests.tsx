@@ -1,16 +1,19 @@
-import { DateTime } from 'luxon'
-import type { Character, Stat } from '../../../interfaces/characters/Character.types'
+import type { Character } from '../../../interfaces/characters/Character.types'
 import type { Quest, QuestGroup, QuestProgress } from '../../../interfaces/quests/Quests.types'
 import './CharacterQuests.css'
 import CharacterQuest from './CharacterQuest'
 import { useEffect, useRef, useState } from 'react'
 import { QuestService } from '../../../services/quests/QuestService'
+import type { Achievement } from '../../../interfaces/achievements/Achievement.types'
+import type { Item } from '../../../interfaces/items/Item.types'
+import type { Inventory } from '../../../interfaces/inventories/Inventory.types'
 
 interface CharacterQuestsProps {
   character: Character
   characterQuestProgressItems: QuestProgress[]
   quests: Quest[]
   questGroups: QuestGroup[]
+  characterInventories: Inventory[]
 }
 
 export interface QuestWithQuestProgress {
@@ -18,7 +21,10 @@ export interface QuestWithQuestProgress {
   questGroup: QuestGroup | undefined
   questProgress: QuestProgress | undefined
   canTakeQuest: boolean
-  cannotTakeReasons: string
+  canCompleteQuest: boolean
+  questRequirementsAchievements: Achievement[]
+  questRequirementsItems: Item[]
+  questRequirementsQuests: Quest[]
 }
 
 export default function CharacterQuests(props: CharacterQuestsProps){
@@ -26,61 +32,12 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     character,
     characterQuestProgressItems,
     questGroups,
-    quests
+    quests,
+    characterInventories
   } = props
 
   const [questsWithProgress, setQuestsWithProgress] = useState<QuestWithQuestProgress[]>([])
 
-
-  // let anyQuestInProgress = false
-  // let cannotTakeReasons = ''
-  // const questsWithProgress: QuestWithQuestProgress[] = []
-  // quests.forEach(q => {
-    
-  //   const progress = characterQuestProgressItems?.find(qp => qp.questId === q.id)
-  //   if(progress && progress.status === 'in-progress'){
-  //     anyQuestInProgress = true
-  //     cannotTakeReasons = 'Another quest is already in progress.'
-  //   }
-  //   const group = questGroups.find(qg => qg.id === q.groupId)
-    
-  //   let canTake = !anyQuestInProgress && character.level >= q.requiredLevel
-  //   if(canTake === true){
-  //     if(character.level < q.requiredLevel){
-  //       canTake = false
-  //       cannotTakeReasons = `"${character.name}" must be level "${q.requiredLevel}" or above.`
-  //     }
-  //   }
-  //   if(canTake === true){
-  //     for(const propertyName of Object.getOwnPropertyNames(q.requiredStats)){
-  //       //@ts-ignore
-  //       const characterStat: Stat = character.stats[propertyName]
-  //       //@ts-ignore
-  //       const questStat: Stat = q.requiredStats[propertyName]
-  //       if(characterStat.value < questStat.value){
-  //         canTake = false
-  //         cannotTakeReasons += ` "${characterStat.name}" must be "${questStat.value}" or above. `
-  //       }
-  //     }
-  //   }
-  //   if(canTake === true && q.requiredQuestId){
-  //     const requiredQuestProgress = characterQuestProgressItems.find(qp => qp.questId === q.requiredQuestId && qp.status === 'complete')
-  //     if(!requiredQuestProgress){
-  //       canTake = false
-  //       const requiredQuest = quests.find(quest => quest.id === q.requiredQuestId)
-  //       cannotTakeReasons = `"${requiredQuest?.title}" quest must be completed before starting this.`
-  //     }
-  //   }
-
-  //   const mergeItem: QuestWithQuestProgress = {
-  //     quest: q,
-  //     questGroup: group,
-  //     questProgress: progress,
-  //     canTakeQuest: canTake,
-  //     cannotTakeReasons
-  //   }
-  //   questsWithProgress.push(mergeItem)
-  // })
     
   if(!character || !questGroups || !quests){
     return null
@@ -90,7 +47,8 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     character,
     questGroups,
     quests,
-    characterQuestProgressItems
+    characterQuestProgressItems,
+    characterInventories
   });
 
   useEffect(() => {
@@ -98,31 +56,32 @@ export default function CharacterQuests(props: CharacterQuestsProps){
       character,
       questGroups,
       quests,
-      characterQuestProgressItems
+      characterQuestProgressItems,
+      characterInventories
     };
-  }, [character, questGroups, quests, characterQuestProgressItems]);
+  }, [character, questGroups, quests, characterQuestProgressItems, characterInventories]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       const {
         character,
         questGroups,
         quests,
-        characterQuestProgressItems
+        characterQuestProgressItems,
+        characterInventories
       } = dataRef.current;
 
       if (!character || !questGroups || !quests) return;
 
       const questService = new QuestService();
-
-      setQuestsWithProgress(
-        questService.getQuestWithQuestProgress(
-          character,
-          quests,
-          questGroups,
-          characterQuestProgressItems
-        )
-      );
+      const progress = await questService.getQuestsWithQuestProgress(
+        character,
+        quests,
+        questGroups,
+        characterQuestProgressItems,
+        characterInventories
+      )
+      setQuestsWithProgress(progress)
     }, 1000);
 
     return () => clearInterval(interval);
@@ -133,10 +92,12 @@ export default function CharacterQuests(props: CharacterQuestsProps){
       <div className='header-2'>
         Quests
       </div>
-      <div className='page-sections'>
+      {!questsWithProgress || questsWithProgress.length === 0 && <div>
+        Loading...
+        </div>}
+      {questsWithProgress && questsWithProgress.length > 0 && <div className='quests-groups'>
         {questGroups.map(qg => {
           const relatedQuests = questsWithProgress.filter(qwp => qwp?.questGroup?.id === qg.id)
-          console.log(relatedQuests)
           const completedAmount = relatedQuests.filter(rq => rq.questProgress?.status === 'complete')
           return <div className='quest-group'>
             <div className='quest-group-header'>
@@ -152,12 +113,12 @@ export default function CharacterQuests(props: CharacterQuestsProps){
             </div>
             <div className='quest-items'>
               {relatedQuests?.map(q => {
-                return <CharacterQuest questWithProgress={q} />
+                return <CharacterQuest questWithProgress={q} character={character} />
               })}
             </div>
           </div>
         })}
         
-      </div>
+      </div>}
     </div>
 }

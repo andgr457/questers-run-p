@@ -24,10 +24,10 @@ export default function NavMenu() {
         </div>
         <div className='flex-wrap gap-2'>
           <div className='nav-item' 
-            onMouseEnter={() => {setSubNavSelected('travel')}}
-            onClick={() => {setSubNavSelected(subNavSelected === 'travel' ? '' : 'travel')}}
+            onMouseEnter={() => {setSubNavSelected('town')}}
+            onClick={() => {setSubNavSelected(subNavSelected === 'town' ? '' : 'town')}}
           >
-            Travel
+            Town
           </div>
         </div>
         <div className='flex-wrap gap-2'>
@@ -35,27 +35,13 @@ export default function NavMenu() {
             onMouseEnter={() => {setSubNavSelected('profession')}}
             onClick={() => {setSubNavSelected(subNavSelected === 'profession' ? '' : 'profession')}}
           >
-            Profession
+            Professions
           </div>
-        </div>
-        <div 
-          className='nav-item'
-          onMouseEnter={() => {setSubNavSelected('')}}
-          onClick={() => {handleNavigate('/map')}}
-        >
-          Map
-        </div>
-        <div 
-          className='nav-item'
-          onMouseEnter={() => {setSubNavSelected('')}}
-          onClick={() => {handleNavigate('/quests')}}
-        >
-          Quests
         </div>
       </div>
       
       {/* travel sub items */}
-      {subNavSelected === 'travel' && <div className='nav-sub-items'>
+      {subNavSelected === 'town' && <div className='nav-sub-items'>
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/home')}}
@@ -93,8 +79,35 @@ export default function NavMenu() {
           Alchemist
         </div>
       </div>}
-
+      {/* profession sub items */}
       {subNavSelected === 'profession' && <div className='nav-sub-items'>
+        <div 
+          className='nav-item'
+          onClick={() => {handleNavigate('/profession/fishing')}}
+        >
+          Fishing
+        </div>
+        <div 
+          className='nav-item'
+          onClick={() => {handleNavigate('/profession/cooking')}}
+        >
+          Cooking
+        </div>
+        <div 
+          className='nav-item'
+          onClick={() => {handleNavigate('/profession/mining')}}
+        >
+          Mining
+        </div>
+        <div 
+          className='nav-item'
+          onClick={() => {handleNavigate('/profession/gathering')}}
+        >
+          Gathering
+        </div>
+      </div>}
+
+      {subNavSelected === 'map' && <div className='nav-sub-items'>
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/profession/fishing')}}

@@ -16,13 +16,11 @@ export const QUEST_GROUP_GATHRING: QuestGroup = {
   description: 'Collect resources for the guild and receive rewards for requested items!'
 }
 
-export const QUEST_GATHERING_STICKS: Quest = {
+export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
   id: QUEST_GATHERING_IDS.STICKS_N_STONES,
   title: 'Sticks & Stones',
   description: 'Gather sticks and stones from the woods just outside of the city.',
   groupId: QUEST_GROUP_INTRO_ID,
-  requiredLevel: 1,
-  requiredQuestId: QUEST_INTRO_IDS.ADVENTURERS_GUILD_ID,
   cooldownMinutes: 3,
   rewards: [
     {
@@ -30,19 +28,38 @@ export const QUEST_GATHERING_STICKS: Quest = {
       itemAmount: 100
     }
   ],
-  requirements: [
+  startRequirements: [
+    {
+      level: 1,
+      completed: false,
+    },
+    {
+      questId: QUEST_INTRO_IDS.ADVENTURERS_GUILD_ID,
+      completed: false
+    },
+    {
+      stats: EMPTY_STATS,
+      completed: false
+    }
+  ],
+  completionRequirements: [
     {
       itemId: ITEM_GATHERING_STICK.id,
-      itemAmount: 24
+      itemAmount: 24,
+      completed: false
     },
     {
       itemId: ITEM_GATHERING_SMALL_STONE.id,
-      itemAmount: 12
+      itemAmount: 12,
+      completed: false
     },
     {
-      timeMinutes: 1
+      timeMinutes: 1,
+      completed: false
     }
   ],
-  maxPartyMembers: 1,
-  requiredStats: EMPTY_STATS,
 }
+
+export const QUEST_GATHERING_ALL = [
+  QUEST_GATHERING_STICKS_N_STONES
+]

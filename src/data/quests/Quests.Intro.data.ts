@@ -24,8 +24,6 @@ export const QUEST_INTRO_ADVENTURERS_GUILD: Quest = {
   title: 'Register at the Adventurers Guild',
   description: 'Register with the guild to take quests and sell specialty items.',
   groupId: QUEST_GROUP_INTRO_ID,
-  requiredLevel: 1,
-  requiredQuestId: '',
   cooldownMinutes: QUEST_COOLDOWNS.NOT_REPEATABLE,
   rewards: [
     {
@@ -36,11 +34,21 @@ export const QUEST_INTRO_ADVENTURERS_GUILD: Quest = {
       xp: 20
     }
   ],
-  requirements: [
+  startRequirements: [
     {
-      achievementId: ACHIEVEMENT_INTRO_IDS.ADVENTURERS_GUILD_ID
+      level: 1,
+      completed: false,
     }
   ],
-  maxPartyMembers: 1,
-  requiredStats: EMPTY_STATS
+  completionRequirements: [
+    {
+      achievementId: ACHIEVEMENT_INTRO_IDS.ADVENTURERS_GUILD_ID,
+      completed: false
+    }
+  ]
 }
+
+
+export const QUEST_INTRO_ALL = [
+  QUEST_INTRO_ADVENTURERS_GUILD
+]

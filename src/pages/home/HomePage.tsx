@@ -129,32 +129,31 @@ export default function HomePage(){
         <CharacterBar character={mainCharacter as Character} characterClass={mainCharacterClass as CharacterClass} characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)} />
         
         <div className='header-1'>
-            <div className='page-actions'>
-              <button
-                onClick={() => {setNewMainCharacterModalOpen(true)}}
-              >
-                {mainCharacterExists ? `Rename ${mainCharacter.name}`: 'Create Main Character'}
-              </button>
-              <button
-                onClick={() => {handleResetEverything()}}
-              >
-                Reset Everything
-              </button>
-            </div>
+          <div className='page-actions'>
+            <button
+              onClick={() => {setNewMainCharacterModalOpen(true)}}
+            >
+              {mainCharacterExists ? `Rename ${mainCharacter.name}`: 'Create Main Character'}
+            </button>
+            <button
+              onClick={() => {handleResetEverything()}}
+            >
+              Reset Everything
+            </button>
+          </div>
         </div>
 
-        {mainCharacter && <div className='page-sections'>
+        {mainCharacter && <div className='flex-wrap gap-1'>
           <div className='page-section'>
             <CharacterQuests 
               character={mainCharacter as Character} 
               characterQuestProgressItems={characterQuestProgress} 
               questGroups={questGroups} 
               quests={quests}
+              characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
               />
           </div>
-          <div className='page-section'>
-            
-          </div>
+          
           <div className='page-section'>
             {mainCharacter && <CharacterHistoryComponent character={mainCharacter as Character} history={history.filter(h => h.characterId === mainCharacter?.id)} />}
           </div>

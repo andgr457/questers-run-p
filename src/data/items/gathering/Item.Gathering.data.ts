@@ -4,7 +4,8 @@ import { EMPTY_STATS } from '../../Stats.data'
 
 export const ITEM_GATHERING_ITEM_IDS = {
   STICK: 'i_gathering_stick',
-  STONE_SMALL: 'i_gathering_stonesmall'
+  STONE_SMALL: 'i_gathering_stonesmall',
+  APPLE: 'i_gathering_apple'
 }
 
 export const ITEM_GATHERING_STICK: Item = {
@@ -25,7 +26,28 @@ export const ITEM_GATHERING_SMALL_STONE: Item = {
   stats: EMPTY_STATS
 }
 
+export const ITEM_GATHERING_APPLE: Item = {
+  id: ITEM_GATHERING_ITEM_IDS.APPLE,
+  name: 'Apple',
+  description: 'Juicy and tasty, round-ish, red apple.',
+  type: ITEM_TYPES.RESOURCE,
+  rarity: ITEM_RARITY.UNCOMMON,
+  stats: {
+    hp: {
+      name: 'HP',
+      value: 5,
+      hint: ''
+    },
+    stamina: {
+      name: 'STAM',
+      value: 5,
+      hint: ''
+    }
+  }
+}
+
 export const ITEM_GATHERING_ALL: Item[] = [
   ITEM_GATHERING_STICK,
   ITEM_GATHERING_SMALL_STONE,
+  ITEM_GATHERING_APPLE,
 ]

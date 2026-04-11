@@ -37,7 +37,6 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
       setCharacterClasses(classes)
       if(props.mainCharacter){
         const theClass = classes.find(c => c.id === props.mainCharacter?.classId)
-        console.log(theClass)
         setSelectedClass(theClass)
       } else {
         if(!selectedClass){
@@ -184,7 +183,6 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
         {Object.getOwnPropertyNames(selectedClass.stats).map(propertyName => {
           //@ts-ignore
           const content: Stat = selectedClass.stats[propertyName]
-          console.log('content', content)
           return <div>
             +{content.value} {content.name}
           </div>
