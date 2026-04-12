@@ -45,15 +45,16 @@ export default function CharacterBar(props: CharacterCharacterBarProps){
         <div className='character-bar-item'>
           {character.name}
         </div>
-        <div className='character-bar-item'>
-          {characterClass?.name} 
-        </div>
+        
         <div className='character-bar-item'>
           {characterGold.toLocaleString()} Gold
         </div>
         <div className='flex-wrap gap-2'>
           <div className='character-bar-item'>
             Lvl {character.level} 
+          </div>
+          <div className='character-bar-item'>
+            {characterClass?.name} 
           </div>
           <div className='character-bar-item'>
             XP {character.xp.toLocaleString()} / {character.levelNextXP.toLocaleString()}

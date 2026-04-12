@@ -2,7 +2,7 @@ import type { Character } from '../../../interfaces/characters/Character.types'
 import type { Quest, QuestGroup, QuestProgress } from '../../../interfaces/quests/Quests.types'
 import './CharacterQuests.css'
 import CharacterQuest from './CharacterQuest'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { QuestService } from '../../../services/quests/QuestService'
 import type { Achievement } from '../../../interfaces/achievements/Achievement.types'
 import type { Item } from '../../../interfaces/items/Item.types'
@@ -14,6 +14,8 @@ interface CharacterQuestsProps {
   quests: Quest[]
   questGroups: QuestGroup[]
   characterInventories: Inventory[]
+  showAllQuests: boolean
+  showCurrentQuest: boolean
 }
 
 export interface QuestWithQuestProgress {
@@ -28,6 +30,11 @@ export interface QuestWithQuestProgress {
   questRequirementsQuests: Quest[]
 }
 
+interface GroupSetting {
+  groupId: string
+  show: boolean
+}
+
 export default function CharacterQuests(props: CharacterQuestsProps){
   const {
     character,
@@ -38,7 +45,8 @@ export default function CharacterQuests(props: CharacterQuestsProps){
   } = props
 
   const [questsWithProgress, setQuestsWithProgress] = useState<QuestWithQuestProgress[]>([])
-
+  const [showAllQuests, setShowAllQuests] = useState(false)
+  const [groupSettings, setGroupSettings] = useState<GroupSetting[]>([])
     
   if(!character || !questGroups || !quests){
     return null
@@ -88,61 +96,89 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     return () => clearInterval(interval);
   }, []);
 
+  const handleToggleGroupQuests = useCallback((groupId: string, value: boolean) => {
+    const newGroupSettings: GroupSetting[] = []
+    const exists = groupSettings.find(gs => gs.groupId === groupId)
+    if(!exists){
+      newGroupSettings.push({
+        groupId,
+        show: value
+      })
+    } else {
+      exists.show = value
+      newGroupSettings.push(exists)
+    }
+
+    for(const groupSetting of groupSettings){
+      newGroupSettings.push(groupSetting)
+    }
+    setGroupSettings(newGroupSettings)
+  }, [groupSettings])
+
   const currentQuestProgress = questsWithProgress.find(qwp => qwp.questProgress)
   const currentQuest = quests.find(q => q.id === currentQuestProgress?.questProgress?.questId)
-  return <div className=''>
+
+  if(props.showAllQuests === false && props.showCurrentQuest === false) return null
+  return <div>
 
       {!questsWithProgress || questsWithProgress.length === 0 && <div style={{textAlign: 'center', fontSize: 'larger'}}>
         Loading...
         </div>}
-      
-      <div className='header-2'>
-        Current Quest
-      </div>
-      {!questsWithProgress || questsWithProgress.length === 0 && <div className='quest-group'>
-        <div className='quest-group-header'>
-          <div className='quest-group-header-description'>
-            Not currently on a quest.
-          </div>
+      {props.showCurrentQuest === true && <div>
+        <div className='quest-group-title second'>
+          Current Quest
         </div>
-        
-      </div>}
-      {questsWithProgress && questsWithProgress.length > 0 && <div className='quests-groups'>
-        {currentQuestProgress && currentQuest && <div className='quest-group'>
-            <div className='quest-group-header'>              
-              <div className='quest-group-header-description'>
-                {currentQuest?.description}
+        {!questsWithProgress || questsWithProgress.length === 0 && <div className='quest-group'>
+          <div className='quest-group-header' >
+            <div className='quest-group-header-description'>
+              <div className='quest-item'>
+                <div className='quest-item-description'>
+                  {character.name} is not currently on a quest.
+                </div>
               </div>
             </div>
+          </div>
+        </div>}
+        {questsWithProgress && questsWithProgress.length > 0 && <div className='quests-groups'>
+          {currentQuestProgress && currentQuest && <div className='quest-group'>
             <div className='quest-items'>
               <CharacterQuest questWithProgress={currentQuestProgress} />
             </div>
           </div>}
-        <div className='header-2'>
-          Quests
-        </div>
-        {questGroups.map(qg => {
-          const relatedQuests = questsWithProgress.filter(qwp => qwp?.questGroup?.id === qg.id)
-          const completedAmount = relatedQuests.filter(rq => rq.questProgress?.status === 'complete')
-          return <div className='quest-group'>
-            <div className='quest-group-header'>
-              <div className='header-1'>
-                {qg?.title}
-              </div>
-              <div className='quest-group-header-count'>
-                {completedAmount.length} / {relatedQuests.length} Complete
-              </div>
-              <div className='quest-group-header-description'>
-                {qg?.description}
-              </div>
-            </div>
-            <div className='quest-items'>
-              {relatedQuests?.map(q => {
-                return <CharacterQuest questWithProgress={q} />
-              })}
-            </div>
+      </div>}
+
+        {props.showAllQuests === true && <div>
+          <div className='quest-group-title second' onClick={() => {setShowAllQuests(!showAllQuests)}}>
+            <span className='quest-group-title-expander'>{showAllQuests === true ? 'HIDE' : 'SHOW'}</span> Quests
           </div>
-        })}
+          <div className={showAllQuests === true ? 'quest-groups open' : 'quest-groups'}>
+            {showAllQuests === true && questGroups.map(qg => {
+              const relatedQuests = questsWithProgress.filter(qwp => qwp?.questGroup?.id === qg.id)
+              const completedAmount = relatedQuests.filter(rq => rq.questProgress?.status === 'complete')
+              const groupSetting = groupSettings.find(gs => gs.groupId === qg.id)
+              const showQuests = !groupSetting ? false : groupSetting.show === true
+
+              return <div className={showQuests === true ? 'quest-group open' : 'quest-group'}>
+                <div className='quest-group-header'>
+                  <div className='quest-group-title' onClick={() => {handleToggleGroupQuests(qg.id, !showQuests)}}>
+                    <span className='quest-group-title-expander'>{showQuests === true ? 'HIDE' : 'SHOW'}</span> {qg?.title}
+                  </div>
+                  <div className='quest-group-header-count'>
+                    {completedAmount.length} / {relatedQuests.length} Complete
+                  </div>
+                  <div className='quest-group-header-description'>
+                    {qg?.description}
+                  </div>
+                </div>
+                {showQuests === true && <div className='quest-items'>
+                  {relatedQuests?.map(q => {
+                    return <CharacterQuest questWithProgress={q} />
+                  })}
+                </div>}
+              </div>
+            })}
+          </div>
+        </div>}
         
       </div>}
     </div>

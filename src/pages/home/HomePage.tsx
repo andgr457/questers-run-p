@@ -14,6 +14,8 @@ import { QuestRepository } from '../../repository/quests/QuestRepository'
 import { QuestGroupRepository } from '../../repository/quests/QuestGroupRepository'
 import { DateTime } from 'luxon'
 import CharacterBar from '../../common/components/characters/CharacterBar'
+import CustomContainer from '../../common/components/CustomContainer'
+import CustomContainerItem from '../../common/components/CustomContainerItem'
 
 export default function HomePage(){
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
@@ -143,25 +145,47 @@ export default function HomePage(){
           </div>
         </div>
 
-        {mainCharacter && <div className='flex-wrap gap-1 quests-main'>
+        {mainCharacter && <div className='flex-wrap gap-1'>
+          <CustomContainer 
+            title='Inventory'
+            description='View collected items.'
+            expandable={true}
+          >
+            <CustomContainer
+              title='Currency'
+              description='View the various currencies collected through your journey.'
+              expandable={true}
+            >
+              <CustomContainerItem>
+                Gold
+              </CustomContainerItem>
+            </CustomContainer>
+            <CustomContainer
+              title='Napsack 83%'
+              description='View the various currencies collected through your journey.'
+              expandable={true}
+            >
+              <CustomContainerItem>
+                Resources
+              </CustomContainerItem>
+              <CustomContainerItem>
+                I
+              </CustomContainerItem>
+            </CustomContainer>
+          </CustomContainer>
           <CharacterQuests 
             character={mainCharacter as Character} 
             characterQuestProgressItems={characterQuestProgress} 
             questGroups={questGroups} 
             quests={quests}
+            showAllQuests={true}
+            showCurrentQuest={true}
             characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
             />
+            
             <CharacterHistoryComponent character={mainCharacter as Character} history={history.filter(h => h.characterId === mainCharacter?.id)} />
         </div>}
-
-        {mainCharacter && <div className='flex-wrap gap-1'>          
-          <div className='page-section'>
-            
-          </div>
-        </div>}
       </div>
-      
-
     </div>}
   </>
 }

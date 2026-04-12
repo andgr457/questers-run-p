@@ -5,15 +5,27 @@
   --bg-dark-3: #555555;
   --gold: #c9a227;
   --gold-dark: #9f7f1c;
-  --green-dark: #0c630e;
+  --green-dark: #225622;
+  --green-success: #1e8119;
   --danger: #8b1e1e;
+  --red: #580707;
+  --orange-dark: rgb(171, 111, 0);
   --text: #e6e2d3;
   --text-dark: #212121;
   --input-text: #e6e2d3;
   --label: rgba(0, 0, 0, 0.747);
   --label-dark: rgba(170, 170, 170, 0.747);
   --border: #7e7e7e;
+  --blue-sd-light: #3484d8;
+  --blue-sd: #2a71bc;
+  --blue-sd-dark: #1e3a8a;
+  --blue-sd-darker: #152654;
+}
 
+@keyframes fade {
+  0% { background-position: top; }
+  50% { background-position: bottom; }
+  100% { background-position: top; }
 }
 
 @keyframes appear {
@@ -44,8 +56,14 @@
   0% {
     opacity: 100%;
   }
+  25% {
+    opacity: 75%;
+  }
   50% {
-    opacity: 70%;
+    opacity: 100%;
+  }
+  75% {
+    opacity: 75%;
   }
   100% {
     opacity: 100%;
@@ -57,7 +75,16 @@ body {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  background-color: var(--bg);
+  background: var(--blue-sd-darker);
+  transition: height 0.4s;
+  /* background-color: var(--bg); */
+  /* background:
+    radial-gradient(circle at center, var(--text) 0%, var(--text) 10%, rgba(0, 0, 0, 0.6) 100%, transparent 60%),
+    radial-gradient(circle at 20% 20%, rgb(118, 0, 0), transparent 40%), 
+    radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.4), transparent 40%),
+    linear-gradient(135deg, #3b82f6, #1e3a8a); 
+  
+  background-size: 100% 200%; */
 }
 
 .flex-wrap {
@@ -168,6 +195,7 @@ select {
 }
 
 .header-2 {
+  cursor: pointer;
   background-color: var(--bg-dark-2);
   color: var(--text);
   border-radius: 3px;
@@ -228,7 +256,7 @@ select {
 }
 
 .status {
-  background-color: var(--bg-dark-2);
+  background-color: var(--blue-sd-darker);
   color: var(--text);
   width: fit-content;
   padding: 3px;
@@ -237,8 +265,7 @@ select {
 }
 
 .status.inprogress {
-  background-color: var(--gold);
-  color: var(--bg-dark);
+  background-color: var(--gold-dark);
   width: fit-content;
   padding: 3px;
   border-radius: 3px;

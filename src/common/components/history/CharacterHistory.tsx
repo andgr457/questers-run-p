@@ -13,24 +13,27 @@ export default function CharacterHistoryComponent(props: CharacterHistoryCompone
     return null
   }
 
-  return <div className='history-main'>
-    <div className='header-2'>
+  return <div>
+    <div className='history-title'>
       History
     </div>
-    <div className='history-items'>
-      {props.history.sort((a, b) => {
-        return DateTime.fromISO(b.date).toMillis() - DateTime.fromISO(a.date).toMillis();
-      }).map((h) => {
-        
-        return <div className='history-item'>
-          <div className='history-item-header'>
-            {DateTime.fromISO(h.date).toLocal().toLocaleString(DateTime.DATE_SHORT)}
+    <div className='history-main'>
+      <div className='history-items'>
+        {props.history.sort((a, b) => {
+          return DateTime.fromISO(b.date).toMillis() - DateTime.fromISO(a.date).toMillis();
+        }).map((h) => {
+          
+          return <div className='history-item'>
+            <div className='history-item-header'>
+              {DateTime.fromISO(h.date).toLocal().toLocaleString(DateTime.DATE_SHORT)}
+            </div>
+            <div className='history-description'>
+              {h?.description}
+            </div>
           </div>
-          <div className='history-description'>
-            {h?.description}
-          </div>
-        </div>
-      })}
+        })}
+      </div>
     </div>
   </div>
+  
 }

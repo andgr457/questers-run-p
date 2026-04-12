@@ -1,7 +1,6 @@
-import type { Quest, QuestCompleteProps, QuestGroup } from '../../interfaces/quests/Quests.types';
+import type { Quest, QuestGroup } from '../../interfaces/quests/Quests.types';
 import { ACHIEVEMENT_INTRO_IDS } from '../achievements/Achievements.Intro.data';
 import { ITEM_CURRENCY_IDS } from '../items/currency/Item.Currency.data';
-import { EMPTY_STATS } from '../Stats.data';
 
 export const QUEST_COOLDOWNS = {
   NOT_REPEATABLE: -1,
@@ -16,7 +15,8 @@ export const QUEST_GROUP_INTRO: QuestGroup = {
 }
 
 export const QUEST_INTRO_IDS = {
-  ADVENTURERS_GUILD_ID: 'q_intro_adventurers_guild'
+  ADVENTURERS_GUILD_ID: 'q_intro_adventurers_guild',
+  MERCHANT_FAVOR_ID: 'q_intro_merchant_favor'
 }
 
 export const QUEST_INTRO_ADVENTURERS_GUILD: Quest = {
@@ -48,7 +48,36 @@ export const QUEST_INTRO_ADVENTURERS_GUILD: Quest = {
   ]
 }
 
+export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
+  id: QUEST_INTRO_IDS.MERCHANT_FAVOR_ID,
+  title: 'Merchant Favor',
+  description: 'The adventurers guild merchant Shan needs someone to bring goods to the neighboring city.',
+  groupId: QUEST_GROUP_INTRO_ID,
+  cooldownMinutes: 10,
+  rewards: [
+    {
+      itemId: ITEM_CURRENCY_IDS.GOLD,
+      itemAmount: 1000000
+    },
+    {
+      xp: 20
+    }
+  ],
+  startRequirements: [
+    {
+      level: 1,
+      completed: false,
+    }
+  ],
+  completionRequirements: [
+    {
+      timeMinutes: 10,
+      completed: false
+    }
+  ]
+}
 
 export const QUEST_INTRO_ALL = [
-  QUEST_INTRO_ADVENTURERS_GUILD
+  QUEST_INTRO_ADVENTURERS_GUILD,
+  QUEST_INTRO_MERCHANT_FAVOR
 ]

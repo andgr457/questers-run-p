@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 import type { QuestWithQuestProgress } from './CharacterQuests'
+import { useState } from 'react'
 
 interface CharacterQuestProps {
   questWithProgress: QuestWithQuestProgress
@@ -9,17 +10,21 @@ export default function CharacterQuest(props: CharacterQuestProps){
     const {
       questWithProgress
     } = props
-
+    const [poppedUp, setPoppedUp] = useState(false)
     const status = questWithProgress.questProgress?.status
     const dateToShow = status === 'in-progress' ? questWithProgress.questProgress?.startDate : questWithProgress.questProgress?.endDate
     const startDate = DateTime.fromISO(dateToShow as string)
     const completedCompletionRequirements = questWithProgress.quest.completionRequirements.filter(cr => cr.completed === true)
     const completedStartedRequirements = questWithProgress.quest.startRequirements.filter(cr => cr.completed === true)
 
-    
-    return <div className={
-      questWithProgress.canTakeQuest === true ? 
-        'quest-item cantake' : status === 'in-progress' ? 'quest-item inprogress' : status === 'complete' ? 'quest-item complete' : 'quest-item'}>
+    let questItemClass = questWithProgress.canTakeQuest === true ? 
+        'quest-item cantake' : status === 'in-progress' ? 
+        'quest-item inprogress' : status === 'complete' ? 
+        'quest-item complete' : 'quest-item'
+    if(poppedUp === true){
+      questItemClass = `pop-up ${questItemClass}`
+    }
+    return <div onClick={() => {setPoppedUp(true)}} className={questItemClass}>
       <div className='quest-item-header'>
         {questWithProgress.quest.title}
       </div>

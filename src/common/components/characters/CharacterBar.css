@@ -1,16 +1,17 @@
 .character-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 5px;
+  gap: 2em;
   background-color: var(--bg-dark-3);
   color: var(--text);
   padding: 4px;
   box-shadow: 0 2px 5px #0000001a;
+  font-size: 1.3em;
+  cursor: pointer;
 }
 
 .character-bar-item {
   font-size: 0.7em;
   padding: 2px;
-  cursor: pointer;
 }
