@@ -18,11 +18,11 @@ export default function ConfirmModal(props: ConfirmModalProps) {
     rightTitle={props.title}
   >
     <div className={props.isYesNo === true ? 'confirm-yes-no' : 'confirm-ok'}>
-      <div className='description'>
+      <div className='description' style={{textAlign: 'center'}}>
         {props.message}
       </div>
 
-      {props.isYesNo === true && <div className='flex-wrap gap-1'>
+      {props.isYesNo === true && <div style={{textAlign: 'center', display: 'flex'}}>
         <button 
           className='button-link'
           onClick={props.onConfirm}

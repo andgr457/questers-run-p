@@ -36,7 +36,7 @@ export function getInventoryIntroCurrencyPouch(characterId: string, uniqueId: st
 export const INVENTORY_INTRO_STARTER_POUCH_DEFAULT: Inventory = {
   id: INVENTORY_INTRO_IDS.CURRENCY_POUCH,
   title: 'Napsack',
-  description: 'Stores tradable currencies.',
+  description: 'Stores a small amount of items.',
   characterId: '',
   max: 8,
   restrictions: ['general'],
@@ -51,7 +51,7 @@ export function getInventoryIntroStarterPouch(characterId: string, uniqueId: str
     transactions: [{
       id: `invtxn__healthpotion_add__intro__${characterId}__${uniqueId}`,
       date: DateTime.utc().toISO(),
-      itemId: HEALTH_POTION_IDS.COMMON,
+      itemId: HEALTH_POTION_IDS.WEAK,
       note: 'Gifted potions from the adventurers guild.',
       quantity: 5
     }]

@@ -15,7 +15,11 @@ export const ITEM_POTION_MANA_WEAK: Item = {
   type: ITEM_TYPES.CONSUMABLE,
   rarity: ITEM_RARITY.COMMON,
   stats: {
-    mp: 20
+    mp: {
+      name: 'MP',
+      value: 20,
+      hint: ''
+    }
   }
 }
 

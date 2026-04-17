@@ -11,6 +11,8 @@ export default function NavMenu() {
     navigate(url)
   }
 
+  const divider = <div className='nav-divider'>|</div>
+
   return (
     <div onMouseLeave={() => {setSubNavSelected('')}}>
       <div className='nav flex-wrap gap-1' >
@@ -22,6 +24,7 @@ export default function NavMenu() {
         >
           Quester's Run
         </div>
+        {divider}
         <div className='flex-wrap gap-2'>
           <div className='nav-item' 
             onMouseEnter={() => {setSubNavSelected('town')}}
@@ -30,6 +33,7 @@ export default function NavMenu() {
             Town
           </div>
         </div>
+        {divider}
         <div className='flex-wrap gap-2'>
           <div className='nav-item' 
             onMouseEnter={() => {setSubNavSelected('profession')}}
@@ -48,30 +52,35 @@ export default function NavMenu() {
         >
           Home
         </div>
+        {divider}
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/guild')}}
         >
           Guild
         </div>
+        {divider}
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/adventurers-guild')}}
         >
           Adventurers Guild
         </div>
+        {divider}
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/tavern')}}
         >
           Tavern
         </div>
+        {divider}
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/blacksmith')}}
         >
           Blacksmith
         </div>
+        {divider}
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('alchemist')}}
@@ -87,18 +96,21 @@ export default function NavMenu() {
         >
           Fishing
         </div>
+        {divider}
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/profession/cooking')}}
         >
           Cooking
         </div>
+        {divider}
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/profession/mining')}}
         >
           Mining
         </div>
+        {divider}
         <div 
           className='nav-item'
           onClick={() => {handleNavigate('/profession/gathering')}}

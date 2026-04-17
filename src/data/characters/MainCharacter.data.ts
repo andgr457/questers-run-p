@@ -10,6 +10,7 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
   level: 1,
   xp: 0,
   levelNextXP: 100,
+  guildRank: '',
   stats: {
     agility: {
       name: 'AGI',

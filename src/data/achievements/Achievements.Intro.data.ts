@@ -14,5 +14,5 @@ export const ACHIEVEMENT_INTRO_MAIN_CHARACTER: Achievement = {
 export const ACHIEVEMENT_INTRO_ADVENTURERS_GUILD: Achievement = {
   id: ACHIEVEMENT_INTRO_IDS.ADVENTURERS_GUILD_ID,
   title: 'F Rank Status',
-  description: 'Join the adventurers guild to gain access to sell monster parts, find party members, and complete quests.',
+  description: 'Join the adventurers guild to get a license to quests, find party members, and defense missions.',
 }

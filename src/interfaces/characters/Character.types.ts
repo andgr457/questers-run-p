@@ -47,9 +47,12 @@ export interface CharacterAchievements {
   achievementDate: string
 }
 
+export type GuildRank = '' | 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S' | 'S+' | 'S++'
+
 export interface Character {
   id: string
   classId: string
+  guildRank: GuildRank
   name: string
   level: number
   levelNextXP: number

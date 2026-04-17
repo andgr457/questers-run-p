@@ -13,6 +13,8 @@ import type { CharacterHistory } from '../../interfaces/history/History.types';
 import type { Quest } from '../../interfaces/quests/Quests.types';
 import { QUEST_INTRO_ADVENTURERS_GUILD } from '../../data/quests/Quests.Intro.data';
 import CharacterBar from '../../common/components/characters/CharacterBar';
+import CustomContainer from '../../common/components/CustomContainer';
+import CustomContainerItem from '../../common/components/CustomContainerItem';
 
 interface HomeNewMainCharacterModalProps extends ModalProps {
   setMainCharacter: (character: Character) => Promise<void>
@@ -159,9 +161,6 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
     props.onClose()
   }, [props.onClose, setNewName])
 
-  const exampleCurrencyInventory = getInventoryIntroCurrencyPouch(newCharacter?.id as string, `${DateTime.utc().toMillis()}`)
-  const exampleStarterInventory = getInventoryIntroStarterPouch(newCharacter?.id as string, `${DateTime.utc().toMillis()}`)
-
   return <Modal
     backdropHides={typeof props.mainCharacter !== 'undefined'}
     isOpen={props.isOpen}
@@ -170,27 +169,25 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
     rightTitle={props.mainCharacter ? `Rename ${newCharacter?.name}` : ACHIEVEMENT_INTRO_MAIN_CHARACTER.title}
     leftTitle={'Class Information'}
     leftChildren={selectedClass && showClassInfo === true && <div>
-      <div className='header-1'>
-        {selectedClass.name}
-      </div>
-      <div className='description'>
-        {selectedClass.description}
-      </div>
-      <div className='header-2'>
-        Class Starting Stats
-      </div>
-      <div className='flex-wrap gap-1 description'>
-        {Object.getOwnPropertyNames(selectedClass.stats).map(propertyName => {
-          //@ts-ignore
-          const content: Stat = selectedClass.stats[propertyName]
-          return <div>
-            +{content.value} {content.name}
+      <CustomContainer 
+        expandable={false}
+        isChildCustomContainer={false}
+        title={selectedClass?.name}
+        description={selectedClass.description}
+        headerLeft='Preview'
+      >
+        <CustomContainerItem>
+          <div className='flex-wrap' style={{gap: '3px'}}>
+            {Object.getOwnPropertyNames(selectedClass.stats).map(propertyName => {
+              //@ts-ignore
+              const content: Stat = selectedClass.stats[propertyName]
+              return <div>
+                +{content.value} {content.name}
+              </div>
+            })}
           </div>
-        })}
-      </div>
-      <div>
-        <CharacterBar character={newCharacter as Character} characterClass={selectedClass} characterInventories={[exampleCurrencyInventory, exampleStarterInventory]} />
-      </div>
+        </CustomContainerItem>
+      </CustomContainer>
     </div>
     }
   >

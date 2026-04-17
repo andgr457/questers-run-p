@@ -1,9 +1,9 @@
 import Modal, { type ModalProps } from '../modals/Modal';
 
 interface CharacterQuestGroupProps extends ModalProps {
-
+  children: React.ReactNode
 }
-export default function CharacterQuestGroup(props: CharacterQuestGroupProps){
+export default function CharacterQuestPopup(props: CharacterQuestGroupProps){
 
   return <Modal
     backdropHides={props.backdropHides}
@@ -14,8 +14,6 @@ export default function CharacterQuestGroup(props: CharacterQuestGroupProps){
     leftTitle={props.leftTitle}
     leftChildren={props.leftChildren}
   >
-    <div>
-      
-    </div>
+    {props.children}
   </Modal>
 }

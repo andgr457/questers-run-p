@@ -102,15 +102,24 @@ body {
 
 button {
   all: unset;
+  padding: 6px;
+  
   cursor: pointer;
-  padding: 2px;
+  font-size: 0.9em;
   letter-spacing: 1px;
   text-transform: uppercase;
   border-radius: 3px;
   border: solid var(--bg-dark-2) 2px;
-  background-color: var(--bg-dark);
+  background-color: var(--blue-sd);
   color: var(--text);
-  font-size: 0.9em;
+  text-shadow:
+  0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 2px var(--text)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark);
 }
 
 button.confirm {
@@ -142,7 +151,7 @@ button:hover {
 
 input[type='text'] {
   all: unset;
-  background-color: var(--bg-dark);
+  background-color: var(--blue-sd-dark);
   padding: 6px;
   border-radius: 3px;
   font-size: 0.9em;
@@ -150,12 +159,12 @@ input[type='text'] {
 }
 
 input[type='text']::placeholder {
-  color: var(--label-dark);
+  color: var(--text);
   font-size: 0.7em;
 }
 
 .form-label {
-  color: var(--label);
+  color: var(--text);
 }
 
 .description {
@@ -165,9 +174,9 @@ input[type='text']::placeholder {
 }
 
 select {
-  font: unset;
+  font: inherit;
   letter-spacing: 1.5px;
-  background-color: var(--bg-dark);
+  background-color: var(--blue-sd-dark);
   padding: 6px;
   border-radius: 3px;
   font-size: 0.8em;

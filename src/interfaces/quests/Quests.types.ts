@@ -22,6 +22,7 @@ export interface Quest {
   groupId: string
   title: string
   description: string
+  repeatable: boolean
   rewards: QuestReward[]
   startRequirements: QuestStartRequirement[]
   completionRequirements: QuestCompletionRequirement[]

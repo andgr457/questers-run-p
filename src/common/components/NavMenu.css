@@ -1,7 +1,24 @@
 
 .nav {
   display: flex;
-  background-color: var(--bg-dark);
+  background: var(--blue-sd-dark);
+
+  /* linear-gradient(to right, 
+  var(--blue-sd-dark),
+  var(--blue-sd-light),
+  var(--blue-sd),
+  var(--blue-sd-dark),
+  var(--blue-sd-darker),
+  var(--blue-sd-darker),
+  var(--blue-sd-dark),
+  var(--blue-sd-darker),
+  var(--blue-sd-darker),
+  var(--blue-sd-dark),
+  var(--blue-sd),
+  var(--blue-sd-light),
+  var(--blue-sd-dark)
+  ); */
+
   color: var(--text);
   padding: 10px;
   box-shadow: 0 2px 5px #0000001a;
@@ -14,16 +31,46 @@
 .nav-item {
   cursor: pointer;
   height: 100%;
+  text-shadow:
+  0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 2px var(--text)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark);
+  transform: scale(1);
+
+  transition: transform 0.75s;
+
 }
 
 .nav-item:hover {
   filter: brightness(1.5);
+  transform: scale(1.06);
+
 }
 
 .nav-sub-items {
   display: flex;
   gap: 1em;
-  background-color: var(--bg-dark-2);
+  background: var(--blue-sd-dark);
+  border-top: 1px solid var(--blue-sd);
+  /* linear-gradient(to right, 
+  var(--blue-sd-dark),
+  var(--blue-sd-light),
+  var(--blue-sd),
+  var(--blue-sd-dark),
+  var(--blue-sd-darker),
+  var(--blue-sd-darker),
+  var(--blue-sd-dark),
+  var(--blue-sd-darker),
+  var(--blue-sd-darker),
+  var(--blue-sd-dark),
+  var(--blue-sd),
+  var(--blue-sd-light),
+  var(--blue-sd-dark)
+  ); */
   color: var(--text);
   font-size: smaller;
   padding: 10px;
@@ -32,4 +79,8 @@
   position: sticky;
   top: 39px;
   z-index: 98;
+}
+
+.nav-divider {
+  color: var(--blue-sd);
 }

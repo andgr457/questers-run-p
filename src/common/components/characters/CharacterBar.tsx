@@ -8,13 +8,15 @@ interface CharacterCharacterBarProps {
   character: Character
   characterClass: CharacterClass
   characterInventories: Inventory[]
+  title: string
 }
 
 export default function CharacterBar(props: CharacterCharacterBarProps){
   const {
     character,
     characterClass,
-    characterInventories
+    characterInventories,
+    title
   } = props
   
   const [characterStats, setCharacterStats] = useState<Stats | undefined>(undefined)
@@ -43,7 +45,14 @@ export default function CharacterBar(props: CharacterCharacterBarProps){
   <div>
       <div className='character-bar' >
         <div className='character-bar-item'>
+          {title}
+        </div>
+        <div className='character-bar-item'>
           {character.name}
+        </div>
+
+        <div className='character-bar-item'>
+          {character.guildRank ?? 'No'} Guild Rank
         </div>
         
         <div className='character-bar-item'>
@@ -51,7 +60,7 @@ export default function CharacterBar(props: CharacterCharacterBarProps){
         </div>
         <div className='flex-wrap gap-2'>
           <div className='character-bar-item'>
-            Lvl {character.level} 
+            Level {character.level} 
           </div>
           <div className='character-bar-item'>
             {characterClass?.name} 

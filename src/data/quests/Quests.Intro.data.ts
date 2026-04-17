@@ -22,9 +22,10 @@ export const QUEST_INTRO_IDS = {
 export const QUEST_INTRO_ADVENTURERS_GUILD: Quest = {
   id: QUEST_INTRO_IDS.ADVENTURERS_GUILD_ID,
   title: 'Register at the Adventurers Guild',
-  description: 'Register with the adventurers guild to take quests and sell specialty items.',
+  description: 'Register with the adventurers guild to get your adventurers license so you can take quests and sell specialty items.',
   groupId: QUEST_GROUP_INTRO_ID,
   cooldownMinutes: QUEST_COOLDOWNS.NOT_REPEATABLE,
+  repeatable: false,
   rewards: [
     {
       itemId: ITEM_CURRENCY_IDS.GOLD,
@@ -54,6 +55,7 @@ export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
   description: 'The adventurers guild merchant Shan needs someone to bring goods to the neighboring city.',
   groupId: QUEST_GROUP_INTRO_ID,
   cooldownMinutes: 10,
+  repeatable: true,
   rewards: [
     {
       itemId: ITEM_CURRENCY_IDS.GOLD,

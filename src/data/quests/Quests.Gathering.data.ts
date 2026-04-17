@@ -22,6 +22,7 @@ export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
   description: 'Gather sticks and stones from the woods just outside of the city.',
   groupId: QUEST_GROUP_INTRO_ID,
   cooldownMinutes: 3,
+  repeatable: true,
   rewards: [
     {
       itemId: ITEM_CURRENCY_IDS.GOLD,

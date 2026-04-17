@@ -1,260 +1,44 @@
-.quests-main {
-  margin: 5px 0 0 8px;
-  overflow: auto;
-}
 
-.quest-group {
-  margin: 0px 0 5px 0;
-  padding: 12px 12px;
-  font-size: 12px;
-  word-wrap: break-word;
-  border-radius: 0 0 6px 6px;
-  height: fit-content;
-  opacity: 0;
-  animation: appear 1s ease-in forwards;
-  border: outset var(--blue-sd-light);
-  border-width: 0px 1.5px 1.5px 1.5px;
-  background: linear-gradient(to right, 
-    var(--bg-dark),
-    var(--bg-dark-2),
-    var(--bg-dark-3),
-    var(--blue-sd-darker),
-    var(--bg-dark-3),
-    var(--bg-dark-2),
-    var(--bg-dark)
-  );
-  text-shadow:
-  0 0 5px var(--blue-sd)
-  ,0 0 5px var(--blue-sd-darker)
-  ,0 0 7px var(--blue-sd-dark)
-  ,0 0 2px var(--blue-sd)
-  ,0 0 7px var(--blue-sd-darker)
-  ,0 0 5px var(--blue-sd-dark)
-  ,0 0 5px var(--blue-sd);
-}
-
-.quest-group-header {
-  letter-spacing: 1.5px;
-  color: var(--text);
-}
-
-.quest-group-title:hover {
-    filter: brightness(1.3);
-  text-shadow:
-  0 0 5px var(--blue-sd-light)
-  ,0 0 5px var(--blue-sd-light)
-  ,0 0 5px var(--blue-sd-light)
-  ,0 0 5px var(--blue-sd-light)
-  ,0 0 5px var(--blue-sd-light)
-  ,0 0 5px var(--blue-sd-light)
-  ,0 0 5px var(--blue-sd-light);
-  color: var(--text);
-}
-
-.quest-group-title {
-  font-size: 1.5em;
-  font-weight: 300;
-  text-align: center;
-  padding: 6px;
-  border-radius: 6px 6px 0 0;
-  border: outset var(--blue-sd-darker);
-  border-width: 3px 1px 2px 1px;
-  cursor: pointer;
-
-  background: linear-gradient(to right, 
-    var(--blue-sd-dark),
-    var(--blue-sd-light),
-    var(--blue-sd),
-    var(--blue-sd-dark),
-    var(--blue-sd-darker),
-    var(--blue-sd-darker),
-    var(--blue-sd-dark),
-    var(--blue-sd-darker),
-    var(--blue-sd-darker),
-    var(--blue-sd-dark),
-    var(--blue-sd),
-    var(--blue-sd-light),
-    var(--blue-sd-dark)
-  );
-  
-  animation: fade 2s ease-in-out infinite;
-
-  transform: scale(1);
-  position: relative; 
-  z-index: 0;
-  text-shadow:
-  0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 2px var(--text)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark);
-  color: var(--text);
-}
-
-.quest-group-title.second {
-  font-weight: 400;
-  
-}
-
-.quest-group-title-expander {
-  position: fixed;
-  font-size: 0.65em;
-  right: 10px;
-  text-shadow:
-  0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 2px var(--text)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark);
-  color: var(--gold);
-  opacity: 0;
-  animation: appear 1s ease-in-out forwards 1s;
-  transform: scale(1); /* base state */
-  z-index: 0;
-  filter: brightness(1.1);
-}
-
-.quest-group-title-expander:hover {
-  filter: brightness(1.3);
-  text-shadow:
-  0 0 5px var(--gold)
-  ,0 0 5px var(--gold)
-  ,0 0 5px var(--gold)
-  ,0 0 5px var(--gold)
-  ,0 0 5px var(--gold)
-  ,0 0 5px var(--gold)
-  ,0 0 5px var(--gold);
-  color: var(--text);
-}
-
-.quest-group-header-count {
-  text-align: center;
-  margin-top: 1em;
-}
-
-.quest-group-header-description {
-  text-align: center;
-  margin-top: 1em;
-  
-}
-
-.quest-items {
-  opacity: 0;
-  animation: appear 1s ease-in forwards;
-}
-
-.quest-item {
-  min-width: fit-content;
-
-  letter-spacing: 1px;
-  padding: 7px;
-  border: ridge var(--gold-dark) 4px;
-  border-radius: 3px;
-  
-  text-shadow:
-  0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd);
-  
-  background:
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.24), rgba(72, 66, 0, 0.628) 5%, rgba(2, 59, 133, 0.6) 45%, transparent 50%),
-    linear-gradient(to right, 
-    var(--blue-sd-dark),
-    var(--blue-sd-light),
-    var(--blue-sd),
-    var(--blue-sd-dark),
-    var(--blue-sd-darker),
-    var(--blue-sd-darker),
-    var(--blue-sd-dark),
-    var(--blue-sd-darker),
-    var(--blue-sd-darker),
-    var(--blue-sd-dark),
-    var(--blue-sd),
-    var(--blue-sd-light),
-    var(--blue-sd-dark)
-  );
-  
-  opacity: 45%;
-  
-
-  transform: scale(1); /* base state */
-  transition: transform 0.8s ease, filter 0.8s ease,
-  opacity 1s ease;
-  animation: fade 1s ease-in-out infinite;
-  position: relative; /* 👈 REQUIRED for z-index to work */
-  z-index: 0;
-  color: var(--text);
-}
-
-
-.quest-item.cantake {
-  border-color: var(--gold);
-  opacity: 100%;
-  animation: barelyAppearDisappear 3s ease-in-out infinite;
-}
-
-.quest-item.inprogress {
-  border-color: var(--orange-dark);
-  opacity: 100%;
-  filter: brightness(1.1);
-  animation: barelyAppearDisappear 3.5s ease-in-out infinite;
-  
-}
-
-.quest-item:hover {
-  transform: scale(1.02); /* 👈 smooth "grow" */
-  filter: brightness(1.1);
-  cursor: pointer;
-  opacity: 1;
-  z-index: 10; /* 👈 bring to front */
-}
 
 .quest-item-header {
   font-size: 1.5em;
   font-weight: bolder;
   text-shadow:
-  0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd);
+  0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 2px var(--text)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark);  
 }
 
 .quest-item-description {
   padding: 2px;
   font-size: 1.15em;
   text-shadow:
-  0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd)
-  ,0 0 1px var(--text)
-  ,0 0 3px var(--blue-sd);
+  0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 2px var(--text)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark);
 }
 
 .quest-item-requirements-header {
   font-size: 1.1em;
   font-weight: bolder;
   padding: 2px;
+  letter-spacing: 1.5px;
   text-shadow:
-0 0 3px var(--blue-sd)
+  0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 7px var(--bg-dark)
   ,0 0 2px var(--text)
-  ,0 0 3px var(--blue-sd)
-  /* ,0 0 4px var(--gold-dark) */
-  ,0 0 2px var(--text)
-  /* ,0 0 4px var(--gold-dark) */
-  ,0 0 3px var(--blue-sd);
+  ,0 0 7px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark);
 }
 
 .quest-item-requirements-list {

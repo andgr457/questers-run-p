@@ -15,7 +15,11 @@ export const ITEM_POTION_HEALTH_WEAK: Item = {
   type: ITEM_TYPES.CONSUMABLE,
   rarity: ITEM_RARITY.COMMON,
   stats: {
-    hp: 20
+    hp: {
+      name: 'HP',
+      value: 20,
+      hint: ''
+    }
   }
 }
 
