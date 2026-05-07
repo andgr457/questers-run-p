@@ -3,6 +3,7 @@
   --bg-dark: #1b1b1b;
   --bg-dark-2: #424242;
   --bg-dark-3: #555555;
+  --bg-dark-3-opaque: #55555536;
   --gold: #c9a227;
   --gold-dark: #9f7f1c;
   --green-dark: #225622;
@@ -11,6 +12,7 @@
   --red: #580707;
   --orange-dark: rgb(171, 111, 0);
   --text: #e6e2d3;
+  --text-opaque: #e6e2d38c;
   --text-dark: #212121;
   --input-text: #e6e2d3;
   --label: rgba(0, 0, 0, 0.747);
@@ -69,15 +71,13 @@
     opacity: 100%;
   }
 }
-
+/* 
 body {
   all: unset;
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  /* background: var(--bg); */
   transition: height 0.4s;
-  /* background-color: var(--bg); */
   background:
     radial-gradient(circle at center, var(--text) 0%, var(--text) 10%, rgba(0, 0, 0, 0.6) 100%, transparent 60%),
     radial-gradient(circle at 20% 20%, var(--green-dark), transparent 40%), 
@@ -85,6 +85,37 @@ body {
     linear-gradient(135deg, #3b82f6, #1e3a8a); 
   
   background-size: 100% 200%;
+  
+} */
+
+body {
+  all: unset;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+
+  min-height: 100vh;
+
+  background:
+    radial-gradient(circle at center,
+      var(--text) 0%,
+      var(--text) 10%,
+      rgba(0, 0, 0, 0.6) 100%,
+      transparent 60%
+    ),
+    radial-gradient(circle at 20% 20%,
+      var(--green-dark),
+      transparent 40%
+    ),
+    radial-gradient(circle at 80% 80%,
+      rgba(255, 215, 0, 0.4),
+      transparent 40%
+    ),
+    linear-gradient(135deg, #3b82f6, #1e3a8a);
+
+  background-size: cover;
+
+  background-attachment: fixed;
 }
 
 .flex-wrap {
@@ -102,8 +133,9 @@ body {
 
 button {
   all: unset;
+  text-align: center;
   padding: 6px;
-  
+  font-weight: 500;
   cursor: pointer;
   font-size: 0.9em;
   letter-spacing: 1px;
@@ -133,17 +165,33 @@ button.disabled:hover {
 }
 
 button.danger {
-  all: unset;
-  cursor: pointer;
-  padding: 2px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  border-radius: 3px;
-  border: solid var(--bg-dark-3) 2px;
-  background-color: var(--danger);
-  color: var(--text);
-  font-size: 0.9em;
+  border: solid var(--text) 2px !important;
+  background-color: var(--danger) !important;
+  color: var(--text) !important;
+  text-shadow: 0 0 5px var(--text) !important;
 }
+
+button.success {
+  border: solid var(--text) 2px !important;
+  background-color: var(--green-success) !important;
+  color: var(--text) !important;
+  text-shadow: 0 0 5px var(--text) !important;
+}
+
+button.yellow {
+  text-shadow: 0 0 5px var(--bg-dark) !important;
+  border: solid var(--bg-dark-3) 2px!important;
+  background-color: var(--gold)!important;
+  color: var(--bg-dark)!important;
+}
+
+button.basic {
+  text-shadow: 0 0 5px var(--text);
+  border: solid var(--bg-dark-3) 2px;
+  background-color: var(--bg-dark);
+  color: var(--text);
+}
+
 
 button:hover {
   filter: brightness(1.5);
@@ -227,6 +275,11 @@ select {
   padding: 2px;
 }
 
+.page-modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, max-content));
+}
+
 .page-sections {
   margin-top: 5px;
   display: grid;
@@ -257,6 +310,7 @@ select {
   grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
   justify-content: center;
   gap: 5px;
+  font-size: 0.8em;
 }
 
 .page-actions button {

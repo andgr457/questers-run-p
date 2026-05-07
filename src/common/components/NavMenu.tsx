@@ -64,7 +64,7 @@ export default function NavMenu() {
           className='nav-item'
           onClick={() => {handleNavigate('/adventurers-guild')}}
         >
-          Adventurers Guild
+          Adventurer's Guild
         </div>
         {divider}
         <div 

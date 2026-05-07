@@ -13,12 +13,12 @@ import type { Quest, QuestGroup, QuestProgress } from '../../interfaces/quests/Q
 import { QuestRepository } from '../../repository/quests/QuestRepository'
 import { QuestGroupRepository } from '../../repository/quests/QuestGroupRepository'
 import { DateTime } from 'luxon'
-import CharacterBar from '../../common/components/characters/CharacterBar'
 import { ITEM_CURRENCY_IDS } from '../../data/items/currency/Item.Currency.data'
 import { ItemRepository } from '../../repository/items/ItemRepository'
 import type { Item } from '../../interfaces/items/Item.types'
 import CharacterInventory from '../../common/components/inventory/CharacterInventory'
 import { TutorialOverlay, type TutorialStep } from '../../common/components/tutorial/TutorialOverlay'
+import CharacterInfo from '../../common/components/characters/CharacterInfo'
 
 export default function HomePage(){
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
@@ -178,21 +178,20 @@ export default function HomePage(){
     </HomeNewMainCharacterModal>
     {newMainCharacterModalOpen === false && <div>
       <div className='page-main'>
-        <CharacterBar title='Home' character={mainCharacter as Character} characterClass={mainCharacterClass as CharacterClass} characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)} />
         
         <div className='header-1'>
           <div className='page-actions'>
-            {mainCharacter && <button
+            {mainCharacter && <button className='basic'
               onClick={() => {setShowTutorial(true)}}
             >
               Home Tutorial
             </button>}
-            <button id='tutorial-new-character'
+            <button id='tutorial-new-character' className='basic'
               onClick={() => {setNewMainCharacterModalOpen(true)}}
             >
               {mainCharacterExists ? `Rename ${mainCharacter.name}`: 'Create Main Character'}
             </button>
-            <button
+            <button className='danger'
               onClick={() => {handleResetEverything()}}
             >
               Reset Everything
@@ -200,17 +199,20 @@ export default function HomePage(){
           </div>
         </div>
 
-        {mainCharacter && <div >
+        {mainCharacter && <div className='page-modules'>
+          <div id='tutorial-character'>
+            <CharacterInfo character={mainCharacter as Character} characterClass={mainCharacterClass as CharacterClass} characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)} />
+          </div>
           <div id='tutorial-current-quest'>
-              <CharacterQuests 
-                character={mainCharacter as Character} 
-                characterQuestProgressItems={characterQuestProgress} 
-                questGroups={questGroups} 
-                quests={quests}
-                showAllQuests={false}
-                showCurrentQuest={true}
-                characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
-                />
+            <CharacterQuests 
+              character={mainCharacter as Character} 
+              characterQuestProgressItems={characterQuestProgress} 
+              questGroups={questGroups} 
+              quests={quests}
+              showAllQuests={true}
+              showCurrentQuest={true}
+              characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
+              />
           </div>
           <div>
             <CharacterInventory 

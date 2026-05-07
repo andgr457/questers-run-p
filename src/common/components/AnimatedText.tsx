@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { type ReactNode } from "react";
 import "./AnimatedText.css";
 
 type AnimatedTextProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   speed?: number;
   className?: string;
 };
@@ -16,10 +16,10 @@ export const AnimatedText: React.FC<AnimatedTextProps> = ({
 }) => {
   globalIndex = 0;
 
-  const wrapLetters = (node: React.ReactNode): React.ReactNode => {
+  const wrapLetters = (node: ReactNode): ReactNode => {
     // If it's plain text → split into letters
     if (typeof node === "string") {
-      return node.split("").map((char) => {
+      return node.split(" ").map((char) => {
         const index = globalIndex++;
         return (
           <span
@@ -32,7 +32,7 @@ export const AnimatedText: React.FC<AnimatedTextProps> = ({
               } as React.CSSProperties
             }
           >
-            {char === " " ? "\u00A0" : char}
+            {char}&nbsp;
           </span>
         );
       });

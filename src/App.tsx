@@ -4,7 +4,7 @@ import GuildPage from './pages/guild/GuildPage';
 import HomePage from './pages/home/HomePage'
 import { ConfirmProvider } from './providers/ConfirmProvider';
 import QuestsPage from './pages/quests/QuestsPage';
-import AdventurersGuildPage from './pages/guild/AdventurersGuildPage';
+import AdventurersGuildPage from './pages/adventurers-guild/AdventurersGuildPage';
 
 function App() {
   

@@ -5,15 +5,20 @@ import { AnimatedText } from '../AnimatedText'
 export type TutorialStep = {
   selector: string
   content: string
+  action?: () => void
 }
 
 type Props = {
   steps: TutorialStep[]
   onComplete?: () => void
   onCancel?: () => void
+  posLeft?: number
+  posTop?: number
+  posBottom?: number
+  posRight?: number
 }
 
-export const TutorialOverlay = ({ steps, onComplete, onCancel }: Props) => {
+export const TutorialOverlay = ({ steps, onComplete, onCancel, posLeft = 15, posTop, posBottom, posRight }: Props) => {
   const [currentStep, setCurrentStep] = useState(0)
   const [rect, setRect] = useState<DOMRect | null>(null)
 
@@ -66,13 +71,19 @@ export const TutorialOverlay = ({ steps, onComplete, onCancel }: Props) => {
     }
   }, [currentStep, steps])
 
-  const nextStep = () => {
+  const nextStep = (action?: () => void) => {
     if (currentStep + 1 >= steps.length) {
       onComplete?.()
       return
     }
+    if(action){
+      action()
+    }
     setCurrentStep(s => s + 1)
   }
+
+  const step = steps[currentStep]
+  const action = step?.action
 
   if (!rect) return null
 
@@ -102,19 +113,24 @@ export const TutorialOverlay = ({ steps, onComplete, onCancel }: Props) => {
       <div
         className="tutorial-tooltip"
         style={{
-          top: rect.bottom - 120,
-          left: rect.left + 5,
+          left: posLeft,
+          top: posTop,
+          bottom: posBottom,
+          right: posRight
         }}
       >
-        <p>{steps[currentStep].content}</p>
+        <div className='tutorial-tooltip-content'>
+          {steps[currentStep].content}
+        </div>
+        <div className='tutorial-tooltip-buttons'>
+          <button onClick={() => {nextStep(action)}}>
+            {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
+          </button>
 
-        <button onClick={nextStep}>
-          {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
-        </button>
-
-        <button style={{float: 'right'}} onClick={onCancel}>
-          Close
-        </button>
+          <button style={{float: 'right'}} onClick={onCancel}>
+            Close
+          </button>
+        </div>
       </div>
     </>
   )

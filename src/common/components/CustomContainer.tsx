@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatedText } from './AnimatedText'
 import './CustomContainer.css'
 
@@ -7,29 +7,61 @@ interface CustomContainerProps {
   headerLeft?: React.ReactNode
   description?: string
   expandable: boolean
+  expanded?: boolean
   isChildCustomContainer: boolean
   children: React.ReactNode
 }
 
 export default function CustomContainer(props: CustomContainerProps){
-  const [showGroup, setShowGroup] = useState(props.expandable === false ? true : false)
-  return <div className='container'>
-    <div className={props.isChildCustomContainer === false ? 'container-header' : 'container-header second'} >
-      <AnimatedText>
-        <span className='container-header-left'>{props.headerLeft}</span>
-        {props.expandable === true && <span 
-          onClick={() => {setShowGroup(!showGroup)}} 
-          className='container-expander'>{showGroup === true ? '-' : '+'}</span>} 
-        {props.title}
-    </AnimatedText>
-    </div>
-    {showGroup === true && <div className={'container-group'}>
-      {props.description && <div className='container-group-description'>
-        {props.description}  
-      </div>}
-      <div className='container-group-items'>
-        {props.children}
+  const {
+    expandable,
+    isChildCustomContainer,
+    title,
+    description,
+    headerLeft,
+    expanded
+  } = props
+
+  const [showGroup, setShowGroup] = useState(
+    expandable === false || expanded === true
+  )
+
+  return (
+    <div className='container'>
+      <div className='container-header'>
+        {headerLeft && (
+          <div className='container-header-left'>
+            {headerLeft}
+          </div>
+        )}
+
+        <div className='container-header-title'>
+          {title}
+        </div>
+
+        {expandable && (
+          <div
+            className='container-header-expander'
+            onClick={() => setShowGroup(prev => !prev)}
+          >
+            <span>{showGroup ? 'Hide' : 'Show'}</span>
+          </div>
+        )}
       </div>
-    </div>}
-  </div>
+
+      <div className={`container-group ${showGroup ? 'open' : ''}`}>
+        {description && (
+          <div className='container-group-description'>
+            <AnimatedText speed={30}>
+              {description}
+            </AnimatedText>
+          </div>
+        )}
+
+        <div className='container-group-items'>
+          {props.children}
+        </div>
+      </div>
+    </div>
+  )
 }

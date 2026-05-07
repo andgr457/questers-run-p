@@ -48,7 +48,20 @@ export interface CharacterAchievements {
   achievementDate: string
 }
 
-export type GuildRank = '' | 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S' | 'S+' | 'S++'
+export type GuildRank = '' | 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S' | 'SS' | '◇'
+
+export const GuildRanks = {
+  None: '' as GuildRank,
+  F: 'F' as GuildRank,
+  E: 'E' as GuildRank,
+  D: 'D' as GuildRank,
+  C: 'C' as GuildRank,
+  B: 'B' as GuildRank,
+  A: 'A' as GuildRank,
+  S: 'S' as GuildRank,
+  SS: 'SS' as GuildRank,
+  Diamond: '◇' as GuildRank
+}
 
 export interface Character {
   id: string

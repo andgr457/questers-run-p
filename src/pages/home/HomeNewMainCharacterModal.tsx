@@ -12,9 +12,6 @@ import { getInventoryIntroCurrencyPouch, getInventoryIntroStarterPouch } from '.
 import type { CharacterHistory } from '../../interfaces/history/History.types';
 import type { Quest } from '../../interfaces/quests/Quests.types';
 import { QUEST_INTRO_ADVENTURERS_GUILD } from '../../data/quests/Quests.Intro.data';
-import CharacterBar from '../../common/components/characters/CharacterBar';
-import CustomContainer from '../../common/components/CustomContainer';
-import CustomContainerItem from '../../common/components/CustomContainerItem';
 
 interface HomeNewMainCharacterModalProps extends ModalProps {
   setMainCharacter: (character: Character) => Promise<void>
@@ -161,42 +158,50 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
     props.onClose()
   }, [props.onClose, setNewName])
 
+  const characterExists = typeof props.mainCharacter?.guildRank !== 'undefined'
+  const statsInfos = []
+  for(const propertyName of Object.getOwnPropertyNames(selectedClass?.stats ?? {}) ?? []){
+    //@ts-ignore
+    const statItem = selectedClass?.stats[propertyName] as Stat
+
+    {/* @ts-ignore */}
+    const left = `${(statItem?.nextLevelXP - statItem.xp).toLocaleString()} left`
+    statsInfos.push(<div className='character-info-stat-item' title={left}>
+      <div>
+        +
+      </div>
+      <div>
+        {statItem.name}
+      </div>
+      <div>
+        {statItem.value}
+      </div>
+    </div>)
+  }
   return <Modal
-    backdropHides={typeof props.mainCharacter !== 'undefined'}
+    backdropHides={characterExists}
     isOpen={props.isOpen}
     onClose={props.onClose}
-    closeButton={typeof props.mainCharacter !== 'undefined'}
+    closeButton={characterExists}
     rightTitle={props.mainCharacter ? `Rename ${newCharacter?.name}` : ACHIEVEMENT_INTRO_MAIN_CHARACTER.title}
     leftTitle={'Class Information'}
     leftChildren={selectedClass && showClassInfo === true && <div>
-      <CustomContainer 
-        expandable={false}
-        isChildCustomContainer={false}
-        title={selectedClass?.name}
-        description={selectedClass.description}
-        headerLeft='Preview'
-      >
-        <CustomContainerItem>
-          <div className='flex-wrap' style={{gap: '3px'}}>
-            {Object.getOwnPropertyNames(selectedClass.stats).map(propertyName => {
-              //@ts-ignore
-              const content: Stat = selectedClass.stats[propertyName]
-              return <div>
-                +{content.value} {content.name}
-              </div>
-            })}
-          </div>
-        </CustomContainerItem>
-      </CustomContainer>
+      <div>
+        {selectedClass.name}
+      </div>
+      <hr/>
+      <div className='character-info-stats-xp' style={{fontSize: '0.7em'}}>
+        {statsInfos}
+      </div>
     </div>
     }
   >
     <div>
       <div className='description'>
-        {props.mainCharacter ? 'Apply for a name change.' : ACHIEVEMENT_INTRO_MAIN_CHARACTER.description}
+        {characterExists ? 'Apply for a name change.' : ACHIEVEMENT_INTRO_MAIN_CHARACTER.description}
       </div>
       <div className=''>
-        <div >
+        <div style={{display: 'flex', flexWrap: 'wrap', gap: '5px'}}>
           <div>
             <div className='form-label'>
               Name
@@ -205,8 +210,8 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
               <input 
                 type='text'
                 style={{width: '250px'}}
-                placeholder={props.mainCharacter ? `Rename ${newCharacter?.name}...` : 'Enter name...'}
-                value={props.mainCharacter ? newName : newCharacter?.name}
+                placeholder={characterExists ? `Rename ${newCharacter?.name}...` : 'Enter name...'}
+                value={characterExists ? newName : newCharacter?.name}
                 maxLength={50}
                 onChange={(e) => {handleUpdateNewCharacterName(e.currentTarget.value)}}
               />
@@ -217,7 +222,7 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
               Class
             </div>
             <select
-              disabled={typeof props.mainCharacter !== 'undefined'}
+              disabled={characterExists}
               value={newCharacter?.classId}
               style={{width: '265px'}}
               onChange={(e) => {handleUpdateNewCharacterClass(e.currentTarget.value)}}
@@ -230,22 +235,20 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
           </div>
         </div>
         <hr/>
-        <div className='flex-wrap gap-1'>
-          <div>
-            <button onClick={handleCreateClicked}>
-              {props.mainCharacter ? 'Rename' : 'Create'}
+        <div className='page-actions'>
+            <button className='success' onClick={handleCreateClicked}>
+              {characterExists ? 'Rename' : 'Create'}
             </button>
-            
-          </div>
-          {props.mainCharacter && <div>
-            <button onClick={() => {handleCancelClicked()}}>
-              Cancel
-            </button>
-          </div>}
-          <div>
-            <button onClick={() => {setShowClassInfo(!showClassInfo)}}>
+            {characterExists && <button  className='danger' onClick={() => {handleCancelClicked()}}>
+                Cancel
+              </button>}
+            <button  className='basic' onClick={() => {setShowClassInfo(!showClassInfo)}}>
               {showClassInfo === true ? 'Hide' : 'Show'} Class Stats
             </button>
+          <div>
+            
+          </div>
+          <div>
           </div>
         </div>
       </div>

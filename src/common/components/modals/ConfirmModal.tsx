@@ -21,31 +21,33 @@ export default function ConfirmModal(props: ConfirmModalProps) {
       <div className='description' style={{textAlign: 'center'}}>
         {props.message}
       </div>
+      <div className='modal-actions'>
 
-      {props.isYesNo === true && <div style={{textAlign: 'center', display: 'flex'}}>
-        <button 
-          className='button-link'
-          onClick={props.onConfirm}
-          style={{width: '45%', textAlign: 'center'}}
-        >
-          Yes
-        </button>
-        <button 
-          className='button-link destructive'
-          onClick={props.onClose}
-          style={{width: '45%', textAlign: 'center'}}
-        >
-          No
-        </button>
-      </div>}
-      {props.isYesNo === false && <div>
-        <button 
-          onClick={props.onClose}
-          style={{width: '45%', textAlign: 'center'}}
-        >
-          OK
-        </button>
-      </div>}
+        {props.isYesNo === true && <>
+          <button 
+            className='success'
+            onClick={props.onConfirm}
+            style={{width: '45%', textAlign: 'center'}}
+          >
+            Yes
+          </button>
+          <button 
+            className='danger'
+            onClick={props.onClose}
+            style={{width: '45%', textAlign: 'center'}}
+          >
+            No
+          </button>
+        </>}
+        {props.isYesNo === false && <div style={{textAlign: 'center'}}>
+          <button 
+            onClick={props.onClose}
+            style={{width: '45%', textAlign: 'center'}}
+          >
+            OK
+          </button>
+        </div>}
+      </div>
     </div>
   </Modal>
 }
