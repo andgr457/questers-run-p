@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './TutorialOverlay.css'
-import { AnimatedText } from '../AnimatedText'
 
 export type TutorialStep = {
   selector: string
   content: string
   action?: () => void
+  waitMillis?: number
 }
 
 type Props = {
@@ -14,32 +14,29 @@ type Props = {
   onCancel?: () => void
   posLeft?: number
   posTop?: number
-  posBottom?: number
-  posRight?: number
 }
 
-export const TutorialOverlay = ({ steps, onComplete, onCancel, posLeft = 15, posTop, posBottom, posRight }: Props) => {
+export const TutorialOverlay = ({
+  steps,
+  onComplete,
+  onCancel,
+  posLeft = 12,
+  posTop = 12,
+  
+}: Props) => {
   const [currentStep, setCurrentStep] = useState(0)
   const [rect, setRect] = useState<DOMRect | null>(null)
 
-  // useEffect(() => {
-  //   const el = document.querySelector(steps[currentStep]?.selector)
-  //   if (el) {
-  //     const updateRect = () => {
-  //       setRect(el.getBoundingClientRect())
-  //     }
+  const tooltipRef = useRef<HTMLDivElement | null>(null)
+  const [tooltipPos, setTooltipPos] = useState({ left: posLeft, top: posTop })
+    const [showToolTip, setShowToolTip] = useState(true)
 
-  //     updateRect()
-  //     window.addEventListener('resize', updateRect)
-  //     window.addEventListener('scroll', updateRect)
+  const step = steps[currentStep]
+  
 
-  //     return () => {
-  //       window.removeEventListener('resize', updateRect)
-  //       window.removeEventListener('scroll', updateRect)
-  //     }
-  //   }
-  // }, [currentStep, steps])
-
+  // -----------------------------
+  // Track target element
+  // -----------------------------
   useEffect(() => {
     const selector = steps[currentStep]?.selector
     if (!selector) return
@@ -47,20 +44,13 @@ export const TutorialOverlay = ({ steps, onComplete, onCancel, posLeft = 15, pos
     const el = document.querySelector(selector) as HTMLElement | null
     if (!el) return
 
-    const updateRect = () => {
-      setRect(el.getBoundingClientRect())
-    }
+    const updateRect = () => setRect(el.getBoundingClientRect())
 
     updateRect()
 
-    // 👇 watches element size changes
-    const resizeObserver = new ResizeObserver(() => {
-      updateRect()
-    })
-
+    const resizeObserver = new ResizeObserver(updateRect)
     resizeObserver.observe(el)
 
-    // also track layout shifts
     window.addEventListener('scroll', updateRect, true)
     window.addEventListener('resize', updateRect)
 
@@ -71,67 +61,133 @@ export const TutorialOverlay = ({ steps, onComplete, onCancel, posLeft = 15, pos
     }
   }, [currentStep, steps])
 
-  const nextStep = (action?: () => void) => {
+  // -----------------------------
+  // Clamp tooltip inside viewport
+  // -----------------------------
+  useEffect(() => {
+    if (!rect || !tooltipRef.current) return
+
+    const padding = 12
+    const tooltip = tooltipRef.current.getBoundingClientRect()
+
+    const viewportW = window.innerWidth
+    const viewportH = window.innerHeight
+    const isMobile = viewportW < 768
+
+    let left = rect.left
+    let top = rect.top
+
+    if (isMobile) {
+      // 📱 MOBILE: always center below (or above if no space)
+
+      left = rect.left + rect.width / 2 - tooltip.width / 2
+      top = rect.bottom + padding
+
+      // if bottom overflow → place above
+      if (top + tooltip.height > viewportH) {
+        top = rect.top - tooltip.height - padding
+      }
+
+      // clamp horizontally
+      if (left < padding) left = padding
+      if (left + tooltip.width > viewportW) {
+        left = viewportW - tooltip.width - padding
+      }
+    } else {
+      // 💻 DESKTOP: side positioning
+
+      left = rect.right + padding
+      top = rect.top
+
+      if (left + tooltip.width > viewportW) {
+        left = rect.left - tooltip.width - padding
+      }
+
+      if (top + tooltip.height > viewportH) {
+        top = viewportH - tooltip.height - padding
+      }
+
+      if (top < padding) top = padding
+      if (left < padding) left = padding
+    }
+
+    setTooltipPos({ left, top })
+  }, [rect])
+
+  const nextStep = async () => {
+    setShowToolTip(false)
     if (currentStep + 1 >= steps.length) {
+      step.action?.()
+
+      // wait for layout + animations
+      await new Promise(resolve => setTimeout(resolve, step?.waitMillis ?? 1000))
       onComplete?.()
+      setShowToolTip(true)
       return
     }
-    if(action){
-      action()
-    }
+    step.action?.()
+    // wait for layout + animations
+    await new Promise(resolve => setTimeout(resolve, step?.waitMillis ?? 1000))
     setCurrentStep(s => s + 1)
+    setShowToolTip(true)
   }
-
-  const step = steps[currentStep]
-  const action = step?.action
 
   if (!rect) return null
 
   return (
     <>
-      {/* Overlay */}
-      <div className="tutorial-overlay"
-      style={{
-        // dynamic spotlight position
-        '--x': `${rect.left + rect.width / 2}px`,
-        '--y': `${rect.top + rect.height / 2}px`,
-        '--r': `${Math.max(rect.width, rect.height) / 2 + 12}px`,
-      } as React.CSSProperties} />
+      {/* Overlay spotlight */}
+      <div
+        className="tutorial-overlay"
+        style={
+          {
+            '--x': `${rect.left + rect.width / 2}px`,
+            '--y': `${rect.top + rect.height / 2}px`,
+            '--r': `${Math.max(rect.width, rect.height) / 2 + 12}px`,
+          } as React.CSSProperties
+        }
+      />
 
       {/* Highlight */}
-      <div
+
+      {showToolTip && <div
         className="tutorial-highlight"
+        onClick={() => {
+          nextStep()
+        }}
         style={{
           top: rect.top,
           left: rect.left,
           width: rect.width,
           height: rect.height,
         }}
-      />
+      />}
 
       {/* Tooltip */}
-      <div
+      {showToolTip && <div
+        ref={tooltipRef}
         className="tutorial-tooltip"
         style={{
-          left: posLeft,
-          top: posTop,
-          bottom: posBottom,
-          right: posRight
+          left: tooltipPos.left,
+          top: tooltipPos.top,
         }}
       >
-        <div className='tutorial-tooltip-content'>
-          {steps[currentStep].content}
+        <div className="tutorial-tooltip-content">
+          {step.content}
         </div>
-        <div className='tutorial-tooltip-buttons'>
-          <button onClick={() => {nextStep(action)}}>
+
+        <div className="tutorial-tooltip-buttons">
+          <button onClick={() => {
+            nextStep()
+          }}>
             {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
           </button>
 
-          <button style={{float: 'right'}} onClick={onCancel}>
+          <button className="close-btn" onClick={onCancel}>
             Close
           </button>
         </div>
-      </div>
+      </div>}
     </>
   )
 }

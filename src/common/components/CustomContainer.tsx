@@ -22,9 +22,21 @@ export default function CustomContainer(props: CustomContainerProps){
     expanded
   } = props
 
+  if(!['Current Quest', 'Quests'].includes(title as string)){
+    console.log(title, 'expandable', expandable, 'expanded', expanded)
+  }
+
   const [showGroup, setShowGroup] = useState(
-    expandable === false || expanded === true
+    expandable === false || (expandable === true && expanded === true)
   )
+
+  useEffect(() => {
+    if (expandable) {
+      setShowGroup(expanded === true)
+    }
+  }, [expanded, expandable])
+
+
 
   return (
     <div className='container'>

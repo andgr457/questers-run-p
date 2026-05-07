@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
-import HomeNewMainCharacterModal from './HomeNewMainCharacterModal'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import NewCharacterModal from '../../common/components/characters/NewCharacterModal'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { LOCAL_STORAGE_KEYS } from '../../common/constants/LocalStorageKeys'
 import type { CharacterClass, Character } from '../../interfaces/characters/Character.types'
@@ -19,8 +19,9 @@ import type { Item } from '../../interfaces/items/Item.types'
 import CharacterInventory from '../../common/components/inventory/CharacterInventory'
 import { TutorialOverlay, type TutorialStep } from '../../common/components/tutorial/TutorialOverlay'
 import CharacterInfo from '../../common/components/characters/CharacterInfo'
+import { useNavigate } from 'react-router-dom'
 
-export default function HomePage(){
+export default function OverviewPage(){
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
   const [mainCharacterClass, setMainCharacterClass] = useState<CharacterClass | undefined>(undefined)
   const [newMainCharacterModalOpen, setNewMainCharacterModalOpen] = useState(false)
@@ -31,29 +32,12 @@ export default function HomePage(){
   const [questGroups, setQuestGroups] = useState<QuestGroup[]>([])
   const [items, setItems] = useState<Item[]>([])
   const [showTutorial, setShowTutorial] = useState(mainCharacter ? false : true)
+  const [expandInventory, setExpandInventory] = useState(false)
+  const [expandHistory, setExpandHistory] = useState(false)
+  const [expandCharacter, setExpandCharacter] = useState(true)
 
   const {showConfirm} = useConfirm()
-  const newCharacterSteps = [
-    {
-      selector: '#tutorial-new-character',
-      content: 'Click here to begin your journey.',
-    },
-  ]
-
-  const steps: TutorialStep[] = [
-    {
-      selector: '#tutorial-current-quest',
-      content: 'This will display the current quest you are on. You can only be on one quest at a time.',
-    },
-    {
-      selector: '#tutorial-inventory',
-      content: 'You can interact with inventory items here.',
-    },
-    {
-      selector: '#tutorial-history',
-      content: 'You can view recent history here.',
-    }
-  ]
+  const navigate = useNavigate()
 
   const handleResetEverything = useCallback(async () => {
     if(!await showConfirm({
@@ -62,7 +46,7 @@ export default function HomePage(){
       isYesNo: true
     })) return
 
-    setMainCharacter(undefined)
+    setMainCharacter(null as any)
     setInventories([])
     setHistory([])
     setCharacterQuestProgress([])
@@ -70,7 +54,7 @@ export default function HomePage(){
 
   useEffect(() => {
     const load = async function () {
-      if(mainCharacter){
+      if(mainCharacter?.name){
         const classRepo = new CharacterClassRepository()
         const allClasses = await classRepo.list()
         
@@ -137,25 +121,135 @@ export default function HomePage(){
       totalGold += txn.quantity
     }
   })
-  
+
+  const tutorialSteps = useMemo<TutorialStep[]>(() => {
+    if(!mainCharacter?.name){
+      return [
+        {
+          selector: '#tutorial-new-character',
+          content: 'Click here to begin your journey.',
+          action: () => {
+            setNewMainCharacterModalOpen(true)
+          }
+        }
+      ]
+    }
+
+    const wouldBeCurrencyId = `${mainCharacter?.id}__${inventories?.find(inv => inv.characterId === mainCharacter?.id && inv.title === 'Currency')?.id}`
+    const wouldBeNapsackId = `${mainCharacter?.id}__${inventories?.find(inv => inv.characterId === mainCharacter?.id && inv.title === 'Napsack')?.id}`
+    console.log(wouldBeCurrencyId, wouldBeNapsackId)
+
+    return [
+      {
+        selector: '#tutorial-character',
+        content: 'This will display your stats and other information like counts of various things while you journey. Click hide, to hide module content.',
+        action: () => {setExpandCharacter(false);navigate({ hash: '#tutorial-current-quest' })},
+        waitMillis: 500
+      },
+      {
+        selector: '#tutorial-current-quest',
+        content: 'This will display current quest if you are on one. You will need to head to the adventurers guild to complete quest actions like completing or abandoning.',
+        action: () => {setExpandCharacter(false);navigate({ hash: '#tutorial-inventory' })},
+        waitMillis: 500
+      },
+      {
+        selector: '#tutorial-inventory',
+        content: 'You can interact with inventory items here. Click show to expand.',
+        action: () => {setExpandInventory(true); navigate({ hash: `#${wouldBeCurrencyId}` })},
+        waitMillis: 200
+      },
+      {
+        selector: `#${wouldBeCurrencyId}`,
+        content: 'You start with 20 gold. The currency point can contain any type of currency without limit.',
+        action: () => {navigate({ hash: `#${wouldBeNapsackId}` })},
+        waitMillis: 200
+      },
+      {
+        selector: `#${wouldBeNapsackId}`,
+        content: 'You start with an eight slot napsack and 5 health potions. Items stack unless they are not the same stats. So, be sure to bank or trade items regularly to avoid full inventory issues.',
+        action: () => {setExpandInventory(false); navigate({ hash: '#tutorial-history' })},
+        waitMillis: 500
+      },
+      {
+        selector: '#tutorial-history',
+        content: 'You can view recent history here. Click show to expand.',
+        action: () => {setExpandHistory(true); navigate({hash: '#hi__0__0'})},
+        waitMillis: 200
+      },
+      {
+        selector: '#hi__0__0',
+        content: 'These can show item gains, achievement earned, quest received and complete, and more!',
+        action: () => {setExpandHistory(false); setExpandCharacter(true); navigate({hash: '#tutorial-character'})},
+        waitMillis: 200
+      }
+    ]
+  }, [mainCharacter, inventories])
+
+  const modulesFirst = (
+    <div className='page-modules-section'>
+      <div id='tutorial-character'>
+        <CharacterInfo
+          character={mainCharacter as Character}
+          characterClass={mainCharacterClass as CharacterClass}
+          characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)}
+          expanded={expandCharacter}
+        />
+      </div>
+
+      <div id='tutorial-current-quest'>
+        <CharacterQuests
+          character={mainCharacter as Character}
+          characterQuestProgressItems={characterQuestProgress}
+          questGroups={questGroups}
+          quests={quests}
+          showAllQuests={false}
+          showCurrentQuest={true}
+          characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)}
+        />
+      </div>
+    </div>
+  )
+
+  const modulesSecond = (
+    <div className='page-modules-section'>
+      <div id='tutorial-inventory'>
+        <CharacterInventory
+          character={mainCharacter as Character}
+          inventories={inventories.filter(i => i.characterId === mainCharacter?.id)}
+          items={items}
+          expanded={expandInventory}
+        />
+      </div>
+
+      <div id='tutorial-history'>
+        <CharacterHistoryComponent
+          character={mainCharacter as Character}
+          history={history.filter(h => h.characterId === mainCharacter?.id)}
+          expanded={expandHistory}
+        />
+      </div>
+    </div>
+  )
   return <>
-    {!mainCharacter && showTutorial === true  && <TutorialOverlay 
-      steps={newCharacterSteps} 
+    {!mainCharacter?.name && showTutorial === true  && <TutorialOverlay 
+      steps={tutorialSteps} 
+      onCancel={() => {setShowTutorial(false)}} 
+      onComplete={() => {
+        //todo
+        setShowTutorial(false)
+      }}
+      posTop={30}
+
+    />}
+    {mainCharacter?.name && showTutorial === true && <TutorialOverlay 
+      steps={tutorialSteps} 
       onCancel={() => {setShowTutorial(false)}} 
       onComplete={() => {
         //todo
         setShowTutorial(false)
       }}
     />}
-    {showTutorial === true && <TutorialOverlay 
-      steps={steps} 
-      onCancel={() => {setShowTutorial(false)}} 
-      onComplete={() => {
-        //todo
-        setShowTutorial(false)
-      }}
-    />}
-    <HomeNewMainCharacterModal 
+    <NewCharacterModal 
       mainCharacter={mainCharacter}
       rightTitle={'Create Main Character'}
       backdropHides={false}
@@ -175,7 +269,7 @@ export default function HomePage(){
       }}
     >
       <></>
-    </HomeNewMainCharacterModal>
+    </NewCharacterModal>
     {newMainCharacterModalOpen === false && <div>
       <div className='page-main'>
         
@@ -184,7 +278,7 @@ export default function HomePage(){
             {mainCharacter && <button className='basic'
               onClick={() => {setShowTutorial(true)}}
             >
-              Home Tutorial
+              Overview Tutorial
             </button>}
             <button id='tutorial-new-character' className='basic'
               onClick={() => {setNewMainCharacterModalOpen(true)}}
@@ -199,31 +293,9 @@ export default function HomePage(){
           </div>
         </div>
 
-        {mainCharacter && <div className='page-modules'>
-          <div id='tutorial-character'>
-            <CharacterInfo character={mainCharacter as Character} characterClass={mainCharacterClass as CharacterClass} characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)} />
-          </div>
-          <div id='tutorial-current-quest'>
-            <CharacterQuests 
-              character={mainCharacter as Character} 
-              characterQuestProgressItems={characterQuestProgress} 
-              questGroups={questGroups} 
-              quests={quests}
-              showAllQuests={true}
-              showCurrentQuest={true}
-              characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
-              />
-          </div>
-          <div>
-            <CharacterInventory 
-                character={mainCharacter}
-                inventories={inventories.filter(i => i.characterId === mainCharacter.id)}
-                items={items}
-              />
-          </div>
-          <div>
-            <CharacterHistoryComponent character={mainCharacter as Character} history={history.filter(h => h.characterId === mainCharacter?.id)} />
-          </div>
+        {mainCharacter && <div className='page-modules' >
+          {modulesFirst}
+          {modulesSecond}
         </div>}
       </div>
     </div>}

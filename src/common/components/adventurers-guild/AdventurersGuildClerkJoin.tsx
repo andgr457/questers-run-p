@@ -8,7 +8,7 @@ export default function AdventurersGuildClerkJoin(props: AdventurersGuildClerkJo
 
   return <div>
     <div className='adv-g-clerk-content-buttons'>
-      <button className='yellow' onClick={props.onJoin}>Join</button>
+      <button className='success-blink' onClick={props.onJoin}>Join</button>
       
     </div>
     <hr/>

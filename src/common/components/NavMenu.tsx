@@ -20,7 +20,7 @@ export default function NavMenu() {
           className='nav-item' 
           style={{fontSize: 'smaller', flex: 'unset'}}
           onMouseEnter={() => {setSubNavSelected('')}}
-          onClick={() => {handleNavigate('/home')}}
+          onClick={() => {handleNavigate('/')}}
         >
           Quester's Run
         </div>
@@ -28,7 +28,7 @@ export default function NavMenu() {
         <div className='flex-wrap gap-2'>
           <div className='nav-item' 
             onMouseEnter={() => {setSubNavSelected('town')}}
-            onClick={() => {setSubNavSelected(subNavSelected === 'town' ? '' : 'town')}}
+            onClick={() => {handleNavigate('/town')}}
           >
             Town
           </div>
@@ -48,9 +48,9 @@ export default function NavMenu() {
       {subNavSelected === 'town' && <div className='nav-sub-items'>
         <div 
           className='nav-item'
-          onClick={() => {handleNavigate('/home')}}
+          onClick={() => {handleNavigate('/')}}
         >
-          Home
+          Overview
         </div>
         {divider}
         <div 

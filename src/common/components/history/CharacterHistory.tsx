@@ -8,19 +8,22 @@ import CustomContainerItem from '../CustomContainerItem';
 interface CharacterHistoryComponentProps{
   history: CharacterHistory[]
   character: Character
+  expanded: boolean
 }
 
 export default function CharacterHistoryComponent(props: CharacterHistoryComponentProps) {
-  if(!props.history || !props.character){
-    return null
-  }
+  const {
+    history,
+    character,
+    expanded
+  } = props
 
   const sortedHistoryDesc = props.history.sort((a, b) => 
     DateTime.fromISO(a.date).toMillis() - DateTime.fromISO(b.date).toMillis()
   )
   const groupedDates: {date: string, historyItems: CharacterHistory[]}[] = []
 
-  sortedHistoryDesc.forEach(h => {
+  sortedHistoryDesc?.forEach(h => {
     const yearMonthDay = DateTime.fromISO(h.date).toLocal().toFormat('yyyy-MM-dd')
     const found = groupedDates.find(d => d.date === yearMonthDay)
     if(!found){
@@ -32,30 +35,38 @@ export default function CharacterHistoryComponent(props: CharacterHistoryCompone
       found.historyItems.push(h)
     }
   })
+ 
+  if(!history || !character){
+    return null
+  }
 
   return <div id='tutorial-history'>
     <CustomContainer
       expandable={true}
+      expanded={expanded}
       isChildCustomContainer={false}
       title={'History'}
-      description='View what happened to tracked activities and actions.'
+      description='View preview inventory transactions, achievements, items gained/sold, and much more.'
     >
-      {groupedDates.map(gd => {
+      {groupedDates.map((gd, gdi) => {
         return <CustomContainer
           expandable={true}
+          expanded={expanded}
           isChildCustomContainer={true}
           title={gd.date}
           headerLeft={gd.historyItems.length}
         >
-          {gd.historyItems.map(h => {
-            return <CustomContainerItem>
-              <div>
-                {DateTime.fromISO(h.date).toLocal().toLocaleString(DateTime.DATE_SHORT)}
-              </div>
-              <div>
-                {h?.description}
-              </div>
-            </CustomContainerItem>
+          {gd.historyItems.map((h, i) => {
+            return <div id={`hi__${gdi}__${i}`}>
+              <CustomContainerItem>
+                <div>
+                  {DateTime.fromISO(h.date).toLocal().toLocaleString(DateTime.DATE_SHORT)}
+                </div>
+                <div>
+                  {h?.description}
+                </div>
+              </CustomContainerItem>
+            </div>
           })}
         </CustomContainer>
       })}

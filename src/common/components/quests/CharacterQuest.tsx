@@ -5,11 +5,13 @@ import CustomContainerItem from '../CustomContainerItem'
 interface CharacterQuestProps {
   questWithProgress: QuestWithQuestProgress
   handleShowPopup: (popupType: 'quest' | 'quest-group', relatedId: string) => void
+  showActions?: boolean
 }
 
 export default function CharacterQuest(props: CharacterQuestProps){
     const {
-      questWithProgress
+      questWithProgress,
+      showActions
     } = props
     const status = questWithProgress.questProgress?.status
     const dateToShow = status === 'in-progress' ? questWithProgress.questProgress?.startDate : questWithProgress.questProgress?.endDate
@@ -19,39 +21,49 @@ export default function CharacterQuest(props: CharacterQuestProps){
 
     let borderStatus = questWithProgress.canTakeQuest === true ? 
       '' : status === 'in-progress' ? 
-      'warn' : status === 'complete' ? 
+      'warn-no-anim' : status === 'complete' ? 
       'success' : ''
+
+    const showButtons = typeof showActions === 'undefined' || showActions === true
 
     return <div onClick={() => {props?.handleShowPopup('quest', questWithProgress.quest.id)}}>
       <CustomContainerItem borderStatus={borderStatus}>
-        <div className='quest-item-header'>
-          {questWithProgress.quest.title}
-        </div>
-        <div className='quest-item-date'>
-          {startDate.isValid && <div>Started on {startDate.toLocal().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}</div>}
-        </div>
-        <div className={`${questWithProgress.questProgress?.status === 'in-progress' ? 'status inprogress' : 
-            questWithProgress.questProgress?.status === 'complete' ? 'status completed' : 
-            'status'}`} style={{float: 'right'}}>
-          {questWithProgress.questProgress?.status ?? 'not-started'}
-        </div>
-        <div className='flex-wrap gap-1'>
+        {showButtons === true && <div className='modal-actions' style={{fontSize: '1.2em'}}>
           {!questWithProgress.questProgress?.status && questWithProgress.canTakeQuest === true && <button 
             className={questWithProgress.canTakeQuest ? 'confirm' : 'disabled'}
             >
             Start Quest
           </button>}
 
-          {questWithProgress.questProgress?.status === 'in-progress' && questWithProgress.canCompleteQuest === true && <>
-            <button>
-              Complete Quest
-            </button>
-            <button className={'danger'}>
+          {questWithProgress.canCompleteQuest === true && <button className='success'>
+            Complete Quest
+          </button>}
+
+          
+          {questWithProgress.questProgress?.status === 'in-progress' && <>
+            <button className={'danger'} >
               Abandon Quest
             </button>
           </>}
           
+        </div>}
+
+        {showButtons && <hr/>}
+
+        <div className='quest-item-header'>
+          {questWithProgress.quest.title}
         </div>
+
+        <div className='quest-item-date'>
+          {startDate.isValid && <div>Started on {startDate.toLocal().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}</div>}
+        </div>
+
+        <div className={`${questWithProgress.questProgress?.status === 'in-progress' ? 'status inprogress' : 
+            questWithProgress.questProgress?.status === 'complete' ? 'status completed' : 
+            'status'}`} style={{float: 'right'}}>
+          {questWithProgress.questProgress?.status ?? 'not-started'}
+        </div>
+        
 
         <div>
           <div className='quest-item-requirements-header'>Description</div>

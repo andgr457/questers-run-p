@@ -25,38 +25,48 @@ const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-backdrop" onClick={() => {
-      if(backdropHides === true){
-        onClose()
-      }
-    }}>
-      {leftChildren && <div
-        className={`modal-container-info`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header">
-          {leftTitle}
-        </div>
-
-        <div className="modal-body">{leftChildren}</div>
-      </div>}
+    <div
+      className="modal-backdrop"
+      onClick={() => {
+        if (backdropHides === true) {
+          onClose()
+        }
+      }}
+    >
       <div
-        className="modal-container"
+        className="modal-layout"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="modal-header">
-          {rightTitle}
+        {leftChildren && (
+          <div className="modal-container-info">
+            <div className="modal-header">
+              {leftTitle}
+            </div>
 
-          {closeButton === true && <button className="modal-close" onClick={onClose}>
-            ✕
-          </button>}
+            <div className="modal-body">
+              {leftChildren}
+            </div>
+          </div>
+        )}
+
+        <div className="modal-container">
+          <div className="modal-header">
+            {rightTitle}
+
+            {closeButton === true && (
+              <button className="modal-close" onClick={onClose}>
+                ✕
+              </button>
+            )}
+          </div>
+
+          <div className="modal-body">
+            {children}
+          </div>
         </div>
-
-        <div className="modal-body">{children}</div>
       </div>
     </div>
-    
-  );
+  )
 };
 
 export default Modal;

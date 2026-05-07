@@ -10,12 +10,14 @@ interface CharacterInventoryProps {
   inventories: Inventory[]
   character: Character
   items: Item[]
+  expanded?: boolean
 }
 export default function CharacterInventory(props: CharacterInventoryProps){
   const {
     inventories,
     character,
-    items
+    items,
+    expanded = false
   } = props
 
   const relatedInventories = inventories?.filter(inv => inv.characterId === character.id)
@@ -31,9 +33,11 @@ export default function CharacterInventory(props: CharacterInventoryProps){
   const currencyHeaderLeft = `Gold ${totalGold.toLocaleString()}`
 
   return <div id='tutorial-inventory'>
+    
     <CustomContainer 
       title='Inventory'
       expandable={true}
+      expanded={expanded}
       isChildCustomContainer={false}
     >
       {relatedInventories.map(inv => {
@@ -58,10 +62,11 @@ export default function CharacterInventory(props: CharacterInventoryProps){
         for(let i = 0; i < emptySlotAmount; i++){
           emptySlots.push(<InventorySlot character={character} />)
         }
-        return <CustomContainer
+        return <div id={`${character.id}__${inv.id}`}><CustomContainer
           title={inv.title}
           description={inv.description}
           expandable={true}
+          expanded={expanded}
           isChildCustomContainer={true}
           headerLeft={inv.title === 'Currency' ? currencyHeaderLeft : bagHeaderLeft}
         >
@@ -74,7 +79,7 @@ export default function CharacterInventory(props: CharacterInventoryProps){
             })}
             {emptySlots}
           </div>
-        </CustomContainer>
+        </CustomContainer></div>
       })}
     </CustomContainer>
   </div>

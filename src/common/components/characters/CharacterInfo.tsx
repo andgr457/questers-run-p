@@ -17,7 +17,7 @@ export default function CharacterInfo(props: CharacterInfoProps){
     character,
     characterClass,
     characterInventories,
-    expanded = true
+    expanded
   } = props
   
   const [characterStats, setCharacterStats] = useState<Stats | undefined>(undefined)
@@ -38,9 +38,6 @@ export default function CharacterInfo(props: CharacterInfoProps){
     load()
   }, [character, characterClass, characterInventories])
 
-  if(!character){
-    return null
-  }
 
   const statsInfos = []
   for(const propertyName of Object.getOwnPropertyNames(character.stats ?? {}) ?? []){
@@ -68,6 +65,10 @@ export default function CharacterInfo(props: CharacterInfoProps){
     </div>)
   }
   const nextLevelXP = (character.levelNextXP - character.xp).toLocaleString()
+
+  if(!character){
+    return null
+  }
 
   return <div id='tutorial-character'>
     <CustomContainer

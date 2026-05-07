@@ -14,6 +14,11 @@ import { QuestRepository } from '../../repository/quests/QuestRepository'
 import { TutorialOverlay, type TutorialStep } from '../../common/components/tutorial/TutorialOverlay'
 import AdventurersGuildClerkModal from './AdventurersGuildClerkModal'
 import { useConfirm } from '../../providers/ConfirmProvider'
+import { ACHIEVEMENT_INTRO_ADVENTURERS_GUILD } from '../../data/achievements/Achievements.Intro.data'
+import { DateTime } from 'luxon'
+import CharacterInfo from '../../common/components/characters/CharacterInfo'
+import CharacterQuests from '../../common/components/quests/CharacterQuests'
+import CharacterInventory from '../../common/components/inventory/CharacterInventory'
 
 export default function AdventurersGuildPage() {
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
@@ -34,22 +39,15 @@ export default function AdventurersGuildPage() {
     {
       selector: '#tutorial-join-guild',
       content: 'Click here to speak with the clerk to join the Adventurer\'s Guild and for information about different guild actions.',
+      action: () => {setShowClerk(true)}
     },
   ]
 
   const steps: TutorialStep[] = [
     {
-      selector: '#tutorial-current-quest',
-      content: 'This will display the current quest you are on. You can only be on one quest at a time.',
-    },
-    {
-      selector: '#tutorial-inventory',
-      content: 'You can interact with inventory items here.',
-    },
-    {
       selector: '#tutorial-history',
       content: 'You can view recent history here.',
-    }
+    },
   ]
 
   useEffect(() => {
@@ -75,17 +73,86 @@ export default function AdventurersGuildPage() {
     load()
   }, [mainCharacter])
 
+  const handleAddHistory = useCallback(async (newHistory: CharacterHistory[]) => {
+    const histories = []
+    for(const h of newHistory){
+      histories.push(h)
+    }
+    for(const h of history){
+      histories.push(h)
+    }
+    setHistory(histories)
+  }, [history])
+
+  const handleAddInventory = useCallback((inventory: Inventory[]) => {
+    const newInventories = []
+    for(const i of inventory){
+      newInventories.push(i)
+    }
+    for(const i of inventories){
+      newInventories.push(i)
+    }
+    setInventories(newInventories)
+  }, [inventories])
+
+  const handleAddQuest = useCallback(async (quest: Quest, characterId: string) => {
+    const progress = characterQuestProgress?.find(qp => qp.questId === quest.id && qp.characterId === characterId)
+    if(progress && progress.status === 'in-progress'){
+      return
+    }
+
+    const questProgress: QuestProgress = {
+      characterId: characterId as string,
+      questId: quest.id,
+      startDate: DateTime.utc().toISO(),
+      status: 'in-progress'
+    }
+    const newProgress = []
+    newProgress.push(questProgress)
+    for(const p of characterQuestProgress){
+      newProgress.push(p)
+    }
+    setCharacterQuestProgress(newProgress)
+  }, [quests, characterQuestProgress, mainCharacter])
+
+
   const handleJoinClicked = useCallback(async () => {
+    
+
+    //Set character guild rank F
+    const newCharacter: Character = {...mainCharacter as Character}
+    newCharacter.guildRank = GuildRanks.F
+
+    if(!newCharacter.achievements){
+      newCharacter.achievements = []
+    }
+
+    newCharacter.achievements.push({
+      achievementId: ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.id,
+      achievementDate: DateTime.utc().toISO()
+    })
+
+    showConfirm({
+      isYesNo: false,
+      title: 'Achievement Earned!',
+      message: `${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.title} achieved! "${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.description}"` 
+    })
+
     showConfirm({
       isYesNo: false,
       title: 'Processing Adventurer Application',
       message: `Your application has been accepted and you are now an official F Rank adventurer! Check the quest board for available quests to start your journey.` 
     })
 
-    //Set character guild rank F
-    const newCharacter = {...mainCharacter}
-    newCharacter.guildRank = GuildRanks.F
-    
+    setMainCharacter(newCharacter)
+
+    handleAddHistory([{
+      characterId: newCharacter.id,
+      date: DateTime.utc().toISO(),
+      description: `Achievement "${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.title}" earned!`,
+      id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+200}`
+    }])
+
     setShowClerk(false)
   }, [mainCharacter])
 
@@ -102,7 +169,6 @@ export default function AdventurersGuildPage() {
         //todo
         setShowTutorial(false)
       }}
-      posTop={150}
     />}
     {showTutorial === true && <TutorialOverlay 
       steps={steps} 
@@ -145,8 +211,32 @@ export default function AdventurersGuildPage() {
           </>}
         </div>
       </div>
+      {characterJoined === true && <div className='page-modules'>
+        <div id='tutorial-character'>
+          <CharacterInfo character={mainCharacter as Character} characterClass={mainCharacterClass as CharacterClass} characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)} />
+        </div>
+        <div id='tutorial-current-quest'>
+          <CharacterQuests 
+            character={mainCharacter as Character} 
+            characterQuestProgressItems={characterQuestProgress} 
+            questGroups={questGroups} 
+            quests={quests}
+            showAllQuests={true}
+            showCurrentQuest={true}
+            characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
+            />
+        </div>
+        <div>
+          <CharacterInventory 
+              character={mainCharacter}
+              inventories={inventories.filter(i => i.characterId === mainCharacter.id)}
+              items={items}
+            />
+        </div>
+        <div>
+          Appraisal
+        </div>
+      </div>}
     </div>
-
-
   </div>
 }

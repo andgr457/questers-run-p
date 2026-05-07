@@ -4,12 +4,12 @@ import { ITEM_CURRENCY_GOLD } from '../items/currency/Item.Currency.data'
 import { HEALTH_POTION_IDS } from '../items/potions/Item.Potions.Health.data'
 
 export const INVENTORY_INTRO_IDS = {
-  CURRENCY_POUCH: 'inv_currency',
-  COMMON_POUCH: 'inv_pouch_1'
+  CURRENCY_ID: 'inv_currency',
+  NAPSACK_ID: 'inv_napsack'
 } 
 
 export const INVENTORY_INTRO_CURRENCY_DEFAULT: Inventory = {
-  id: INVENTORY_INTRO_IDS.CURRENCY_POUCH,
+  id: INVENTORY_INTRO_IDS.CURRENCY_ID,
   title: 'Currency',
   description: 'Stores tradable currencies.',
   characterId: '',
@@ -22,7 +22,7 @@ export function getInventoryIntroCurrencyPouch(characterId: string, uniqueId: st
   return {
     ...INVENTORY_INTRO_CURRENCY_DEFAULT,
     characterId,
-    id: `${INVENTORY_INTRO_IDS.CURRENCY_POUCH}__${characterId}__${uniqueId}`,
+    id: `${INVENTORY_INTRO_IDS.CURRENCY_ID}__${characterId}__${uniqueId}`,
     transactions: [{
       id: `invtxn__gold_add__intro__${characterId}__${uniqueId}`,
       date: DateTime.utc().toISO(),
@@ -34,7 +34,7 @@ export function getInventoryIntroCurrencyPouch(characterId: string, uniqueId: st
 }
 
 export const INVENTORY_INTRO_STARTER_POUCH_DEFAULT: Inventory = {
-  id: INVENTORY_INTRO_IDS.CURRENCY_POUCH,
+  id: INVENTORY_INTRO_IDS.NAPSACK_ID,
   title: 'Napsack',
   description: 'Stores a small amount of items.',
   characterId: '',
@@ -47,7 +47,7 @@ export function getInventoryIntroStarterPouch(characterId: string, uniqueId: str
   return {
     ...INVENTORY_INTRO_STARTER_POUCH_DEFAULT,
     characterId,
-    id: `${INVENTORY_INTRO_IDS.CURRENCY_POUCH}__${characterId}__${uniqueId}`,
+    id: `${INVENTORY_INTRO_IDS.NAPSACK_ID}__${characterId}__${uniqueId}`,
     transactions: [{
       id: `invtxn__healthpotion_add__intro__${characterId}__${uniqueId}`,
       date: DateTime.utc().toISO(),

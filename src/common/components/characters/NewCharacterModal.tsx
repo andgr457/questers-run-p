@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
-import Modal, { type ModalProps } from '../../common/components/modals/Modal';
-import type { CharacterClass, Character, Stat } from '../../interfaces/characters/Character.types';
-import { CharacterClassRepository } from '../../repository/characters/CharacterClassRepository';
-import { CHARACTER_MAIN_DEFAULT } from '../../data/characters/MainCharacter.data';
-import { CLASS_WARRIOR } from '../../data/characters/CharacterClasses.data';
-import { ACHIEVEMENT_INTRO_MAIN_CHARACTER } from '../../data/achievements/Achievements.Intro.data';
-import { useConfirm } from '../../providers/ConfirmProvider';
+import Modal, { type ModalProps } from '../modals/Modal';
+import type { CharacterClass, Character, Stat } from '../../../interfaces/characters/Character.types';
+import { CharacterClassRepository } from '../../../repository/characters/CharacterClassRepository';
+import { CHARACTER_MAIN_DEFAULT } from '../../../data/characters/MainCharacter.data';
+import { CLASS_WARRIOR } from '../../../data/characters/CharacterClasses.data';
+import { ACHIEVEMENT_INTRO_MAIN_CHARACTER } from '../../../data/achievements/Achievements.Intro.data';
+import { useConfirm } from '../../../providers/ConfirmProvider';
 import { DateTime } from 'luxon';
-import type { Inventory } from '../../interfaces/inventories/Inventory.types';
-import { getInventoryIntroCurrencyPouch, getInventoryIntroStarterPouch } from '../../data/inventories/Inventories.Intro.data';
-import type { CharacterHistory } from '../../interfaces/history/History.types';
-import type { Quest } from '../../interfaces/quests/Quests.types';
-import { QUEST_INTRO_ADVENTURERS_GUILD } from '../../data/quests/Quests.Intro.data';
+import type { Inventory } from '../../../interfaces/inventories/Inventory.types';
+import { getInventoryIntroCurrencyPouch, getInventoryIntroStarterPouch } from '../../../data/inventories/Inventories.Intro.data';
+import type { CharacterHistory } from '../../../interfaces/history/History.types';
+import type { Quest } from '../../../interfaces/quests/Quests.types';
+import { QUEST_INTRO_ADVENTURERS_GUILD } from '../../../data/quests/Quests.Intro.data';
 
-interface HomeNewMainCharacterModalProps extends ModalProps {
+interface NewCharacterModalProps extends ModalProps {
   setMainCharacter: (character: Character) => Promise<void>
   addInventory: (inventory: Inventory[]) => Promise<void>
   addHistory: (newHistory: CharacterHistory[]) => Promise<void>
@@ -21,7 +21,7 @@ interface HomeNewMainCharacterModalProps extends ModalProps {
   mainCharacter?: Character
 }
 
-export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterModalProps) {
+export default function NewCharacterModal(props: NewCharacterModalProps) {
   const [newCharacter, setNewCharacter] = useState<Character | undefined>(props.mainCharacter ? props.mainCharacter : CHARACTER_MAIN_DEFAULT)
   const [characterClasses, setCharacterClasses] = useState<CharacterClass[]>([])
   const [selectedClass, setSelectedClass] = useState<CharacterClass | undefined>(undefined)
@@ -235,7 +235,7 @@ export default function HomeNewMainCharacterModal(props: HomeNewMainCharacterMod
           </div>
         </div>
         <hr/>
-        <div className='page-actions'>
+        <div className='modal-actions'>
             <button className='success' onClick={handleCreateClicked}>
               {characterExists ? 'Rename' : 'Create'}
             </button>
