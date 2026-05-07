@@ -14,11 +14,11 @@ import { QuestRepository } from '../../repository/quests/QuestRepository'
 import { QuestGroupRepository } from '../../repository/quests/QuestGroupRepository'
 import { DateTime } from 'luxon'
 import CharacterBar from '../../common/components/characters/CharacterBar'
-import CustomContainer from '../../common/components/CustomContainer'
-import CustomContainerItem from '../../common/components/CustomContainerItem'
 import { ITEM_CURRENCY_IDS } from '../../data/items/currency/Item.Currency.data'
 import { ItemRepository } from '../../repository/items/ItemRepository'
 import type { Item } from '../../interfaces/items/Item.types'
+import CharacterInventory from '../../common/components/inventory/CharacterInventory'
+import { TutorialOverlay, type TutorialStep } from '../../common/components/tutorial/TutorialOverlay'
 
 export default function HomePage(){
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
@@ -30,7 +30,30 @@ export default function HomePage(){
   const [quests, setQuests] = useState<Quest[]>([])
   const [questGroups, setQuestGroups] = useState<QuestGroup[]>([])
   const [items, setItems] = useState<Item[]>([])
+  const [showTutorial, setShowTutorial] = useState(mainCharacter ? false : true)
+
   const {showConfirm} = useConfirm()
+  const newCharacterSteps = [
+    {
+      selector: '#tutorial-new-character',
+      content: 'Click here to begin your journey.',
+    },
+  ]
+
+  const steps: TutorialStep[] = [
+    {
+      selector: '#tutorial-current-quest',
+      content: 'This will display the current quest you are on. You can only be on one quest at a time.',
+    },
+    {
+      selector: '#tutorial-inventory',
+      content: 'You can interact with inventory items here.',
+    },
+    {
+      selector: '#tutorial-history',
+      content: 'You can view recent history here.',
+    }
+  ]
 
   const handleResetEverything = useCallback(async () => {
     if(!await showConfirm({
@@ -116,6 +139,22 @@ export default function HomePage(){
   })
   
   return <>
+    {!mainCharacter && showTutorial === true  && <TutorialOverlay 
+      steps={newCharacterSteps} 
+      onCancel={() => {setShowTutorial(false)}} 
+      onComplete={() => {
+        //todo
+        setShowTutorial(false)
+      }}
+    />}
+    {showTutorial === true && <TutorialOverlay 
+      steps={steps} 
+      onCancel={() => {setShowTutorial(false)}} 
+      onComplete={() => {
+        //todo
+        setShowTutorial(false)
+      }}
+    />}
     <HomeNewMainCharacterModal 
       mainCharacter={mainCharacter}
       rightTitle={'Create Main Character'}
@@ -143,7 +182,12 @@ export default function HomePage(){
         
         <div className='header-1'>
           <div className='page-actions'>
-            <button
+            {mainCharacter && <button
+              onClick={() => {setShowTutorial(true)}}
+            >
+              Home Tutorial
+            </button>}
+            <button id='tutorial-new-character'
               onClick={() => {setNewMainCharacterModalOpen(true)}}
             >
               {mainCharacterExists ? `Rename ${mainCharacter.name}`: 'Create Main Character'}
@@ -157,53 +201,23 @@ export default function HomePage(){
         </div>
 
         {mainCharacter && <div >
-          <div style={{display: 'flex', gap: '5px'}}>
-            <div style={{width: '33%', minWidth: '350px'}}>
-              <CustomContainer 
-                title='Inventory'
-                expandable={true}
-                isChildCustomContainer={false}
-              >
-                {inventories?.filter(inv => inv.characterId === mainCharacter.id).map(inv => {
-                  const mappedItems: {itemId: string, itemName: string, amount: number}[] = []
-                  for(const txn of inv.transactions){
-                    const found = mappedItems.find(iui => iui.itemId === txn.itemId)
-                    if(!found){
-                      const item = items.find(i => i.id === txn.itemId)
-                      mappedItems.push({itemId: txn.itemId, itemName: item?.name as string, amount: txn.quantity})
-                    } else {
-                      found.amount += txn.quantity
-                    }
-                  }
-                  return <CustomContainer
-                    title={inv.title}
-                    description={inv.description}
-                    expandable={true}
-                    isChildCustomContainer={true}
-                    headerLeft={inv.title === 'Currency' && `Gold ${totalGold.toLocaleString()}`}
-                  >
-                    <div className='flex-wrap'>
-                      {mappedItems.map(mi => {
-                        return <CustomContainerItem>
-                          {mi.itemName}: {mi.amount}
-                        </CustomContainerItem>
-                      })}
-                    </div>
-                  </CustomContainer>
-                })}
-              </CustomContainer>
-            </div>
-            <div style={{width: '66%'}}>
+          <div id='tutorial-current-quest'>
               <CharacterQuests 
                 character={mainCharacter as Character} 
                 characterQuestProgressItems={characterQuestProgress} 
                 questGroups={questGroups} 
                 quests={quests}
-                showAllQuests={true}
+                showAllQuests={false}
                 showCurrentQuest={true}
                 characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
                 />
-            </div>
+          </div>
+          <div>
+            <CharacterInventory 
+                character={mainCharacter}
+                inventories={inventories.filter(i => i.characterId === mainCharacter.id)}
+                items={items}
+              />
           </div>
           <div>
             <CharacterHistoryComponent character={mainCharacter as Character} history={history.filter(h => h.characterId === mainCharacter?.id)} />

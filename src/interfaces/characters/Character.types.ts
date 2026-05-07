@@ -20,6 +20,7 @@ export const StatFullName = {
 export interface Stat {
   name: StatName
   value: number
+  max?: number
   hint: string
   level?: number
   xp?: number

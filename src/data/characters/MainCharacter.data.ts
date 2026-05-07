@@ -26,7 +26,8 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       hint: '',
       xp: 0,
       nextLevelXP: 100,
-      level: 1
+      level: 1,
+      max: 100
     },
     intelligence: {
       name: 'INT',
@@ -42,7 +43,8 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       hint: '',
       xp: 0,
       nextLevelXP: 100,
-      level: 1
+      level: 1,
+      max: 10
     },
     stamina: {
       name: 'STAM',
@@ -50,7 +52,8 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       hint: '',
       xp: 0,
       nextLevelXP: 100,
-      level: 1
+      level: 1,
+      max: 100
     },
     strength: {
       name: 'STR',

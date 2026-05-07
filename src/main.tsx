@@ -13,6 +13,9 @@ createRoot(document.getElementById('root')!).render(
         <div >
           <NavMenu/>
         </div>
+        <div>
+
+        </div>
         <div className='app-main'>
           <App />
         </div>

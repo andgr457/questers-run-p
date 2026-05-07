@@ -33,7 +33,7 @@ export default function CharacterHistoryComponent(props: CharacterHistoryCompone
     }
   })
 
-  return <div>
+  return <div id='tutorial-history'>
     <CustomContainer
       expandable={true}
       isChildCustomContainer={false}

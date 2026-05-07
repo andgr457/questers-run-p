@@ -1,5 +1,5 @@
 :root {
-  --bg: #c8c8c8;
+  --bg: #afafaf;
   --bg-dark: #1b1b1b;
   --bg-dark-2: #424242;
   --bg-dark-3: #555555;
@@ -75,16 +75,16 @@ body {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  background: var(--blue-sd-darker);
+  /* background: var(--bg); */
   transition: height 0.4s;
   /* background-color: var(--bg); */
-  /* background:
+  background:
     radial-gradient(circle at center, var(--text) 0%, var(--text) 10%, rgba(0, 0, 0, 0.6) 100%, transparent 60%),
-    radial-gradient(circle at 20% 20%, rgb(118, 0, 0), transparent 40%), 
+    radial-gradient(circle at 20% 20%, var(--green-dark), transparent 40%), 
     radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.4), transparent 40%),
     linear-gradient(135deg, #3b82f6, #1e3a8a); 
   
-  background-size: 100% 200%; */
+  background-size: 100% 200%;
 }
 
 .flex-wrap {

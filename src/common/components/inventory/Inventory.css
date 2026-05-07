@@ -1,0 +1,40 @@
+.inventory-slots {
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.inventory-slot {
+  width: 75px;
+  height: 75px;
+  cursor: pointer;
+  border: outset 1px var(--bg-dark);
+  box-shadow: 0 0 5px var(--bg-dark);
+  padding: 5px;
+  margin: 5px;
+  background: var(--bg-dark);
+  color: var(--text);
+  transform: scale(1);
+  transition: transform 0.5s;
+  font-size: 1em;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.inventory-slot.empty {
+  background: var(--bg-dark-2);
+
+}
+
+.inventory-slot:hover {
+  transform: scale(1.05);
+  transition: transform 0.5s;
+}
+
+.inventory-slot-title {
+  text-align: center;
+
+}

@@ -12,14 +12,14 @@ interface CustomContainerProps {
 }
 
 export default function CustomContainer(props: CustomContainerProps){
-  const [showGroup, setShowGroup] = useState(props.isChildCustomContainer === true ? false : true)
+  const [showGroup, setShowGroup] = useState(props.expandable === false ? true : false)
   return <div className='container'>
     <div className={props.isChildCustomContainer === false ? 'container-header' : 'container-header second'} >
       <AnimatedText>
         <span className='container-header-left'>{props.headerLeft}</span>
         {props.expandable === true && <span 
           onClick={() => {setShowGroup(!showGroup)}} 
-          className='container-expander'>{showGroup === true ? 'HIDE' : 'SHOW'}</span>} 
+          className='container-expander'>{showGroup === true ? '-' : '+'}</span>} 
         {props.title}
     </AnimatedText>
     </div>
