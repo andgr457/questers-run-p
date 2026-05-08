@@ -111,8 +111,8 @@
   overflow: hidden;
 
   transition:
-    max-height 0.35s ease,
-    opacity 0.25s ease;
+    max-height 1.0s ease,
+    opacity 1.5s ease;
 }
 
 .character-stats-grid.open {

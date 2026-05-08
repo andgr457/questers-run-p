@@ -6,7 +6,7 @@ interface PageLayoutProps {
 
 export default function PageLayout(props: PageLayoutProps){
 
-  return <div className='app-layout'>
+  return <div className='app-screen-layout'>
   {/* LEFT SIDE */}
   <div className='app-screen left'>
     {props.leftChildren}

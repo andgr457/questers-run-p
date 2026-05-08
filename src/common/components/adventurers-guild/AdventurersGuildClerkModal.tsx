@@ -25,10 +25,10 @@ interface AdventurersGuildClerkModalProps extends ModalProps {
 
 export default function AdventurersGuildClerkModal(props: AdventurersGuildClerkModalProps){
   const welcomeDiscussion = ADVENTURERS_GUILD_DISCUSSIONS_JOIN.find(d => d.index === AdventurersGuildDiscussionIndexes.Welcome)
-  
-  const [discussionIndex, setDiscussionIndex] = useState(props.discussionId ?? AdventurersGuildDiscussionIndexes.Welcome)
+  const [discussionIndex, setDiscussionIndex] = useState(AdventurersGuildDiscussionIndexes.Welcome)
   const [discussion, setDiscussion] = useState(welcomeDiscussion)
   const [discussionActions, setDiscussionActions] = useState<DiscussionAction[]>([])
+  const [discussionActionStep, setDiscussionActionStep] = useState(1)
 
   const [showDiscussion, setShowDiscussion] = useState(true)
   const [questsWithProgress, setQuestsWithProgress] = useState<QuestWithQuestProgress[]>([])
@@ -58,7 +58,9 @@ export default function AdventurersGuildClerkModal(props: AdventurersGuildClerkM
       characterQuestProgressItems,
       characterInventories
     };
-  }, [character, questGroups, quests, characterQuestProgressItems, characterInventories]);
+  }, [character, questGroups, 
+    quests, characterQuestProgressItems, 
+    characterInventories]);
 
 
   useEffect(() => {
@@ -82,6 +84,7 @@ export default function AdventurersGuildClerkModal(props: AdventurersGuildClerkM
         characterInventories
       )
       setQuestsWithProgress(progress)
+
     }, 1000);
 
     return () => clearInterval(interval);
@@ -90,25 +93,52 @@ export default function AdventurersGuildClerkModal(props: AdventurersGuildClerkM
   const {showConfirm} = useConfirm()
 
   const handleQuestCheckAction = async () => {
-    const currentQuestProgress = questsWithProgress.find(qwp => qwp.questProgress)
-    if(!currentQuestProgress){
-      return
-    }
-
-    const discussionWithActions = getAdventurersGuildDiscussionQuestCheckActionByStep(
+    const questService = new QuestService();
+    const progress = await questService.getQuestsWithQuestProgress(
       character,
-      1,
-      currentQuestProgress,
-      [{
-        title: 'ayy',
-        element: null,
-        onChange: ()=> {},
-        onClick: () => {},
-        placeholder: '...'
-      }]
+      quests,
+      questGroups,
+      characterQuestProgressItems,
+      characterInventories
     )
-    setDiscussion(discussionWithActions.discussion)
-    setDiscussionActions(discussionWithActions.actions)
+    const questProgress = progress.find(qwp => qwp.questProgress)
+    if(questProgress){
+      let buttonText = 'Wait'
+      if(!questProgress.canCompleteQuest){
+        buttonText = 'Go Finish Quest'
+      } else {
+        buttonText = 'Complete Quest'
+      }
+      let discussionWithActions
+      if(discussionActionStep === 1){
+        discussionWithActions = getAdventurersGuildDiscussionQuestCheckActionByStep(
+          character,
+          discussionActionStep,
+          questProgress,
+          [{
+            title: 'Wait',
+            element: <button className='yellow' onClick={() => {
+              setDiscussionActionStep(2)
+              console.log('Wait clicked')
+            }}>Wait</button>
+          }]
+        )
+      } else if(discussionActionStep === 2){
+        discussionWithActions = getAdventurersGuildDiscussionQuestCheckActionByStep(
+          character,
+          discussionActionStep,
+          questProgress,
+          [{
+            title: buttonText,
+            element: <button className='yellow' onClick={() => {
+              setDiscussionActionStep(2)
+            }}>{buttonText}</button>
+          }]
+        )
+      }
+      setDiscussion(discussionWithActions?.discussion)
+      setDiscussionActions(discussionWithActions?.actions ?? [])
+    }
   }
 
   const handleJoinAction = async () => {
@@ -141,17 +171,25 @@ export default function AdventurersGuildClerkModal(props: AdventurersGuildClerkM
     const conversate = async () => {
       setShowDiscussion(false)
       await sleep(1000)
+      const id = props.discussionId ?? discussionIndex
+      console.log(id)
+      if(id === AdventurersGuildDiscussionIndexes.ActionJoin){
+        await handleJoinAction()
+        setShowDiscussion(true)
+        return
+      }
+      if(id === AdventurersGuildDiscussionIndexes.ActionQuestCheck_1 || 
+        id === AdventurersGuildDiscussionIndexes.ActionQuestCheck_2
+      ){
+        await handleQuestCheckAction()
+        setShowDiscussion(true)
+        return
+      }
       setDiscussion(ADVENTURERS_GUILD_DISCUSSIONS_JOIN.find(d => d.index === discussionIndex) as Discussion)
       setShowDiscussion(true)
-      if(discussionIndex === AdventurersGuildDiscussionIndexes.ActionJoin){
-        await handleJoinAction()
-      }
-      if(discussionIndex === AdventurersGuildDiscussionIndexes.ActionQuestComplete){
-        await handleQuestCheckAction()
-      }
     }
     conversate()
-  }, [discussionIndex])
+  }, [discussionIndex, props.discussionId, discussionActionStep])
 
   const notJoined = !character?.guildRank 
   const joined = !notJoined
@@ -159,7 +197,11 @@ export default function AdventurersGuildClerkModal(props: AdventurersGuildClerkM
   return <Modal
     backdropHides={props.backdropHides}
     isOpen={props.isOpen}
-    onClose={() => {setDiscussion(welcomeDiscussion); setDiscussionIndex(AdventurersGuildDiscussionIndexes.Welcome); props.onClose()}}
+    onClose={() => {
+      setDiscussion(welcomeDiscussion); 
+      setDiscussionIndex(AdventurersGuildDiscussionIndexes.Welcome); 
+      props.onClose()
+    }}
     closeButton={props.closeButton}
     rightTitle={`${props.rightTitle}: Lithos`}
   >
@@ -178,11 +220,13 @@ export default function AdventurersGuildClerkModal(props: AdventurersGuildClerkM
       <hr/>
       <div className={`discussion-section ${showDiscussion === true ? 'open' : ''} adv-g`}>
         {discussion?.content}
-        {discussionActions?.map(da => {
-          return <div>
-            {da.title}
-          </div>
-        })}
+        <div>
+          {discussionActions?.map(da => {
+            return <div>
+              {da.element}
+            </div>
+          })}
+        </div>
       </div>
       <hr/>
       <div className='header-1'>

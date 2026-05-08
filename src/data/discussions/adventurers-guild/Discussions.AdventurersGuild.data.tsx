@@ -4,6 +4,7 @@ import type { QuestWithQuestProgress } from '../../../common/components/quests/C
 import type { Character } from '../../../interfaces/characters/Character.types';
 import type { Discussion, DiscussionAction } from '../../../interfaces/discussions/Discussions';
 
+
 export const AdventurersGuildDiscussionIndexes = {
   Welcome: 0,
   
@@ -49,6 +50,9 @@ export const getAdventurersGuildDiscussionQuestCheckActionByStep = (character: C
     if(step === 1){
       discussionActions.discussion.content = <div>
           Welcome back, {character?.name}! Please give me a moment to check on your quest...
+          <div className=''>
+            {questWithProgress?.quest?.title}
+          </div>
       </div>
     } else if(step === 2){
       if(!questWithProgress){
@@ -62,7 +66,8 @@ export const getAdventurersGuildDiscussionQuestCheckActionByStep = (character: C
       }
       
       discussionActions.discussion.content = <div>
-          Welcome back, {character?.name}! Please give me a moment to check on your quest...
+          Welcome back, {character?.name}! Here's the results of my analysis...
+          {missingRequirements}
       </div>
     }
   }

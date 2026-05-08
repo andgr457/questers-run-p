@@ -72,7 +72,6 @@ export default function CharacterInfo(props: CharacterInfoProps) {
         headerLeft={`${characterGold.toLocaleString()}g`}
       >
         <div className='character-info-main'>
-
           {/* HERO */}
           <div className='character-info-hero'>
             <div className='character-info-class-title'>

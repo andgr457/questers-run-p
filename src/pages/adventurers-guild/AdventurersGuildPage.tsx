@@ -17,12 +17,11 @@ import { useConfirm } from '../../providers/ConfirmProvider'
 import { ACHIEVEMENT_INTRO_ADVENTURERS_GUILD } from '../../data/achievements/Achievements.Intro.data'
 import { DateTime } from 'luxon'
 import CharacterInfo from '../../common/components/characters/CharacterInfo'
-import CharacterQuests, { type QuestWithQuestProgress } from '../../common/components/quests/CharacterQuests'
+import CharacterQuests from '../../common/components/quests/CharacterQuests'
 import CharacterQuestCurrent from '../../common/components/quests/CharacterQuestCurrent'
 import PageHeader from '../../common/components/PageHeader'
 import PageLayout from '../PageLayout'
-import { AdventurersGuildDiscussionIndexes, getAdventurersGuildDiscussionQuestCheckActionByStep } from '../../data/discussions/adventurers-guild/Discussions.AdventurersGuild.data'
-import { sleep } from '../../services/CommonServices'
+import { AdventurersGuildDiscussionIndexes } from '../../data/discussions/adventurers-guild/Discussions.AdventurersGuild.data'
 
 export default function AdventurersGuildPage() {
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
@@ -191,7 +190,7 @@ export default function AdventurersGuildPage() {
       discussionId={requestedDiscussionId}
       backdropHides={true}
       isOpen={showClerk}
-      onClose={() => {setShowClerk(false)}}
+      onClose={() => {setShowClerk(false); setRequestedDiscussionId(undefined)}}
       closeButton={true}
       rightTitle={`Adventurer's Guild Clerk`}
       onJoin={handleJoinClicked}

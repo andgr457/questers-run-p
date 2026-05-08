@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom'
 import CharacterQuestCurrent from '../../common/components/quests/CharacterQuestCurrent'
 import PageHeader from '../../common/components/PageHeader'
 import PageLayout from '../PageLayout'
+import { AnimatedText } from '../../common/components/AnimatedText'
 
 export default function OverviewPage(){
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
