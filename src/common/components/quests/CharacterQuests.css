@@ -1,74 +1,125 @@
+.quest-group-quest-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 420px));
+  gap: 0.75rem;
+  align-items: start;
+}
 
+.quest-item {
+  width: 100%;
+  min-width: 0;
+}
+
+/* =========================
+   HEADER
+========================= */
 
 .quest-item-header {
-  font-size: 1.5em;
-  font-weight: bolder;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+
   text-shadow:
-  0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 2px var(--text)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark);  
-}
-
-.quest-item-description {
-  padding: 2px;
-  font-size: 1.15em;
-  text-shadow:
-  0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 2px var(--text)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark);
-}
-
-.quest-item-requirements-header {
-  font-size: 1.1em;
-  font-weight: bolder;
-  padding: 2px;
-  letter-spacing: 1.5px;
-  text-shadow:
-  0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 2px var(--text)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark);
-}
-
-.quest-item-requirements-list {
-  padding: 2px;
-}
-
-.quest-item-requirements-item {
-  padding: 2px;
-}
-
-.quest-item-requirements-item.completed {
-  text-decoration: line-through;
+    0 0 4px var(--bg-dark),
+    0 0 2px var(--text);
 }
 
 .quest-item-date {
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 0.75rem;
+  opacity: 0.8;
 }
 
-.quest-groups {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
+/* =========================
+   DESCRIPTION
+========================= */
 
-  transition: 
-    max-height 0.4s ease,
-    opacity 0.3s ease;
+.quest-item-description {
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
 
-.quest-groups.open {
-  max-height: fit-content; /* set bigger than expected content */
-  opacity: 1;
+/* =========================
+   STATUS
+========================= */
+
+.quest-status {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* =========================
+   REQUIREMENTS
+========================= */
+
+.quest-sections {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.quest-item-requirements-header {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.quest-item-requirements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.quest-item-requirements-item {
+  font-size: 0.82rem;
+  line-height: 1.3;
+  padding: 0.25rem 0.35rem;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.03);
+}
+
+.quest-item-requirements-item.completed {
+  opacity: 0.7;
+  text-decoration: line-through;
+  color: var(--green-success-2);
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.quest-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.quest-actions button {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.6rem;
+}
+
+/* =========================
+   REWARDS
+========================= */
+
+.quest-rewards {
+  margin-top: 0.75rem;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .quest-group-quest-list {
+    grid-template-columns: 1fr;
+  }
 }

@@ -6,6 +6,7 @@ import CustomContainer from '../CustomContainer';
 import CustomContainerItem from '../CustomContainerItem';
 
 interface CharacterHistoryComponentProps{
+  id?: string
   history: CharacterHistory[]
   character: Character
   expanded: boolean
@@ -13,6 +14,7 @@ interface CharacterHistoryComponentProps{
 
 export default function CharacterHistoryComponent(props: CharacterHistoryComponentProps) {
   const {
+    id,
     history,
     character,
     expanded
@@ -42,6 +44,7 @@ export default function CharacterHistoryComponent(props: CharacterHistoryCompone
 
   return <div id='tutorial-history'>
     <CustomContainer
+      id={id}
       expandable={true}
       expanded={expanded}
       isChildCustomContainer={false}

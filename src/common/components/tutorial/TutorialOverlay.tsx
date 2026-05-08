@@ -168,8 +168,8 @@ export const TutorialOverlay = ({
         ref={tooltipRef}
         className="tutorial-tooltip"
         style={{
-          left: tooltipPos.left,
-          top: tooltipPos.top,
+          right: tooltipPos.left,
+          bottom: tooltipPos.top + 10,
         }}
       >
         <div className="tutorial-tooltip-content">

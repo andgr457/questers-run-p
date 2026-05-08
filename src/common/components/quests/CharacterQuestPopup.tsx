@@ -14,6 +14,8 @@ export default function CharacterQuestPopup(props: CharacterQuestGroupProps){
     leftTitle={props.leftTitle}
     leftChildren={props.leftChildren}
   >
-    {props.children}
+    <div className='quest-popup-content'>
+      {props.children}
+    </div>
   </Modal>
 }

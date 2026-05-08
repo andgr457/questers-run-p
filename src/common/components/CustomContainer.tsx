@@ -3,6 +3,7 @@ import { AnimatedText } from './AnimatedText'
 import './CustomContainer.css'
 
 interface CustomContainerProps {
+  id?: string
   title: React.ReactNode
   headerLeft?: React.ReactNode
   description?: string
@@ -14,6 +15,7 @@ interface CustomContainerProps {
 
 export default function CustomContainer(props: CustomContainerProps){
   const {
+    id,
     expandable,
     isChildCustomContainer,
     title,
@@ -21,10 +23,6 @@ export default function CustomContainer(props: CustomContainerProps){
     headerLeft,
     expanded
   } = props
-
-  if(!['Current Quest', 'Quests'].includes(title as string)){
-    console.log(title, 'expandable', expandable, 'expanded', expanded)
-  }
 
   const [showGroup, setShowGroup] = useState(
     expandable === false || (expandable === true && expanded === true)
@@ -39,8 +37,8 @@ export default function CustomContainer(props: CustomContainerProps){
 
 
   return (
-    <div className='container'>
-      <div className='container-header'>
+    <div className='container' id={id}>
+      <div className={`container-header ${isChildCustomContainer ? 'second' : ''}`}>
         {headerLeft && (
           <div className='container-header-left'>
             {headerLeft}

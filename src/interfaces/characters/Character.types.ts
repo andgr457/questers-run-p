@@ -1,11 +1,12 @@
+import type { ProfessionStats } from '../professsions/Profession.types'
 
 export interface Stats {
+  hp?: Stat
+  mp?: Stat
+  stamina?: Stat
   strength?: Stat
   intelligence?: Stat
   agility?: Stat
-  stamina?: Stat
-  hp?: Stat
-  mp?: Stat
 }
 
 export type StatName = 'AGI' | 'STR' | 'INT' | 'HP' | 'MP' | 'STAM'
@@ -17,8 +18,17 @@ export const StatFullName = {
   'MP': 'Mana',
   'STAM': 'Stamina'
 }
+export const StatSort = {
+  'HP': 0,
+  'MP': 1,
+  'STAM': 2,
+  'AGI': 3,
+  'STR': 4,
+  'INT': 5,
+}
+
 export interface Stat {
-  name: StatName
+  name: StatName | string
   value: number
   max?: number
   hint: string
@@ -73,4 +83,7 @@ export interface Character {
   xp: number
   achievements: CharacterAchievements[]
   stats: Stats
+  professions: ProfessionStats
 }
+
+

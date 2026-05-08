@@ -12,6 +12,7 @@ import CustomContainerItem from '../CustomContainerItem'
 import CharacterQuestPopup from './CharacterQuestPopup'
 
 interface CharacterQuestsProps {
+  id?: string
   character: Character
   characterQuestProgressItems: QuestProgress[]
   quests: Quest[]
@@ -19,6 +20,7 @@ interface CharacterQuestsProps {
   characterInventories: Inventory[]
   showAllQuests: boolean
   showCurrentQuest: boolean
+  expanded: boolean
 }
 
 export interface QuestWithQuestProgress {
@@ -40,11 +42,13 @@ interface GroupSetting {
 
 export default function CharacterQuests(props: CharacterQuestsProps){
   const {
+    id,
     character,
     characterQuestProgressItems,
     questGroups,
     quests,
-    characterInventories
+    characterInventories,
+    expanded
   } = props
 
   const [questsWithProgress, setQuestsWithProgress] = useState<QuestWithQuestProgress[]>([])
@@ -125,7 +129,7 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     if(popupType === 'quest'){
       const quest = questsWithProgress.find(qwp => qwp.quest?.id === relatedId) as QuestWithQuestProgress
       setPopupQuestContent(
-        <CharacterQuest handleShowPopup={() => {}} questWithProgress={quest} />
+        <CharacterQuest showActions={false} handleShowPopup={() => {}} questWithProgress={quest} />
       )
       setPopupTitle(quest.quest?.title)
     } else if(popupType === 'quest-group'){
@@ -150,64 +154,123 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     setShowPopupQuest(true)
   }, [questsWithProgress])
 
-  const currentQuestProgress = questsWithProgress.find(qwp => qwp.questProgress)
+  return <div className='quest-page'>
+    <CharacterQuestPopup
+      backdropHides={true}
+      isOpen={showPopupQuest}
+      onClose={() => {
+        setShowPopupQuest(false)
+        setPopupQuestContent(undefined)
+      }}
+      closeButton={true}
+      rightTitle={popupTitle}
+    >
+      {popupQuestContent}
+    </CharacterQuestPopup>
 
-  if(props.showAllQuests === false && props.showCurrentQuest === false) return null
-  return <div>
-      <CharacterQuestPopup 
-        backdropHides={true}
-        isOpen={showPopupQuest}
-        onClose={() => {
-          setShowPopupQuest(false)
-          setPopupQuestContent(undefined)
-        }}
-        closeButton={true}
-        rightTitle={popupTitle}
-      >
-        {popupQuestContent}
-      </CharacterQuestPopup>
+    <CustomContainer
+      id={id}
+      expandable={true}
+      expanded={expanded}
+      isChildCustomContainer={false}
+      title='Quests'
+      description=''
+    >
+      <div className='quest-groups'>
+        {questGroups.map(qg => {
+          const relatedQuests = questsWithProgress.filter(
+            qwp => qwp?.questGroup?.id === qg.id
+          )
 
-      {props.showCurrentQuest === true && <div>
-        <CustomContainer
-          expandable={false}
-          title='Current Quest'
-          description=''
-          isChildCustomContainer={false}
-        >
-          {currentQuestProgress && <CharacterQuest handleShowPopup={handleShowPopup} questWithProgress={currentQuestProgress} />}
-          {!currentQuestProgress && <CustomContainerItem>{character.name} is not currently on a quest.</CustomContainerItem>}
-        </CustomContainer>
-      </div>}
-      {props.showAllQuests === true && <div>
-        <CustomContainer
-          expandable={true}
-          isChildCustomContainer={false}
-          title='Quests'
-          description=''
-        >
-            {questGroups.map(qg => {
-              const relatedQuests = questsWithProgress.filter(qwp => qwp?.questGroup?.id === qg.id)
-              const completedAmount = relatedQuests.filter(rq => rq.questProgress?.status === 'complete')
+          const completedAmount = relatedQuests.filter(
+            rq => rq.questProgress?.status === 'complete'
+          )
 
-              return <div>
-                <CustomContainer
-                  expandable={true}
-                  isChildCustomContainer={true}
-                  title={<><span onClick={() => {
-                    handleShowPopup('quest-group', qg.id)}}>{qg?.title}</span></>
-                  }
-                  description={qg?.description}
-                  headerLeft={<>{completedAmount.length} / {relatedQuests.length}</>}
-                >
-                  <div>
-                    {relatedQuests?.map(q => {
-                      return <CharacterQuest handleShowPopup={handleShowPopup} questWithProgress={q} />
-                    })}
+          return (
+            <div key={qg.id} className='quest-group'>
+              <CustomContainer
+                expandable={true}
+                expanded={expanded}
+                isChildCustomContainer={true}
+                title={
+                  <div
+                    className='quest-group-title'
+                    onClick={() => handleShowPopup('quest-group', qg.id)}
+                  >
+                    {qg?.title}
                   </div>
-                </CustomContainer>
-              </div>
-            })}
-        </CustomContainer>        
-      </div>}
-    </div>
+                }
+                description={qg?.description}
+                headerLeft={
+                  <span>
+                    {completedAmount.length} / {relatedQuests.length}
+                  </span>
+                }
+              >
+                <div className='quest-group-quest-list'>
+                  {relatedQuests?.map(q => (
+                    <CharacterQuest
+                      key={q.quest.id}
+                      handleShowPopup={handleShowPopup}
+                      questWithProgress={q}
+                    />
+                  ))}
+                </div>
+              </CustomContainer>
+            </div>
+          )
+        })}
+      </div>
+    </CustomContainer>
+  </div>
+  // return <div>
+  //   <CharacterQuestPopup 
+  //     backdropHides={true}
+  //     isOpen={showPopupQuest}
+  //     onClose={() => {
+  //       setShowPopupQuest(false)
+  //       setPopupQuestContent(undefined)
+  //     }}
+  //     closeButton={true}
+  //     rightTitle={popupTitle}
+  //   >
+  //     {popupQuestContent}
+  //   </CharacterQuestPopup>
+
+  //   <div>
+  //     <CustomContainer
+  //       expandable={true}
+  //       expanded={expanded}
+  //       isChildCustomContainer={false}
+  //       title='Quests'
+  //       description=''
+  //     >
+  //       <div >
+  //         {questGroups.map(qg => {
+  //           const relatedQuests = questsWithProgress.filter(qwp => qwp?.questGroup?.id === qg.id)
+  //           const completedAmount = relatedQuests.filter(rq => rq.questProgress?.status === 'complete')
+
+  //           return <div>
+  //             <CustomContainer
+  //               expandable={true}
+  //               expanded={expanded}
+  //               isChildCustomContainer={true}
+  //               title={<><div onClick={() => {
+  //                 handleShowPopup('quest-group', qg.id)}}>{qg?.title}</div></>
+  //               }
+  //               description={qg?.description}
+  //               headerLeft={<>{completedAmount.length} / {relatedQuests.length}</>}
+  //             >
+  //               <div className='quest-group-quest-list'>
+  //                 {relatedQuests?.map(q => {
+  //                   return <CharacterQuest handleShowPopup={handleShowPopup} questWithProgress={q} />
+  //                 })}
+  //               </div>
+  //             </CustomContainer>
+  //           </div>
+  //         })}
+  //       </div>
+  //     </CustomContainer>        
+  //   </div>
+  // </div>
 }

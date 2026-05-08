@@ -4,7 +4,7 @@ import { CLASS_WARRIOR } from './CharacterClasses.data';
 
 export const CHARACTER_MAIN_DEFAULT: Character =  {
   id: `c_${DateTime.now().toMillis()}`,
-  name: 'Hayse',
+  name: '',
   achievements: [],
   classId: CLASS_WARRIOR.id,
   level: 1,
@@ -63,5 +63,23 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       nextLevelXP: 100,
       level: 1
     },
+  },
+  professions: {
+    gathering: {
+      name: 'Gathering',
+      hint: '',
+      value: 0,
+      level: 0,
+      nextLevelXP: 100,
+      xp: 0,
+    },
+    mining: {
+      name: 'Mining',
+      hint: '',
+      value: 0,
+      level: 0,
+      nextLevelXP: 100,
+      xp: 0,
+    }
   }
 }

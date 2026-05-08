@@ -26,6 +26,7 @@ export default function NewCharacterModal(props: NewCharacterModalProps) {
   const [characterClasses, setCharacterClasses] = useState<CharacterClass[]>([])
   const [selectedClass, setSelectedClass] = useState<CharacterClass | undefined>(undefined)
   const [showClassInfo, setShowClassInfo] = useState(props.mainCharacter ? false : true)
+  const [error, setError] = useState('')
   const [newName, setNewName] = useState('')
   const {showConfirm, } = useConfirm()
 
@@ -64,15 +65,16 @@ export default function NewCharacterModal(props: NewCharacterModalProps) {
   }, [newCharacter, characterClasses])
 
   const handleCreateClicked = useCallback(async () => {
-    //Validation, exit on OK
-    if(props.mainCharacter && (!newName || newName?.trim().length === 0) ){
-      await showConfirm({
-        message: 'You must change your name before submitting.',
-        title: 'New Name Issues',
-        isYesNo: false
-      })
+    setError('')
+    const newNameTrim = newName?.trim()
+    if(props.mainCharacter && (!newNameTrim || newNameTrim?.length < 2) ){
+      setError('Name must be between 3 and 50 characters long, inclusive.')
       return
-    } 
+    }
+    if(!props.mainCharacter && !newCharacter || !newCharacter?.name?.trim()){
+      setError('Name must be between 3 and 50 characters long, inclusive.')
+      return
+    }
 
     //Confirmation Text depending on create/rename
     let confirmText = `Create the ${selectedClass?.name} ${newCharacter?.name}?`
@@ -88,6 +90,7 @@ export default function NewCharacterModal(props: NewCharacterModalProps) {
     })) return
 
     if(!props.mainCharacter){
+      //new character
       const histories: CharacterHistory[] = []
       histories.push({
         id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+100}`,
@@ -139,11 +142,12 @@ export default function NewCharacterModal(props: NewCharacterModalProps) {
       props.addQuest(QUEST_INTRO_ADVENTURERS_GUILD, newCharacter?.id as string)
       props.setMainCharacter(newCharacter as Character)
     } else {
+      //rename
       props.addHistory([{
         id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+100}`,
         characterId: newCharacter?.id as string,
         date: DateTime.utc().toISO(),
-        description: `Renamed "${newCharacter?.name}" to "${newName}".`
+        description: `"${newCharacter?.name}" is now known as "${newName}".`
       }])
       props.setMainCharacter({
         ...newCharacter as Character,
@@ -164,9 +168,7 @@ export default function NewCharacterModal(props: NewCharacterModalProps) {
     //@ts-ignore
     const statItem = selectedClass?.stats[propertyName] as Stat
 
-    {/* @ts-ignore */}
-    const left = `${(statItem?.nextLevelXP - statItem.xp).toLocaleString()} left`
-    statsInfos.push(<div className='character-info-stat-item' title={left}>
+    statsInfos.push(<div className='character-info-stat-item'>
       <div>
         +
       </div>
@@ -196,12 +198,12 @@ export default function NewCharacterModal(props: NewCharacterModalProps) {
     </div>
     }
   >
-    <div>
+    <div style={{textAlign: 'center'}}>
       <div className='description'>
         {characterExists ? 'Apply for a name change.' : ACHIEVEMENT_INTRO_MAIN_CHARACTER.description}
       </div>
       <div className=''>
-        <div style={{display: 'flex', flexWrap: 'wrap', gap: '5px'}}>
+        <div style={{display: 'flex', flexWrap: 'wrap', gap: '5px', justifyContent: 'center'}}>
           <div>
             <div className='form-label'>
               Name
@@ -216,22 +218,30 @@ export default function NewCharacterModal(props: NewCharacterModalProps) {
                 onChange={(e) => {handleUpdateNewCharacterName(e.currentTarget.value)}}
               />
             </div>
+            <div className='foot-note'>
+              {newCharacter?.name?.length ?? 0} / 50 character(s)
+            </div>
           </div>
-          <div>
+          <div style={{width: '250px'}}>
             <div className='form-label'>
               Class
             </div>
-            <select
-              disabled={characterExists}
-              value={newCharacter?.classId}
-              style={{width: '265px'}}
-              onChange={(e) => {handleUpdateNewCharacterClass(e.currentTarget.value)}}
-            >
-              <option value='' disabled>Select Class</option>
-              {characterClasses.map(cc => {
-                return <option value={cc.id}>{cc.name}</option>
-              })}
-            </select>
+            <div>
+              <select
+                disabled={characterExists}
+                value={newCharacter?.classId}
+                style={{width: '265px'}}
+                onChange={(e) => {handleUpdateNewCharacterClass(e.currentTarget.value)}}
+              >
+                <option value='' disabled>Select Class</option>
+                {characterClasses.map(cc => {
+                  return <option value={cc.id}>{cc.name}</option>
+                })}
+              </select>
+            </div>
+            <div className='foot-note danger'>
+              {error}
+            </div>
           </div>
         </div>
         <hr/>

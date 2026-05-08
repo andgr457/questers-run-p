@@ -12,13 +12,17 @@ import { ItemRepository } from '../../repository/items/ItemRepository'
 import { QuestGroupRepository } from '../../repository/quests/QuestGroupRepository'
 import { QuestRepository } from '../../repository/quests/QuestRepository'
 import { TutorialOverlay, type TutorialStep } from '../../common/components/tutorial/TutorialOverlay'
-import AdventurersGuildClerkModal from './AdventurersGuildClerkModal'
+import AdventurersGuildClerkModal from '../../common/components/adventurers-guild/AdventurersGuildClerkModal'
 import { useConfirm } from '../../providers/ConfirmProvider'
 import { ACHIEVEMENT_INTRO_ADVENTURERS_GUILD } from '../../data/achievements/Achievements.Intro.data'
 import { DateTime } from 'luxon'
 import CharacterInfo from '../../common/components/characters/CharacterInfo'
-import CharacterQuests from '../../common/components/quests/CharacterQuests'
-import CharacterInventory from '../../common/components/inventory/CharacterInventory'
+import CharacterQuests, { type QuestWithQuestProgress } from '../../common/components/quests/CharacterQuests'
+import CharacterQuestCurrent from '../../common/components/quests/CharacterQuestCurrent'
+import PageHeader from '../../common/components/PageHeader'
+import PageLayout from '../PageLayout'
+import { AdventurersGuildDiscussionIndexes, getAdventurersGuildDiscussionQuestCheckActionByStep } from '../../data/discussions/adventurers-guild/Discussions.AdventurersGuild.data'
+import { sleep } from '../../services/CommonServices'
 
 export default function AdventurersGuildPage() {
   const [mainCharacter, setMainCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
@@ -32,6 +36,7 @@ export default function AdventurersGuildPage() {
   const [showTutorial, setShowTutorial] = useState(!mainCharacter?.guildRank ? true : false)
   const {showConfirm} = useConfirm()
   const [showClerk, setShowClerk] = useState(false)
+  const [requestedDiscussionId, setRequestedDiscussionId] = useState<number | undefined>(undefined)
   
   const navigate = useNavigate()
 
@@ -132,16 +137,10 @@ export default function AdventurersGuildPage() {
       achievementDate: DateTime.utc().toISO()
     })
 
-    showConfirm({
+    await showConfirm({
       isYesNo: false,
       title: 'Achievement Earned!',
       message: `${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.title} achieved! "${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.description}"` 
-    })
-
-    showConfirm({
-      isYesNo: false,
-      title: 'Processing Adventurer Application',
-      message: `Your application has been accepted and you are now an official F Rank adventurer! Check the quest board for available quests to start your journey.` 
     })
 
     setMainCharacter(newCharacter)
@@ -156,11 +155,21 @@ export default function AdventurersGuildPage() {
     setShowClerk(false)
   }, [mainCharacter])
 
+  const handleCompleteQuest = useCallback(async () => {
+
+  }, [mainCharacter, characterQuestProgress])
+
+  const handleQuestCheckClicked = useCallback(async () => {
+    setRequestedDiscussionId(AdventurersGuildDiscussionIndexes.ActionQuestCheck_1)
+    setShowClerk(true)
+  }, [])
+  
+  const characterJoined = mainCharacter?.guildRank !== GuildRanks.None
+  const characterInventories = inventories.filter(i => i.characterId === mainCharacter?.id)
+  const questWithQuestProgress = characterQuestProgress?.filter(cqp => cqp.characterId === mainCharacter?.id)
   if(!mainCharacter){
     return null
   }
-
-  const characterJoined = mainCharacter?.guildRank !== GuildRanks.None
   return <div>
     {!characterJoined && showTutorial === true  && <TutorialOverlay 
       steps={joinGuildSteps} 
@@ -179,6 +188,7 @@ export default function AdventurersGuildPage() {
       }}
     />}
     <AdventurersGuildClerkModal
+      discussionId={requestedDiscussionId}
       backdropHides={true}
       isOpen={showClerk}
       onClose={() => {setShowClerk(false)}}
@@ -186,57 +196,73 @@ export default function AdventurersGuildPage() {
       rightTitle={`Adventurer's Guild Clerk`}
       onJoin={handleJoinClicked}
       character={mainCharacter}
+      characterQuestProgressItems={questWithQuestProgress}
+      onQuestComplete={handleCompleteQuest}
+      characterInventories={characterInventories}
+      questGroups={questGroups}
+      quests={quests}
     >
       <div>On-Duty Clerk: Lithos</div>
     </AdventurersGuildClerkModal>
     <div className='page-main'>
-      <div className='header-1'>
-        <div className='page-actions'>
-          {characterJoined && <button className='basic'
-            onClick={() => {setShowTutorial(true)}}
-          >
-            Adventurer's Guild Tutorial
-          </button>}
-          <button id='tutorial-join-guild' className='yellow'
-            onClick={() => {setShowClerk(true)}}
-          >
-            Guild Clerk
-          </button>
-          {characterJoined && <>
-            <button className='basic' onClick={() => {}}>Rank Check</button>
-            <button className='basic' onClick={() => {}}>Appraise Items</button>
-            <button className='basic' onClick={() => {}}>Quest Request</button>
-            <button className='basic' onClick={() => {}}>Quest Check</button>
-            <button className='basic' onClick={() => {}}>Archives</button>
-          </>}
-        </div>
-      </div>
-      {characterJoined === true && <div className='page-modules'>
-        <div id='tutorial-character'>
-          <CharacterInfo character={mainCharacter as Character} characterClass={mainCharacterClass as CharacterClass} characterInventories={inventories.filter(i => i.characterId === mainCharacter?.id)} />
-        </div>
-        <div id='tutorial-current-quest'>
-          <CharacterQuests 
-            character={mainCharacter as Character} 
-            characterQuestProgressItems={characterQuestProgress} 
-            questGroups={questGroups} 
-            quests={quests}
-            showAllQuests={true}
-            showCurrentQuest={true}
-            characterInventories={inventories.filter(i => i.characterId === mainCharacter.id)}
-            />
-        </div>
-        <div>
-          <CharacterInventory 
-              character={mainCharacter}
-              inventories={inventories.filter(i => i.characterId === mainCharacter.id)}
-              items={items}
-            />
-        </div>
-        <div>
-          Appraisal
-        </div>
-      </div>}
+      <PageHeader title={`Adventurer's Guild`} showActions={true}>
+        {characterJoined && <button className='basic'
+          onClick={() => {setShowTutorial(true)}}
+        >
+          Adventurer's Guild Tutorial
+        </button>}
+        <button id='tutorial-join-guild' className='basic'
+          onClick={() => {setShowClerk(true)}}
+        >
+          Guild Clerk
+        </button>
+
+        {characterJoined && <>
+          <button className='yellow' onClick={() => {}}>Guild Store</button>
+          <button className='yellow' onClick={() => {handleQuestCheckClicked()}}>Quest Check</button>
+          <button className='yellow' onClick={() => {}}>Rank Check</button>
+          <button className='yellow' onClick={() => {}}>Appraise Items</button>
+          <button className='yellow' onClick={() => {}}>Create Quest</button>
+        </>}
+      </PageHeader>
+
+      {characterJoined === true && (
+        <PageLayout 
+          leftChildren={
+            <>
+              <CharacterInfo
+                character={mainCharacter as Character}
+                characterClass={mainCharacterClass as CharacterClass}
+                characterInventories={characterInventories}
+                expanded={true}
+              />
+            </>
+          }
+          rightChildren={
+            <>
+              <CharacterQuestCurrent
+                id='tutorial-current-quest'
+                character={mainCharacter}
+                characterInventories={characterInventories}
+                characterQuestProgressItems={characterQuestProgress}
+                questGroups={questGroups}
+                quests={quests}
+              />
+              <CharacterQuests
+                id='tutorial-all-quests'
+                character={mainCharacter as Character}
+                characterQuestProgressItems={characterQuestProgress}
+                questGroups={questGroups}
+                quests={quests}
+                showAllQuests={true}
+                showCurrentQuest={true}
+                expanded={false}
+                characterInventories={characterInventories}
+              />
+            </>
+          }
+        />
+      )}
     </div>
   </div>
 }

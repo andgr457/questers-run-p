@@ -8,12 +8,15 @@
   --gold-dark: #9f7f1c;
   --green-dark: #225622;
   --green-success: #1e8119;
+  --green-success-2: #26a11f;
   --danger: #8b1e1e;
+  --danger-light: #f02828;
   --red: #580707;
   --orange-dark: rgb(171, 111, 0);
   --text: #e6e2d3;
   --text-opaque: #e6e2d38c;
   --text-dark: #212121;
+  --line-opaque: #d7e6d300;
   --input-text: #e6e2d3;
   --label: rgba(0, 0, 0, 0.747);
   --label-dark: rgba(170, 170, 170, 0.747);
@@ -160,7 +163,15 @@ button {
 
 button.confirm {
   background-color: var(--green-dark);
+}
 
+button.disabled {
+  pointer-events: none;
+  opacity: 40%;
+  text-shadow: 0 0 5px var(--bg-dark) !important;
+  border: solid var(--bg-dark-3) 2px!important;
+  background-color: var(--gold)!important;
+  color: var(--bg-dark)!important;
 }
 
 button.disabled:hover {
@@ -294,24 +305,18 @@ select {
 } */
 
 .page-modules {
-  display: grid;
-
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(min(100%, 450px), 1fr)
-  );
-
-
-  width: 100%;
-  align-items: start;
+  margin: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 
 .page-modules-section {
+  padding: 5px;
   display: flex;
-  flex-direction: column;
-
-  width: 100%;
-  min-width: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 450px;
 }
 
 .page-sections {
@@ -381,4 +386,86 @@ ul {
 ul li {
   all: unset;
   padding: 3px;
+}
+
+.foot-note {
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.foot-note.danger {
+  font-weight: 600;
+  color: var(--danger-light);
+  text-shadow: 0 0 6px rgba(255, 60, 60, 0.45);
+}
+
+.discussion-section {
+  opacity: 0;
+  transition: opacity 1s ease;
+  text-align: center;
+}
+
+.discussion-section.open {
+  opacity: 1;
+  transition: opacity 1s ease;
+}
+
+
+/* MAIN SCREEN LAYOUT */
+
+.app-layout {
+  display: flex;
+  gap: 4px;
+
+  align-items: flex-start;
+}
+
+/* LEFT COLUMN */
+
+.app-screen.left {
+  flex: 0 0 380px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  position: sticky;
+  top: 10px;
+}
+
+/* RIGHT COLUMN */
+
+.app-screen.right {
+  flex: 1;
+
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure children don't overflow */
+
+.app-screen > div {
+  min-width: 0;
+}
+
+/* MOBILE */
+
+@media (max-width: 1100px) {
+  .app-screen-layout {
+    flex-direction: column;
+  }
+
+  .app-screen.left {
+    position: static;
+
+    width: 100%;
+    flex: unset;
+  }
+
+  .app-screen.right {
+    width: 100%;
+  }
 }

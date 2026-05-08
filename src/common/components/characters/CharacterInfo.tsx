@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './CharacterInfo.css'
 import { CharacterService } from '../../../services/characters/CharacterService'
 import type { Inventory } from '../../../interfaces/inventories/Inventory.types'
-import { GuildRanks, type Character, type CharacterClass, type Stat, type Stats } from '../../../interfaces/characters/Character.types'
+import { StatSort, type Character, type CharacterClass, type Stat, type Stats } from '../../../interfaces/characters/Character.types'
 import CustomContainer from '../CustomContainer'
+import { ProfessionSort } from '../../../interfaces/professsions/Profession.types'
+import CharacterStatCard from './CharacterStatCard'
 
 interface CharacterInfoProps {
   character: Character
@@ -12,104 +14,207 @@ interface CharacterInfoProps {
   expanded?: boolean
 }
 
-export default function CharacterInfo(props: CharacterInfoProps){
+export default function CharacterInfo(props: CharacterInfoProps) {
   const {
     character,
     characterClass,
     characterInventories,
     expanded
   } = props
-  
+
   const [characterStats, setCharacterStats] = useState<Stats | undefined>(undefined)
   const [characterGold, setCharacterGold] = useState(0)
+  const [showAttributeStats, setShowAttributeStats] = useState(true)
+  const [showProfessionStats, setShowProfessionStats] = useState(true)
 
   useEffect(() => {
-    const load = async function() {
-      if(!character || !characterClass) return
+    const load = async function () {
+      if (!character || !characterClass) return
 
       const characterService = new CharacterService(
         character,
         characterClass,
         characterInventories
       )
+
       setCharacterStats(characterService.getStats())
       setCharacterGold(characterService.getGold())
     }
+
     load()
   }, [character, characterClass, characterInventories])
 
+  const levelProgress = useMemo(() => {
+    if (!character.levelNextXP) return 0
 
-  const statsInfos = []
-  for(const propertyName of Object.getOwnPropertyNames(character.stats ?? {}) ?? []){
-    //@ts-ignore
-    const statItem = character?.stats[propertyName] as Stat
+    return Math.min(
+      100,
+      Math.max(
+        0,
+        (character.xp / character.levelNextXP) * 100
+      )
+    )
+  }, [character])
 
-    {/* @ts-ignore */}
-    const left = `${(statItem?.nextLevelXP - statItem.xp).toLocaleString()} left`
-    statsInfos.push(<div className='character-info-stat-item' title={left}>
-      <div>
-        {statItem.name}
-      </div>
-      <div>
-        {statItem.level}
-      </div>
-      <div>
-        {statItem.xp}
-      </div>
-      <div>
-         / 
-      </div>
-      <div>
-        {statItem.nextLevelXP}
-      </div>
-    </div>)
-  }
-  const nextLevelXP = (character.levelNextXP - character.xp).toLocaleString()
-
-  if(!character){
+  if (!character) {
     return null
   }
 
-  return <div id='tutorial-character'>
-    <CustomContainer
-      title={character?.name}
-      expandable={true}
-      expanded={expanded}
-      isChildCustomContainer={false}
-      description=''
-      headerLeft={`${characterGold.toLocaleString()}g`}
-    >
-      <div className='character-info-main'>
+  return (
+    <div>
+      <CustomContainer
+        id={'tutorial-character'}
+        title={character?.name}
+        expandable={true}
+        expanded={expanded}
+        isChildCustomContainer={false}
+        description=''
+        headerLeft={`${characterGold.toLocaleString()}g`}
+      >
+        <div className='character-info-main'>
 
-        <div className='character-info-class'>
-          <div className='character-info-stat-item'>
-            Level {character.level} {characterClass?.name}
+          {/* HERO */}
+          <div className='character-info-hero'>
+            <div className='character-info-class-title'>
+              <span className='character-level'>
+                Lv. {character.level}
+              </span>
+
+              <span className='character-class-name'>
+                {characterClass?.name}
+              </span>
+            </div>
+
+            <div
+              className='character-progress-card main-level'
+              title={`${(character.levelNextXP - character.xp).toLocaleString()} XP left`}
+            >
+              <div className='character-progress-header'>
+                <span>Character XP</span>
+
+                <span>
+                  {character.xp.toLocaleString()} / {character.levelNextXP.toLocaleString()}
+                </span>
+              </div>
+
+              <div className='character-progress-bar'>
+                <div
+                  className='character-progress-fill level-fill'
+                  style={{ width: `${levelProgress}%` }}
+                />
+              </div>
+
+              <div className='character-progress-footer'>
+                {(character.levelNextXP - character.xp).toLocaleString()} XP left
+              </div>
+            </div>
           </div>
-          <div className='character-info-stat-item' title={`${nextLevelXP} left`}>
-            <div>
-              XP
+
+          {/* GUILD */}
+          <div className='character-info-meta'>
+            <div className='character-meta-card'>
+              <span className='meta-label'>Adventurer's Guild</span>
+
+              <span className='meta-value'>
+                {!character?.guildRank
+                  ? 'No Adventurer Rank'
+                  : `${character.guildRank} Rank`}
+              </span>
             </div>
-            <div>
-              {character.xp}
-            </div>
-            <div>
-              / 
-            </div>
-            <div>
-              {character.levelNextXP}
+
+            <div className='character-meta-card gold-card'>
+              <span className='meta-label'>Gold</span>
+
+              <span className='meta-value'>
+                {characterGold.toLocaleString()}g
+              </span>
             </div>
           </div>
-          
+          <div className='character-section-title' onClick={() => setShowAttributeStats(prev => !prev)}>
+            
+            <div className='page-header-banner'>
+              <div className='page-header-title'>
+                Attributes
+              </div>
+
+              <div
+                className='page-header-expander'
+                
+              >
+                <span>{showAttributeStats === true ? 'Hide' : 'Show'}</span>
+              </div>
+            </div>
+          </div>
+          {/* STATS */}
+          <div className={`character-stats-grid ${showAttributeStats === true ? 'open' : ''}`}>
+            {Object
+              .getOwnPropertyNames(character.stats ?? {})
+              .map((propertyName) => {
+                //@ts-ignore
+                return character?.stats[propertyName] as Stat
+              })
+              .filter((statItem) => !!statItem)
+              .sort((a, b) => {
+                //@ts-ignore
+                const aSort = StatSort[a.name]
+                //@ts-ignore
+                const bSort = StatSort[b.name]
+
+                return (aSort ?? 999) - (bSort ?? 999)
+              })
+              .map((statItem) => {
+                return (
+                  <CharacterStatCard
+                    statItem={statItem}
+                    statType='attribute'
+                  />
+                )
+              })}
+          </div>
+          <div className='character-section-title' onClick={() => setShowProfessionStats(prev => !prev)}>
+            
+            <div className='page-header-banner'>
+              <div className='page-header-title'>
+                Professions
+              </div>
+
+              <div
+                className='page-header-expander'
+                
+              >
+                <span>{showProfessionStats === true ? 'Hide' : 'Show'}</span>
+              </div>
+            </div>
+          </div>
+          {/* PROFESSIONS */}
+          <div className={`character-stats-grid ${showProfessionStats === true ? 'open' : ''}`}>
+            {Object
+              .getOwnPropertyNames(character.professions ?? {})
+              .map((propertyName) => {
+                //@ts-ignore
+                return character?.professions[propertyName] as Stat
+              })
+              .filter((profession) => !!profession)
+              .sort((a, b) => {
+                //@ts-ignore
+                const aSort = ProfessionSort[a.name]
+                //@ts-ignore
+                const bSort = ProfessionSort[b.name]
+
+                return (aSort ?? 999) - (bSort ?? 999)
+              })
+              .map((statItem) => {
+                return (
+                  <CharacterStatCard
+                    statItem={statItem}
+                    statType='profession'
+                  />
+                )
+              })}
+            </div>
+
         </div>
-        <div className='character-info-stats-xp'>
-          <div className='character-info-stat-item'>
-            <div>
-              {!character?.guildRank ? 'No  Adventurer\'s Guild Rank' : `${character.guildRank} Rank`}
-            </div>
-          </div>
-          {statsInfos}
-        </div>
-      </div>
-    </CustomContainer>
-  </div>
+      </CustomContainer>
+    </div>
+  )
 }

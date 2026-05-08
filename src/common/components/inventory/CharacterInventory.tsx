@@ -7,6 +7,7 @@ import InventorySlot, { type InventorySlotProps } from './InventorySlot'
 import './Inventory.css'
 
 interface CharacterInventoryProps {
+  id?: string
   inventories: Inventory[]
   character: Character
   items: Item[]
@@ -14,6 +15,7 @@ interface CharacterInventoryProps {
 }
 export default function CharacterInventory(props: CharacterInventoryProps){
   const {
+    id,
     inventories,
     character,
     items,
@@ -32,9 +34,10 @@ export default function CharacterInventory(props: CharacterInventoryProps){
 
   const currencyHeaderLeft = `Gold ${totalGold.toLocaleString()}`
 
-  return <div id='tutorial-inventory'>
+  return <div>
     
     <CustomContainer 
+      id={id}
       title='Inventory'
       expandable={true}
       expanded={expanded}

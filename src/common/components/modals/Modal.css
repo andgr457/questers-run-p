@@ -99,7 +99,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--blue-sd-dark);
+  background-color: var(--blue-sd-darker);
   color: var(--text);
   border-radius: 10px 10px 0 0;
   border: solid var(--text);
@@ -128,7 +128,7 @@
 .modal-body {
   color: var(--text);
 
-  background-color: var(--blue-sd-darker);
+  background-color: var(--bg-dark);
   border: solid var(--text);
   border-width: 1px 1px 1px 1px;
   padding: 10px;

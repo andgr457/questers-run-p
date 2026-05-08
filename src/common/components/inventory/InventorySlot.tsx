@@ -33,7 +33,6 @@ export default function InventorySlot(props: InventorySlotProps){
       if(itemHp && itemHp > 0){
         //health pot
         if(character){
-          console.log(character.stats)
           if(character.stats.hp?.value === character.stats.hp?.max){
             if(!showConfirm({
               isYesNo: true,

@@ -9,11 +9,11 @@
   width: 75px;
   height: 75px;
   cursor: pointer;
-  border: outset 1px var(--bg-dark);
-  box-shadow: 0 0 5px var(--bg-dark);
+  border: inset 1px var(--bg-dark);
+  box-shadow: 0 0 5px var(--bg-dark-2);
   padding: 5px;
   margin: 5px;
-  background: var(--bg-dark);
+  background: var(--bg-dark-2);
   color: var(--text);
   transform: scale(1);
   transition: transform 0.5s;
@@ -25,7 +25,7 @@
 }
 
 .inventory-slot.empty {
-  background: var(--bg-dark-2);
+  background: var(--bg-dark-3);
 
 }
 
