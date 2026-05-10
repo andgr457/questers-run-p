@@ -1,0 +1,143 @@
+/* =========================
+   BASE INPUT SYSTEM
+   ========================= */
+
+:root {
+  --input-radius: 8px;
+  --input-padding: 8px 10px;
+  --input-border: 1px solid rgba(255, 255, 255, 0.08);
+  --input-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --input-focus: 0 0 0 2px rgba(80, 140, 255, 0.35);
+}
+
+/* Shared input base */
+input,
+select,
+textarea {
+  font: inherit;
+  color: var(--input-text);
+  background-color: var(--bg-dark-3);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  padding: var(--input-padding);
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--input-shadow);
+}
+
+/* Focus state */
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: var(--input-focus);
+  border-color: rgba(80, 140, 255, 0.6);
+}
+
+/* =========================
+   TEXT INPUTS
+   ========================= */
+
+input[type='text'],
+input[type='search'],
+input[type='email'],
+input[type='password'] {
+  font-size: 0.9em;
+  letter-spacing: 0.5px;
+}
+
+/* Placeholder styling */
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75em;
+}
+
+/* =========================
+   NUMBER INPUTS
+   ========================= */
+
+input[type='number'] {
+  font-size: 0.9em;
+  text-align: left;
+}
+
+/* Remove ugly arrows (optional) */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* =========================
+   TEXTAREA
+   ========================= */
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+/* =========================
+   SELECT DROPDOWN (PRETTY VERSION)
+   ========================= */
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text) 50%),
+    linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+
+  padding-right: 32px;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+}
+
+/* Hover effect for select */
+select:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================
+   LABELS
+   ========================= */
+
+.form-label {
+  color: var(--text);
+  font-size: 0.75em;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  display: inline-block;
+  opacity: 0.9;
+}
+
+/* =========================
+   DISABLED STATES
+   ========================= */
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   OPTIONAL: INPUT WRAPPER
+   ========================= */
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

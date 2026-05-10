@@ -1,0 +1,217 @@
+.window-layer {
+  position: fixed;
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 5000;
+}
+
+/* =========================
+   WINDOW BASE
+   ========================= */
+
+.window {
+  position: absolute;
+  will-change: transform;
+  display: flex;
+  flex-direction: column;
+
+  box-sizing: border-box;
+
+  /* background: var(--bg-dark); */
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  overflow: hidden;
+
+  min-width: 200px;
+  min-height: 250px;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.5);
+
+  pointer-events: auto;
+
+  transition:
+    box-shadow .2s,
+    filter .2s;
+}
+
+.window:hover {
+  filter: brightness(1.05);
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.7);
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+.window-header {
+  flex-shrink: 0;
+  touch-action: none;
+  height: 45px;
+
+  padding-left: 20px;
+  padding-right: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  cursor: grab;
+
+  user-select: none;
+
+  background-color: var(--blue-sd-darker);
+  color: var(--text);
+
+  border-radius: 10px 10px 0 0;
+  border: solid var(--text);
+  border-width: 1px 1px 0px 1px;
+
+  letter-spacing: 3px;
+
+  text-shadow:
+    0 0 5px var(--bg-dark),
+    0 0 5px var(--bg-dark),
+    0 0 7px var(--bg-dark),
+    0 0 2px var(--text),
+    0 0 7px var(--bg-dark),
+    0 0 5px var(--bg-dark),
+    0 0 5px var(--bg-dark);
+}
+
+.window-header:active {
+  cursor: grabbing;
+}
+
+/* =========================
+   CONTENT (IMPORTANT FIX AREA)
+   ========================= */
+
+.window-content {
+  flex: 1;
+  min-height: 0; /* 🔥 CRITICAL FIX FOR FLEXBOX RESIZE BUG */
+
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain; /* 🔥 IMPORTANT */
+  touch-action: pan-y;
+
+  box-sizing: border-box;
+
+  padding: 10px;
+
+  color: var(--text);
+
+  background-color: var(--bg-dark);
+
+  border: solid var(--text);
+  border-width: 1px 1px 1px 1px;
+
+  border-radius: 0 0 10px 10px;
+}
+
+/* =========================
+   CLOSE BUTTON
+   ========================= */
+
+.window-close {
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  color: var(--text);
+}
+
+/* =========================
+   RESIZE HANDLE
+   ========================= */
+
+.window-resize-handle {
+  position: absolute;
+
+  right: 0;
+  bottom: 0;
+
+  width: 32px;
+  height: 32px;
+
+  cursor: nwse-resize;
+
+  opacity: 0.8;
+
+  z-index: 999; /* 🔥 FORCE ABOVE EVERYTHING */
+
+  pointer-events: auto;
+
+  touch-action: none; /* 🔥 CRITICAL FOR DRAGGING */
+
+  user-select: none;
+}
+
+.window-resize-handle:hover {
+  opacity: 1;
+}
+
+.window-resize-handle::before {
+  content: '';
+
+  position: absolute;
+
+  right: 6px;
+  bottom: 6px;
+
+  width: 14px;
+  height: 14px;
+
+  border-right: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+}
+
+/* =========================
+   MOBILE MODE (FULLSCREEN OVERRIDE)
+   ========================= */
+
+.window.mobile {
+  position: fixed;
+
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  border-radius: 0;
+
+  z-index: 6000;
+}
+
+.window.mobile .window-header {
+  cursor: default;
+}
+
+.window.mobile .window-resize-handle {
+  display: none;
+}
+
+/* =========================
+   POLISH (OPTIONAL BUT NICE)
+   ========================= */
+
+.window-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.window-content::-webkit-scrollbar-thumb {
+  background: var(--blue-sd);
+
+  border-radius: 4px;
+}
+
+.window-content::-webkit-scrollbar-track {
+  background: transparent;
+}

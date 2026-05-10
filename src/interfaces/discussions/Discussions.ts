@@ -4,7 +4,7 @@ export interface Discussion {
 }
 
 export interface DiscussionAction {
-  title: string
+  title?: string
   element?: React.ReactNode
   placeholder?: string
 }

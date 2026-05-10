@@ -8,7 +8,7 @@
   --gold-dark: #9f7f1c;
   --green-dark: #225622;
   --green-success: #1e8119;
-  --green-success-2: #26a11f;
+  --green-success-2: #39eb2f;
   --danger: #8b1e1e;
   --danger-light: #f02828;
   --red: #580707;
@@ -21,6 +21,7 @@
   --label: rgba(0, 0, 0, 0.747);
   --label-dark: rgba(170, 170, 170, 0.747);
   --border: #7e7e7e;
+  --blue-sd-lighter: #3b95f5;
   --blue-sd-light: #3484d8;
   --blue-sd: #2a71bc;
   --blue-sd-dark: #1e3a8a;
@@ -221,7 +222,7 @@ button:hover {
   animation: none;
 }
 
-input[type='text'] {
+/* input[type='text'] {
   all: unset;
   background-color: var(--blue-sd-dark);
   padding: 6px;
@@ -237,7 +238,7 @@ input[type='text']::placeholder {
 
 .form-label {
   color: var(--text);
-}
+} */
 
 .description {
   font-size: 0.9em;
@@ -245,15 +246,15 @@ input[type='text']::placeholder {
   letter-spacing: 1.5px;
 }
 
-select {
+/* select {
   font: inherit;
   letter-spacing: 1.5px;
-  background-color: var(--blue-sd-dark);
+  background-color: var(--bg-dark-3);
   padding: 6px;
   border-radius: 3px;
   font-size: 0.8em;
   color: var(--input-text);
-}
+} */
 
 .header-1 {
   background-color: var(--bg-dark);
@@ -389,7 +390,7 @@ ul li {
 }
 
 .foot-note {
-  font-size: 0.85em;
+  font-size: 0.6em;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -398,6 +399,10 @@ ul li {
   font-weight: 600;
   color: var(--danger-light);
   text-shadow: 0 0 6px rgba(255, 60, 60, 0.45);
+}
+
+.discussion-text {
+  padding: 5px;
 }
 
 .discussion-section {
@@ -411,6 +416,11 @@ ul li {
   transition: opacity 1s ease;
 }
 
+.adv-g-highlight {
+  color: var(--yellow);
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(255,255,255,0.25);
+}
 
 /* MAIN SCREEN LAYOUT */
 
@@ -424,7 +434,6 @@ ul li {
 /* LEFT COLUMN */
 
 .app-screen.left {
-  flex: 0 0 380px;
 
   display: flex;
   flex-direction: column;
@@ -432,6 +441,7 @@ ul li {
 
   position: sticky;
   top: 10px;
+  width: 450px;
 }
 
 /* RIGHT COLUMN */

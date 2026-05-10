@@ -1,0 +1,95 @@
+
+.nav {
+  display: flex;
+  background: var(--blue-sd-dark);
+  color: var(--text);
+  padding: 10px;
+  box-shadow: 0 2px 5px #0000001a;
+  left: 0;
+  position: sticky;
+  top: 0;
+  z-index: 98;
+}
+
+.nav-item {
+  cursor: pointer;
+  height: 100%;
+  text-shadow:
+  0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 2px var(--text)
+  ,0 0 7px var(--bg-dark)
+  ,0 0 5px var(--bg-dark)
+  ,0 0 5px var(--bg-dark);
+  transform: scale(1);
+
+  transition: transform 0.75s;
+
+}
+
+.nav-item.window-button {
+  font-size: 0.8em;
+  margin-top: 3px;
+}
+
+.nav-item.active {
+  text-shadow:
+  0 0 5px var(--gold)
+  ,0 0 5px var(--gold-dark)
+  ,0 0 7px var(--gold-dark)
+  ,0 0 2px var(--text)
+  ,0 0 7px var(--gold-dark)
+  ,0 0 5px var(--gold-dark)
+  ,0 0 5px var(--gold);
+}
+
+.nav-item:hover {
+  filter: brightness(1.5);
+  transform: scale(1.06);
+
+}
+
+.nav-sub-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+
+  background: var(--blue-sd-dark);
+  border-top: 1px solid var(--blue-sd);
+  color: var(--text);
+  font-size: smaller;
+
+  box-shadow: 0 2px 5px #0000001a;
+
+  position: sticky;
+  top: 39px;
+  z-index: 98;
+
+  overflow: hidden;
+
+  /* closed state */
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 15px;
+
+  transition:
+    max-height 0.5s,
+    opacity 0.5s ease,
+    padding-top 0.5s ease,
+    padding-bottom 0.5s ease;
+}
+
+.nav-sub-items.open {
+  max-height: 200px; 
+  opacity: 1;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.nav-divider {
+  color: var(--blue-sd);
+}

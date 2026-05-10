@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import ConfirmModal from '../common/components/modals/ConfirmModal';
+import ConfirmModal from '../components/modals/ConfirmModal';
 
 interface ShowConfirmProps {
   message: string
   title: string
   isYesNo: boolean
+  content?: React.ReactNode
 }
 
 interface ConfirmContextType {
@@ -20,11 +21,12 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
     title: string;
     isYesNo: boolean
     resolve?: (value: boolean) => void;
-  }>({ isOpen: false, message: "", title: "", isYesNo: true });
+    content?: React.ReactNode
+  }>({ isOpen: false, message: "", title: "", isYesNo: true, content: <></> });
 
   const showConfirm = (props: ShowConfirmProps): Promise<boolean> => {
     return new Promise((resolve) => {
-      setState({ isOpen: true, message: props.message, title: props.title, isYesNo: props.isYesNo,  resolve });
+      setState({ isOpen: true, message: props.message, title: props.title, isYesNo: props.isYesNo, content: props.content,  resolve });
     });
   };
 
@@ -48,6 +50,7 @@ export const ConfirmProvider = ({ children }: { children: ReactNode }) => {
         onConfirm={handleConfirm}
         onClose={handleClose}
         isYesNo={state.isYesNo ?? true}
+        content={state.content}
       />
     </ConfirmContext.Provider>
   );

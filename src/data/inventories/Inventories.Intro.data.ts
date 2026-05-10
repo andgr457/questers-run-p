@@ -35,10 +35,10 @@ export function getInventoryIntroCurrencyPouch(characterId: string, uniqueId: st
 
 export const INVENTORY_INTRO_STARTER_POUCH_DEFAULT: Inventory = {
   id: INVENTORY_INTRO_IDS.NAPSACK_ID,
-  title: 'Napsack',
-  description: 'Stores a small amount of items.',
+  title: 'Backpack',
+  description: 'Stores a decent amount of items.',
   characterId: '',
-  max: 8,
+  max: 32,
   restrictions: ['general'],
   transactions: []
 }

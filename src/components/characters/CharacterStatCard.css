@@ -1,0 +1,266 @@
+.character-stat-card {
+  position: relative;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  padding: 10px;
+
+  border-radius: 10px;
+
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* shimmer */
+.character-stat-card::before {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.05),
+    transparent
+  );
+
+  transform: translateX(-100%);
+
+  transition: transform 0.8s ease;
+}
+
+.character-stat-card:hover::before {
+  transform: translateX(100%);
+}
+
+.character-stat-card:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+/* ========================= */
+/* HEADER / FOOTER */
+/* ========================= */
+
+.character-stat-card-header,
+.character-stat-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.character-stat-card-header {
+  font-weight: 700;
+}
+
+.character-stat-card-footer {
+  opacity: 0.8;
+  font-size: 0.8rem;
+}
+
+/* ========================= */
+/* BAR (FULL SIZE) */
+/* ========================= */
+
+.character-stat-card-bar {
+  width: 100%;
+  height: 14px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.45),
+    rgba(255,255,255,0.03)
+  );
+
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.character-stat-card-fill {
+  height: 100%;
+  width: 0%;
+
+  border-radius: inherit;
+
+  transition: width 0.4s ease;
+}
+
+/* ========================= */
+/* ATTRIBUTE */
+/* ========================= */
+
+.attribute-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.04),
+    rgba(255,255,255,0.015)
+  );
+
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+.attribute-card:hover {
+  border-color: rgba(255,255,255,0.14);
+}
+
+.attribute-name {
+  color: #d9f0ff;
+}
+
+.attribute-level {
+  color: #8bd6ff;
+}
+
+.attribute-fill {
+  background: linear-gradient(
+    90deg,
+    #5ef0a5,
+    #32b8ff
+  );
+
+  box-shadow: 0 0 10px rgba(94, 240, 165, 0.4);
+}
+
+/* ========================= */
+/* PROFESSION */
+/* ========================= */
+
+.profession-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 200, 100, 0.08),
+    rgba(255, 170, 70, 0.02)
+  );
+
+  border: 1px solid rgba(255, 200, 100, 0.14);
+}
+
+.profession-card:hover {
+  border-color: rgba(255, 220, 140, 0.28);
+}
+
+.profession-name {
+  color: #ffe39a;
+}
+
+.profession-level {
+  color: #ffcf6b;
+}
+
+.profession-fill {
+  background: linear-gradient(
+    90deg,
+    #ffcf5a,
+    #ff9f43,
+    #ffd56a
+  );
+
+  box-shadow: 0 0 12px rgba(255, 180, 70, 0.45);
+}
+
+.profession-fill::after {
+  content: '';
+
+  position: absolute;
+  top: 0;
+  left: -30%;
+
+  width: 30%;
+  height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.45),
+    transparent
+  );
+
+  animation: professionShine 3s linear infinite;
+}
+
+@keyframes professionShine {
+  from { left: -30%; }
+  to { left: 130%; }
+}
+
+/* ===================================================== */
+/* 🧠 MINI MODE (FIXED + SAFE + NON-DESTRUCTIVE) */
+/* ===================================================== */
+
+.character-stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 3px 8px;
+  border-radius: 6px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  font-size: 0.75rem;
+  white-space: nowrap;
+
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* hide heavy layout elements in mini mode */
+.character-stat-chip .character-stat-card-header {
+  display: none;
+}
+
+/* KEEP values visible */
+.character-stat-chip .character-stat-card-footer {
+  display: flex;
+  gap: 4px;
+
+  font-size: 0.65rem;
+  opacity: 0.75;
+}
+
+/* ========================= */
+/* MINI BAR (FIXED + ALWAYS VISIBLE) */
+/* ========================= */
+
+.character-stat-chip .character-stat-card-bar {
+  height: 14px;
+  width: 80px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: linear-gradient(
+    180deg,
+    var(--bg-dark),
+    var(--bg-dark-3)
+  );
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.character-stat-chip .character-stat-card-fill {
+  height: 100%;
+  width: 0%;
+
+  border-radius: inherit;
+
+  transition: width 0.4s ease;
+}
+
+/* toned down visuals but KEEP identity */
+.character-stat-chip.attribute-card,
+.character-stat-chip.profession-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+}

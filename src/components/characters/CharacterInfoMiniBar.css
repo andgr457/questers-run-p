@@ -1,0 +1,88 @@
+.character-info-mini {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 5px;
+
+  background: linear-gradient(
+    to right,
+    var(--bg-dark),
+    rgba(20, 20, 25, 0.95)
+  );
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  font-size: 0.85rem;
+  color: var(--text);
+
+  overflow: hidden;
+}
+
+.mini-divider {
+  color: var(--text-opaque);
+}
+
+.mini-location {
+  color: var(--blue-sd-lighter);
+  text-shadow: 0 0 2px var(--text);
+}
+
+/* LEFT SIDE */
+.mini-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  line-height: 1.1;
+  min-width: 140px;
+}
+
+.mini-name {
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.mini-class {
+  opacity: 0.75;
+}
+
+.mini-class.quest {
+  cursor: pointer;
+}
+
+/* CENTER STATS */
+.mini-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  flex: 1;
+  justify-content: center;
+
+  overflow-x: auto;
+}
+
+/* hide scrollbar cleanly */
+.mini-stats::-webkit-scrollbar {
+  display: none;
+}
+
+/* RIGHT */
+.mini-right {
+  display: flex;
+  align-items: center;
+  min-width: 80px;
+  justify-content: flex-end;
+}
+
+.mini-gold {
+  font-weight: 600;
+  color: #ffd700;
+  font-size: 0.85rem;
+}
+
+/* subtle separation feel without dividers */
+.character-info-mini::after {
+  content: '';
+  position: absolute;
+}

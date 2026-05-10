@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import type { QuestWithQuestProgress } from '../../common/components/quests/CharacterQuests';
+import type { QuestWithQuestProgress } from '../../components/quests/CharacterQuests';
 import type { Achievement } from '../../interfaces/achievements/Achievement.types';
 import type { Character } from '../../interfaces/characters/Character.types';
 import type { Inventory, InventoryTransaction } from '../../interfaces/inventories/Inventory.types';
