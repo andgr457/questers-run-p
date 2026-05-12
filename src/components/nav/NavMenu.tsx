@@ -73,6 +73,7 @@ export default function NavMenu(props: NavMenuProps) {
   function toggleQuest() {
     toggleWindow('quest', 'Current Quest', <CharacterQuestCurrent 
       {...props}
+      
     />)
   }
 
@@ -228,6 +229,13 @@ export default function NavMenu(props: NavMenuProps) {
       <div className={`nav-sub-items ${subNavSelected === 'profession' ? 'open' : ''}`}>
         <div 
           className='nav-item'
+          onClick={() => {handleNavigate('/profession/gathering')}}
+        >
+          Gathering
+        </div>
+        {divider}
+        <div 
+          className='nav-item'
           onClick={() => {handleNavigate('/profession/fishing')}}
         >
           Fishing
@@ -246,13 +254,7 @@ export default function NavMenu(props: NavMenuProps) {
         >
           Mining
         </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/profession/gathering')}}
-        >
-          Gathering
-        </div>
+        
       </div>
     </div>
   );

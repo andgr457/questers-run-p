@@ -69,11 +69,21 @@ export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
     {
       level: 1,
       completed: false,
+    },
+    {
+      stats: {
+        stamina: {
+          name: 'Stamina',
+          value: 10,
+          hint: ''
+        }
+      },
+      completed: false
     }
   ],
   completionRequirements: [
     {
-      timeMinutes: 10,
+      timeMinutes: 0.5,
       completed: false
     }
   ]

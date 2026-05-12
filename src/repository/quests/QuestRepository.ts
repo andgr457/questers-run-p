@@ -8,6 +8,7 @@ export class QuestRepository {
     return [
       ...QUEST_INTRO_ALL,
       ...QUEST_GATHERING_ALL,
+      
     ]
   }
 }

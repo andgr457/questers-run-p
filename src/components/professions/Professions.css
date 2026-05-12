@@ -1,0 +1,43 @@
+.profession-item-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 14px;
+  background: var(--bg-dark);
+}
+
+.profession-item {
+  cursor: pointer;
+  color: var(--text);
+  background: var(--bg-dark-2);
+  padding: 7px;
+  height: 200px;
+  width: 200px;
+  border: outset 2px;
+  
+}
+
+.profession-item-title {
+  text-align: center;
+  font-size: 1.3em;
+  border-bottom: solid 1px var(--text);
+  letter-spacing: 2px;
+}
+
+.profession-item-description {
+  padding: 7px;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+}
+
+.profession-item-info {
+  font-size: 0.82rem;
+  line-height: 1.3;
+  padding: 0.25rem 0.35rem;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.03);
+}
+
+.profession-item-actions {
+
+}

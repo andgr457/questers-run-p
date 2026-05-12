@@ -14,8 +14,16 @@ export const ITEM_POTION_STAMINA_WEAK: Item = {
   description: 'Restores a small amount of stamina on use.',
   type: ITEM_TYPES.CONSUMABLE,
   rarity: ITEM_RARITY.COMMON,
+  gold: {
+    buy: 10,
+    sell: 5
+  },
   stats: {
-    stamina: 20
+    stamina: {
+      value: 20,
+      name: 'STAM',
+      hint: ''
+    }
   }
 }
 

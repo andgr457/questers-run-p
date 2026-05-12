@@ -10,7 +10,7 @@ import { WindowProvider } from './components/windows/WindowProvider';
 import { ScrollToHash } from './components/ScrollToHash';
 import NavMenu from './components/nav/NavMenu';
 import WindowLayer from './components/windows/WindowLayer';
-import type { Character, CharacterClass } from './interfaces/characters/Character.types';
+import type { Character, CharacterClass, Stat } from './interfaces/characters/Character.types';
 import { LOCAL_STORAGE_KEYS } from './common/constants/LocalStorageKeys';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -29,6 +29,9 @@ import CharacterInfoMiniBar from './components/characters/CharacterInfoMiniBar';
 import type { QuestWithQuestProgress } from './components/quests/CharacterQuests';
 import { QuestService } from './services/quests/QuestService';
 import './form-controls.css'
+import { AchievementRepository } from './repository/achievements/AchievementRepository';
+import type { Achievement } from './interfaces/achievements/Achievement.types';
+import ProfessionGatheringPage from './pages/professions/ProfessionsGatheringPage';
 
 function App() {
   const [location, setLocation] = useState('Overview')
@@ -43,6 +46,8 @@ function App() {
   const [characterQuestProgress, setCharacterQuestProgress] = useState<QuestWithQuestProgress[] | undefined>(undefined)
   const [quests, setQuests] = useState<Quest[]>([])
   const [questGroups, setQuestGroups] = useState<QuestGroup[]>([])
+  const [achievements, setAchievements] = useState<Achievement[]>([])
+
   const [items, setItems] = useState<Item[]>([])
   const [requestedWindowId, setRequestedWindowId] = useState<string | undefined>(undefined)
   
@@ -104,7 +109,7 @@ function App() {
       setAllQuestsWithQuestProgress(progress)
       setCharacterQuestProgress(progress.filter(p => p.questProgress?.characterId === character.id))
       setCharacterInventories(inventories.filter(i => i.characterId === character.id))
-    }, 2000);
+    }, 250);
 
     return () => clearInterval(interval);
   }, []);
@@ -117,6 +122,8 @@ function App() {
       setQuests(await questRepo.list())
       const questGroupRepo = new QuestGroupRepository()
       setQuestGroups(await questGroupRepo.list())
+      const achievementRepo = new AchievementRepository()
+      setAchievements(await achievementRepo.list())
     }
     load()
   }, [])
@@ -155,10 +162,77 @@ function App() {
     setInventories(newInventories)
   }, [inventories])
 
+  const handleDoProfessionItemComplete = useCallback(async (professionItemId: string, amount: number) => {
+    let invRef = undefined
+    for(const inv of characterInventories ?? []){
+      const invTxns = inv.transactions.filter(t => t.itemId === professionItemId)
+      
+      if(invTxns.length > 0){
+        invRef = inv
+        break
+      }
+    }
+    if(!invRef){
+      invRef = characterInventories?.find(i => i.title === 'Backpack')
+    }
+    invRef?.transactions.push({
+      id: `invtxn__${professionItemId}__${character?.id}__${DateTime.utc().toMillis()}`,
+      date: DateTime.utc().toISO(),
+      itemId: professionItemId,
+      note: `Profession addition`,
+      quantity: amount
+    })
+
+    const newAllInventories = []
+    for(const inv of inventories){
+      if(inv.id === invRef?.id){
+        newAllInventories.push(invRef)
+      } else {
+        newAllInventories.push(inv)
+      }
+    }
+    setInventories(newAllInventories)
+  }, [items, characterInventories, inventories])
+
+  const handleAbandonQuest = useCallback(async (questProgressId: string) => {
+    const foundProgress = characterQuestProgress?.find(p => p.questProgress?.id === questProgressId)
+    if(!foundProgress){
+      //do nothing
+      return
+    }
+    if(await showConfirm({
+      isYesNo: true,
+      title: 'Abandon Quest?',
+      message: 'This will abandon the quest, allowing you to take another one. Are you sure you wish to continue?'
+    })){
+      const newProgress = []
+      for(const p of allQuestProgress ?? []){
+        if(p.id !== questProgressId){
+          newProgress.push(p)
+        }
+      }
+      setAllQuestProgress(newProgress as QuestProgress[])
+    }
+  }, [characterQuestProgress])
+
   const handleAddQuest = useCallback(async (quest: Quest, characterId: string) => {
     const characterProgress = characterQuestProgress?.find(qp => qp.quest.id === quest.id && qp.questProgress?.characterId === characterId)
-    if(characterProgress && characterProgress.questProgress?.status === 'in-progress'){
-      return
+
+    const newCharacter = {...character}
+    for(const req of quest?.startRequirements ?? []){
+      if(req.stats){
+        for(const propertyName of Object.getOwnPropertyNames(req.stats)){
+          //@ts-ignore
+          const stat = req.stats[propertyName] as Stat
+          //@ts-ignore
+          const characterStat = newCharacter.stats[propertyName] as Stat
+          const baseValue = characterStat.value - stat.value 
+          const newValue = baseValue < 0 ? 0 : baseValue
+          //@ts-ignore
+          newCharacter.stats[propertyName].value = newValue
+        }
+        setCharacter({...newCharacter as Character})
+      }
     }
 
     const questProgress: QuestProgress = {
@@ -316,6 +390,7 @@ function App() {
     }
   })
   const appProps: AppProperties = {
+    achievements,
     location,
     character: character as Character,
     characterClass: characterClass as CharacterClass,
@@ -329,7 +404,9 @@ function App() {
     
     handleAddHistory,
     handleAddInventory,
+    handleDoProfessionItemComplete,
     handleAddQuest,
+    handleAbandonQuest,
     handleCompleteQuest,
     handleResetEverything,
     handleSetRequestedWindowId: setRequestedWindowId,
@@ -362,6 +439,8 @@ function App() {
                     <Route path='/guild' element={<GuildPage />} />
                     <Route path='/quests' element={<QuestsPage />} />
                     <Route path='/adventurers-guild' element={<AdventurersGuildPage {...appProps} />} />
+                    <Route path='/profession/gathering' element={<ProfessionGatheringPage {...appProps} />} />
+
                   </>
                 }
                 

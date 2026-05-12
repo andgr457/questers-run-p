@@ -101,7 +101,8 @@ export class QuestService {
             canComplete = false
           }
           if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
-            relatedAchievements.push()
+            const achievement = await this.achievementRepo.byId(req.achievementId)
+            relatedAchievements.push(achievement as Achievement)
           }
         }
 
@@ -123,7 +124,8 @@ export class QuestService {
         }
 
         if(req.timeMinutes){
-          if(progress?.startDate){
+          req.completed = false
+          if(progress?.startDate && progress?.status === 'in-progress'){
             const startDate = DateTime.fromISO(progress.startDate as string)
             const minutesElapsed = Math.abs(startDate.diffNow('minutes').minutes)
             if(minutesElapsed >= req.timeMinutes){

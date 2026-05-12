@@ -19,7 +19,7 @@ export const QUEST_GROUP_GATHRING: QuestGroup = {
 export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
   id: QUEST_GATHERING_IDS.STICKS_N_STONES,
   title: 'Sticks & Stones',
-  description: 'Gather sticks and stones from the woods just outside of the city.',
+  description: 'Gather sticks for firewood and stones for crafters from the woods just outside of the city.',
   groupId: QUEST_GROUP_INTRO_ID,
   cooldownMinutes: 3,
   repeatable: true,
@@ -27,6 +27,9 @@ export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
     {
       itemId: ITEM_CURRENCY_IDS.GOLD,
       itemAmount: 50
+    },
+    {
+      xp: 10
     }
   ],
   startRequirements: [
@@ -52,10 +55,6 @@ export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
     {
       itemId: ITEM_GATHERING_SMALL_STONE.id,
       itemAmount: 12,
-      completed: false
-    },
-    {
-      timeMinutes: 1,
       completed: false
     }
   ],

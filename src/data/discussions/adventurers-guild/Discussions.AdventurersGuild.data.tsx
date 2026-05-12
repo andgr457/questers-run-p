@@ -1,5 +1,6 @@
 import CharacterQuestRequirement from '../../../components/quests/CharacterQuestRequirement';
 import type { QuestWithQuestProgress } from '../../../components/quests/CharacterQuests';
+import type { Achievement } from '../../../interfaces/achievements/Achievement.types';
 import type { Character } from '../../../interfaces/characters/Character.types';
 import type { Discussion, DiscussionAction } from '../../../interfaces/discussions/Discussions';
 import type { Item } from '../../../interfaces/items/Item.types';
@@ -26,7 +27,7 @@ export const AdventurersGuildDiscussionIndexes = {
   ActionQuestCheck_2: 14,
 }
 
-interface DiscussionWithActions {
+export interface DiscussionWithActions {
   discussion: Discussion,
   actions: DiscussionAction[]
   fnBefore?: () => Promise<void>
@@ -39,6 +40,7 @@ interface ActionStepBuilderProps {
   questWithProgress: QuestWithQuestProgress
   actions: DiscussionAction[]
   items: Item[]
+  achievements?: Achievement[]
   fnBefore?: () => Promise<void>
   fnAfter?: () => Promise<void>
 }
@@ -52,6 +54,7 @@ export const getAdventurersGuildDiscussionQuestCheckActionByStep = (
     questWithProgress,
     step,
     items,
+    achievements,
     fnAfter,
     fnBefore,
   } = props
@@ -91,66 +94,76 @@ export const getAdventurersGuildDiscussionQuestCheckActionByStep = (
 
   if(discussionActions){
     if(step === 1){
-      discussionActions.discussion.content = <div>
-        <div className='discussion-text'>
-          Welcome back, <span className='adv-g-highlight'>{character.name}</span>! Please give me a moment to check on your quest...
-        </div>
-        <div className='adv-g-clerk-section-title'>
-            Quest Title
-        </div>
-        <div className='foot-note' style={{textAlign: 'center'}}>
-          {questWithProgress?.quest?.title}
-        </div>
-      </div>
-    } else if(step === 2){
       if(!questWithProgress){
         throw new Error(`Missing quest with progress to check quest completion eligibility.`)
       }
       const requirements = []
+      
       for(const req of questWithProgress.quest.completionRequirements){
-        requirements.push(<CharacterQuestRequirement questWithProgress={questWithProgress} requirement={req} />)
+        const achievement = achievements?.find(a => a?.id === req.achievementId)
+        const item = items?.find(i => i?.id === req.itemId)
+        const txns = questWithProgress?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === req.itemId) ?? []
+        let txnTotal = 0
+        for(const txn of txns){
+          txnTotal += txn.quantity
+        }
+        requirements.push(<CharacterQuestRequirement 
+          started={questWithProgress?.questProgress?.status === 'in-progress'}
+          completed={req.completed === true} 
+          achievement={achievement} 
+          characterItemTotal={txnTotal} 
+          questItemTotal={req.itemAmount}
+          item={item}
+          timeMinutes={req.timeMinutes}
+          startDate={questWithProgress.questProgress?.startDate}
+        />)
       }
 
       const rewards = []
-      if(questWithProgress.canCompleteQuest === true){
-        for(const r of questWithProgress.quest.rewards){
-          const item = items.find(i => i.id === r.itemId)
-          let name
-          let amount
-          if(r.xp){
-            name = 'XP'
-            amount = r.xp
-          } else if (r.itemId){
-            name = item?.name
-            amount = r.itemAmount
-          }
-
-          rewards.push(<div style={{display: 'flex', flex: 'wrap', gap: '5px'}}>
-            <div>
-              {name}
-            </div>
-            <div>
-              {amount}
-            </div>
-          </div>)
+      for(const r of questWithProgress.quest.rewards){
+        const item = items.find(i => i.id === r.itemId)
+        let name
+        let amount
+        if(r.xp){
+          name = 'XP'
+          amount = r.xp
+        } else if (r.itemId){
+          name = item?.name
+          amount = r.itemAmount
         }
-        
+
+        rewards.push(<div>
+          {r.xp && <>XP: <strong>{r.xp.toLocaleString()}</strong></>}
+          {r.itemId && r.itemAmount && <>{item?.name}: <strong>{r.itemAmount}</strong></>}
+        </div>)
       }
+        
       
       discussionActions.discussion.content = <div>
-          Welcome back, {character?.name}! Here's the results of my analysis...
+        <div>
+          {questWithProgress.canCompleteQuest === true ? <div>Here's the results of my analysis...</div> : <div>Apologies, some completion requirements are not met.</div>}
+        </div>
+        <br/>
+        <div>
+          <div className='adv-g-clerk-section-title'>
+            Quest
+        </div>
+        <div>
+          {questWithProgress?.quest?.title}
+        </div>
+        </div>
+        <div>
+          <div className='adv-g-clerk-section-title'>Requirements</div>  
           <div>
-            <div className='adv-g-clerk-section-title'>Requirements</div>  
-            <div>
-              {requirements}
-            </div>
+            {requirements}
           </div>
-          {rewards.length > 0 && <div>
-            <div className='adv-g-clerk-section-title'>Rewards</div>  
-            <div>
-              {rewards}
-            </div>
-          </div>}
+        </div>
+        <div>
+          <div className='adv-g-clerk-section-title'>Rewards</div>
+          <div className='quest-item-requirements-list'>
+            {rewards}
+          </div>
+        </div>
       </div>
     }
   }

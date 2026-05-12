@@ -14,7 +14,12 @@ export const ITEM_GATHERING_STICK: Item = {
   description: 'Twigs or small dried branches found on forest floors everywhere.',
   type: ITEM_TYPES.RESOURCE,
   rarity: ITEM_RARITY.COMMON,
-  stats: EMPTY_STATS
+  stats: EMPTY_STATS,
+  profession: 'gathering',
+  gold: {
+    buy: 5,
+    sell: 1
+  },
 }
 
 export const ITEM_GATHERING_SMALL_STONE: Item = {
@@ -23,7 +28,12 @@ export const ITEM_GATHERING_SMALL_STONE: Item = {
   description: 'Small hand-sized rocks found throughout the lands.',
   type: ITEM_TYPES.RESOURCE,
   rarity: ITEM_RARITY.COMMON,
-  stats: EMPTY_STATS
+  stats: EMPTY_STATS,
+  profession: 'gathering',
+  gold: {
+    buy: 5,
+    sell: 1
+  },
 }
 
 export const ITEM_GATHERING_APPLE: Item = {
@@ -32,6 +42,11 @@ export const ITEM_GATHERING_APPLE: Item = {
   description: 'Juicy and tasty, round-ish, red apple.',
   type: ITEM_TYPES.RESOURCE,
   rarity: ITEM_RARITY.UNCOMMON,
+  profession: 'gathering',
+  gold: {
+    buy: 10,
+    sell: 5
+  },
   stats: {
     hp: {
       name: 'HP',

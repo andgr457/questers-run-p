@@ -8,6 +8,7 @@ import type { InventoryTransaction } from '../../interfaces/inventories/Inventor
 import CustomContainer from '../CustomContainer'
 import CharacterQuestPopup from './CharacterQuestPopup'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
+import useScrollReveal from '../../hooks/useScrollReveal'
 
 interface CharacterQuestsProps extends AppProperties {
 }
@@ -39,6 +40,7 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     characterInventories,
     allQuestsWithProgress
   } = props
+  useScrollReveal()
 
   const [groupSettings, setGroupSettings] = useState<GroupSetting[]>([])
   const [showPopupQuest, setShowPopupQuest] = useState(false)
@@ -119,36 +121,25 @@ export default function CharacterQuests(props: CharacterQuestsProps){
 
         return (
           <div key={qg.id} className='quest-group'>
-            <CustomContainer
-              expandable={true}
-              expanded={true}
-              isChildCustomContainer={true}
-              title={
-                <div
-                  className='quest-group-title'
-                  onClick={() => handleShowPopup('quest-group', qg.id)}
-                >
-                  {qg?.title}
-                </div>
-              }
-              description={qg?.description}
-              headerLeft={
-                <span>
-                  {completedAmount?.length} / {relatedQuests?.length}
-                </span>
-              }
-            >
-              <div className='quest-group-quest-list'>
-                {relatedQuests?.map(q => {
-                  return <CharacterQuest
+            <div className='quest-group-title'>
+              {qg.title}
+            </div>
+            <div className='quest-group-description'>
+              {qg.description}
+            </div>
+            <div className='quest-group-quest-list reveal'>
+              {relatedQuests?.map(q => {
+                return <div>
+                  <CharacterQuest
                     {...props}
                     key={q.quest.id}
                     handleShowPopup={handleShowPopup}
                     quest={q.quest}
+                    showActions={true}
                   />
-                })}
-              </div>
-            </CustomContainer>
+                </div>
+              })}
+            </div>
           </div>
         )
       })}

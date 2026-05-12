@@ -1,3 +1,4 @@
+import type { ProfessionType } from '../../data/items/professions/Profession.Gathering.data'
 import type { Stats } from '../characters/Character.types'
 
 export const ITEM_TYPES = {
@@ -28,6 +29,10 @@ export type ItemType =
   //Everything except currencies
   | 'general'
 export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'legendary' | 'epic' | 'unique'
+export interface ItemGold {
+  sell: number
+  buy: number
+}
 export interface Item {
   id: string
   name: string
@@ -35,4 +40,6 @@ export interface Item {
   rarity: ItemRarity
   type: ItemType
   stats: Stats
+  gold: ItemGold,
+  profession?: ProfessionType
 }

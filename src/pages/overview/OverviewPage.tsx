@@ -22,7 +22,6 @@ export default function OverviewPage(props: OverviewPageProps){
     handleSetCharacter,
     handleResetEverything,
   } = props
-  const [newCharacterModalOpen, setNewCharacterModalOpen] = useState(false)
   const [showTutorial, setShowTutorial] = useState(character ? false : true)
   const [expandHistory, setExpandHistory] = useState(false)
 
@@ -93,54 +92,7 @@ export default function OverviewPage(props: OverviewPageProps){
         }
       ]
     }
-
-    const wouldBeCurrencyId = `${character?.id}__${characterInventories?.find(inv => inv.title === 'Currency')?.id}`
-    const wouldBeNapsackId = `${character?.id}__${characterInventories?.find(inv => inv.title === 'Napsack')?.id}`
-
-    return [
-      {
-        selector: '#tutorial-character',
-        content: 'This will display your stats and other information like counts of various things while you journey.',
-        action: () => {navigate({ hash: '#tutorial-current-quest' })},
-        waitMillis: 500
-      },
-      {
-        selector: '#tutorial-current-quest',
-        content: 'This will display current quest if you are on one. You will need to head to the adventurer\'s guild to manage your current quest through the guild clerk.',
-        action: () => {navigate({ hash: '#tutorial-inventory' })},
-        waitMillis: 500
-      },
-      {
-        selector: '#tutorial-inventory',
-        content: 'You can interact with inventory items here.',
-        action: () => {navigate({ hash: `#${wouldBeCurrencyId}` })},
-        waitMillis: 200
-      },
-      {
-        selector: `#${wouldBeCurrencyId}`,
-        content: 'You start with 20 gold. The currency pouch can contain any type of currency without limit.',
-        action: () => {navigate({ hash: `#${wouldBeNapsackId}` })},
-        waitMillis: 200
-      },
-      {
-        selector: `#${wouldBeNapsackId}`,
-        content: 'You start with an 8 slot napsack pouch that contains 5 health potions. Items stack unless they are not the same stats. So be sure to bank or trade items regularly to avoid full inventory issues.',
-        action: () => {navigate({ hash: '#tutorial-history' })},
-        waitMillis: 500
-      },
-      {
-        selector: '#tutorial-history',
-        content: 'You can view recent history here. Click "show" to expand.',
-        action: () => {setExpandHistory(true); navigate({hash: '#hi__0__0'})},
-        waitMillis: 200
-      },
-      {
-        selector: '#hi__0__0',
-        content: 'These history items show item gains, achievements earned, quest received and complete, and groups them into days.',
-        action: () => {setExpandHistory(false); navigate({hash: '#overview-top'})},
-        waitMillis: 200
-      }
-    ]
+    return []
   }, [character, characterInventories])
 
   return <>

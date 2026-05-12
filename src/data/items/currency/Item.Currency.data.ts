@@ -11,7 +11,11 @@ export const ITEM_CURRENCY_GOLD: Item = {
   description: 'Most accepted currency in the realm.',
   type: ITEM_TYPES.CURRENCY,
   rarity: ITEM_RARITY.COMMON,
-  stats: EMPTY_STATS
+  stats: EMPTY_STATS,
+  gold: {
+    buy: 1,
+    sell: 1
+  },
 }
 
 export const ITEM_CURRENCY_ALL: Item[] = [

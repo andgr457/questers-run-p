@@ -7,7 +7,8 @@ export class QuestGroupRepository {
   async list(): Promise<QuestGroup[]>{
     return [
       QUEST_GROUP_INTRO,
-      QUEST_GROUP_GATHRING
+      QUEST_GROUP_GATHRING,
+      
     ]
   }
 }

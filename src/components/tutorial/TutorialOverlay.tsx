@@ -120,14 +120,14 @@ export const TutorialOverlay = ({
       step.action?.()
 
       // wait for layout + animations
-      await new Promise(resolve => setTimeout(resolve, step?.waitMillis ?? 1000))
+      await new Promise(resolve => setTimeout(resolve, step?.waitMillis ?? 250))
       onComplete?.()
       setShowToolTip(true)
       return
     }
     step.action?.()
     // wait for layout + animations
-    await new Promise(resolve => setTimeout(resolve, step?.waitMillis ?? 1000))
+    await new Promise(resolve => setTimeout(resolve, step?.waitMillis ?? 250))
     setCurrentStep(s => s + 1)
     setShowToolTip(true)
   }

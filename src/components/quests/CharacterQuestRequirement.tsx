@@ -1,32 +1,92 @@
-import type { QuestCompletionRequirement } from '../../interfaces/quests/Quests.types'
-import type { QuestWithQuestProgress } from './CharacterQuests'
+import { DateTime } from 'luxon'
+import type { Achievement } from '../../interfaces/achievements/Achievement.types'
+import type { Item } from '../../interfaces/items/Item.types'
 
 interface CharacterQuestRequirementProps {
-  requirement: QuestCompletionRequirement
-  questWithProgress: QuestWithQuestProgress
+  started: boolean
+  completed: boolean
+  timeMinutes?: number
+  achievement?: Achievement
+  startDate?: string
+  item?: Item
+  questItemTotal?: number
+  characterItemTotal?: number
 }
 
 export default function CharacterQuestRequirement(props: CharacterQuestRequirementProps){
   const {
-    requirement,
-    questWithProgress,
+    started,
+    completed,
+    item,
+    timeMinutes,
+    achievement,
+    startDate,
+    questItemTotal = 0,
+    characterItemTotal = 0
   } = props
 
-  const achievement = questWithProgress?.questRequirementsAchievements?.find(a => a?.id === requirement.achievementId)
-  const item = questWithProgress?.questRequirementsItems?.find(i => i?.id === requirement.itemId)
-  const txns = questWithProgress?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === requirement.itemId) ?? []
-  let txnTotal = 0
-  for(const txn of txns){
-    txnTotal += txn.quantity
+  let progressInfo = ''
+  let progressPercent = 0
+  if(timeMinutes && startDate){
+    const leftDate = DateTime.fromISO(startDate)
+    const elapsedMinutes = Math.abs(leftDate.diffNow('minutes').minutes)
+    const leftMinutes = timeMinutes - elapsedMinutes
+    if(leftMinutes < 0){
+      progressInfo = ''
+      progressPercent = 100
+    } else {
+      progressInfo = `| ${leftMinutes.toFixed(1)} minute(s) remaining.`
+      progressPercent = Math.min(100, (elapsedMinutes / timeMinutes) * 100)
+
+    }
   }
-  return <div  className={requirement.completed === true ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
+  if(item){
+    if(characterItemTotal && questItemTotal){
+      progressInfo = ``
+      progressPercent = Math.min(100, (characterItemTotal / questItemTotal) * 100)
+    }
+  }
+  
+  return <div  className={completed === true ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
     <div>
       <div style={{float: 'left'}}>
-        {requirement.completed === true ? '✔' : '✘'}
+        {completed === true ? '✔' : '✘'}
       </div>
-      {requirement.timeMinutes && <><strong>{requirement.timeMinutes}</strong> Minute(s) Long</>}
-      {requirement.achievementId && <div title={achievement?.description}>Achivement: <strong>{achievement?.title}</strong></div>}
-      {requirement.itemId && requirement.itemAmount && <><strong>{txnTotal > requirement.itemAmount ? requirement.itemAmount : txnTotal}/{requirement.itemAmount} {item?.name}</strong></>}
+      {timeMinutes && <><strong>{timeMinutes}</strong> minute(s) Long {progressInfo}</>}
+      {started === true && completed === false && timeMinutes && <><div
+        className={`
+          character-stat-card-bar
+          ${'attribute-bar'}
+        `}
+      >
+        <div
+          className={`
+            character-stat-card-fill
+            ${'attribute-fill'}
+          `}
+          style={{
+            width: `${progressPercent}%`
+          }}
+        />
+      </div></>}
+      {achievement?.id && <div title={achievement?.description}>Achivement: <strong>{achievement?.title}</strong></div>}
+      {item && <strong>{characterItemTotal} / {questItemTotal} {item?.name}</strong>}
+      {started === true && completed === false && item && <><div
+        className={`
+          character-stat-card-bar
+          ${'attribute-bar'}
+        `}
+      >
+        <div
+          className={`
+            character-stat-card-fill
+            ${'attribute-fill'}
+          `}
+          style={{
+            width: `${progressPercent}%`
+          }}
+        />
+      </div></>}
     </div>
   </div>
 }

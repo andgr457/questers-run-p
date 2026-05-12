@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { GuildRanks, type Character } from '../../interfaces/characters/Character.types'
-import { useNavigate } from 'react-router-dom'
 import { TutorialOverlay, type TutorialStep } from '../../components/tutorial/TutorialOverlay'
-import AdventurersGuildClerk from '../../components/adventurers-guild/AdventurersGuildClerk'
 import { useConfirm } from '../../providers/ConfirmProvider'
 import { ACHIEVEMENT_INTRO_ADVENTURERS_GUILD } from '../../data/achievements/Achievements.Intro.data'
 import { DateTime } from 'luxon'
 import PageHeader from '../../components/PageHeader'
-import { AdventurersGuildDiscussionIndexes } from '../../data/discussions/adventurers-guild/Discussions.AdventurersGuild.data'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import { useWindows } from '../../components/windows/WindowProvider'
 import CharacterQuests, { type QuestWithQuestProgress } from '../../components/quests/CharacterQuests'
 import { sleep } from '../../services/CommonServices'
+import AdventurersGuildClerk from '../../components/adventurers-guild/AdventurersGuildClerk'
 
 interface AdventurersGuildPageProps extends AppProperties {
 
@@ -20,18 +18,16 @@ interface AdventurersGuildPageProps extends AppProperties {
 export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     const {
     character,
-    characterQuestProgress,
     setLocation,
     handleSetCharacter,
     handleAddHistory,
     handleCompleteQuest,
+    handleAbandonQuest,
   } = props
   const [showTutorial, setShowTutorial] = useState(!character?.guildRank ? true : false)
-  const [requestedDiscussionId, setRequestedDiscussionId] = useState<number | undefined>(undefined)
   const [showModule, setShowModule] = useState<'' | 'quest-board'>('')
   
   const {showConfirm} = useConfirm()
-  const navigate = useNavigate()
 
   useEffect(() => {
     setLocation?.('Adventurer\'s Guild')
@@ -49,41 +45,42 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     return windows.some(w => w.id === id)
   }
 
-  function toggleWindow(id: string, title: string, content: React.ReactNode) {
-    if (isWindowOpen(id)) {
-      closeWindow(id)
-      return
+  // function toggleWindow(id: string, title: string, content: React.ReactNode) {
+  //   if (isWindowOpen(id)) {
+  //     closeWindow(id)
+  //     setRequestedDiscussionId(undefined)
+  //     return
+  //   }
+
+  //   openWindow(
+  //     id,
+  //     title,
+  //     <div>
+  //       {content}
+  //     </div>
+  //   )
+  // }
+
+  const showClerk = useCallback(() => {
+    if (isWindowOpen('clerk')) {
+      closeWindow('clerk')
     }
 
     openWindow(
-      id,
-      title,
-      <div>
-        {content}
-      </div>
+      'clerk',
+      `Adventurer's Guild Clerk`,
+      <AdventurersGuildClerk       
+        {...props}
+        onJoin={handleJoinClicked} 
+      />
     )
-  }
-
-  const handleQuestCompleteAction = useCallback(async (questWithProgress: QuestWithQuestProgress) => {
-    await handleCompleteQuest?.(questWithProgress)
-    closeWindow('clerk')
-    navigate('/adventurers-guild')
-  }, [handleCompleteQuest])
-
-  function toggleClerk() {
-    toggleWindow('clerk', `Adventurer's Guild Clerk`, <AdventurersGuildClerk       
-      {...props}
-      onJoin={handleJoinClicked} 
-      handleCompleteQuest={handleQuestCompleteAction} 
-      discussionId={requestedDiscussionId}
-    />)
-  }
+  }, [openWindow])
 
   const joinGuildSteps: TutorialStep[] = [
     {
       selector: '#tutorial-join-guild',
       content: 'Click here to speak with the clerk to join the Adventurer\'s Guild and for information about different guild actions.',
-      action: () => {toggleClerk()}
+      action: () => {showClerk()}
     },
   ]
 
@@ -127,11 +124,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     closeWindow('clerk')
   }, [character])
 
-  const handleQuestCheckClicked = useCallback(async () => {
-    setRequestedDiscussionId(AdventurersGuildDiscussionIndexes.ActionQuestCheck_1)
-    toggleClerk()
-  }, [])
-  
   const characterJoined = character?.guildRank !== GuildRanks.None
   if(!character){
     return null
@@ -155,30 +147,30 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     />}
     <div className='page-main'>
       <PageHeader showActions={true}>
-        {characterJoined && <button className='basic'
-          onClick={() => {
-            // setShowTutorial(true)
-          }}
-        >
-          Adventurer's Guild Tutorial
-        </button>}
+        
         <button id='tutorial-join-guild' className='basic'
-          onClick={() => {toggleClerk()}}
+          onClick={() => {
+            showClerk()
+          }}
         >
           Guild Clerk
         </button>
-
-        {characterJoined && <>
-          <button className='yellow' onClick={() => {}}>Guild Store</button>
-          <button className='yellow' onClick={() => {handleQuestCheckClicked()}}>Quest Check</button>
-          <button className='yellow' onClick={() => {}}>Rank Check</button>
-          <button className='yellow' onClick={() => {}}>Appraise Items</button>
-          <button className='yellow' onClick={() => {}}>Create Quest</button>
-        </>}
+        {characterJoined && <button className='basic'
+          onClick={async () => {
+            setShowModule('quest-board')
+          }}
+        >
+          Quests
+        </button>}
       </PageHeader>
-      {showModule === 'quest-board' && <div>
-        <CharacterQuests {...props} />
-      </div>}
+      <div>
+        {showModule === 'quest-board' && <div className='app-module'>
+          <div className='app-module-title'>
+            Quest Board
+          </div>
+          <CharacterQuests {...props} />
+        </div>}
+      </div>
     </div>
   </div>
 }
