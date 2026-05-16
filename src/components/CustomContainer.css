@@ -60,7 +60,8 @@
 .container-group {
   margin: 0px 0 5px 0;
   padding: 0 5px;
-  font-size: 12px;
+  /* font-size: 12px; */
+  font-size: 0.8em;
   word-wrap: break-word;
   border: outset var(--blue-sd-light);
   border-width: 0 1px 1px 1px;
@@ -140,13 +141,14 @@
 
 .container-header-left {
   justify-content: left;
+  font-size: 0.8em;
   min-width: 75px;
   padding-left: 10px;
   padding-top: 4px;
 }
 
 .container-header-title {
-  font-size: 1.5em;
+  font-size: 1.3em;
   min-width: 50%;
 }
 
@@ -160,7 +162,7 @@
   text-shadow: 0 1px 2px var(--text);
   text-transform: uppercase;
   width: 100%;
-  font-size: 1.2em;
+  font-size: 0.8em;
 }
 
 .container-header-expander:hover {

@@ -2,7 +2,7 @@
   overflow: auto;
   margin: 0px 0 5px 0;
   padding: 12px 12px;
-  font-size: 12px;
+  /* font-size: 12px; */
   word-wrap: break-word;
   border-radius: 0 0 6px 6px;
   height: fit-content;

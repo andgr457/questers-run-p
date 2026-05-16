@@ -11,6 +11,7 @@ import { ItemRepository } from '../../repository/items/ItemRepository';
 export class QuestService {
   protected achievementRepo: AchievementRepository
   protected itemRepo: ItemRepository
+  
   constructor(){
     this.achievementRepo = new AchievementRepository()
     this.itemRepo = new ItemRepository()
@@ -39,6 +40,7 @@ export class QuestService {
       const relatedQuests: Quest[] = []
       const relatedTxns: InventoryTransaction[] = []
       for(const req of q.startRequirements){
+        req.completed = false
         if(req.itemId){
           if(!relatedItems.find(ri => ri.id === req.itemId)){
             const item = await this.itemRepo.byId(req.itemId)
@@ -69,6 +71,7 @@ export class QuestService {
         }
       }
       for(const req of q.completionRequirements){
+        req.completed = false
         if(req.itemId){
           if(!relatedItems.find(ri => ri.id === req.itemId)){
             const item = await this.itemRepo.byId(req.itemId)
@@ -94,6 +97,7 @@ export class QuestService {
       }
 
       for(const req of q.completionRequirements){
+        req.completed = false
         if(req.achievementId){
           if(character.achievements.find(a => a.achievementId === req.achievementId)){
             req.completed = true
@@ -107,24 +111,24 @@ export class QuestService {
         }
 
         if(req.itemId && req.itemAmount){
+          let relatedAmount = 0
           for(const inventory of characterInventories){
             const relatedTxns = inventory.transactions.filter(t => t.itemId === req.itemId)
-
-            let relatedAmount = 0
+            
             for(const txn of relatedTxns){
               relatedAmount += txn.quantity
             }
 
-            if(relatedAmount >= req.itemAmount){
-              req.completed = true
-            } else {
-              canComplete = false
-            }
+          }
+          
+          if(relatedAmount >= req.itemAmount){
+            req.completed = true
+          } else {
+            canComplete = false
           }
         }
 
         if(req.timeMinutes){
-          req.completed = false
           if(progress?.startDate && progress?.status === 'in-progress'){
             const startDate = DateTime.fromISO(progress.startDate as string)
             const minutesElapsed = Math.abs(startDate.diffNow('minutes').minutes)
@@ -141,8 +145,9 @@ export class QuestService {
       
       const group = questGroups.find(qg => qg.id === q.groupId)
       
-      let canTake = !anyQuestInProgress
+      let canTake = anyQuestInProgress === false
       for(const req of q.startRequirements){
+        req.completed = false
         if(req.achievementId){
           if(character.achievements.find(a => a.achievementId === req.achievementId)){
             req.completed = true
@@ -198,12 +203,13 @@ export class QuestService {
         }
       }
       
+      const rewardItems = []
       for(const reward of q.rewards){
         if(reward.itemId){
           const relatedItem = relatedItems.find(ri => ri.id === reward.itemId)
           if(!relatedItem){
             const item = await this.itemRepo.byId(reward.itemId)
-            relatedItems.push(item as Item)
+            rewardItems.push(item as Item)
           }
         }
       }
@@ -217,7 +223,8 @@ export class QuestService {
         questRequirementsQuests: relatedQuests,
         questRequirementsAchievements: relatedAchievements,
         questRequirementsItems: relatedItems,
-        questRequirementsInventoryTxns: relatedTxns
+        questRequirementsInventoryTxns: relatedTxns,
+        questRewardItems: rewardItems
       }
       questsWithProgress.push(mergeItem)
     }

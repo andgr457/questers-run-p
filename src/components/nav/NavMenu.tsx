@@ -13,7 +13,7 @@ interface NavMenuProps extends AppProperties {
 }
 
 export default function NavMenu(props: NavMenuProps) {
-  const [subNavSelected, setSubNavSelected] = useState('')
+  const [subNavSelected, setSubNavSelected] = useState('town')
   const {
     windowRequestId,
     character
@@ -90,20 +90,32 @@ export default function NavMenu(props: NavMenuProps) {
   }  
   
   const handleNavigate = async (url: string) => {
-    setSubNavSelected('')
+    // setSubNavSelected('')
     // if(['/adventurers-guild'].includes(url)){
     //   await new Promise(resolve => setTimeout(resolve, 500))
     // }
     navigate(url)
   }
 
+  const townItems = [
+    { title: 'Overview', navTo: '/' },
+    { title: `Adventurer's Guild`, navTo: '/adventurers-guild' },
+    { title: `Tavern`, navTo: '/tavern' },
+  ]
+
+  const professionItems = [
+    { title: 'Gathering', navTo: '/profession/gathering' },
+    { title: 'Fishing', navTo: '/profession/fishing' },
+    { title: 'Cooking', navTo: '/profession/cooking' },
+    { title: 'Mining', navTo: '/profession/mining' },
+  ]
+
   const divider = <div className='nav-divider'>|</div>
   return (
-    <div onMouseLeave={() => {setSubNavSelected('')}}>
+    <div >
       <div className='nav flex-wrap gap-1' >
         <div 
           className='nav-item' 
-          onMouseEnter={() => {setSubNavSelected('')}}
           onClick={() => {handleNavigate('/')}}
         >
           Quester's Run
@@ -112,18 +124,26 @@ export default function NavMenu(props: NavMenuProps) {
         {characterNotExists === false && <>
                   {divider}
           <div className='flex-wrap gap-2'>
-            <div className='nav-item' 
+            <div className={`nav-item ${
+              subNavSelected === 'town'
+                  ? 'active'
+                  : ''
+              }`}
               onMouseEnter={() => {setSubNavSelected('town')}}
-              onClick={() => {setSubNavSelected(subNavSelected === 'town' ? '' : 'town')}}
+              onClick={() => {setSubNavSelected('town')}}
             >
               Town
             </div>
           </div>
           {divider}
           <div className='flex-wrap gap-2'>
-            <div className='nav-item' 
+            <div className={`nav-item ${
+              subNavSelected === 'profession'
+                  ? 'active'
+                  : ''
+              }`}
               onMouseEnter={() => {setSubNavSelected('profession')}}
-              onClick={() => {setSubNavSelected(subNavSelected === 'profession' ? '' : 'profession')}}
+              onClick={() => {setSubNavSelected('profession')}}
             >
               Professions
             </div>
@@ -182,79 +202,37 @@ export default function NavMenu(props: NavMenuProps) {
       
       {/* travel sub items */}
       <div className={`nav-sub-items ${subNavSelected === 'town' ? 'open' : ''}`}>
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/')}}
-        >
-          Overview
-        </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/guild')}}
-        >
-          Guild
-        </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/adventurers-guild')}}
-        >
-          Adventurer's Guild
-        </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/tavern')}}
-        >
-          Tavern
-        </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/blacksmith')}}
-        >
-          Blacksmith
-        </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('alchemist')}}
-        >
-          Alchemist
-        </div>
+        {townItems.map(i => {
+          const path = window.location.href.replace(window.location.origin, '')
+          return <div
+          onClick={() => {handleNavigate(i.navTo)}}
+            className={`nav-item ${
+              path === i.navTo
+                  ? 'active'
+                  : ''
+              }`}
+          >
+            {i.title}
+          </div>
+        })}
+        
       </div>
 
       {/* profession sub items */}
       <div className={`nav-sub-items ${subNavSelected === 'profession' ? 'open' : ''}`}>
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/profession/gathering')}}
-        >
-          Gathering
-        </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/profession/fishing')}}
-        >
-          Fishing
-        </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/profession/cooking')}}
-        >
-          Cooking
-        </div>
-        {divider}
-        <div 
-          className='nav-item'
-          onClick={() => {handleNavigate('/profession/mining')}}
-        >
-          Mining
-        </div>
-        
+         {professionItems.map(i => {
+          const path = window.location.href.replace(window.location.origin, '')
+          return <div
+          onClick={() => {handleNavigate(i.navTo)}}
+            className={`nav-item ${
+              path === i.navTo
+                  ? 'active'
+                  : ''
+              }`}
+          >
+            {i.title}
+          </div>
+        })}
       </div>
     </div>
   );

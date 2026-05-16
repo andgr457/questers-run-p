@@ -1,9 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css'
-import GuildPage from './pages/guild/GuildPage';
 import OverviewPage from './pages/overview/OverviewPage'
 import { useConfirm } from './providers/ConfirmProvider';
-import QuestsPage from './pages/quests/QuestsPage';
 import AdventurersGuildPage from './pages/adventurers-guild/AdventurersGuildPage';
 import TownPage from './pages/TownPage';
 import { WindowProvider } from './components/windows/WindowProvider';
@@ -32,6 +30,10 @@ import './form-controls.css'
 import { AchievementRepository } from './repository/achievements/AchievementRepository';
 import type { Achievement } from './interfaces/achievements/Achievement.types';
 import ProfessionGatheringPage from './pages/professions/ProfessionsGatheringPage';
+import type { ProfessionType } from './interfaces/professsions/Profession.types';
+import ProfessionMiningPage from './pages/professions/ProfessionsMiningPage';
+import ProfessionFishingPage from './pages/professions/ProfessionsFishingPage';
+import TavernPage from './pages/tavern/TavernPage';
 
 function App() {
   const [location, setLocation] = useState('Overview')
@@ -66,6 +68,38 @@ function App() {
     setAllQuestProgress([])
     window.location.href = '/'
   }, [])
+
+  const handleResetProfession = useCallback(async (professionType: ProfessionType) => {
+    //@ts-ignore
+    let characterProfessionStat = {...character?.professions[professionType]}
+    if(!characterProfessionStat) return
+
+    if(!await showConfirm({
+      title: 'Are you sure?',
+      message: `This will reset the ${professionType.toUpperCase()} profession for your character. Are you sure you wish to continue?`,
+      isYesNo: true
+    })) return
+    
+    if(character){
+      //@ts-ignore
+      if(professionType === 'gathering'){
+        characterProfessionStat = {
+          name: 'Gathering',
+          hint: '',
+          value: 0,
+          level: 0,
+          nextLevelXP: 100,
+          xp: 0,
+        }
+        const newCharacter = {...character as Character}
+        //@ts-ignore
+        newCharacter.professions[professionType] = {...characterProfessionStat}
+        setCharacter({...newCharacter})
+      }
+    }
+
+    window.location.href = '/'
+  }, [character])
 
   const dataRef = useRef({
     character,
@@ -162,6 +196,97 @@ function App() {
     setInventories(newInventories)
   }, [inventories])
 
+  const handleTavernItemStart = useCallback(async (goldCost: number) =>{
+    const currency = characterInventories?.find(i => i.title === 'Currency')
+    if(currency){
+      currency.transactions.push({
+        id: `invtxn__${ITEM_CURRENCY_IDS.GOLD}__${character?.id}__${DateTime.utc().toMillis()}`,
+        date: DateTime.utc().toISO(),
+        itemId: ITEM_CURRENCY_IDS.GOLD,
+        note: `Tavern cost`,
+        quantity: goldCost * -1
+      })
+    }
+    const newInv = []
+    for(const inv of inventories){
+      if(inv.id === currency?.id){
+        newInv.push({...currency})
+      } else {
+        newInv.push(inv)
+      }
+    }
+    setInventories(newInv)
+  }, [inventories])
+
+  const handleTavernItemComplete = useCallback(async (percentChange: number) => {
+    const newCharacter = {...character as Character}
+    const divisor = percentChange / 100
+
+    if(newCharacter.stats){
+      if(newCharacter.stats.hp){
+        if(newCharacter.stats?.hp?.max){
+          const amountToAdd = newCharacter.stats.hp.max * divisor
+          newCharacter.stats.hp.value += amountToAdd
+          if(newCharacter.stats.hp.value > newCharacter.stats.hp.max){
+            newCharacter.stats.hp.value = newCharacter.stats.hp.max
+          }
+        }
+      }
+      if(newCharacter.stats.mp){
+        if(newCharacter.stats?.mp?.max){
+          const amountToAdd = newCharacter.stats.mp.max * divisor
+          newCharacter.stats.mp.value += amountToAdd
+          if(newCharacter.stats.mp.value > newCharacter.stats.mp.max){
+            newCharacter.stats.mp.value = newCharacter.stats.mp.max
+          }
+        }
+      }
+      if(newCharacter.stats.stamina){
+        if(newCharacter.stats?.stamina?.max){
+          const amountToAdd = newCharacter.stats.stamina.max * divisor
+          newCharacter.stats.stamina.value += amountToAdd
+          if(newCharacter.stats.stamina.value > newCharacter.stats.stamina.max){
+            newCharacter.stats.stamina.value = newCharacter.stats.stamina.max
+          }
+        }
+      }
+    }
+    setCharacter({...newCharacter as Character})
+  }, [character])
+
+  const handleProfessionItemStart = useCallback(async (professionItemId: string, amount: number) => {
+    const newCharacter = {...character as Character}
+    const item = items.find(i => i.id === professionItemId)
+    if(newCharacter.stats.stamina && item && item.profession){
+      const statminaDrain = item.profession.stamina * amount
+      const newValue = newCharacter.stats.stamina.value - statminaDrain
+      newCharacter.stats.stamina.value = newValue
+      setCharacter({...newCharacter as Character})
+    }
+  }, [character, items])
+
+  const handleProfessionStatLevel = (c: Character, item: Item, amount: number) => {
+    //@ts-ignore
+    const characterProfessionStat = {...c?.professions[item.profession.type as ProfessionType]}
+    if(typeof characterProfessionStat?.xp === 'number' && typeof characterProfessionStat?.nextLevelXP === 'number' && item?.profession){
+      const firstXpValue = (amount * item?.profession?.xp) + characterProfessionStat.xp
+      const overNextLevelValue = characterProfessionStat.nextLevelXP - firstXpValue
+      let canLevel = overNextLevelValue <= 0
+      if(canLevel && typeof characterProfessionStat.level === 'number'){
+        const leftOverXp = Math.abs(overNextLevelValue)
+        characterProfessionStat.level += 1
+        characterProfessionStat.xp = 0 + leftOverXp
+        characterProfessionStat.nextLevelXP += 10
+      } else {
+        characterProfessionStat.xp += (amount * item?.profession?.xp)
+      }
+      const newCharacter = {...c as Character}
+      //@ts-ignore
+      newCharacter.professions[item.profession.type] = {...characterProfessionStat}
+      setCharacter({...newCharacter})
+    }
+  }
+
   const handleDoProfessionItemComplete = useCallback(async (professionItemId: string, amount: number) => {
     let invRef = undefined
     for(const inv of characterInventories ?? []){
@@ -192,7 +317,11 @@ function App() {
       }
     }
     setInventories(newAllInventories)
-  }, [items, characterInventories, inventories])
+    const item = items.find(i => i.id === professionItemId)
+    if(typeof item?.profession?.xp === 'number'){
+      handleProfessionStatLevel(character as Character, item, amount)
+    }
+  }, [items, characterInventories, inventories, character])
 
   const handleAbandonQuest = useCallback(async (questProgressId: string) => {
     const foundProgress = characterQuestProgress?.find(p => p.questProgress?.id === questProgressId)
@@ -216,8 +345,6 @@ function App() {
   }, [characterQuestProgress])
 
   const handleAddQuest = useCallback(async (quest: Quest, characterId: string) => {
-    const characterProgress = characterQuestProgress?.find(qp => qp.quest.id === quest.id && qp.questProgress?.characterId === characterId)
-
     const newCharacter = {...character}
     for(const req of quest?.startRequirements ?? []){
       if(req.stats){
@@ -255,6 +382,8 @@ function App() {
 
     const progress = questProgress.questProgress
     const rewards = questProgress.quest.rewards
+    const completionRequirements = questProgress.quest.completionRequirements
+
     const currency = characterInventories.find(ci => ci.title === 'Currency')
     const backpack = characterInventories.find(ci => ci.title === 'Backpack')
 
@@ -269,6 +398,7 @@ function App() {
       return
     }
     const newHistory: CharacterHistory[] = []
+    
     let totalXp = 0
     for(const r of rewards){
       if(r.itemId){
@@ -306,6 +436,21 @@ function App() {
         totalXp += r.xp
       }
     }
+    //remove any quest completion required items
+    for(const req of completionRequirements ?? []){
+      if(typeof req.itemAmount === 'number'){
+        const item = items.find(i => i.id === req.itemId)
+        if(item){
+          backpack.transactions.push({
+            id: `invtxn__${req.itemId}__${questProgress?.questProgress?.characterId}__${DateTime.utc().toMillis()}`,
+            date: DateTime.utc().toISO(),
+            itemId: req.itemId as string,
+            note: 'Quest Item Removal',
+            quantity: (req.itemAmount * -1) as number
+          })
+        }
+      }
+    }
 
     //all inv
     const allInv = []
@@ -321,18 +466,26 @@ function App() {
     setInventories(allInv)
     if(totalXp > 0){
       const newCharacter = {...character}
-      let prevXp = newCharacter.xp
-      if(!prevXp){
-        prevXp = 0
+      if(newCharacter.xp && newCharacter.levelNextXP){
+        const firstXpValue = totalXp + newCharacter.xp
+        const overNextLevelValue = newCharacter.levelNextXP - firstXpValue
+        let canLevel = overNextLevelValue <= 0
+        if(canLevel && typeof newCharacter.level === 'number'){
+          const leftOverXp = Math.abs(overNextLevelValue)
+          newCharacter.level += 1
+          newCharacter.xp = 0 + leftOverXp
+          newCharacter.levelNextXP += 10
+        } else {
+          newCharacter.xp += totalXp
+        }
       }
-
-      newCharacter.xp = prevXp + totalXp
+      
       setCharacter({...newCharacter} as Character)
       newHistory.push({
         id: `h_${character?.id}_${questProgress.quest.id}_xp_${DateTime.utc().toMillis()}`,
         characterId: character?.id as string,
         date: DateTime.utc().toISO(),
-        description: `Quest Reward: ${newCharacter.xp?.toLocaleString()} XP received!`,
+        description: `Quest Reward: ${totalXp?.toLocaleString()} XP received!`,
       })
     }
 
@@ -402,13 +555,17 @@ function App() {
     history,
     allQuestsWithProgress: allQuestsWithQuestProgress,
     
+    handleResetEverything,
+    handleResetProfession,
     handleAddHistory,
     handleAddInventory,
+    handleProfessionItemStart,
     handleDoProfessionItemComplete,
+    handleTavernItemStart,
+    handleTavernItemComplete,
     handleAddQuest,
     handleAbandonQuest,
     handleCompleteQuest,
-    handleResetEverything,
     handleSetRequestedWindowId: setRequestedWindowId,
     handleSetCharacter: setCharacter,
     setLocation
@@ -436,10 +593,11 @@ function App() {
                 {character?.name}{
                   <>
                     <Route path='/town' element={<TownPage />} />
-                    <Route path='/guild' element={<GuildPage />} />
-                    <Route path='/quests' element={<QuestsPage />} />
+                    <Route path='/tavern' element={<TavernPage {...appProps} />} />
                     <Route path='/adventurers-guild' element={<AdventurersGuildPage {...appProps} />} />
                     <Route path='/profession/gathering' element={<ProfessionGatheringPage {...appProps} />} />
+                    <Route path='/profession/mining' element={<ProfessionMiningPage {...appProps} />} />
+                    <Route path='/profession/fishing' element={<ProfessionFishingPage {...appProps} />} />
 
                   </>
                 }

@@ -1,7 +1,6 @@
-import type { Quest, QuestCompleteProps, QuestGroup } from '../../interfaces/quests/Quests.types'
+import type { Quest, QuestGroup } from '../../interfaces/quests/Quests.types'
 import { ITEM_CURRENCY_IDS } from '../items/currency/Item.Currency.data'
 import { ITEM_GATHERING_SMALL_STONE, ITEM_GATHERING_STICK } from '../items/gathering/Item.Gathering.data'
-import { EMPTY_STATS } from '../Stats.data'
 import { QUEST_INTRO_IDS } from './Quests.Intro.data'
 
 export const QUEST_GATHERING_IDS = {
@@ -12,8 +11,8 @@ const QUEST_GROUP_INTRO_ID = 'qg_gathering'
 
 export const QUEST_GROUP_GATHRING: QuestGroup = {
   id: QUEST_GROUP_INTRO_ID,
-  title: 'Adventurer\'s Guild Gathering',
-  description: 'Collect resources for the guild and receive rewards for requested items!'
+  title: 'Gathering Profession',
+  description: 'Gather resources for the guild to receive rewards.'
 }
 
 export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
@@ -42,7 +41,13 @@ export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
       completed: false
     },
     {
-      stats: EMPTY_STATS,
+      stats: {
+        stamina: {
+          name: 'Stamina',
+          value: 10,
+          hint: ''
+        }
+      },
       completed: false
     }
   ],

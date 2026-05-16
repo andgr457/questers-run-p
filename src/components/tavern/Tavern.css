@@ -1,17 +1,14 @@
-.profession-amount-buttons button {
-  width: 50px;  
-}
-
-.profession-item-list {
+.tavern-item-list {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
   padding: 14px;
   font-size: 0.8em;
+
   background: var(--bg-dark);
 }
 
-.profession-item {
+.tavern-item {
   cursor: pointer;
   color: var(--text);
   background: var(--bg-dark-2);
@@ -23,11 +20,11 @@
   border-radius: 3px;
 }
 
-.profession-item:hover {
+.tavern-item:hover {
   filter: brightness(1.1);
 }
 
-.profession-item-title {
+.tavern-item-title {
   text-align: center;
   font-size: 1em;
   letter-spacing: 2px;
@@ -35,7 +32,7 @@
   padding: 7px;
 }
 
-.profession-item-description {
+.tavern-item-description {
   padding: 7px;
   font-size: 0.85em;
   letter-spacing: 1px;
@@ -45,11 +42,11 @@
   transition: all 0.2s;
 }
 
-.profession-item-description:hover {
+.tavern-item-description:hover {
   filter: brightness(1.1);
 }
 
-.profession-item-info {
+.tavern-item-info {
   font-size: 0.8rem;
   line-height: 1.3;
   padding: 7px;
@@ -60,21 +57,21 @@
   transition: all 0.2s;
 }
 
-.profession-item-info:hover {
+.tavern-item-info:hover {
   filter: brightness(1.1);
   transform: scale(1.1);
 }
 
-.profession-item-actions {
+.tavern-item-actions {
 
 }
 
 @media (max-width: 768px) {
-  .profession-item {
+  .tavern-item {
     width: 100%;
     margin-top: 4px;
   }
-  .profession-item-list {
+  .tavern-item-list {
     display: block;
   }
 }

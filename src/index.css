@@ -131,6 +131,7 @@ body {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+  font-size: 20px;
 
   min-height: 100vh;
 
@@ -173,7 +174,8 @@ body {
   
   text-align: center;
   color: var(--text);
-  background-color: var(--bg-dark);
+  background-color: var(--bg-dark-3);
+  font-size: 1.3em;
 }
 
 button {
@@ -244,6 +246,15 @@ button.yellow {
   border: solid var(--bg-dark-3) 2px!important;
   background-color: var(--gold)!important;
   color: var(--bg-dark)!important;
+}
+
+button.yellow-blink {
+  text-shadow: 0 0 5px var(--bg-dark) !important;
+  border: solid var(--bg-dark-3) 2px!important;
+  background-color: var(--gold)!important;
+  color: var(--bg-dark)!important;
+  text-shadow: 0 0 5px var(--text) !important;
+  animation: barelyAppearDisappear 3s ease-in-out infinite;
 }
 
 button.basic {

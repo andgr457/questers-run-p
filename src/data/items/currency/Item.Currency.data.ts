@@ -16,6 +16,7 @@ export const ITEM_CURRENCY_GOLD: Item = {
     buy: 1,
     sell: 1
   },
+  profession: undefined
 }
 
 export const ITEM_CURRENCY_ALL: Item[] = [

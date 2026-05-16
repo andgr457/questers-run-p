@@ -15,7 +15,13 @@ export const ITEM_GATHERING_STICK: Item = {
   type: ITEM_TYPES.RESOURCE,
   rarity: ITEM_RARITY.COMMON,
   stats: EMPTY_STATS,
-  profession: 'gathering',
+  profession: {
+    type: 'gathering',
+    levelRequired: 0,
+    timeInSeconds: 2,
+    xp: 2,
+    stamina: 1
+  },
   gold: {
     buy: 5,
     sell: 1
@@ -29,7 +35,13 @@ export const ITEM_GATHERING_SMALL_STONE: Item = {
   type: ITEM_TYPES.RESOURCE,
   rarity: ITEM_RARITY.COMMON,
   stats: EMPTY_STATS,
-  profession: 'gathering',
+  profession: {
+    type: 'gathering',
+    levelRequired: 0,
+    timeInSeconds: 2,
+    xp: 2,
+    stamina: 1
+  },
   gold: {
     buy: 5,
     sell: 1
@@ -42,7 +54,13 @@ export const ITEM_GATHERING_APPLE: Item = {
   description: 'Juicy and tasty, round-ish, red apple.',
   type: ITEM_TYPES.RESOURCE,
   rarity: ITEM_RARITY.UNCOMMON,
-  profession: 'gathering',
+  profession: {
+    type: 'gathering',
+    levelRequired: 1,
+    timeInSeconds: 4,
+    xp: 4,
+    stamina: 3
+  },
   gold: {
     buy: 10,
     sell: 5

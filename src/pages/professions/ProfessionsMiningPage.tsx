@@ -5,11 +5,11 @@ import ProfessionItemsList from '../../components/professions/ProfessionItemsLis
 import type { Stat } from '../../interfaces/characters/Character.types';
 import CharacterInfoMiniStatCard from '../../components/characters/CharacterInfoMiniStatCard';
 
-interface ProfessionGatheringPageProps extends AppProperties {
+interface ProfessionMiningPageProps extends AppProperties {
 
 }
 
-export default function ProfessionGatheringPage(props: ProfessionGatheringPageProps){
+export default function ProfessionMiningPage(props: ProfessionMiningPageProps){
   const {
     character,
     items,
@@ -17,17 +17,17 @@ export default function ProfessionGatheringPage(props: ProfessionGatheringPagePr
   } = props
 
   useEffect(() => {
-    setLocation?.('Gathering')
+    setLocation?.('Mining')
   },[])
 
-  const professionItems = items?.filter(i => i.profession?.type === 'gathering') ?? []
+  const professionItems = items?.filter(i => i.profession?.type === 'mining') ?? []
 
   return <ProfessionItemsList 
     {...props}
     professionItems={professionItems}
     professionStatCard={<div style={{background: 'var(--bg-dark)', color: 'var(--text)', letterSpacing: '1px'}}>
       <CharacterInfoMiniStatCard
-        statItem={character?.professions.gathering as Stat}
+        statItem={character?.professions.mining as Stat}
         statType='attribute'
       />
     </div>}

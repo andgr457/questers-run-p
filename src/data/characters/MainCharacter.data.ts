@@ -80,6 +80,14 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       level: 0,
       nextLevelXP: 100,
       xp: 0,
-    }
+    },
+    fishing: {
+      name: 'Fishing',
+      hint: '',
+      value: 0,
+      level: 0,
+      nextLevelXP: 100,
+      xp: 0,
+    },
   }
 }

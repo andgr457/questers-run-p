@@ -1,5 +1,7 @@
 import { ITEM_CURRENCY_ALL } from '../../data/items/currency/Item.Currency.data';
+import { ITEM_FISHING_ALL } from '../../data/items/gathering/Item.Fishing.data';
 import { ITEM_GATHERING_ALL } from '../../data/items/gathering/Item.Gathering.data';
+import { ITEM_MINING_ALL } from '../../data/items/gathering/Item.Mining.data';
 import { ITEM_HEALTH_POTIONS } from '../../data/items/potions/Item.Potions.Health.data';
 import { ITEM_MANA_POTIONS } from '../../data/items/potions/Item.Potions.Mana.data';
 import { ITEM_STAMINA_POTIONS } from '../../data/items/potions/Item.Potions.Stamina.data';
@@ -17,6 +19,8 @@ export class ItemRepository {
     ...ITEM_CURRENCY_ALL,
     ...this.POTIONS,
     ...ITEM_GATHERING_ALL,
+    ...ITEM_MINING_ALL,
+    ...ITEM_FISHING_ALL,
   ]
   async list(): Promise<Item[]> {
     return [

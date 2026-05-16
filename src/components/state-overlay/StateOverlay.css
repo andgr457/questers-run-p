@@ -1,0 +1,67 @@
+.state-overlay-container {
+  position: relative;
+}
+
+
+.state-overlay-content.active {
+  pointer-events: none;
+  user-select: none;
+}
+
+.state-overlay-content.active.blur {
+  filter: blur(1px);
+  opacity: 0.6;
+}
+
+.state-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: inherit;
+
+  z-index: 100;
+
+  text-align: center;
+
+  padding: 1rem;
+  letter-spacing: 1px;
+}
+
+.state-overlay.darken {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.state-overlay.locked {
+  color: #d7d7d7;
+}
+
+.state-overlay.loading {
+  color: white;
+}
+
+.state-overlay.danger {
+  color: #ff9b9b;
+}
+
+.state-overlay-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.state-overlay-text {
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.state-overlay-subtext {
+  margin-top: 0.35rem;
+
+  font-size: 0.8rem;
+  opacity: 0.8;
+}

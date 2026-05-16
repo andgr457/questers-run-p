@@ -5,12 +5,14 @@ interface CharacterInfoMiniStatCardProps {
   statItem: Stat
   statType?: 'attribute' | 'profession'
   className?: string
+  barWidth?: string
 }
 
 export default function CharacterInfoMiniStatCard(props: CharacterInfoMiniStatCardProps) {
   const {
     statItem,
     statType = 'attribute',
+    barWidth = '125px'
   } = props
 
   if (!statItem) return null
@@ -30,7 +32,7 @@ export default function CharacterInfoMiniStatCard(props: CharacterInfoMiniStatCa
 
   return (
     <div className="character-stat-chip" title={`${statItem.name}`}>
-      <span className="chip-name">{statItem.name}</span>
+      <span className="chip-name">{isResourceStat === true ? '' : <>Lvl {statItem.level}</>} {statItem.name}</span>
 
       <span className="chip-values">
         {currentValue.toLocaleString()}/{maxValue.toLocaleString()}
@@ -40,6 +42,7 @@ export default function CharacterInfoMiniStatCard(props: CharacterInfoMiniStatCa
           character-stat-card-bar
           ${'attribute-bar'}
         `}
+        style={{width: barWidth}}
       >
         <div
           className={`

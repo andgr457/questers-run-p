@@ -23,6 +23,7 @@ export interface QuestWithQuestProgress {
   questRequirementsItems: Item[]
   questRequirementsInventoryTxns: InventoryTransaction[]
   questRequirementsQuests: Quest[]
+  questRewardItems: Item[]
 }
 
 interface GroupSetting {

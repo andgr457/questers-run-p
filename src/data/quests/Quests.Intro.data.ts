@@ -11,12 +11,13 @@ const QUEST_GROUP_INTRO_ID = 'qg_intro'
 export const QUEST_GROUP_INTRO: QuestGroup = {
   id: QUEST_GROUP_INTRO_ID,
   title: 'Getting Settled',
-  description: 'Familiarize yourself with the city and settle into your new home.'
+  description: 'Familiarize yourself with the town and settle into your new home.'
 }
 
 export const QUEST_INTRO_IDS = {
   ADVENTURERS_GUILD_ID: 'q_intro_adventurers_guild',
-  MERCHANT_FAVOR_ID: 'q_intro_merchant_favor'
+  MERCHANT_FAVOR_ID: 'q_intro_merchant_favor',
+  SWEEP_STREETS: 'q_intro_sweep_streets'
 }
 
 export const QUEST_INTRO_ADVENTURERS_GUILD: Quest = {
@@ -89,7 +90,38 @@ export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
   ]
 }
 
+export const QUEST_INTRO_HIDE_N_SEEK: Quest = {
+  id: QUEST_INTRO_IDS.SWEEP_STREETS,
+  title: 'Sweep Streets',
+  description: 'Sweep the streets of the town for some easy gold.',
+  groupId: QUEST_GROUP_INTRO_ID,
+  cooldownMinutes: 10,
+  repeatable: true,
+  rewards: [
+    {
+      itemId: ITEM_CURRENCY_IDS.GOLD,
+      itemAmount: 5
+    },
+    {
+      xp: 5
+    }
+  ],
+  startRequirements: [
+    {
+      level: 1,
+      completed: false,
+    },
+  ],
+  completionRequirements: [
+    {
+      timeMinutes: 0.5,
+      completed: false
+    }
+  ]
+}
+
 export const QUEST_INTRO_ALL = [
   QUEST_INTRO_ADVENTURERS_GUILD,
-  QUEST_INTRO_MERCHANT_FAVOR
+  QUEST_INTRO_MERCHANT_FAVOR,
+  QUEST_INTRO_HIDE_N_SEEK
 ]

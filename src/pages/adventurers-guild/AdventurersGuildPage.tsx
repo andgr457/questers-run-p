@@ -31,6 +31,7 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
 
   useEffect(() => {
     setLocation?.('Adventurer\'s Guild')
+    setShowModule('quest-board')
   },[])
 
   const {
@@ -44,22 +45,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
   ) => {
     return windows.some(w => w.id === id)
   }
-
-  // function toggleWindow(id: string, title: string, content: React.ReactNode) {
-  //   if (isWindowOpen(id)) {
-  //     closeWindow(id)
-  //     setRequestedDiscussionId(undefined)
-  //     return
-  //   }
-
-  //   openWindow(
-  //     id,
-  //     title,
-  //     <div>
-  //       {content}
-  //     </div>
-  //   )
-  // }
 
   const showClerk = useCallback(() => {
     if (isWindowOpen('clerk')) {
@@ -146,7 +131,7 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
       }}
     />}
     <div className='page-main'>
-      <PageHeader showActions={true}>
+      <PageHeader showActions={false}>
         
         <button id='tutorial-join-guild' className='basic'
           onClick={() => {

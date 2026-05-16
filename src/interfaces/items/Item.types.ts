@@ -1,5 +1,5 @@
-import type { ProfessionType } from '../../data/items/professions/Profession.Gathering.data'
 import type { Stats } from '../characters/Character.types'
+import type { ProfessionType } from '../professsions/Profession.types'
 
 export const ITEM_TYPES = {
   RESOURCE: 'resource' as ItemType,
@@ -33,6 +33,13 @@ export interface ItemGold {
   sell: number
   buy: number
 }
+export interface ProfessionSettings {
+  type: ProfessionType
+  xp: number
+  timeInSeconds: number
+  levelRequired: number
+  stamina: number
+}
 export interface Item {
   id: string
   name: string
@@ -41,5 +48,5 @@ export interface Item {
   type: ItemType
   stats: Stats
   gold: ItemGold,
-  profession?: ProfessionType
+  profession: ProfessionSettings | undefined
 }

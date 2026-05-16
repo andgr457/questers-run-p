@@ -1,0 +1,25 @@
+.settings-main {
+
+}
+
+.settings-section {
+  max-width: 450px;
+}
+
+.settings-sections {
+  display: flex;
+  
+}
+
+.settings-header {
+  font-size: 1.3em;
+}
+
+.settings-content {
+  padding: 7px;
+  font-size: 0.8em;
+}
+
+.settings-content button {
+  font-size: 0.6em;
+}
