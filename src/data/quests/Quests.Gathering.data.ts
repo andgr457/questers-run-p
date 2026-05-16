@@ -11,7 +11,7 @@ const QUEST_GROUP_INTRO_ID = 'qg_gathering'
 
 export const QUEST_GROUP_GATHRING: QuestGroup = {
   id: QUEST_GROUP_INTRO_ID,
-  title: 'Gathering Profession',
+  title: 'Gathering',
   description: 'Gather resources for the guild to receive rewards.'
 }
 

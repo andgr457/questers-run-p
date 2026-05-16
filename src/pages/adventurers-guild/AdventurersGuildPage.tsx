@@ -7,7 +7,7 @@ import { DateTime } from 'luxon'
 import PageHeader from '../../components/PageHeader'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import { useWindows } from '../../components/windows/WindowProvider'
-import CharacterQuests, { type QuestWithQuestProgress } from '../../components/quests/CharacterQuests'
+import CharacterQuests from '../../components/quests/CharacterQuests'
 import { sleep } from '../../services/CommonServices'
 import AdventurersGuildClerk from '../../components/adventurers-guild/AdventurersGuildClerk'
 
@@ -31,8 +31,8 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
 
   useEffect(() => {
     setLocation?.('Adventurer\'s Guild')
-    setShowModule('quest-board')
-  },[])
+    setShowModule(!character?.guildRank ? '' : 'quest-board')
+  },[character?.guildRank])
 
   const {
     windows,
@@ -131,7 +131,7 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
       }}
     />}
     <div className='page-main'>
-      <PageHeader showActions={false}>
+      <PageHeader showActions={!character?.guildRank ? true : false}>
         
         <button id='tutorial-join-guild' className='basic'
           onClick={() => {

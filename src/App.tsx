@@ -432,7 +432,7 @@ function App() {
             description: `Quest Reward: ${r.itemAmount?.toLocaleString()} ${item?.name} received!`,
           })
         }
-      } else if(r.xp){
+      } else if(typeof r.xp === 'number'){
         totalXp += r.xp
       }
     }
@@ -466,7 +466,7 @@ function App() {
     setInventories(allInv)
     if(totalXp > 0){
       const newCharacter = {...character}
-      if(newCharacter.xp && newCharacter.levelNextXP){
+      if(typeof newCharacter.xp === 'number' && typeof newCharacter.levelNextXP === 'number'){
         const firstXpValue = totalXp + newCharacter.xp
         const overNextLevelValue = newCharacter.levelNextXP - firstXpValue
         let canLevel = overNextLevelValue <= 0
@@ -476,6 +476,7 @@ function App() {
           newCharacter.xp = 0 + leftOverXp
           newCharacter.levelNextXP += 10
         } else {
+          console.log('adding xp to character', newCharacter.xp, totalXp)
           newCharacter.xp += totalXp
         }
       }
@@ -553,6 +554,7 @@ function App() {
     questGroups,
     quests,
     history,
+    allQuestProgress,
     allQuestsWithProgress: allQuestsWithQuestProgress,
     
     handleResetEverything,

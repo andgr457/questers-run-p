@@ -5,7 +5,7 @@ import type { CharacterHistory } from './history/History.types';
 import type { Inventory } from './inventories/Inventory.types';
 import type { Item } from './items/Item.types';
 import type { ProfessionType } from './professsions/Profession.types';
-import type { Quest, QuestGroup } from './quests/Quests.types';
+import type { Quest, QuestGroup, QuestProgress } from './quests/Quests.types';
 
 export interface AppProperties extends AppFunctions {
   achievements?: Achievement[]
@@ -14,6 +14,7 @@ export interface AppProperties extends AppFunctions {
   characterClass?: CharacterClass
   characterInventories?: Inventory[]
   characterQuestProgress?: QuestWithQuestProgress
+  allQuestProgress?: QuestProgress[]
   allQuestsWithProgress?: QuestWithQuestProgress[]
   quests?: Quest[]
   questGroups?: QuestGroup[]

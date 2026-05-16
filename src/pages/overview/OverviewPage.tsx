@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import NewCharacterModal from '../../components/characters/NewCharacterModal'
 import { ITEM_CURRENCY_IDS } from '../../data/items/currency/Item.Currency.data'
 import { TutorialOverlay, type TutorialStep } from '../../components/tutorial/TutorialOverlay'
 import { useNavigate } from 'react-router-dom'
@@ -8,7 +7,6 @@ import type { AppProperties } from '../../interfaces/AppProperties.types'
 import { useWindows } from '../../components/windows/WindowProvider'
 import CharacterNewRename from '../../components/characters/CharacterNewRename'
 import type { Character } from '../../interfaces/characters/Character.types'
-import { sleep } from '../../services/CommonServices'
 
 interface OverviewPageProps extends AppProperties {
 
@@ -18,12 +16,12 @@ export default function OverviewPage(props: OverviewPageProps){
   const {
     character,
     characterInventories,
+    allQuestsWithProgress,
+    allQuestProgress,
     setLocation,
     handleSetCharacter,
-    handleResetEverything,
   } = props
   const [showTutorial, setShowTutorial] = useState(character ? false : true)
-  const [expandHistory, setExpandHistory] = useState(false)
 
   const navigate = useNavigate()
 
@@ -95,6 +93,9 @@ export default function OverviewPage(props: OverviewPageProps){
     return []
   }, [character, characterInventories])
 
+  const allCharacterQuestsProgress = allQuestsWithProgress?.filter(qp => qp.questProgress?.characterId === character?.id)
+  const allCharacterQuestProgress = allQuestProgress?.filter(qp => qp.characterId === character?.id)
+  const allCompleteCharacterQuestProgress = allCharacterQuestProgress?.filter(qp => qp.status === 'complete')
   return <>
     {!character?.name && showTutorial === true  && <TutorialOverlay 
       steps={tutorialSteps} 
@@ -106,25 +107,10 @@ export default function OverviewPage(props: OverviewPageProps){
       posTop={30}
 
     />}
-    {character?.name && showTutorial === true && <TutorialOverlay 
-      steps={tutorialSteps} 
-      onCancel={() => {setShowTutorial(false)}} 
-      onComplete={() => {
-        //todo
-        setShowTutorial(false)
-      }}
-    />}
 
     <div id='overview-top'>
       <div className='page-main'>
         <PageHeader showActions={!character?.name ? true : false}>
-          {/* {character && <button className='basic'
-            onClick={() => {
-              setShowTutorial(true)
-            }}
-          >
-            Overview Tutorial
-          </button>} */}
           <button id='tutorial-new-character' className='basic'
             onClick={() => {
               toggleNewOrRename()
@@ -132,12 +118,38 @@ export default function OverviewPage(props: OverviewPageProps){
           >
             {mainCharacterExists ? `Rename ${character.name}`: 'Create Main Character'}
           </button>
-          {/* <button className='danger'
-            onClick={() => {handleResetEverything?.()}}
-          >
-            Reset Everything
-          </button> */}
         </PageHeader>
+        <div className='tavern-item-list'>
+          <div className='tavern-item'>
+            <div className='tavern-item-title'>
+              Dashboard
+            </div>
+            
+            <div className='tavern-item-info'>
+              Quests Completed: <span style={{color: 'gold'}}>{allCompleteCharacterQuestProgress?.length ?? 0}</span>
+            </div>
+            
+            <div className='tavern-item-info'>
+              Achivements Earned: <span style={{color: 'gold'}}>{character?.achievements?.length ?? 0}</span>
+            </div>
+          </div>
+
+          <div className='tavern-item'>
+            <div className='tavern-item-title'>
+              Quests Complete
+            </div>
+            
+            <div className='tavern-item-info'>
+              {allCharacterQuestsProgress?.map(q => {
+                const amount = allCompleteCharacterQuestProgress?.filter(cq => cq.questId === q.questProgress?.questId)?.length
+                return <div>
+                  <span style={{color: 'gold'}}>x{amount}</span> {q.quest.title}
+                </div>
+              })}
+            </div>
+          </div>
+        </div>
+
         
       </div>
     </div>
