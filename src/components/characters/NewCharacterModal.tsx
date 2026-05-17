@@ -10,7 +10,6 @@ import type {
 } from '../../interfaces/characters/Character.types'
 
 import type { Inventory } from '../../interfaces/inventories/Inventory.types'
-import type { CharacterHistory } from '../../interfaces/history/History.types'
 
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 
@@ -44,7 +43,6 @@ export default function NewCharacterModal(
     character,
     isOpen,
     onClose,
-    handleAddHistory,
     handleAddInventory,
     handleAddQuest,
     handleSetCharacter,
@@ -158,16 +156,6 @@ export default function NewCharacterModal(
     [characterClasses]
   )
 
-  const buildHistory = (
-    description: string,
-    offset = 0
-  ): CharacterHistory => ({
-    id: `h_${characterForm.id}_${DateTime.utc().toMillis() + offset}`,
-    characterId: characterForm.id,
-    date: DateTime.utc().toISO(),
-    description,
-  })
-
   const handleSubmit = useCallback(async () => {
     setError('')
 
@@ -197,13 +185,6 @@ export default function NewCharacterModal(
      * RENAME
      */
     if (isRename) {
-      handleAddHistory?.([
-        buildHistory(
-          `"${characterForm.name}" is now known as "${trimmedName}".`,
-          100
-        ),
-      ])
-
       handleSetCharacter?.({
         ...characterForm,
         name: trimmedName,
@@ -222,27 +203,11 @@ export default function NewCharacterModal(
       name: trimmedName,
     }
 
-    const histories: CharacterHistory[] = []
-
-    histories.push(
-      buildHistory(
-        `"${createdCharacter.name}" isekai'd and resurrected here.`,
-        100
-      )
-    )
-
     createdCharacter.achievements.push({
       achievementDate: DateTime.utc().toISO(),
       achievementId:
         ACHIEVEMENT_INTRO_MAIN_CHARACTER.id,
     })
-
-    histories.push(
-      buildHistory(
-        `Achievement "${ACHIEVEMENT_INTRO_MAIN_CHARACTER.title}" earned!`,
-        200
-      )
-    )
 
     const currencyPouch =
       getInventoryIntroCurrencyPouch(
@@ -261,29 +226,7 @@ export default function NewCharacterModal(
       starterPouch,
     ]
 
-    histories.push(
-      buildHistory(
-        `"${currencyPouch.title}" pouch received!`,
-        300
-      )
-    )
-
-    histories.push(
-      buildHistory(
-        `"${starterPouch.title}" pouch received!`,
-        400
-      )
-    )
-
-    histories.push(
-      buildHistory(
-        `"${QUEST_INTRO_ADVENTURERS_GUILD.title}" quest received!`,
-        500
-      )
-    )
-
     handleAddInventory?.(starterInventories)
-    handleAddHistory?.(histories)
 
     handleAddQuest?.(
       QUEST_INTRO_ADVENTURERS_GUILD,
@@ -300,7 +243,6 @@ export default function NewCharacterModal(
     selectedClass,
     characterForm,
     showConfirm,
-    handleAddHistory,
     handleSetCharacter,
     handleAddInventory,
     handleAddQuest,

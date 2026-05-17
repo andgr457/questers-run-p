@@ -13,7 +13,6 @@ import { LOCAL_STORAGE_KEYS } from './common/constants/LocalStorageKeys';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Inventory } from './interfaces/inventories/Inventory.types';
-import type { CharacterHistory } from './interfaces/history/History.types';
 import type { Quest, QuestGroup, QuestProgress } from './interfaces/quests/Quests.types';
 import type { Item } from './interfaces/items/Item.types';
 import { CharacterClassRepository } from './repository/characters/CharacterClassRepository';
@@ -41,7 +40,6 @@ function App() {
   const [characterClass, setCharacterClass] = useState<CharacterClass | undefined>(undefined)
   const [characterInventories, setCharacterInventories] = useState<Inventory[] | undefined>(undefined)
   const [inventories, setInventories] = useLocalStorage<Inventory[]>(LOCAL_STORAGE_KEYS.INVENTORIES, [])
-  const [history, setHistory] = useLocalStorage<CharacterHistory[]>(LOCAL_STORAGE_KEYS.HISTORY, [])
   const [allQuestProgress, setAllQuestProgress] = useLocalStorage<QuestProgress[]>(LOCAL_STORAGE_KEYS.QUEST_PROGRESS, [])
   
   const [allQuestsWithQuestProgress, setAllQuestsWithQuestProgress] = useState<QuestWithQuestProgress[] | undefined>(undefined)
@@ -64,7 +62,6 @@ function App() {
 
     setCharacter(null as any)
     setInventories([])
-    setHistory([])
     setAllQuestProgress([])
     window.location.href = '/'
   }, [])
@@ -173,17 +170,6 @@ function App() {
     }
     load()
   }, [character])
-
-  const handleAddHistory = useCallback(async (newHistory: CharacterHistory[]) => {
-    const histories = []
-    for(const h of newHistory){
-      histories.push(h)
-    }
-    for(const h of history){
-      histories.push(h)
-    }
-    setHistory(histories)
-  }, [history])
 
   const handleAddInventory = useCallback((inventory: Inventory[]) => {
     const newInventories = []
@@ -397,8 +383,7 @@ function App() {
       console.error('Did not find character currency or backpack inventories.')
       return
     }
-    const newHistory: CharacterHistory[] = []
-    
+    const questRewardMessages: string[] = []
     let totalXp = 0
     for(const r of rewards){
       if(r.itemId){
@@ -410,12 +395,7 @@ function App() {
             note: 'Gold Quest Reward',
             quantity: r.itemAmount as number
           })
-          newHistory.push({
-            id: `h_${character?.id}_${questProgress.quest.id}_${r.itemId}_${DateTime.utc().toMillis()}`,
-            characterId: character?.id as string,
-            date: DateTime.utc().toISO(),
-            description: `Quest Reward: ${r.itemAmount?.toLocaleString()} gold received!`,
-          })
+          questRewardMessages.push(`Quest Reward: ${r.itemAmount?.toLocaleString()} gold received!`)
         } else {
           backpack.transactions.push({
             id: `invtxn__${r.itemId}__${questProgress?.questProgress?.characterId}__${DateTime.utc().toMillis()}`,
@@ -425,12 +405,7 @@ function App() {
             quantity: r.itemAmount as number
           })
           const item = items.find(i => i.id === r.itemId)
-          newHistory.push({
-            id: `h_${character?.id}_${questProgress.quest.id}_${r.itemId}_${DateTime.utc().toMillis()}`,
-            characterId: character?.id as string,
-            date: DateTime.utc().toISO(),
-            description: `Quest Reward: ${r.itemAmount?.toLocaleString()} ${item?.name} received!`,
-          })
+          questRewardMessages.push(`Quest Reward: ${r.itemAmount?.toLocaleString()} ${item?.name} received!`)
         }
       } else if(typeof r.xp === 'number'){
         totalXp += r.xp
@@ -482,12 +457,7 @@ function App() {
       }
       
       setCharacter({...newCharacter} as Character)
-      newHistory.push({
-        id: `h_${character?.id}_${questProgress.quest.id}_xp_${DateTime.utc().toMillis()}`,
-        characterId: character?.id as string,
-        date: DateTime.utc().toISO(),
-        description: `Quest Reward: ${totalXp?.toLocaleString()} XP received!`,
-      })
+      questRewardMessages.push(`Quest Reward: ${totalXp?.toLocaleString()} XP received!`)
     }
 
     const newQuestProgress: QuestProgress = {
@@ -505,31 +475,18 @@ function App() {
       }
     }
     setAllQuestProgress(newProgress)
-    newHistory.push({
-      id: `h_${character?.id}_${questProgress.quest.id}_questcomplete_${DateTime.utc().toMillis()}`,
-      characterId: character?.id as string,
-      date: DateTime.utc().toISO(),
-      description: `Quest Completed: ${questProgress.quest.title}!`,
-    })
-    
-    const message = []
-    for(const h of newHistory){
-      message.push(<div>
-        {h.description}
-      </div>)
-    }
-
-    for(const h of history){
-      newHistory.push(h)
-    }
-    setHistory(newHistory)
+    questRewardMessages.push(`Quest Completed: ${questProgress.quest.title}!`)
 
     await showConfirm({
       title: `Quest Completed!`,
       message: `Contratulations on completing a quest! You've received the following rewards.`,
       isYesNo: false,
       content: <div style={{textAlign: 'center', width: '100%'}}>
-        {message}
+        {questRewardMessages.map(m => {
+          return <div>
+            {m}
+          </div>
+        })}
       </div>
     })
     
@@ -553,13 +510,11 @@ function App() {
     items,
     questGroups,
     quests,
-    history,
     allQuestProgress,
     allQuestsWithProgress: allQuestsWithQuestProgress,
     
     handleResetEverything,
     handleResetProfession,
-    handleAddHistory,
     handleAddInventory,
     handleProfessionItemStart,
     handleDoProfessionItemComplete,

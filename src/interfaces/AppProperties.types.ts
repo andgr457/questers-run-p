@@ -1,7 +1,6 @@
 import type { QuestWithQuestProgress } from '../components/quests/CharacterQuests';
 import type { Achievement } from './achievements/Achievement.types';
 import type { Character, CharacterClass } from './characters/Character.types';
-import type { CharacterHistory } from './history/History.types';
 import type { Inventory } from './inventories/Inventory.types';
 import type { Item } from './items/Item.types';
 import type { ProfessionType } from './professsions/Profession.types';
@@ -19,7 +18,6 @@ export interface AppProperties extends AppFunctions {
   quests?: Quest[]
   questGroups?: QuestGroup[]
   items?: Item[]
-  history?: CharacterHistory[]
 }
 
 export interface AppFunctions {
@@ -31,7 +29,6 @@ export interface AppFunctions {
   handleDoProfessionItemComplete?: (professionItemId: string, amount: number) => void
   handleTavernItemStart?: (goldCost: number) => void
   handleTavernItemComplete?: (percentChange: number) => void
-  handleAddHistory?: (newHistory: CharacterHistory[]) => void
   handleAddInventory?: (inventory: Inventory[]) => void
   handleAddQuest?: (quest: Quest, characterId: string) => void
   handleAbandonQuest?: (questProgressId: string) => void

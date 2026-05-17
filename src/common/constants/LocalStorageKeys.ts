@@ -4,6 +4,5 @@ export const LOCAL_STORAGE_KEYS = {
   CHARACTERS: 'qr-characters',
   INVENTORIES: 'qr-inventories',
   ACHIEVEMENTS: 'qr-achievements',
-  HISTORY: 'qr-history',
   QUEST_PROGRESS: 'qr-quest-progress'
 }

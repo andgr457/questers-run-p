@@ -20,7 +20,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     character,
     setLocation,
     handleSetCharacter,
-    handleAddHistory,
   } = props
   const [showTutorial, setShowTutorial] = useState(!character?.guildRank ? true : false)
   const [showModule, setShowModule] = useState<'' | 'quest-board'>('')
@@ -97,12 +96,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
 
     await handleSetCharacter?.({...newCharacter} as Character)
 
-    handleAddHistory?.([{
-      characterId: newCharacter.id,
-      date: DateTime.utc().toISO(),
-      description: `Achievement "${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.title}" earned!`,
-      id: `h_${newCharacter?.id}_${DateTime.utc().toMillis()+200}`
-    }])
     await sleep(100)
     closeWindow('clerk')
   }, [character])
