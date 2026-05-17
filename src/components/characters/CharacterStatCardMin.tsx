@@ -12,7 +12,6 @@ export default function CharacterStatCardMin(
 ) {
   const {
     statItem,
-    statType = 'attribute',
     className = ''
   } = props
 

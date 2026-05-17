@@ -21,8 +21,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     setLocation,
     handleSetCharacter,
     handleAddHistory,
-    handleCompleteQuest,
-    handleAbandonQuest,
   } = props
   const [showTutorial, setShowTutorial] = useState(!character?.guildRank ? true : false)
   const [showModule, setShowModule] = useState<'' | 'quest-board'>('')

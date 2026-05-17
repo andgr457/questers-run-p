@@ -1,12 +1,11 @@
 import './AdventurersGuild.css'
 import { useEffect, useState } from 'react';
 import { ADVENTURERS_GUILD_DISCUSSIONS_JOIN, AdventurersGuildDiscussionIndexes, type DiscussionWithActions } from '../../data/discussions/adventurers-guild/Discussions.AdventurersGuild.data';
-import { useConfirm } from '../../providers/ConfirmProvider';
 import type { Discussion, DiscussionAction } from '../../interfaces/discussions/Discussions';
 import { sleep } from '../../services/CommonServices';
 import type { AppProperties } from '../../interfaces/AppProperties.types';
 import { JumpyText } from '../JumpyText';
-import { GuildRanks, type Character } from '../../interfaces/characters/Character.types';
+import { GuildRanks } from '../../interfaces/characters/Character.types';
 
 interface AdventurersGuildClerkModalProps extends AppProperties {
   onJoin: () => void
@@ -35,8 +34,6 @@ export default function AdventurersGuildClerk(props: AdventurersGuildClerkModalP
     characterClass,
     onJoin,
   } = props
-
-  const {showConfirm} = useConfirm()
 
   const showClerkThinking = async () => {
     setShowDiscussion(false)

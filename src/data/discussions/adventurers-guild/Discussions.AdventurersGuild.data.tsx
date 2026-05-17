@@ -50,7 +50,6 @@ export const getAdventurersGuildDiscussionQuestCheckActionByStep = (
 ): DiscussionWithActions => {
   const {
     actions,
-    character,
     questWithProgress,
     step,
     items,
@@ -134,7 +133,7 @@ export const getAdventurersGuildDiscussionQuestCheckActionByStep = (
 
         rewards.push(<div>
           {r.xp && <>XP: <strong>{r.xp.toLocaleString()}</strong></>}
-          {r.itemId && r.itemAmount && <>{item?.name}: <strong>{r.itemAmount}</strong></>}
+          {r.itemId && r.itemAmount && <>{name}: <strong>{amount}</strong></>}
         </div>)
       }
         

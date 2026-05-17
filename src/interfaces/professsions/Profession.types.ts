@@ -13,7 +13,7 @@ export const ProfessionSort = {
 }
 
 
-export type ProfessionType = 'gathering' | 'mining' | 'fishing'
+export type ProfessionType = 'gathering' | 'mining' | 'fishing' | 'alchemy'
 export const ProfessionTypes = {
   Gathering: 'gathering' as ProfessionType,
   Mining: 'mining' as ProfessionType,

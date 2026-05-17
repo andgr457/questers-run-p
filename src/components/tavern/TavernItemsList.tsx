@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import { sleep } from '../../services/CommonServices'
-import type { Stats } from '../../interfaces/characters/Character.types'
 import type { TavernListItem } from '../../interfaces/tavern/Tavern.types'
 import TavernItem from './TavernItem'
 

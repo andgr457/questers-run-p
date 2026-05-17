@@ -1,7 +1,7 @@
 import type { Quest, QuestGroup, QuestProgress } from '../../interfaces/quests/Quests.types'
 import './CharacterQuests.css'
 import CharacterQuest from './CharacterQuest'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { Achievement } from '../../interfaces/achievements/Achievement.types'
 import type { Item } from '../../interfaces/items/Item.types'
 import type { InventoryTransaction } from '../../interfaces/inventories/Inventory.types'
@@ -26,47 +26,18 @@ export interface QuestWithQuestProgress {
   questRewardItems: Item[]
 }
 
-interface GroupSetting {
-  groupId: string
-  show: boolean
-}
-
 export default function CharacterQuests(props: CharacterQuestsProps){
   const {
     character,
-    characterClass,
-    characterQuestProgress,
     questGroups,
     quests,
-    characterInventories,
     allQuestsWithProgress
   } = props
   useScrollReveal()
 
-  const [groupSettings, setGroupSettings] = useState<GroupSetting[]>([])
   const [showPopupQuest, setShowPopupQuest] = useState(false)
   const [popupQuestContent, setPopupQuestContent] = useState<React.ReactNode>(undefined)
   const [popupTitle, setPopupTitle] = useState('')
-
-
-  const handleToggleGroupQuests = useCallback((groupId: string, value: boolean) => {
-    const newGroupSettings: GroupSetting[] = []
-    const exists = groupSettings.find(gs => gs.groupId === groupId)
-    if(!exists){
-      newGroupSettings.push({
-        groupId,
-        show: value
-      })
-    } else {
-      exists.show = value
-      newGroupSettings.push(exists)
-    }
-
-    for(const groupSetting of groupSettings){
-      newGroupSettings.push(groupSetting)
-    }
-    setGroupSettings(newGroupSettings)
-  }, [groupSettings])
 
   const handleShowPopup = useCallback((popupType: 'quest' | 'quest-group', relatedId: string) => {
 
@@ -118,7 +89,6 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     <div className='quest-groups'>
       {questGroups.map(qg => {
         const relatedQuests = allQuestsWithProgress?.filter(qwp => qwp?.questGroup?.id === qg.id)
-        const completedAmount = relatedQuests?.filter(rq => rq.questProgress?.status === 'complete')
 
         return (
           <div key={qg.id} className='quest-group'>

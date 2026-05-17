@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { ITEM_TYPES, type Item } from '../../interfaces/items/Item.types'
 import { useConfirm } from '../../providers/ConfirmProvider'
 import type { Character } from '../../interfaces/characters/Character.types'
@@ -15,8 +15,6 @@ export interface InventorySlotProps {
 export default function InventorySlot(props: InventorySlotProps){
   const {
     item,
-    itemId,
-    itemName,
     amount,
     character
   } = props

@@ -11,7 +11,6 @@ interface CharacterInfoMiniStatCardProps {
 export default function CharacterInfoMiniStatCard(props: CharacterInfoMiniStatCardProps) {
   const {
     statItem,
-    statType = 'attribute',
     barWidth = '125px'
   } = props
 

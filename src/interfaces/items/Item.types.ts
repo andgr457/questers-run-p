@@ -39,6 +39,7 @@ export interface ProfessionSettings {
   timeInSeconds: number
   levelRequired: number
   stamina: number
+  recipeId?: string
 }
 export interface Item {
   id: string
@@ -48,5 +49,5 @@ export interface Item {
   type: ItemType
   stats: Stats
   gold: ItemGold,
-  profession: ProfessionSettings | undefined
+  profession?: ProfessionSettings | undefined
 }

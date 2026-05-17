@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './CharacterInfo.css'
 import { CharacterService } from '../../services/characters/CharacterService'
 import type { Inventory } from '../../interfaces/inventories/Inventory.types'
-import { StatSort, type Character, type CharacterClass, type Stat, type Stats } from '../../interfaces/characters/Character.types'
+import { StatSort, type Stat } from '../../interfaces/characters/Character.types'
 import { ProfessionSort } from '../../interfaces/professsions/Profession.types'
 import CharacterStatCard from './CharacterStatCard'
 import CharacterInfoXP from './CharacterInfoXP'
@@ -19,7 +19,6 @@ export default function CharacterInfo(props: CharacterInfoProps) {
     characterInventories,
   } = props
 
-  const [characterStats, setCharacterStats] = useState<Stats | undefined>(undefined)
   const [characterGold, setCharacterGold] = useState(0)
   const [showAttributeStats, setShowAttributeStats] = useState(true)
   const [showProfessionStats, setShowProfessionStats] = useState(true)
@@ -35,7 +34,6 @@ export default function CharacterInfo(props: CharacterInfoProps) {
         characterInventories as Inventory[]
       )
 
-      setCharacterStats(characterService.getStats())
       setCharacterGold(characterService.getGold())
     }
 

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 export default function useScrollReveal() {
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries, obs) => {
+      (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("show");

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { DateTime } from 'luxon'
 
 import {
@@ -28,7 +28,6 @@ import {
 import { QUEST_INTRO_ADVENTURERS_GUILD } from '../../data/quests/Quests.Intro.data'
 
 import { useConfirm } from '../../providers/ConfirmProvider'
-import CharacterStatCard from './CharacterStatCard'
 import CharacterStatCardMin from './CharacterStatCardMin'
 
 interface NewCharacterModalProps extends AppProperties {

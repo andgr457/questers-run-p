@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import type { Item } from '../../interfaces/items/Item.types'
 import ProfessionItem from './ProfessionItem'
@@ -13,7 +13,6 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
   const {
     professionItems,
     professionStatCard,
-    characterQuestProgress,
     handleProfessionItemStart,
     handleDoProfessionItemComplete
   } = props
@@ -21,7 +20,6 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
   
   const [canDo, setCanDo] = useState(true)
   const [timeProgress, setTimeProgress] = useState(0)
-  const [professionName, setProfessionName] = useState(professionItems?.[0]?.profession?.type ?? '')
   const [itemName, setItemName] = useState('')
   const [timeLeft, setTimeLeft] = useState(0)
   const [collectAmount, setCollectAmount] = useState(1)

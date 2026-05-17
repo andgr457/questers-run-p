@@ -31,7 +31,6 @@ export default function CharacterQuest(props: CharacterQuestProps){
     const characterAllProgress = allQuestsWithProgress?.filter(q => q.questProgress?.characterId === character?.id)
     const characterQuestAllProgress = characterAllProgress?.filter(q => q.questProgress?.questId === quest?.id)
     const completeProgress = characterQuestAllProgress?.filter(q => q.questProgress?.status === 'complete') ?? []
-    const pendingProgress = characterQuestAllProgress?.filter(q => q.questProgress?.status === 'in-progress') ?? []
     const anyPendingProgress = characterAllProgress?.filter(q => q.questProgress?.status === 'in-progress') ?? []
     const thisQuestCharacterProgress = characterQuestAllProgress?.find(p => p.questProgress?.id === characterQuestProgress?.questProgress?.id)
     const thisQuestProgress = allQuestsWithProgress?.find(q => q.quest.id === quest.id)
