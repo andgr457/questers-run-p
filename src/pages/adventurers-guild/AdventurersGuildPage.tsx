@@ -10,6 +10,7 @@ import { useWindows } from '../../components/windows/WindowProvider'
 import CharacterQuests from '../../components/quests/CharacterQuests'
 import { sleep } from '../../services/CommonServices'
 import AdventurersGuildClerk from '../../components/adventurers-guild/AdventurersGuildClerk'
+import { QUEST_INTRO_IDS } from '../../data/quests/Quests.Intro.data'
 
 interface AdventurersGuildPageProps extends AppProperties {
 
@@ -18,10 +19,28 @@ interface AdventurersGuildPageProps extends AppProperties {
 export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     const {
     character,
+    characterQuestProgress,
     setLocation,
     handleSetCharacter,
   } = props
-  const [showTutorial, setShowTutorial] = useState(!character?.guildRank ? true : false)
+  
+  const tutorialJoin: TutorialStep[] = [
+    {
+      selector: '#tutorial-join-guild',
+      content: 'Click here to speak with the clerk to join the Adventurer\'s Guild and for information about different guild activities.',
+      action: () => {showClerk()}
+    },
+  ]
+
+  const tutorialQuestComplete: TutorialStep[] = [
+    {
+      selector: '#tutorial-quest-complete',
+      content: 'At the quest board, you can take, abandon, and complete quests. Complete your first quest to continue the tutorial.',
+    },
+  ]
+  
+  const [showTutorial, setShowTutorial] = useState(false)
+  const [tutorialSteps, setTutorialSteps] = useState<TutorialStep[] | undefined>(undefined)
   const [showModule, setShowModule] = useState<'' | 'quest-board'>('')
   
   const {showConfirm} = useConfirm()
@@ -29,6 +48,10 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
   useEffect(() => {
     setLocation?.('Adventurer\'s Guild')
     setShowModule(!character?.guildRank ? '' : 'quest-board')
+    setTutorialSteps(!character?.guildRank ? tutorialJoin : tutorialQuestComplete)
+    if(!character?.guildRank){
+      setShowTutorial(true)
+    }
   },[character?.guildRank])
 
   const {
@@ -58,22 +81,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     )
   }, [openWindow])
 
-  const joinGuildSteps: TutorialStep[] = [
-    {
-      selector: '#tutorial-join-guild',
-      content: 'Click here to speak with the clerk to join the Adventurer\'s Guild and for information about different guild actions.',
-      action: () => {showClerk()}
-    },
-  ]
-
-  const steps: TutorialStep[] = [
-    {
-      selector: '#tutorial-history',
-      content: 'You can view recent history here.',
-    },
-  ]
-
-
   const handleJoinClicked = useCallback(async () => {
     //Set character guild rank F
     const newCharacter: Character = {...character as Character}
@@ -98,6 +105,9 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
 
     await sleep(100)
     closeWindow('clerk')
+    await sleep(500)
+    setTutorialSteps(tutorialQuestComplete)
+    setShowTutorial(true)
   }, [character])
 
   const characterJoined = character?.guildRank !== GuildRanks.None
@@ -105,16 +115,8 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     return null
   }
   return <div>
-    {!characterJoined && showTutorial === true  && <TutorialOverlay 
-      steps={joinGuildSteps} 
-      onCancel={() => {setShowTutorial(false)}} 
-      onComplete={() => {
-        //todo
-        setShowTutorial(false)
-      }}
-    />}
-    {showTutorial === true && <TutorialOverlay 
-      steps={steps} 
+    {showTutorial === true && tutorialSteps && <TutorialOverlay 
+      steps={tutorialSteps as TutorialStep[]} 
       onCancel={() => {setShowTutorial(false)}} 
       onComplete={() => {
         //todo
