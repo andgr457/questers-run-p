@@ -90,7 +90,7 @@ export default function CharacterQuest(props: CharacterQuestProps){
 
     return <div onMouseEnter={() => {setHideBlur(true)}} onMouseLeave={() => {setHideBlur(false)}}>
       <StateOverlay active={hideBlur === false && showOverlay} text={overlayText} subText={subText}>
-        <div  className={questItemClassName}>
+        <div  className={`${questItemClassName} ${thisQuestCharacterProgress?.canCompleteQuest === true ? 'complete' : ''}`}>
           {showButtons === true && <div className='quest-actions'>
             {canTake === true && <button 
               className={`success`}

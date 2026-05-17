@@ -33,6 +33,7 @@ import type { ProfessionType } from './interfaces/professsions/Profession.types'
 import ProfessionMiningPage from './pages/professions/ProfessionsMiningPage';
 import ProfessionFishingPage from './pages/professions/ProfessionsFishingPage';
 import TavernPage from './pages/tavern/TavernPage';
+import './common/styles/ItemList.css'
 
 function App() {
   const [location, setLocation] = useState('Overview')

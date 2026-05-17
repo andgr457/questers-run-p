@@ -137,16 +137,27 @@ export const TutorialOverlay = ({
   return (
     <>
       {/* Overlay spotlight */}
-      <div
-        className="tutorial-overlay"
-        style={
-          {
-            '--x': `${rect.left + rect.width / 2}px`,
-            '--y': `${rect.top + rect.height / 2}px`,
-            '--r': `${Math.max(rect.width, rect.height) / 2 + 12}px`,
-          } as React.CSSProperties
-        }
+     <div
+        className="tutorial-backdrop"
+        onClick={onCancel}
       />
+
+      {/* Spotlight */}
+      {showToolTip && (
+        <div
+          className="tutorial-highlight"
+          onClick={(e) => {
+            e.stopPropagation()
+            nextStep()
+          }}
+          style={{
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+          }}
+        />
+      )}
 
       {/* Highlight */}
 

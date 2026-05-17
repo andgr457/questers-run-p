@@ -1,5 +1,5 @@
 /* Dark background overlay */
-.tutorial-overlay {
+/* .tutorial-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
@@ -18,10 +18,18 @@
     transparent 60%,
     black 100%
   );
+} */
+
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 999;
+  pointer-events: none;
 }
 
 /* Highlight box */
-.tutorial-highlight {
+/* .tutorial-highlight {
   position: fixed;
   border: 2px solid gold;
   border-radius: 10px;
@@ -31,6 +39,38 @@
   z-index: 1000;
   cursor: pointer;
   transition: all 0.5s ease;
+} */
+
+.tutorial-highlight {
+  position: fixed;
+
+  border: 2px solid gold;
+  border-radius: 10px;
+
+  background: transparent;
+
+  box-shadow:
+    0 0 0 9999px rgba(0, 0, 0, 0.75),
+    0 0 10px gold,
+    0 0 20px rgba(255, 215, 0, 0.6);
+
+  z-index: 1000;
+
+  cursor: pointer;
+
+  pointer-events: auto;
+
+  transition:
+    top 0.35s ease,
+    left 0.35s ease,
+    width 0.35s ease,
+    height 0.35s ease;
+}
+
+.tutorial-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
 }
 
 /* Tooltip container */

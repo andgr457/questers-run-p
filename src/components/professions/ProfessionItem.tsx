@@ -66,14 +66,14 @@ export default function ProfessionItem(props: ProfessionItemProps){
     </div>
   }
   
-  const content = <div className='profession-item' onClick={clickFn}>
-    <div className='profession-item-title'>
+  const content = <div className='list-item' onClick={clickFn}>
+    <div className='list-item-title'>
       x{amount} {professionItem.name}
     </div>
-    <div className='profession-item-description'>
+    <div className='list-item-description'>
       {professionItem.description}
     </div>
-    <div className='profession-item-info'>
+    <div className='list-item-info'>
       {professionItem.profession && professionItem.profession.levelRequired > 0 && <>
         <span className='adv-g-highlight'>Level {professionItem.profession.levelRequired}</span> required.
       </>}
@@ -81,16 +81,16 @@ export default function ProfessionItem(props: ProfessionItemProps){
         <span className='adv-g-highlight'>No level</span> required.
       </>}
     </div>
-    <div className='profession-item-info'>
+    <div className='list-item-info'>
       <span className='adv-g-highlight'>{xp} <span style={{fontSize: 'smaller', color: 'gold'}}>{professionItem.profession && professionItem.profession.type.toUpperCase()}</span> XP</span> gained.
     </div>
-    <div className='profession-item-info'>
+    <div className='list-item-info'>
       <span className='adv-g-highlight'>{stamina} Stamina</span> required.
     </div>
-    <div className='profession-item-info'>
+    <div className='list-item-info'>
       <span className='adv-g-highlight'>{seconds?.toLocaleString() ?? 5} second(s)</span> required.
     </div>
-    <div className='profession-item-info'>
+    <div className='list-item-info'>
       <span className='adv-g-highlight'>{characterAmount} total</span> in inventory.
     </div>
   </div> 

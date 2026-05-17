@@ -71,7 +71,7 @@ export default function TavernItemsList(props: TavernItemsListProps){
         />
       </div>
     </div>
-    <div className='tavern-item-list'>
+    <div className='item-list'>
       {tavernItems.map(i => {
         return <TavernItem {...props} tavernItem={i} canDo={canDo} handleTavernItemClicked={handleTavernItemClicked}  />
       })}

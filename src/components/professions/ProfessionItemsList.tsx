@@ -86,7 +86,7 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
         />
       </div>
     </div>
-    <div className='profession-item-list'>
+    <div className='item-list'>
       {professionItems.map(i => {
         return <ProfessionItem amount={collectAmount} {...props} professionItem={i} handleDoProfessionItem={handleProfessionItemClicked} canDo={canDo} />
       })}

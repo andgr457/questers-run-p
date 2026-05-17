@@ -52,6 +52,10 @@
   box-shadow: 0 0 4px var(--text);
 }
 
+.quest-item.complete {
+  border: solid 1px gold;
+}
+
 .quest-item.popup {
   width: 100%;
   

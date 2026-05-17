@@ -1,5 +1,4 @@
 import type { AppProperties } from '../../interfaces/AppProperties.types';
-import '../../components/tavern/Tavern.css'
 import type { TavernListItem } from '../../interfaces/tavern/Tavern.types';
 import TavernItemsList from '../../components/tavern/TavernItemsList';
 import { useEffect } from 'react';
