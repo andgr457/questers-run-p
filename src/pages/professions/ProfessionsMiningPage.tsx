@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import type { AppProperties } from '../../interfaces/AppProperties.types';
-import '../../components/professions/Professions.css'
 import ProfessionItemsList from '../../components/professions/ProfessionItemsList';
 import type { Stat } from '../../interfaces/characters/Character.types';
 import CharacterInfoMiniStatCard from '../../components/characters/CharacterInfoMiniStatCard';

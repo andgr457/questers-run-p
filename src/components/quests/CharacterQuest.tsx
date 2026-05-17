@@ -4,6 +4,7 @@ import type { AppProperties } from '../../interfaces/AppProperties.types'
 import type { Quest } from '../../interfaces/quests/Quests.types'
 import StateOverlay from '../state-overlay/StateOverlay'
 import { useState } from 'react'
+import { QUEST_INTRO_IDS } from '../../data/quests/Quests.Intro.data'
 
 interface CharacterQuestProps extends AppProperties {
   handleShowPopup: (popupType: 'quest' | 'quest-group', relatedId: string) => void
@@ -88,9 +89,9 @@ export default function CharacterQuest(props: CharacterQuestProps){
       </div>
     }
 
-    return <div onMouseEnter={() => {setHideBlur(true)}} onMouseLeave={() => {setHideBlur(false)}}>
+    return <div id={`${quest.id === QUEST_INTRO_IDS.ADVENTURERS_GUILD_ID ? 'tutorial-quest-complete' : quest.id}`} onMouseEnter={() => {setHideBlur(true)}} onMouseLeave={() => {setHideBlur(false)}}>
       <StateOverlay active={hideBlur === false && showOverlay} text={overlayText} subText={subText}>
-        <div  className={questItemClassName}>
+        <div  className={`${questItemClassName} ${thisQuestCharacterProgress?.canCompleteQuest === true ? 'complete' : ''}`}>
           {showButtons === true && <div className='quest-actions'>
             {canTake === true && <button 
               className={`success`}

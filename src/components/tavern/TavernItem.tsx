@@ -76,20 +76,20 @@ export default function TavernItem(props: TavernItemProps){
   } : () => {}
 
   
-  const content = <div className='tavern-item' onClick={clickFn}>
-    <div className='tavern-item-title'>
+  const content = <div className='list-item' onClick={clickFn}>
+    <div className='list-item-title'>
       {tavernItem.title}
     </div>
-    <div className='tavern-item-description'>
+    <div className='list-item-description'>
       {tavernItem.description}
     </div>
-    <div className='tavern-item-info'>
+    <div className='list-item-info'>
       <span className='adv-g-highlight' style={{color: 'gold'}}>{reqGold} gold</span> required.
     </div>
-    <div className='profession-item-info'>
+    <div className='list-item-info'>
       <span className='adv-g-highlight'>{seconds} second(s)</span> required.
     </div>
-    <div className='tavern-item-info'>
+    <div className='list-item-info'>
       <span className='adv-g-highlight'>{percent}% HP MP STAM</span> gained.
     </div>
   </div> 

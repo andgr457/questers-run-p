@@ -119,27 +119,28 @@ export default function OverviewPage(props: OverviewPageProps){
             {mainCharacterExists ? `Rename ${character.name}`: 'Create Main Character'}
           </button>
         </PageHeader>
-        <div className='tavern-item-list'>
-          <div className='tavern-item'>
-            <div className='tavern-item-title'>
+
+        {character?.name && <div className='item-list'>
+          <div className='list-item'>
+            <div className='list-item-title'>
               Dashboard
             </div>
             
-            <div className='tavern-item-info'>
+            <div className='list-item-info'>
               Quests Completed: <span style={{color: 'gold'}}>{allCompleteCharacterQuestProgress?.length ?? 0}</span>
             </div>
             
-            <div className='tavern-item-info'>
+            <div className='list-item-info'>
               Achivements Earned: <span style={{color: 'gold'}}>{character?.achievements?.length ?? 0}</span>
             </div>
           </div>
 
-          <div className='tavern-item'>
-            <div className='tavern-item-title'>
+          <div className='list-item'>
+            <div className='list-item-title'>
               Quests Complete
             </div>
             
-            <div className='tavern-item-info'>
+            <div className='list-item-info'>
               {allCharacterQuestsProgress?.map(q => {
                 const amount = allCompleteCharacterQuestProgress?.filter(cq => cq.questId === q.questProgress?.questId)?.length
                 return <div>
@@ -148,9 +149,8 @@ export default function OverviewPage(props: OverviewPageProps){
               })}
             </div>
           </div>
-        </div>
+        </div>}
 
-        
       </div>
     </div>
   </>
