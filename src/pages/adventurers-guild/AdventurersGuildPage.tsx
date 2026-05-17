@@ -10,7 +10,6 @@ import { useWindows } from '../../components/windows/WindowProvider'
 import CharacterQuests from '../../components/quests/CharacterQuests'
 import { sleep } from '../../services/CommonServices'
 import AdventurersGuildClerk from '../../components/adventurers-guild/AdventurersGuildClerk'
-import { QUEST_INTRO_IDS } from '../../data/quests/Quests.Intro.data'
 
 interface AdventurersGuildPageProps extends AppProperties {
 
@@ -19,7 +18,6 @@ interface AdventurersGuildPageProps extends AppProperties {
 export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     const {
     character,
-    characterQuestProgress,
     setLocation,
     handleSetCharacter,
   } = props
