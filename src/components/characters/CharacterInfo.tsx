@@ -8,7 +8,7 @@ import type { AppProperties } from '../../interfaces/AppProperties.types'
 import CharacterInfoMiniStatCard from './CharacterInfoMiniStatCard'
 
 interface CharacterInfoProps extends AppProperties {
-
+  showExpander: boolean
 }
 
 export default function CharacterInfo(props: CharacterInfoProps) {
@@ -16,6 +16,7 @@ export default function CharacterInfo(props: CharacterInfoProps) {
     character,
     characterClass,
     characterInventories,
+    showExpander = true,
   } = props
 
   const [characterGold, setCharacterGold] = useState(0)
@@ -42,7 +43,7 @@ export default function CharacterInfo(props: CharacterInfoProps) {
   }
 
   return <div className='character-info-main'>
-    <button
+    {showExpander && <button
       className="horizontal-expander"
       onClick={() => setShowAll(prev => !prev)}
     >
@@ -53,7 +54,7 @@ export default function CharacterInfo(props: CharacterInfoProps) {
       <span className="vertical-label">
         CHARACTER SHEET
       </span>
-    </button>
+    </button>}
     <div className={`character-sheet ${showAll === true ? 'open' : ''}`}>
       <div className='character-section-title'>
         <div className='page-header-banner'>

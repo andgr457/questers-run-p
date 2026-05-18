@@ -110,7 +110,7 @@ export class QuestService {
           }
         }
 
-        if(req.itemId && req.itemAmount){
+        if(req.itemId && typeof req.itemAmount === 'number'){
           let relatedAmount = 0
           for(const inventory of characterInventories){
             const relatedTxns = inventory.transactions.filter(t => t.itemId === req.itemId)

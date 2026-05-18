@@ -220,7 +220,11 @@ export default function CharacterQuest(props: CharacterQuestProps){
                 {quest?.completionRequirements?.map(r => {
                   const achievement = achievements?.find(a => a?.id === r.achievementId)
                   const item = items?.find(i => i?.id === r.itemId)
-                  const txns = thisQuestCharacterProgress?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === r.itemId) ?? []
+
+                  let txns = thisQuestCharacterProgress?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === r.itemId) ?? []
+                  if(!txns || txns.length === 0){
+                    txns = allQuestsWithProgress?.find(q => q.quest.id === quest.id)?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === r.itemId) ?? []
+                  }
                   let txnTotal = 0
                   for(const txn of txns){
                     txnTotal += txn.quantity
