@@ -1,4 +1,5 @@
 import type { QuestWithQuestProgress } from '../components/quests/CharacterQuests';
+import type { ShoppeCartItem } from '../components/shoppe/ShoppeCart';
 import type { Achievement } from './achievements/Achievement.types';
 import type { Character, CharacterClass } from './characters/Character.types';
 import type { Inventory } from './inventories/Inventory.types';
@@ -34,4 +35,5 @@ export interface AppFunctions {
   handleAbandonQuest?: (questProgressId: string) => void
   handleCompleteQuest?: (questProgress: QuestWithQuestProgress) => Promise<void>
   handleSetRequestedWindowId?: (id: string) => void
+  handleShoppeConfirmation?: (cartItems: ShoppeCartItem[]) => Promise<void>
 }

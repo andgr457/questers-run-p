@@ -1,10 +1,52 @@
 .character-info-main {
+  letter-spacing: 1px;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   gap: 14px;
   color: var(--text);
   text-shadow: none;
   background-color: var(--bg-dark);
+  height: 100%;
+
+}
+
+.horizontal-expander {
+  width: 20px;
+  flex-shrink: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  background: var(--bg-dark-2);
+  /* border-right: 1px solid var(--bg-dark); */
+  user-select: none;
+}
+
+.vertical-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg); /* makes it read bottom-to-top */
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-top: 8px;
+}
+
+.character-sheet {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.25s ease;
+
+  background: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.character-sheet.open {
+  width: 400px; /* or your full panel width */
 }
 
 /* HERO */
@@ -12,24 +54,8 @@
 .character-info-hero {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-
-  padding: 12px;
-
+  gap: 5px;
   border-radius: 10px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,0.05),
-      rgba(255,255,255,0.02)
-    );
-
-  border: 1px solid rgba(255,255,255,0.08);
-
-  box-shadow:
-    inset 0 0 15px rgba(255,255,255,0.03),
-    0 0 20px rgba(0,0,0,0.35);
 }
 
 .character-info-class-title {
@@ -61,7 +87,7 @@
 .character-info-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 5px;
 }
 
 .character-meta-card {
@@ -73,7 +99,7 @@
   justify-content: space-between;
   align-items: center;
 
-  padding: 10px 12px;
+  padding: 3px 12px;
 
   border-radius: 8px;
 
@@ -84,11 +110,12 @@
 
 .meta-label {
   opacity: 0.7;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .meta-value {
   font-weight: 700;
+  font-size: 0.8rem;
 }
 
 .gold-card .meta-value {
@@ -106,10 +133,11 @@
   grid-template-columns:
     repeat(auto-fit, minmax(260px, 1fr));
 
-  gap: 10px;
-    max-height: 0;
+  gap: 5px;
+  max-height: 0;
   opacity: 0;
   overflow: hidden;
+  padding: 3px 3px;
 
   transition:
     max-height 1.0s ease,
@@ -139,30 +167,13 @@
 
 .character-progress-card {
   position: relative;
-
   overflow: hidden;
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
 
-  padding: 10px;
-
-  border-radius: 10px;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.04),
-      rgba(255,255,255,0.015)
-    );
-
-  border: 1px solid rgba(255,255,255,0.07);
-
-  transition:
-    transform 0.2s ease,
-    filter 0.2s ease,
-    border-color 0.2s ease;
+  padding: 3px;
 }
 
 .character-progress-card::before {
@@ -184,14 +195,14 @@
 }
 
 .character-progress-card:hover::before {
-  transform: translateX(100%);
+  /* transform: translateX(100%); */
 }
 
 .character-progress-card:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.08);
+  /* transform: translateY(-2px);
+  filter: brightness(1.08); */
 
-  border-color: rgba(255,255,255,0.15);
+  /* border-color: rgba(255,255,255,0.15); */
 }
 
 .character-progress-header,
@@ -202,16 +213,18 @@
 
   gap: 10px;
 
-  font-size: 0.9rem;
 }
 
 .character-progress-header {
   font-weight: 700;
+  font-size: 0.6em;
+  letter-spacing: 1px;
 }
 
 .character-progress-footer {
   opacity: 0.75;
-  font-size: 0.8rem;
+  font-size: 0.6em;
+  letter-spacing: 1px;
 }
 
 /* BAR */

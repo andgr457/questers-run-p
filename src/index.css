@@ -125,8 +125,23 @@ body {
   background-size: 100% 200%;
   
 } */
+html, body, #root {
+  margin: 0;
+  padding: 0;
 
-body {
+  min-height: 100vh;
+  width: 100%;
+
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 20px;
+
+  background: var(--cool-bg);
+
+  overflow-x: hidden;
+}
+/* body {
   all: unset;
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
@@ -136,7 +151,7 @@ body {
   min-height: 100vh;
 
   background: var(--cool-bg);
-}
+} */
 
 .reveal {
   opacity: 0;
@@ -170,11 +185,10 @@ body {
 .app-module-title {
   padding-top: 7px;
   padding-bottom: 7px;
-  border-bottom: solid 1px var(--text);
   
   text-align: center;
   color: var(--text);
-  background-color: var(--bg-dark-3);
+  background-color: var(--bg-dark);
   font-size: 1.3em;
 }
 
@@ -184,8 +198,8 @@ button {
   padding: 6px;
   font-weight: 500;
   cursor: pointer;
-  font-size: 0.9em;
-  letter-spacing: 1px;
+  font-size: 12px;
+  letter-spacing: 2px;
   text-transform: uppercase;
   border-radius: 3px;
   border: solid var(--bg-dark-2) 2px;
@@ -199,6 +213,13 @@ button {
   ,0 0 7px var(--bg-dark)
   ,0 0 5px var(--bg-dark)
   ,0 0 5px var(--bg-dark);
+}
+
+button.expander {
+  text-shadow: 0 0 5px var(--text);
+  border: solid var(--bg-dark-3) 2px;
+  background-color: var(--bg-dark);
+  color: var(--text);
 }
 
 button.confirm {
@@ -238,7 +259,7 @@ button.success-blink {
   background-color: var(--green-success) !important;
   color: var(--text) !important;
   text-shadow: 0 0 5px var(--text) !important;
-  animation: barelyAppearDisappear 1s ease-in-out infinite;
+  animation: barelyAppearDisappear 3s ease-in-out infinite;
 }
 
 button.yellow {
@@ -254,7 +275,8 @@ button.yellow-blink {
   background-color: var(--gold)!important;
   color: var(--bg-dark)!important;
   text-shadow: 0 0 5px var(--text) !important;
-  animation: barelyAppearDisappear 3s ease-in-out infinite;
+  filter: brightness(1.1);
+  animation: barelyAppearDisappear 5s ease-in-out infinite;
 }
 
 button.basic {
@@ -345,7 +367,7 @@ input[type='text']::placeholder {
 }
 
 .page-main {
-  padding: 2px;
+  
 }
 
 /* .page-modules {
@@ -473,32 +495,37 @@ ul li {
 /* MAIN SCREEN LAYOUT */
 
 .app-screen-layout {
+  padding: 5px;
+  background: var(--bg-dark);
   display: flex;
-  gap: 4px;
+  gap: 5px;
 
-  align-items: flex-start;
+  height: 90.5vh;      /* 👈 KEY */
+  overflow: hidden;   /* 👈 prevents page scroll */
+
+  align-items: stretch;
 }
 
 /* LEFT COLUMN */
 
 .app-screen.left {
-
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 4px;
-
+  overflow-y: auto;
   position: sticky;
   top: 10px;
-  width: 450px;
+  max-width: 350px;
 }
 
 /* RIGHT COLUMN */
 
 .app-screen.right {
   flex: 1;
-
+  height: 100%;
   min-width: 0;
-
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -508,7 +535,9 @@ ul li {
 .app-screen > div {
   min-width: 0;
 }
-
+.character-mini-bar-section {
+  display: none;
+}
 /* MOBILE */
 
 @media (max-width: 1100px) {
@@ -517,13 +546,13 @@ ul li {
   }
 
   .app-screen.left {
-    position: static;
-
-    width: 100%;
-    flex: unset;
+    display: none;   /* 👈 completely remove it */
   }
 
   .app-screen.right {
     width: 100%;
+  }
+  .character-mini-bar-section {
+    display: block;
   }
 }

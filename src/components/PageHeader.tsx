@@ -3,6 +3,7 @@ import './PageHeader.css'
 
 interface PageHeaderProps {
   showActions: boolean
+  title?: string
   children: React.ReactNode
 }
 
@@ -10,25 +11,23 @@ export default function PageHeader(props: PageHeaderProps){
   const [showActions, setShowActions] = useState(props.showActions ?? false)
 
   const {
-    children: pageActions
+    children: pageActions,
+    title
   } = props
 
   return (
     <div className='page-header'>
-      <div
-        className='page-header-main'
+      <div className='page-header-main'>
         
-      >
         <div className='page-header-banner'>
           <div className='page-header-title'>
-            Actions
+            {title ?? 'Actions'}
           </div>
 
-          <div
-            className='page-header-expander'
-            onClick={() => setShowActions(prev => !prev)}
-          >
-            <span>{showActions ? 'Hide' : 'Show'}</span>
+          <div className='page-header-expander'>
+            <button className='expander'  onClick={() => setShowActions(prev => !prev)}>
+              {showActions ? 'Hide' : 'Show'}
+            </button>
           </div>
         </div>
 

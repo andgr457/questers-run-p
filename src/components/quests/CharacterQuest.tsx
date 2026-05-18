@@ -10,6 +10,8 @@ interface CharacterQuestProps extends AppProperties {
   handleShowPopup: (popupType: 'quest' | 'quest-group', relatedId: string) => void
   showActions?: boolean
   quest: Quest
+  showOneTimeCompletedQuests: boolean
+  showIneligibleQuests: boolean
   questItemClassName?: string
 }
 
@@ -25,7 +27,9 @@ export default function CharacterQuest(props: CharacterQuestProps){
       handleAddQuest,
       handleAbandonQuest,
       handleCompleteQuest,
-      questItemClassName = 'quest-item'
+      questItemClassName = 'quest-item',
+      showOneTimeCompletedQuests,
+      showIneligibleQuests,
     } = props
     const [hideBlur, setHideBlur] = useState(false)
 
@@ -62,6 +66,7 @@ export default function CharacterQuest(props: CharacterQuestProps){
     const showButtons = !showActions ? false : true
     const completedDate = completeProgress?.[0] && DateTime.fromISO(completeProgress[0].questProgress?.endDate as string).toLocal().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
     let showOverlay = false
+    let showQuest = true
     let overlayText = ''
     const overlaySubTexts = []
     if(quest.repeatable === false && completeProgress.length === 1){
@@ -70,13 +75,25 @@ export default function CharacterQuest(props: CharacterQuestProps){
       overlaySubTexts.push(<div>
         Completed {completedDate}
       </div>)
+      showQuest = !showOneTimeCompletedQuests ? false : true
     } else if(characterQuestProgress?.questProgress){
       if(characterQuestProgress.questProgress.status === 'in-progress' && characterQuestProgress.questProgress.questId !== quest.id){
         showOverlay = true
-        overlayText = 'On a Quest'
+        overlayText = 'QUESTING'
         overlaySubTexts.push(<div>
           Already on the quest "{characterQuestProgress.quest.title}".
         </div>)
+      }
+    } else if(character?.level){
+      const questLevelReq = quest.startRequirements.find(sr => sr.level)
+      if(questLevelReq?.level){
+        if(character.level < questLevelReq.level){
+          showOverlay = true
+          overlayText = 'REQUIRES'
+          overlaySubTexts.push(<div>
+            Level {questLevelReq.level}
+          </div>)
+        }
       }
     }
 
@@ -87,6 +104,10 @@ export default function CharacterQuest(props: CharacterQuestProps){
           return st
         })}
       </div>
+    }
+
+    if(!showQuest || (canTake === false && showIneligibleQuests === false)){
+      return null
     }
 
     return <div id={`${quest.id === QUEST_INTRO_IDS.ADVENTURERS_GUILD_ID ? 'tutorial-quest-complete' : quest.id}`} onMouseEnter={() => {setHideBlur(true)}} onMouseLeave={() => {setHideBlur(false)}}>
@@ -117,14 +138,13 @@ export default function CharacterQuest(props: CharacterQuestProps){
               >
               Complete
             </button>}
-            
+             {statusContent && <div
+                className={`quest-status ${statusContent}`}
+              >
+                {thisQuestCharacterProgress?.questProgress?.status}
+              </div>}
           </div>}
-          {statusContent && <div
-            className={`quest-status ${statusContent}`}
-          >
-            {thisQuestCharacterProgress?.questProgress?.status}
-          </div>}
-
+          
           <div className='quest-item-header'>
             {quest?.title}
           </div>
@@ -164,30 +184,28 @@ export default function CharacterQuest(props: CharacterQuestProps){
                   for(const txn of txns){
                     txnTotal += txn.quantity
                   }
-                  return <div className={r.completed === true && !r.stats ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
-                    <div className=''>
-                      <div >
-                        {!r.stats && <div style={{float: 'left'}}>
-                          {r.completed === true ? '✔' : '✘'}
-                        </div>}
-                        {r.level && <>Level <strong >{r.level}</strong></>}
-                        {r.questId && <div title={requiredQuest?.quest?.description}>Quest: <strong>{requiredQuest?.quest?.title}</strong></div>}
-                        {r.achievementId && <div title={requiredAchievement?.description}>Achivement: <strong>{requiredAchievement?.title}</strong></div>}
-                        {r.itemId && r.itemAmount && <><strong>{txnTotal > r.itemAmount ? r.itemAmount : txnTotal}/{r.itemAmount} {requiredItem?.name}</strong></>}
-                        {r.stats && <> <div className='quest-item-requirements-stat-header'>Required Stats</div>
-                          {Object.getOwnPropertyNames(r.stats).map(propertyName => {
-                            //@ts-ignore
-                            const name = r.stats[propertyName].name
-                            //@ts-ignore
-                            const value = r.stats[propertyName].value
-                            if(value === 0) return null
-                            return <div className={r.completed === true ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
-                              {r.completed === true ? '✔' : '✘'} {name}: {value}
-                            </div>
-                          })}
-                        </>}
-                      </div>
-                    </div>              
+                  return <div className={r.completed === true ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
+                    <div >
+                      {!r.stats && <div style={{float: 'left'}}>
+                        {r.completed === true ? '✔' : '✘'}
+                      </div>}
+                      {r.level && <>Level <strong >{r.level}</strong></>}
+                      {r.questId && <div title={requiredQuest?.quest?.description}>Quest: <strong>{requiredQuest?.quest?.title}</strong></div>}
+                      {r.achievementId && <div title={requiredAchievement?.description}>Achivement: <strong>{requiredAchievement?.title}</strong></div>}
+                      {r.itemId && r.itemAmount && <><strong>{txnTotal > r.itemAmount ? r.itemAmount : txnTotal}/{r.itemAmount} {requiredItem?.name}</strong></>}
+                      {r.stats && <> 
+                        {Object.getOwnPropertyNames(r.stats).map(propertyName => {
+                          //@ts-ignore
+                          const name = r.stats[propertyName].name
+                          //@ts-ignore
+                          const value = r.stats[propertyName].value
+                          if(value === 0) return null
+                          return <div>
+                            {r.completed === true ? '✔' : '✘'} {name}: <strong>{value}</strong>
+                          </div>
+                        })}
+                      </>}
+                    </div>
                   </div>
                 })}
               </div>

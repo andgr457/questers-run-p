@@ -84,6 +84,7 @@ export interface Character {
   achievements: CharacterAchievements[]
   stats: Stats
   professions: ProfessionStats
+  gold?: number
 }
 
 

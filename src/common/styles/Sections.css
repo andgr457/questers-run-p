@@ -1,0 +1,15 @@
+.dark-centered-section {
+  background: var(--bg-dark);
+  color: var(--text);
+  letter-spacing: 1px;
+  padding: 2px;
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dark-centered-section button {
+  font-size: 14px;
+  min-width: 75px;
+}

@@ -27,7 +27,7 @@ export default function CharacterInfoXP(props: CharacterInfoXPProps){
     title={`${(character.levelNextXP - character.xp).toLocaleString()} XP left`}
   >
     <div className='character-progress-header'>
-      <span>Character XP</span>
+      <span>XP</span>
 
       <span>
         {character.xp.toLocaleString()} / {character.levelNextXP.toLocaleString()}
