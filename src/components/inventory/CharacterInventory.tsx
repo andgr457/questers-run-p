@@ -27,6 +27,9 @@ export default function CharacterInventory(props: CharacterInventoryProps){
   if(!character?.name || !currencyPouch) return null
 
   return <div>
+    <div className='page-header-main'>
+      INVENTORY
+    </div>
     {characterInventories?.map(inv => {
       const mappedItems: InventorySlotProps[] = []
       for(const txn of inv.transactions){
@@ -49,14 +52,14 @@ export default function CharacterInventory(props: CharacterInventoryProps){
       for(let i = 0; i < emptySlotAmount; i++){
         emptySlots.push(<InventorySlot character={character} />)
       }
-      return <div id={`${character?.id}__${inv.id}`}><CustomContainer
-        title={inv.title}
-        description={inv.description}
-        expandable={true}
-        expanded={true}
-        isChildCustomContainer={true}
-        headerLeft={inv.title === 'Currency' ? currencyHeaderLeft : bagHeaderLeft}
-      >
+      return <div className='inventory-section' id={`${character?.id}__${inv.id}`}>
+        <div className='character-section-title'>
+          <div className='page-header-banner'>
+            <div className='page-header-title'>
+              {inv.title}
+            </div>
+          </div>
+        </div>
         <div className='inventory-slots'>
           {mappedItems.map(mi => {
             return <InventorySlot character={character}
@@ -66,7 +69,7 @@ export default function CharacterInventory(props: CharacterInventoryProps){
           })}
           {emptySlots}
         </div>
-      </CustomContainer></div>
+      </div>
     })}
   </div>
 }
