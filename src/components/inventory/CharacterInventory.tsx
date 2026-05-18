@@ -1,5 +1,4 @@
 import { ITEM_CURRENCY_IDS } from '../../data/items/currency/Item.Currency.data'
-import CustomContainer from '../CustomContainer'
 import InventorySlot, { type InventorySlotProps } from './InventorySlot'
 import './Inventory.css'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
@@ -22,8 +21,6 @@ export default function CharacterInventory(props: CharacterInventoryProps){
     }
   })
 
-  const currencyHeaderLeft = `Gold ${totalGold.toLocaleString()}`
-  
   if(!character?.name || !currencyPouch) return null
 
   return <div>
@@ -44,7 +41,6 @@ export default function CharacterInventory(props: CharacterInventoryProps){
       }
       //@ts-ignore
       const bagFull = inv.title !== 'Currency' && mappedItems.length >= inv.max
-      const bagHeaderLeft = `${mappedItems.length}/${inv.max} Slots`
 
       //@ts-ignore
       const emptySlotAmount = inv.max - mappedItems.length
