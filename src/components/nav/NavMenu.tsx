@@ -14,6 +14,7 @@ interface NavMenuProps extends AppProperties {
 
 export default function NavMenu(props: NavMenuProps) {
   const [subNavSelected, setSubNavSelected] = useState('town')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const {
     windowRequestId,
     character
@@ -67,6 +68,7 @@ export default function NavMenu(props: NavMenuProps) {
   function toggleCharacter() {
     toggleWindow('character', 'Character', <CharacterInfo 
       {...props}
+      showExpander={false}
     />)
   }
 
@@ -114,91 +116,198 @@ export default function NavMenu(props: NavMenuProps) {
   const divider = <div className='nav-divider'>|</div>
   return (
     <div >
-      <div className='nav flex-wrap gap-1' >
-        <div 
-          className='nav-item' 
-          onClick={() => {handleNavigate('/')}}
+      <div className='nav flex-wrap gap-1'>
+        <div
+          className='nav-item'
+          style={{background: 'transparent'}}
+          onClick={() => {
+            handleNavigate('/')
+            setMobileMenuOpen(false)
+          }}
         >
           Quester's Run
         </div>
-        
-        {characterNotExists === false && <>
-                  {divider}
-          <div className='flex-wrap gap-2'>
-            <div className={`nav-item ${
-              subNavSelected === 'town'
-                  ? 'active'
-                  : ''
-              }`}
-              onMouseEnter={() => {setSubNavSelected('town')}}
-              onClick={() => {setSubNavSelected('town')}}
-            >
-              Town
+
+        {/* mobile hamburger */}
+        {characterNotExists === false && (
+          <div
+            className='hamburger'
+            onClick={() => {
+              setMobileMenuOpen(prev => !prev)
+            }}
+          >
+            ☰
+          </div>
+        )}
+
+        {/* desktop nav */}
+        {characterNotExists === false && (
+          <div className='desktop-nav'>
+            {divider}
+
+            <div className='flex-wrap gap-2'>
+              <div
+                className={`nav-item ${
+                  subNavSelected === 'town' ? 'active' : ''
+                }`}
+                onMouseEnter={() => {
+                  setSubNavSelected('town')
+                }}
+                onClick={() => {
+                  setSubNavSelected('town')
+                }}
+              >
+                Town
+              </div>
+            </div>
+
+            {divider}
+
+            <div className='flex-wrap gap-2'>
+              <div
+                className={`nav-item ${
+                  subNavSelected === 'profession'
+                    ? 'active'
+                    : ''
+                }`}
+                onMouseEnter={() => {
+                  setSubNavSelected('profession')
+                }}
+                onClick={() => {
+                  setSubNavSelected('profession')
+                }}
+              >
+                Professions
+              </div>
+            </div>
+
+            {divider}
+
+            <div className='flex-wrap gap-2'>
+              <div
+                className={`nav-item window-button ${
+                  isWindowOpen('character')
+                    ? 'active'
+                    : ''
+                }`}
+                onClick={toggleCharacter}
+              >
+                Character
+              </div>
+            </div>
+
+            {divider}
+
+            <div className='flex-wrap gap-2'>
+              <div
+                className={`nav-item window-button ${
+                  isWindowOpen('inventory')
+                    ? 'active'
+                    : ''
+                }`}
+                onClick={toggleInventory}
+              >
+                Inventory
+              </div>
+            </div>
+
+            {divider}
+
+            <div className='flex-wrap gap-2'>
+              <div
+                className={`nav-item window-button ${
+                  isWindowOpen('quest')
+                    ? 'active'
+                    : ''
+                }`}
+                onClick={toggleQuest}
+              >
+                Quest
+              </div>
+            </div>
+
+            {divider}
+
+            <div className='flex-wrap gap-2'>
+              <div
+                className={`nav-item window-button ${
+                  isWindowOpen('settings')
+                    ? 'active'
+                    : ''
+                }`}
+                onClick={toggleSettings}
+              >
+                Settings
+              </div>
             </div>
           </div>
-          {divider}
-          <div className='flex-wrap gap-2'>
-            <div className={`nav-item ${
-              subNavSelected === 'profession'
-                  ? 'active'
-                  : ''
-              }`}
-              onMouseEnter={() => {setSubNavSelected('profession')}}
-              onClick={() => {setSubNavSelected('profession')}}
+        )}
+      </div>
+
+      <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+        <div
+          className='mobile-menu-close'
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          ✕
+        </div>
+
+        <div className='mobile-menu-section'>
+          <div className='mobile-menu-title'>Town</div>
+
+          {townItems.map(i => (
+            <div
+              key={i.navTo}
+              className='nav-item'
+              onClick={() => {
+                handleNavigate(i.navTo)
+                setMobileMenuOpen(false)
+              }}
             >
-              Professions
+              {i.title}
             </div>
+          ))}
+        </div>
+
+        <div className='mobile-menu-section'>
+          <div className='mobile-menu-title'>
+            Professions
           </div>
-          {divider}
-          <div className='flex-wrap gap-2'>
-            <div className={`nav-item window-button ${
-              isWindowOpen('character')
-                ? 'active'
-                : ''
-            }`}
-            onClick={toggleCharacter}
+
+          {professionItems.map(i => (
+            <div
+              key={i.navTo}
+              className='nav-item'
+              onClick={() => {
+                handleNavigate(i.navTo)
+                setMobileMenuOpen(false)
+              }}
             >
-              Character
+              {i.title}
             </div>
+          ))}
+        </div>
+
+        <div className='mobile-menu-section'>
+          <div className='mobile-menu-title'>
+            Windows
           </div>
-          {divider}
-          <div className='flex-wrap gap-2'>
-            <div className={`nav-item window-button ${
-              isWindowOpen('inventory')
-                ? 'active'
-                : ''
-            }`}
-            onClick={toggleInventory}
-            >
-              Inventory
-            </div>
+          <div className='nav-item' onClick={toggleCharacter}>
+            Character
           </div>
-          {divider}
-          <div className='flex-wrap gap-2'>
-            <div className={`nav-item window-button ${
-              isWindowOpen('quest')
-                ? 'active'
-                : ''
-            }`}
-            onClick={toggleQuest}
-            >
-              Quest
-            </div>
+
+          <div className='nav-item' onClick={toggleInventory}>
+            Inventory
           </div>
-          {divider}
-          <div className='flex-wrap gap-2'>
-            <div className={`nav-item window-button ${
-              isWindowOpen('settings')
-                ? 'active'
-                : ''
-            }`}
-            onClick={toggleSettings}
-            >
-              Settings
-            </div>
+
+          <div className='nav-item' onClick={toggleQuest}>
+            Quest
           </div>
-        </>
-        }
+
+          <div className='nav-item' onClick={toggleSettings}>
+            Settings
+          </div>
+        </div>
       </div>
       
       {/* travel sub items */}
