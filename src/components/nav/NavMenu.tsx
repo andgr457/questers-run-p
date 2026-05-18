@@ -7,6 +7,7 @@ import type { AppProperties } from '../../interfaces/AppProperties.types';
 import CharacterQuestCurrent from '../quests/CharacterQuestCurrent';
 import CharacterInventory from '../inventory/CharacterInventory';
 import Settings from '../settings/Settings';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 interface NavMenuProps extends AppProperties {
   windowRequestId?: string
@@ -17,9 +18,10 @@ export default function NavMenu(props: NavMenuProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const {
     character,
+    windowRequestId,
     handleSetRequestedWindowId
   } = props
-
+  const isMobile = useIsMobile()
   const characterNotExists = !character?.name
 
   const {
@@ -29,19 +31,19 @@ export default function NavMenu(props: NavMenuProps) {
   } = useWindows()
   const navigate = useNavigate()
 
-  // useEffect(() => {
-  //   if(!windowRequestId) return
-  //   if(windowRequestId === 'character'){
-  //     toggleCharacter()
-  //   } else if(windowRequestId === 'inventory'){
-  //     toggleInventory()
-  //   } else if(windowRequestId === 'quest'){
-  //     toggleQuest()
-  //   } else if(windowRequestId === 'settings'){
-  //     toggleSettings()
-  //   }
+  useEffect(() => {
+    if(!windowRequestId) return
+    if(windowRequestId === 'character'){
+      toggleCharacter()
+    } else if(windowRequestId === 'inventory'){
+      toggleInventory()
+    } else if(windowRequestId === 'quest'){
+      toggleQuest()
+    } else if(windowRequestId === 'settings'){
+      toggleSettings()
+    }
 
-  // }, [windowRequestId])
+  }, [windowRequestId])
 
   const isWindowOpen = (
     id: string
@@ -66,26 +68,35 @@ export default function NavMenu(props: NavMenuProps) {
 
 
   function toggleCharacter() {
+    if(isMobile){
+      toggleWindow('character', 'Character', <CharacterInfo 
+        {...props}
+        showExpander={false}
+      />)
+      return
+    }
     handleSetRequestedWindowId?.('character')
-    // toggleWindow('character', 'Character', <CharacterInfo 
-    //   {...props}
-    //   showExpander={false}
-    // />)
   }
 
   function toggleQuest() {
+    if(isMobile){
+      toggleWindow('quest', 'Current Quest', <CharacterQuestCurrent 
+        {...props}
+        
+      />)
+      return
+    }
     handleSetRequestedWindowId?.('quest')
-    // toggleWindow('quest', 'Current Quest', <CharacterQuestCurrent 
-    //   {...props}
-      
-    // />)
   }
 
   function toggleInventory() {
+    if(isMobile){
+      toggleWindow('inventory', 'Inventory', <CharacterInventory 
+        {...props}
+      />)
+      return
+    }
     handleSetRequestedWindowId?.('inventory')
-    // toggleWindow('inventory', 'Inventory', <CharacterInventory 
-    //   {...props}
-    // />)
   }
 
   function toggleSettings() {
