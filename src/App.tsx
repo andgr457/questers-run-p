@@ -22,7 +22,6 @@ import { QuestGroupRepository } from './repository/quests/QuestGroupRepository';
 import { DateTime } from 'luxon';
 import { ITEM_CURRENCY_IDS } from './data/items/currency/Item.Currency.data';
 import type { AppProperties } from './interfaces/AppProperties.types';
-import CharacterInfoMiniBar from './components/characters/CharacterInfoMiniBar';
 import type { QuestWithQuestProgress } from './components/quests/CharacterQuests';
 import { QuestService } from './services/quests/QuestService';
 import './form-controls.css'

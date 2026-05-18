@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { AppProperties } from '../../interfaces/AppProperties.types';
 import type { Item } from '../../interfaces/items/Item.types';
 
@@ -20,7 +19,6 @@ interface ShoppeCartProps extends AppProperties {
 export default function ShoppeCart(props: ShoppeCartProps){
   const {
     cartItems,
-    cartTotal,
     handleClearCart,
     handleConfirmCartTransactions,
     handleRemoveCartItem,

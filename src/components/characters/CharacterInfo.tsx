@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react'
 import './CharacterInfo.css'
 import { CharacterService } from '../../services/characters/CharacterService'
 import type { Inventory } from '../../interfaces/inventories/Inventory.types'
-import { StatSort, type Stat } from '../../interfaces/characters/Character.types'
-import { ProfessionSort } from '../../interfaces/professsions/Profession.types'
-import CharacterStatCard from './CharacterStatCard'
+import { type Stat } from '../../interfaces/characters/Character.types'
 import CharacterInfoXP from './CharacterInfoXP'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
-import CharacterStatCardMin from './CharacterStatCardMin'
 import CharacterInfoMiniStatCard from './CharacterInfoMiniStatCard'
 
 interface CharacterInfoProps extends AppProperties {
@@ -23,9 +20,6 @@ export default function CharacterInfo(props: CharacterInfoProps) {
 
   const [characterGold, setCharacterGold] = useState(0)
   const [showAll, setShowAll] = useState(true)
-  const [showAttributeStats, setShowAttributeStats] = useState(false)
-  const [showProfessionStats, setShowProfessionStats] = useState(false)
-  const [showCharacterBaseInfo, setShowCharacterBaseInfo] = useState(true)
 
   useEffect(() => {
     const load = async function () {
@@ -69,7 +63,7 @@ export default function CharacterInfo(props: CharacterInfoProps) {
         </div>
       </div>
 
-      <div className={`character-stats-grid ${showCharacterBaseInfo === true ? 'open' : ''}`}>
+      <div className={`character-stats-grid open`}>
         <CharacterInfoXP character={character} />
         <div className='character-info-hero'>
 
@@ -85,7 +79,7 @@ export default function CharacterInfo(props: CharacterInfoProps) {
               </span>
             </div>
           </div>
-          
+
           <div className='character-stat-chip'>
             <div style={{float: 'left'}}>
               <span>Gold</span>
