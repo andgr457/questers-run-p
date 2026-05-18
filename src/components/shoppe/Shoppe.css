@@ -19,6 +19,12 @@
   -webkit-overflow-scrolling: touch;
   cursor: pointer;
   user-select: none;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.shoppe-item-list.open {
+  opacity: 1;
 }
 
 .shoppe-item-type-group-title {
@@ -48,8 +54,16 @@
   color: var(--text);
   font-size: 0.8em;
   gap: 3px;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
+  opacity: 0;
+  display: none;
+  transition: opacity 1s;
+}
+
+.shoppe-item.open {
+  opacity: 1;
+  display: flex;
 }
 
 .shoppe-item-bottom {
@@ -124,6 +138,16 @@
   transform: scale(1.05);
 }
 
+.shoppe-cart-empty {
+  opacity: 0;
+  display: none;
+  transition: opacity 1s;
+}
+
+.shoppe-cart-empty.open{
+  display: block;
+  opacity: 1;
+}
 
 .shoppe-cart {
 

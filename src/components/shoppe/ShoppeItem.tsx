@@ -30,7 +30,7 @@ export default function ShoppeItem(props: ShoppeItemProps){
 
   const characterItemAmount = getCharacterItemAmount(characterInventories ?? [], item.id)
     
-  const content = <div className={`shoppe-item`}>
+  const content = <div className={`shoppe-item open`}>
     <div className='shoppe-item-name'>
       {item.name}
     </div>

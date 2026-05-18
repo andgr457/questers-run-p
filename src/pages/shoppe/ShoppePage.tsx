@@ -55,7 +55,14 @@ export default function ShoppePage(props: ShoppePageProps){
     if(!await showConfirm({
       isYesNo: true,
       title: 'Confirm Clear',
-      message: 'This will remove everything in your shoppe cart. Are you sure?'
+      message: 'This will remove everything in your shoppe cart. Are you sure?',
+      content: <div>
+        {cartItems.map(ci => {
+          return <div>
+            {ci.transactionType.toUpperCase()} x{ci.amount} {ci.item.name}
+          </div>
+        })}
+      </div>
     })){
       return
     }
@@ -153,6 +160,9 @@ export default function ShoppePage(props: ShoppePageProps){
   }, 0)
   characterGold = characterGold - cartTotal
   return <div>
+    <div className='page-header-main'>
+      SHOPPE
+    </div>
     <ShoppeCart 
       {...props} 
       cartItems={cartItems} 

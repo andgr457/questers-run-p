@@ -132,7 +132,7 @@
 .modal-body {
   color: var(--text);
   font-size: 1.5em;
-  
+
   background-color: var(--bg-dark);
   border: solid var(--text);
   border-width: 1px 1px 1px 1px;
@@ -150,6 +150,12 @@
 
 .modal-actions button {
   max-width: 250px;
+}
+
+.confirm-content {
+  padding: 5px;
+  font-size: smaller;
+  text-align: center;
 }
 
 @keyframes modalFadeIn {

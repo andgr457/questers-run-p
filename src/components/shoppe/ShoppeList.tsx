@@ -59,7 +59,7 @@ export default function ShoppeList(props: ShoppeListProps){
         <div className='shoppe-item-type-group-title'>
           {propertyName?.toUpperCase()} [{typeItems.length}]
         </div>
-        <div className='shoppe-item-list'>
+        <div className='shoppe-item-list open'>
           {typeItems.map(i => {
             return <ShoppeItem {...props} shoppeItem={i} amount={amount} characterGold={characterGold} />
           })}

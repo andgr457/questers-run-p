@@ -31,20 +31,25 @@ export default function ShoppeCart(props: ShoppeCartProps){
   const sellingTotal = selling.reduce((total, ci) => {
     return total + (ci.item.gold.sell * ci.amount)
   }, 0)
+  const eitherInCart = buying.length > 0 || selling.length > 0
+  const neitherInCart = buying.length === 0 && selling.length === 0
+  const buyingInCart = buying.length > 0
+  const sellingInCart = selling.length > 0
+
   return <div >
     <div className='page-header-main'>
       CART
     </div>
-    {buying.length === 0 && selling.length === 0 && <div style={{textAlign: 'center', color: 'var(--text)', padding: '5px', fontSize: 'smaller', opacity: '80%'}}>
-      Nothing in your cart.
-    </div>}
-    {(buying.length > 0 || selling.length > 0) && <div className='flex-wrap' style={{gap: '15px', justifyContent: 'center', padding: '5px'}}>
+    <div className={`shoppe-cart-empty ${neitherInCart === true ? 'open' : ''}`} style={{backgroundColor: 'var(--bg-dark-2)', textAlign: 'center', color: 'gold', padding: '5px', fontSize: '0.7em', opacity: '80%'}}>
+      Empty Cart
+    </div>
+    {eitherInCart === true && <div className='flex-wrap' style={{gap: '15px', justifyContent: 'center', padding: '5px'}}>
       <button className='basic' onClick={handleClearCart}>CLEAR CART</button>
       <button className='success' onClick={handleConfirmCartTransactions}>CONFIRM</button>
     </div>}
 
-    {(buying.length > 0 || selling.length > 0) && <div className='shoppe-item-list'>
-      <div className='shoppe-item' style={{width: '15%'}}>
+    <div className={`shoppe-item-list ${eitherInCart === true ? 'open' : ''}`}>
+      <div className={`shoppe-item ${eitherInCart === true ? 'open' : ''}`} style={{width: '15%'}}>
         <div className='list-item-title'>
           TOTAL
         </div>
@@ -59,7 +64,7 @@ export default function ShoppeCart(props: ShoppeCartProps){
         </div>
       </div>
 
-      {buying.length > 0 && <div className='shoppe-item' style={{width: 'fit-content'}}>
+      <div className={`shoppe-item ${buyingInCart === true ? 'open' : ''}`} style={{width: 'fit-content'}}>
         <div className='list-item-title'>
           BUYING
         </div>
@@ -79,8 +84,8 @@ export default function ShoppeCart(props: ShoppeCartProps){
             </div>
           </div>
         })}
-      </div>}
-      {selling.length > 0 && <div className='shoppe-item' style={{width: 'fit-content'}}>
+      </div>
+      <div className={`shoppe-item ${sellingInCart === true ? 'open' : ''}`} style={{width: 'fit-content'}}>
         <div className='list-item-title'>
           SELLING
         </div>
@@ -100,7 +105,7 @@ export default function ShoppeCart(props: ShoppeCartProps){
             </div>
           </div>
         })}
-      </div>}
-    </div>}
+      </div>
+    </div>
   </div>
 }

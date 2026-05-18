@@ -22,7 +22,7 @@ export default function ConfirmModal(props: ConfirmModalProps) {
       <div className='confirm-description' style={{textAlign: 'center'}}>
         {props.message}
       </div>
-      {!props.content ? <></> : <><hr/>{props.content}</>}
+      {!props.content ? <></> : <div className='confirm-content'>{props.content}</div>}
       <div className='modal-actions'>
 
         {props.isYesNo === true && <>
