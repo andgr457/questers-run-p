@@ -41,7 +41,7 @@ export default function ProfessionItem(props: ProfessionItemProps){
   }
   const clickFn = canDo === true ? async () => {
     
-    await handleDoProfessionItem(professionItem.id, amount, seconds as number ?? 5)
+    await handleDoProfessionItem(professionItem.id, amount, professionItem?.profession?.timeInSeconds as number ?? 5)
   } : () => {}
 
   let stateOverlayActive = false

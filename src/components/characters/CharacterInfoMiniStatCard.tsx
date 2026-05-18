@@ -38,10 +38,10 @@ export default function CharacterInfoMiniStatCard(props: CharacterInfoMiniStatCa
       <div className='character-stat-chip-bottom'>
         <div className='chip-left'>
           <div className="chip-values">
-            {currentValue.toLocaleString()}/{maxValue.toLocaleString()} 
+            {currentValue.toFixed()}/{maxValue.toFixed()} 
           </div>
           <div className="chip-values">
-            {progress}%&nbsp;
+            {progress.toFixed()}%&nbsp;
           </div>
         </div>
         <div className='chip-right'>

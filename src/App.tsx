@@ -335,6 +335,11 @@ function App() {
       const newCharacter = {...c as Character}
       //@ts-ignore
       newCharacter.professions[item.profession.type] = {...characterProfessionStat}
+      if(newCharacter.stats.stamina && item && item.profession){
+        const staminaDrain = item.profession.stamina * amount
+        const newValue = newCharacter.stats.stamina.value - staminaDrain
+        newCharacter.stats.stamina.value = newValue
+      }
       setCharacter({...newCharacter})
     }
   }

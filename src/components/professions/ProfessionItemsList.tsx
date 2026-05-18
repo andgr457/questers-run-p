@@ -20,29 +20,43 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
   const [timeProgress, setTimeProgress] = useState(0)
   const [itemName, setItemName] = useState('')
   const [timeLeft, setTimeLeft] = useState(0)
+  const [itemNumber, setItemNumber] = useState(1)
   const [collectAmount, setCollectAmount] = useState(1)
 
   const handleProfessionItemClicked = useCallback(async (itemId: string, amount: number, timeSeconds: number) => {
     setCanDo(false)
-    await handleProfessionItemStart?.(itemId, amount)
     const item = professionItems.find(i => i.id === itemId)
     setItemName(item?.name ?? '')
-    setTimeLeft(timeSeconds)
-    for(let i = 0; i <= timeSeconds; i++){
-      const progress = (i / timeSeconds) * 100
-      setTimeProgress(progress)
-      setTimeLeft(timeSeconds - i)
-      await sleep(1000)
+    const secondsAmount = timeSeconds * amount
+    setTimeLeft(secondsAmount)
+    let totalSecondsLeft = secondsAmount
+    let currentSecond = 0
+    let currentItemNumber = 1
+    setItemNumber(currentItemNumber)
+    setTimeProgress(0)
+    for(let a = 0; a < amount; a++){
+      for(let i = 0; i < timeSeconds; i++){
+        totalSecondsLeft -= 1
+        currentSecond += 1
+        const progress = (currentSecond / secondsAmount ) * 100
+        console.log(progress)
+        setTimeProgress(progress)
+        setTimeLeft(totalSecondsLeft)
+        await sleep(1000)
+      }
+      currentItemNumber += 1
+      setItemNumber(currentItemNumber)
+      await handleDoProfessionItemComplete?.(itemId, 1)
     }
     reset()
     setCanDo(true)
-    await handleDoProfessionItemComplete?.(itemId, amount)
-  }, [handleDoProfessionItemComplete])
+  }, [handleDoProfessionItemComplete, professionItems])
 
   const reset = () => {
     setTimeProgress(0)
     setItemName('')
     setTimeLeft(0)
+    setItemNumber(0)
   }
 
   const profession = window.location.href.replace(window.location.origin, '').split('/').pop()
@@ -65,7 +79,7 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
         <span className="" style={{fontSize: '0.75em'}}>
           {!canDo && <div>
             <div>
-              x{collectAmount} <span style={{color: 'gold'}}>{itemName}</span>
+              {itemNumber}/{collectAmount} <span style={{color: 'gold'}}>{itemName}</span>
             </div> 
             <div>
               <span style={{color: 'gold'}}>{timeLeft}</span> second(s) left.
