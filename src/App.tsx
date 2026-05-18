@@ -599,7 +599,7 @@ function App() {
             />
           </div>
           <PageLayout 
-            leftChildren={character?.name && <CharacterInfo {...appProps} />}
+            leftChildren={character?.name && <CharacterInfo {...appProps} showExpander={true} />}
             rightChildren={<Routes>
               <Route path="/" element={<OverviewPage {...appProps} />} />
               {character?.name}{
