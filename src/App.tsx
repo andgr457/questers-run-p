@@ -306,17 +306,6 @@ function App() {
     setCharacter({...newCharacter as Character})
   }, [character])
 
-  const handleProfessionItemStart = useCallback(async (professionItemId: string, amount: number) => {
-    const newCharacter = {...character as Character}
-    const item = items.find(i => i.id === professionItemId)
-    if(newCharacter.stats.stamina && item && item.profession){
-      const statminaDrain = item.profession.stamina * amount
-      const newValue = newCharacter.stats.stamina.value - statminaDrain
-      newCharacter.stats.stamina.value = newValue
-      setCharacter({...newCharacter as Character})
-    }
-  }, [character, items])
-
   const handleProfessionStatLevel = (c: Character, item: Item, amount: number) => {
     //@ts-ignore
     const characterProfessionStat = {...c?.professions[item.profession.type as ProfessionType]}
@@ -335,6 +324,11 @@ function App() {
       const newCharacter = {...c as Character}
       //@ts-ignore
       newCharacter.professions[item.profession.type] = {...characterProfessionStat}
+      if(newCharacter.stats.stamina && item && item.profession){
+        const staminaDrain = item.profession.stamina * amount
+        const newValue = newCharacter.stats.stamina.value - staminaDrain
+        newCharacter.stats.stamina.value = newValue
+      }
       setCharacter({...newCharacter})
     }
   }
@@ -582,7 +576,6 @@ function App() {
     handleResetEverything,
     handleResetProfession,
     handleAddInventory,
-    handleProfessionItemStart,
     handleDoProfessionItemComplete,
     handleTavernItemStart,
     handleTavernItemComplete,
