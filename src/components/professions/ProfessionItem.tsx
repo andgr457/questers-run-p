@@ -68,7 +68,7 @@ export default function ProfessionItem(props: ProfessionItemProps){
   
   const content = <div className='list-item' onClick={clickFn}>
     <div className='list-item-title'>
-      x{amount} {professionItem.name}
+      {professionItem.name} <span className='item-amount'>x{amount}</span>
     </div>
     <div className='list-item-description'>
       {professionItem.description}

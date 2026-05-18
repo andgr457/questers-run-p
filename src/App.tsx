@@ -34,6 +34,13 @@ import ProfessionMiningPage from './pages/professions/ProfessionsMiningPage';
 import ProfessionFishingPage from './pages/professions/ProfessionsFishingPage';
 import TavernPage from './pages/tavern/TavernPage';
 import './common/styles/ItemList.css'
+import './common/styles/Sections.css'
+import './common/styles/AppScreen.css'
+
+import ShoppePage from './pages/shoppe/ShoppePage';
+import CharacterInfo from './components/characters/CharacterInfo';
+import PageLayout from './pages/PageLayout';
+import type { ShoppeCartItem } from './components/shoppe/ShoppeCart';
 
 function App() {
   const [location, setLocation] = useState('Overview')
@@ -172,6 +179,65 @@ function App() {
     load()
   }, [character])
 
+  const handleShoppeConfirmation = useCallback(async (cartItems: ShoppeCartItem[]) => {
+    if(cartItems?.length === 0) return
+    const backpack = characterInventories?.find(ci => ci.title === 'Backpack')
+    const currency = characterInventories?.find(ci => ci.title === 'Currency')
+    if(!backpack || !currency) return
+    const txnMessages = []
+    for(const si of cartItems){
+      let quantity = 0
+      let gold = 0
+      if(si.transactionType === 'buy'){
+        quantity = si.amount
+        gold =  (si.amount * si.item.gold.buy) * -1
+        txnMessages.push(`${quantity} ${si.item.name} purchased for ${gold} gold.`)
+      } else {
+        quantity = si.amount * -1
+        gold = si.amount * si.item.gold.sell
+        txnMessages.push(`${si.amount} ${si.item.name} sold for ${gold} gold.`)
+      }
+      backpack.transactions.push({
+        id: `invtxn_shoppe_item_${si.item.id}__${character?.id}__${DateTime.utc().toMillis()}`,
+        date: DateTime.utc().toISO(),
+        itemId: si.item.id,
+        note: `Shoppe Item Transaction`,
+        quantity: quantity
+      })
+      currency.transactions.push({
+        id: `invtxn_shoppe_gold__${si.item.id}__${character?.id}__${DateTime.utc().toMillis()}`,
+        date: DateTime.utc().toISO(),
+        itemId: ITEM_CURRENCY_IDS.GOLD,
+        note: `Shoppe Item Transaction`,
+        quantity: gold
+      })
+    }
+
+    const newAllInventories = []
+    for(const inv of inventories){
+      if(inv.id === currency.id){
+        newAllInventories.push(currency)
+      } else if (inv.id === backpack.id) {
+        newAllInventories.push(backpack)
+      } else {
+        newAllInventories.push(inv)
+      }
+    }
+    setInventories(newAllInventories)
+    await showConfirm({
+      isYesNo: false,
+      title: 'Shoppe Purchase Complete',
+      message: `The following transactions were successfully completed!`,
+      content: <div style={{textAlign: 'center'}}>
+        {txnMessages.map(t => {
+          return <div>
+            {t}
+          </div>
+        })}
+      </div>
+    })
+  }, [inventories, characterInventories])
+
   const handleAddInventory = useCallback((inventory: Inventory[]) => {
     const newInventories = []
     for(const i of inventory){
@@ -203,7 +269,7 @@ function App() {
       }
     }
     setInventories(newInv)
-  }, [inventories])
+  }, [inventories, characterInventories])
 
   const handleTavernItemComplete = useCallback(async (percentChange: number) => {
     const newCharacter = {...character as Character}
@@ -480,7 +546,7 @@ function App() {
 
     await showConfirm({
       title: `Quest Completed!`,
-      message: `Contratulations on completing a quest! You've received the following rewards.`,
+      message: `Congratulations on completing a quest! You've received the following rewards.`,
       isYesNo: false,
       content: <div style={{textAlign: 'center', width: '100%'}}>
         {questRewardMessages.map(m => {
@@ -526,7 +592,8 @@ function App() {
     handleCompleteQuest,
     handleSetRequestedWindowId: setRequestedWindowId,
     handleSetCharacter: setCharacter,
-    setLocation
+    setLocation,
+    handleShoppeConfirmation
   }
   return (
     <WindowProvider>
@@ -539,30 +606,26 @@ function App() {
               windowRequestId={requestedWindowId}
             />
           </div>
-          {character?.name && 
-          <div>
-            <CharacterInfoMiniBar 
-              {...appProps}
-            />
-          </div>}
-          <div className='app-main'>
-              <Routes>
-                <Route path="/" element={<OverviewPage {...appProps} />} />
-                {character?.name}{
-                  <>
-                    <Route path='/town' element={<TownPage />} />
-                    <Route path='/tavern' element={<TavernPage {...appProps} />} />
-                    <Route path='/adventurers-guild' element={<AdventurersGuildPage {...appProps} />} />
-                    <Route path='/profession/gathering' element={<ProfessionGatheringPage {...appProps} />} />
-                    <Route path='/profession/mining' element={<ProfessionMiningPage {...appProps} />} />
-                    <Route path='/profession/fishing' element={<ProfessionFishingPage {...appProps} />} />
+          <PageLayout 
+            leftChildren={character?.name && <CharacterInfo {...appProps} />}
+            rightChildren={<Routes>
+              <Route path="/" element={<OverviewPage {...appProps} />} />
+              {character?.name}{
+                <>
+                  <Route path='/town' element={<TownPage />} />
+                  <Route path='/tavern' element={<TavernPage {...appProps} />} />
+                  <Route path='/shoppe' element={<ShoppePage {...appProps} />} />
+                  <Route path='/adventurers-guild' element={<AdventurersGuildPage {...appProps} />} />
+                  <Route path='/profession/gathering' element={<ProfessionGatheringPage {...appProps} />} />
+                  <Route path='/profession/mining' element={<ProfessionMiningPage {...appProps} />} />
+                  <Route path='/profession/fishing' element={<ProfessionFishingPage {...appProps} />} />
 
-                  </>
-                }
-                
-                <Route path="*" element={<OverviewPage  {...appProps}  />} />
-              </Routes>
-          </div>
+                </>
+              }
+              
+              <Route path="*" element={<OverviewPage  {...appProps}  />} />
+            </Routes>}
+          />
           <WindowLayer />
         </div>
       </BrowserRouter>

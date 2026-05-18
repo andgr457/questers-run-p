@@ -40,6 +40,8 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
   const [showTutorial, setShowTutorial] = useState(false)
   const [tutorialSteps, setTutorialSteps] = useState<TutorialStep[] | undefined>(undefined)
   const [showModule, setShowModule] = useState<'' | 'quest-board'>('')
+  const [showOneTimeCompletedQuests, setShowOneTimeCompletedQuests] = useState(false)
+  const [showIneligibleQuests, setShowIneligibleQuests] = useState(true)
   
   const {showConfirm} = useConfirm()
 
@@ -122,29 +124,46 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
       }}
     />}
     <div className='page-main'>
-      <PageHeader showActions={!character?.guildRank ? true : false}>
+      <PageHeader showActions={true}>
         
-        <button id='tutorial-join-guild' className='basic'
+        <button id='tutorial-join-guild' className='yellow'
           onClick={() => {
             showClerk()
           }}
         >
           Guild Clerk
         </button>
-        {characterJoined && <button className='basic'
+        {characterJoined && <button className={`yellow${showModule === 'quest-board' ? '-blink' : ''}`}
           onClick={async () => {
             setShowModule('quest-board')
           }}
         >
           Quests
         </button>}
+        
+        {characterJoined && <button className={`basic`}
+          onClick={async () => {
+            setShowOneTimeCompletedQuests(!showOneTimeCompletedQuests)
+          }}
+        >
+          {showOneTimeCompletedQuests === true ? 'Hide' : 'Show'} 1-Time Completed Quests
+        </button>}
+
+        {characterJoined && <button className={`basic`}
+          onClick={async () => {
+            setShowIneligibleQuests(!showIneligibleQuests)
+          }}
+        >
+          {showIneligibleQuests === true ? 'Hide' : 'Show'} Ineligible Quests
+        </button>}
       </PageHeader>
       <div>
-        {showModule === 'quest-board' && <div className='app-module'>
+        {showModule === 'quest-board' && <div >
           <div className='app-module-title'>
             Quest Board
           </div>
-          <CharacterQuests {...props} />
+          
+          <CharacterQuests {...props} showOneTimeCompletedQuests={showOneTimeCompletedQuests} showIneligibleQuests={showIneligibleQuests} />
         </div>}
       </div>
     </div>

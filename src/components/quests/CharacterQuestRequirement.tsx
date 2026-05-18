@@ -50,7 +50,7 @@ export default function CharacterQuestRequirement(props: CharacterQuestRequireme
   return <div  className={completed === true ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
     <div>
       <div style={{float: 'left'}}>
-        {completed === true ? '✔' : '✘'}
+        {completed === true ? '✔' : '✘'}&nbsp;
       </div>
       {timeMinutes && <><strong>{timeMinutes}</strong> minute(s) Long {progressInfo}</>}
       {started === true && completed === false && timeMinutes && <><div
@@ -70,7 +70,7 @@ export default function CharacterQuestRequirement(props: CharacterQuestRequireme
         />
       </div></>}
       {achievement?.id && <div title={achievement?.description}>Achivement: <strong>{achievement?.title}</strong></div>}
-      {item && <strong>{characterItemTotal} / {questItemTotal} {item?.name}</strong>}
+      {item && <>{characterItemTotal} / {questItemTotal} <strong style={{fontSize: 'smaller'}}>{item?.name}</strong></>}
       {started === true && completed === false && item && <><div
         className={`
           character-stat-card-bar

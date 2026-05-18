@@ -6,13 +6,11 @@ import { sleep } from '../../services/CommonServices'
 
 interface ProfessionItemsListProps extends AppProperties {
   professionItems: Item[]
-  professionStatCard: React.ReactNode
 }
 
 export default function ProfessionItemsList(props: ProfessionItemsListProps){
   const {
     professionItems,
-    professionStatCard,
     handleProfessionItemStart,
     handleDoProfessionItemComplete
   } = props
@@ -47,43 +45,58 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
     setTimeLeft(0)
   }
 
+  const profession = window.location.href.replace(window.location.origin, '').split('/').pop()
+
   return <div >
-    <div style={{background: 'var(--bg-dark)', color: 'var(--text)', letterSpacing: '1px'}}>
-      {professionStatCard}
+    <div className='dark-centered-section'>
+      <div>
+        {profession?.toUpperCase()}
+      </div>
     </div>
-    <div className='profession-amount-buttons' style={{background: 'var(--bg-dark-2)', color: 'var(--text)', letterSpacing: '1px', padding: '2px', display: 'flex', gap: '7px', justifyContent: 'center'}}>
+    <div className='dark-centered-section'>
       {collectAmountSelections.map(amt => {
-        return <button className={`yellow${amt === collectAmount ? '-blink' : ''}`} onClick={() => {setCollectAmount(amt)}}>
-          x{amt}
+        return <button className={`${amt === collectAmount ? 'yellow' : 'basic'}`} onClick={() => {setCollectAmount(amt)}}>
+          <span style={{textTransform: 'lowercase'}}>x</span>{amt}
         </button>
       })}
     </div>
-    <div style={{background: 'var(--bg-dark-2)', color: 'var(--text)', letterSpacing: '1px', padding: '2px', display: 'flex', gap: '7px', justifyContent: 'center'}}>
-      
-      <span className="chip-name" style={{fontSize: '0.75em'}}>
-        {!canDo && <div>
-          {itemName} {timeLeft} second(s) left.  
-        </div>}
-        {canDo && <div>
-        Waiting
-      </div>}
-      </span>
-      <div
-        className={`
-          character-stat-card-bar
-          ${'attribute-bar'}
-        `}
-        style={{width: '125px'}}
-      >
+    <div className='dark-centered-section'>
+      <div style={{width: '90%', textAlign: 'center'}}>
+        <span className="" style={{fontSize: '0.75em'}}>
+          {!canDo && <div>
+            <div>
+              x{collectAmount} <span style={{color: 'gold'}}>{itemName}</span>
+            </div> 
+            <div>
+              <span style={{color: 'gold'}}>{timeLeft}</span> second(s) left.
+            </div>
+          </div>}
+          {canDo && <div>
+            <div>
+              Select an item to start <span style={{color: 'gold'}}>{professionItems?.[0]?.profession?.type}</span>...
+            </div> 
+            <div>
+              ...
+            </div>
+          </div>}
+        </span>
         <div
           className={`
-            character-stat-card-fill
-            ${'attribute-fill'}
+            character-stat-card-bar
+            ${'attribute-bar'}
           `}
-          style={{
-            width: `${timeProgress}%`
-          }}
-        />
+          style={{width: ''}}
+        >
+          <div
+            className={`
+              character-stat-card-fill
+              ${'attribute-fill'}
+            `}
+            style={{
+              width: `${timeProgress}%`
+            }}
+          />
+        </div>
       </div>
     </div>
     <div className='item-list'>

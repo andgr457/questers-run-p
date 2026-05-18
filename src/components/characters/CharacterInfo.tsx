@@ -7,6 +7,8 @@ import { ProfessionSort } from '../../interfaces/professsions/Profession.types'
 import CharacterStatCard from './CharacterStatCard'
 import CharacterInfoXP from './CharacterInfoXP'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
+import CharacterStatCardMin from './CharacterStatCardMin'
+import CharacterInfoMiniStatCard from './CharacterInfoMiniStatCard'
 
 interface CharacterInfoProps extends AppProperties {
 
@@ -20,8 +22,9 @@ export default function CharacterInfo(props: CharacterInfoProps) {
   } = props
 
   const [characterGold, setCharacterGold] = useState(0)
-  const [showAttributeStats, setShowAttributeStats] = useState(true)
-  const [showProfessionStats, setShowProfessionStats] = useState(true)
+  const [showAll, setShowAll] = useState(true)
+  const [showAttributeStats, setShowAttributeStats] = useState(false)
+  const [showProfessionStats, setShowProfessionStats] = useState(false)
   const [showCharacterBaseInfo, setShowCharacterBaseInfo] = useState(true)
 
   useEffect(() => {
@@ -45,129 +48,66 @@ export default function CharacterInfo(props: CharacterInfoProps) {
   }
 
   return <div className='character-info-main'>
-  {/* HERO */}
-  <div className='character-section-title' onClick={() => setShowCharacterBaseInfo(prev => !prev)}>
-    <div className='page-header-banner'>
-      <div className='page-header-title'>
-        {character.name} Lv. {character.level} {characterClass?.name}
-      </div>
+    <button
+      className="horizontal-expander"
+      onClick={() => setShowAll(prev => !prev)}
+    >
+      <span className={`chev ${showAll ? "open" : ""}`}>
+        {showAll ? "<" : ">"}
+      </span>
 
-      <div
-        className='page-header-expander'
-        
-      >
-        <span>{showCharacterBaseInfo === true ? 'Hide' : 'Show'}</span>
-      </div>
-    </div>
-  </div>
-  <div className={`character-stats-grid ${showCharacterBaseInfo === true ? 'open' : ''}`}>
-    <div className='character-info-hero'>
-      <CharacterInfoXP character={character} />
-
-      <div className='character-info-meta'>
-        <div className='character-meta-card'>
-          <span className='meta-label'>Adventurer's Guild</span>
-
-          <span className='meta-value'>
-            {!character?.guildRank
-              ? 'No Adventurer Rank'
-              : `${character.guildRank} Rank`}
-          </span>
-        </div>
-
-        <div className='character-meta-card gold-card'>
-          <span className='meta-label'>Gold</span>
-
-          <span className='meta-value'>
-            {characterGold.toLocaleString()}g
-          </span>
+      <span className="vertical-label">
+        CHARACTER SHEET
+      </span>
+    </button>
+    <div className={`character-sheet ${showAll === true ? 'open' : ''}`}>
+      <div className='character-section-title'>
+        <div className='page-header-banner'>
+          <div className='page-header-title'>
+            {character.name} Lv. {character.level} {characterClass?.name}
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div className='character-section-title' onClick={() => setShowAttributeStats(prev => !prev)}>
-    
-    <div className='page-header-banner'>
-      <div className='page-header-title'>
-        Attributes
-      </div>
+      <div className={`character-stats-grid ${showCharacterBaseInfo === true ? 'open' : ''}`}>
+        <CharacterInfoXP character={character} />
+        <div className='character-info-hero'>
 
-      <div
-        className='page-header-expander'
-        
-      >
-        <span>{showAttributeStats === true ? 'Hide' : 'Show'}</span>
-      </div>
-    </div>
-  </div>
-  {/* STATS */}
-  <div className={`character-stats-grid ${showAttributeStats === true ? 'open' : ''}`}>
-    {Object
-      .getOwnPropertyNames(character.stats ?? {})
-      .map((propertyName) => {
-        //@ts-ignore
-        return character?.stats[propertyName] as Stat
-      })
-      .filter((statItem) => !!statItem)
-      .sort((a, b) => {
-        //@ts-ignore
-        const aSort = StatSort[a.name]
-        //@ts-ignore
-        const bSort = StatSort[b.name]
+          <div className='character-stat-chip'>
+            <div style={{float: 'left'}}>
+              <span>Adventurer's Guild</span>
+            </div>
+            <div style={{float: 'right'}}>
+              <span style={{color: 'gold'}}>
+                {!character?.guildRank
+                  ? 'No Adventurer Rank'
+                  : `${character.guildRank} Rank`}
+              </span>
+            </div>
+          </div>
+          
+          <div className='character-stat-chip'>
+            <div style={{float: 'left'}}>
+              <span>Gold</span>
+            </div>
+            <div style={{float: 'right'}}>
+              <span style={{color: 'gold'}}>
+                {characterGold.toLocaleString()}g
+              </span>
+            </div>
+          </div>
+          <CharacterInfoMiniStatCard statItem={character.stats['hp'] as Stat} />
+          <CharacterInfoMiniStatCard statItem={character.stats['mp'] as Stat} />
+          <CharacterInfoMiniStatCard statItem={character.stats['stamina'] as Stat} />
+          <CharacterInfoMiniStatCard statItem={character.stats['agility'] as Stat} />
+          <CharacterInfoMiniStatCard statItem={character.stats['intelligence'] as Stat} />
+          <CharacterInfoMiniStatCard statItem={character.stats['strength'] as Stat} />
 
-        return (aSort ?? 999) - (bSort ?? 999)
-      })
-      .map((statItem) => {
-        return (
-          <CharacterStatCard
-            statItem={statItem}
-            statType='attribute'
-          />
-        )
-      })}
-  </div>
-  <div className='character-section-title' onClick={() => setShowProfessionStats(prev => !prev)}>
-    
-    <div className='page-header-banner'>
-      <div className='page-header-title'>
-        Professions
-      </div>
-
-      <div
-        className='page-header-expander'
-        
-      >
-        <span>{showProfessionStats === true ? 'Hide' : 'Show'}</span>
+          <CharacterInfoMiniStatCard statType='profession' statItem={character.professions['gathering'] as Stat} />
+          <CharacterInfoMiniStatCard statType='profession' statItem={character.professions['fishing'] as Stat} />
+          <CharacterInfoMiniStatCard statType='profession' statItem={character.professions['mining'] as Stat} />
+        </div>
       </div>
     </div>
   </div>
-  {/* PROFESSIONS */}
-  <div className={`character-stats-grid ${showProfessionStats === true ? 'open' : ''}`}>
-    {Object
-      .getOwnPropertyNames(character.professions ?? {})
-      .map((propertyName) => {
-        //@ts-ignore
-        return character?.professions[propertyName] as Stat
-      })
-      .filter((profession) => !!profession)
-      .sort((a, b) => {
-        //@ts-ignore
-        const aSort = ProfessionSort[a.name]
-        //@ts-ignore
-        const bSort = ProfessionSort[b.name]
-
-        return (aSort ?? 999) - (bSort ?? 999)
-      })
-      .map((statItem) => {
-        return (
-          <CharacterStatCard
-            statItem={statItem}
-            statType='profession'
-          />
-        )
-      })}
-    </div>
-
-</div>
 }
