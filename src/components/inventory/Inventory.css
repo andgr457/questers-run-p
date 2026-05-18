@@ -3,6 +3,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  justify-content: center;
 }
 
 .inventory-slot {
@@ -17,10 +18,10 @@
   color: var(--text);
   transform: scale(1);
   transition: transform 0.5s;
-  font-size: 1em;
+  font-size: 12px;
   justify-content: center;
+  align-items: center;
   display: flex;
-  flex-wrap: wrap;
   gap: 3px;
 }
 

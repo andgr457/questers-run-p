@@ -16,8 +16,8 @@ export default function NavMenu(props: NavMenuProps) {
   const [subNavSelected, setSubNavSelected] = useState('town')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const {
-    windowRequestId,
-    character
+    character,
+    handleSetRequestedWindowId
   } = props
 
   const characterNotExists = !character?.name
@@ -29,19 +29,19 @@ export default function NavMenu(props: NavMenuProps) {
   } = useWindows()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if(!windowRequestId) return
-    if(windowRequestId === 'character'){
-      toggleCharacter()
-    } else if(windowRequestId === 'inventory'){
-      toggleInventory()
-    } else if(windowRequestId === 'quest'){
-      toggleQuest()
-    } else if(windowRequestId === 'settings'){
-      toggleSettings()
-    }
+  // useEffect(() => {
+  //   if(!windowRequestId) return
+  //   if(windowRequestId === 'character'){
+  //     toggleCharacter()
+  //   } else if(windowRequestId === 'inventory'){
+  //     toggleInventory()
+  //   } else if(windowRequestId === 'quest'){
+  //     toggleQuest()
+  //   } else if(windowRequestId === 'settings'){
+  //     toggleSettings()
+  //   }
 
-  }, [windowRequestId])
+  // }, [windowRequestId])
 
   const isWindowOpen = (
     id: string
@@ -66,23 +66,26 @@ export default function NavMenu(props: NavMenuProps) {
 
 
   function toggleCharacter() {
-    toggleWindow('character', 'Character', <CharacterInfo 
-      {...props}
-      showExpander={false}
-    />)
+    handleSetRequestedWindowId?.('character')
+    // toggleWindow('character', 'Character', <CharacterInfo 
+    //   {...props}
+    //   showExpander={false}
+    // />)
   }
 
   function toggleQuest() {
-    toggleWindow('quest', 'Current Quest', <CharacterQuestCurrent 
-      {...props}
+    handleSetRequestedWindowId?.('quest')
+    // toggleWindow('quest', 'Current Quest', <CharacterQuestCurrent 
+    //   {...props}
       
-    />)
+    // />)
   }
 
   function toggleInventory() {
-    toggleWindow('inventory', 'Inventory', <CharacterInventory 
-      {...props}
-    />)
+    handleSetRequestedWindowId?.('inventory')
+    // toggleWindow('inventory', 'Inventory', <CharacterInventory 
+    //   {...props}
+    // />)
   }
 
   function toggleSettings() {
