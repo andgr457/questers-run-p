@@ -26,7 +26,6 @@ export interface AppFunctions {
   handleSetCharacter?: (character: Character) => void
   handleResetEverything?: () => void
   handleResetProfession?: (professionType: ProfessionType) => void
-  handleProfessionItemStart?: (professionId: string, amount: number) => void
   handleDoProfessionItemComplete?: (professionItemId: string, amount: number) => void
   handleTavernItemStart?: (goldCost: number) => void
   handleTavernItemComplete?: (percentChange: number) => void

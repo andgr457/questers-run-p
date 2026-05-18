@@ -11,7 +11,6 @@ interface ProfessionItemsListProps extends AppProperties {
 export default function ProfessionItemsList(props: ProfessionItemsListProps){
   const {
     professionItems,
-    handleProfessionItemStart,
     handleDoProfessionItemComplete
   } = props
   const collectAmountSelections = [1, 5, 10, 15, 20, 50, 100]
