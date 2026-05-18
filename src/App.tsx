@@ -40,6 +40,8 @@ import ShoppePage from './pages/shoppe/ShoppePage';
 import CharacterInfo from './components/characters/CharacterInfo';
 import PageLayout from './pages/PageLayout';
 import type { ShoppeCartItem } from './components/shoppe/ShoppeCart';
+import CharacterInventory from './components/inventory/CharacterInventory';
+import CharacterQuestCurrent from './components/quests/CharacterQuestCurrent';
 
 function App() {
   const [location, setLocation] = useState('Overview')
@@ -587,6 +589,10 @@ function App() {
     setLocation,
     handleShoppeConfirmation
   }
+
+  const appOnSideBar = requestedWindowId === 'character' ? <CharacterInfo {...appProps} showExpander={true} /> :
+    requestedWindowId === 'inventory' ? <CharacterInventory {...appProps} /> : 
+    requestedWindowId === 'quest' ? <CharacterQuestCurrent {...appProps} /> : <CharacterInfo {...appProps} showExpander={true} />
   return (
     <WindowProvider>
       <BrowserRouter>
@@ -599,7 +605,7 @@ function App() {
             />
           </div>
           <PageLayout 
-            leftChildren={character?.name && <CharacterInfo {...appProps} showExpander={true} />}
+            leftChildren={character?.name && appOnSideBar}
             rightChildren={<Routes>
               <Route path="/" element={<OverviewPage {...appProps} />} />
               {character?.name}{

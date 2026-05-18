@@ -7,6 +7,7 @@ import type { AppProperties } from '../../interfaces/AppProperties.types';
 import CharacterQuestCurrent from '../quests/CharacterQuestCurrent';
 import CharacterInventory from '../inventory/CharacterInventory';
 import Settings from '../settings/Settings';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 interface NavMenuProps extends AppProperties {
   windowRequestId?: string
@@ -16,10 +17,11 @@ export default function NavMenu(props: NavMenuProps) {
   const [subNavSelected, setSubNavSelected] = useState('town')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const {
+    character,
     windowRequestId,
-    character
+    handleSetRequestedWindowId
   } = props
-
+  const isMobile = useIsMobile()
   const characterNotExists = !character?.name
 
   const {
@@ -66,23 +68,35 @@ export default function NavMenu(props: NavMenuProps) {
 
 
   function toggleCharacter() {
-    toggleWindow('character', 'Character', <CharacterInfo 
-      {...props}
-      showExpander={false}
-    />)
+    if(isMobile){
+      toggleWindow('character', 'Character', <CharacterInfo 
+        {...props}
+        showExpander={false}
+      />)
+      return
+    }
+    handleSetRequestedWindowId?.('character')
   }
 
   function toggleQuest() {
-    toggleWindow('quest', 'Current Quest', <CharacterQuestCurrent 
-      {...props}
-      
-    />)
+    if(isMobile){
+      toggleWindow('quest', 'Current Quest', <CharacterQuestCurrent 
+        {...props}
+        
+      />)
+      return
+    }
+    handleSetRequestedWindowId?.('quest')
   }
 
   function toggleInventory() {
-    toggleWindow('inventory', 'Inventory', <CharacterInventory 
-      {...props}
-    />)
+    if(isMobile){
+      toggleWindow('inventory', 'Inventory', <CharacterInventory 
+        {...props}
+      />)
+      return
+    }
+    handleSetRequestedWindowId?.('inventory')
   }
 
   function toggleSettings() {
