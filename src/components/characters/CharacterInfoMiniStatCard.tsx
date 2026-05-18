@@ -1,5 +1,5 @@
 import './CharacterStatCard.css'
-import type { Stat } from '../../interfaces/characters/Character.types'
+import { type Stat } from '../../interfaces/characters/Character.types'
 
 interface CharacterInfoMiniStatCardProps {
   statItem: Stat
@@ -31,27 +31,38 @@ export default function CharacterInfoMiniStatCard(props: CharacterInfoMiniStatCa
 
   return (
     <div className="character-stat-chip" title={`${statItem.name}`}>
-      <span className="chip-name">{isResourceStat === true ? '' : <>Lvl {statItem.level}</>} {statItem.name}</span>
-
-      <span className="chip-values">
-        {currentValue.toLocaleString()}/{maxValue.toLocaleString()}
-      </span>
-      <div
-        className={`
-          character-stat-card-bar
-          ${'attribute-bar'}
-        `}
-        style={{width: barWidth}}
-      >
-        <div
-          className={`
-            character-stat-card-fill
-            ${'attribute-fill'}
-          `}
-          style={{
-            width: `${progress}%`
-          }}
-        />
+      <div className="chip-name">
+        <span style={{textTransform: 'uppercase', color: 'gold'}}>{statItem.name}</span>{isResourceStat === false ? <> Lv. {statItem.level}</> : null}
+        {/* {isResourceStat === true ? '' : <>Lvl {statItem.level}</>}<br/>{statItem.name} */}
+      </div>
+      <div className='character-stat-chip-bottom'>
+        <div className='chip-left'>
+          <div className="chip-values">
+            {currentValue.toLocaleString()}/{maxValue.toLocaleString()} 
+          </div>
+          <div className="chip-values">
+            {progress}%&nbsp;
+          </div>
+        </div>
+        <div className='chip-right'>
+          <div
+            className={`
+              character-stat-card-bar
+              ${'attribute-bar'}
+            `}
+            style={{width: barWidth}}
+          >
+            <div
+              className={`
+                character-stat-card-fill
+                ${'attribute-fill'}
+              `}
+              style={{
+                width: `${progress}%`
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

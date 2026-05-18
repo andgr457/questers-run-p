@@ -4,18 +4,16 @@ interface PageLayoutProps {
 }
 
 
-export default function PageLayout(props: PageLayoutProps){
+export default function PageLayout(props: PageLayoutProps) {
+  return (
+    <div className="app-screen-layout">
+      <div className="app-screen left">
+        {props.leftChildren}
+      </div>
 
-  return <div className='app-screen-layout'>
-  {/* LEFT SIDE */}
-  <div className='app-screen left'>
-    {props.leftChildren}
-  </div>
-
-  {/* RIGHT SIDE */}
-  <div className='app-screen right'>
-    {props.rightChildren}
-  </div>
-
-</div>
+      <div className="app-screen right">
+        {props.rightChildren}
+      </div>
+    </div>
+  );
 }

@@ -18,11 +18,11 @@ export default function ConfirmModal(props: ConfirmModalProps) {
     onClose={props.onClose}
     rightTitle={props.title}
   >
-    <div className={props.isYesNo === true ? 'confirm-yes-no' : 'confirm-ok'}>
-      <div className='description' style={{textAlign: 'center'}}>
+    <div className={`confirm-modal ${props.isYesNo === true ? 'confirm-yes-no' : 'confirm-ok'}`}>
+      <div className='confirm-description' style={{textAlign: 'center'}}>
         {props.message}
       </div>
-      {!props.content ? <></> : props.content}
+      {!props.content ? <></> : <div className='confirm-content'>{props.content}</div>}
       <div className='modal-actions'>
 
         {props.isYesNo === true && <>

@@ -1,13 +1,13 @@
 .character-stat-card {
   position: relative;
-
+  font-size: 12px;
   overflow: hidden;
 
   display: flex;
   flex-direction: column;
   gap: 8px;
 
-  padding: 10px;
+  padding: 5px;
 
   border-radius: 10px;
 
@@ -48,6 +48,9 @@
 /* ========================= */
 /* HEADER / FOOTER */
 /* ========================= */
+.character-stat-card-name {
+  text-transform: uppercase;
+}
 
 .character-stat-card-header,
 .character-stat-card-footer {
@@ -187,7 +190,7 @@
     transparent
   );
 
-  animation: professionShine 3s linear infinite;
+  /* animation: professionShine 3s linear infinite; */
 }
 
 @keyframes professionShine {
@@ -198,22 +201,68 @@
 /* ===================================================== */
 /* 🧠 MINI MODE (FIXED + SAFE + NON-DESTRUCTIVE) */
 /* ===================================================== */
-
+.chip-name {
+  margin-bottom: 5px;
+}
 .character-stat-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  /* align-items: center; */
+  /* justify-content: space-between; */
+  font-size: 12px;
 
-  padding: 3px 8px;
+  padding: 5px 5px;
   border-radius: 6px;
 
   background: rgba(255, 255, 255, 0.05);
 
-  font-size: 0.75rem;
+  /* font-size: 0.75rem; */
   white-space: nowrap;
 
   border: 1px solid rgba(255,255,255,0.06);
+}
+
+.character-stat-chip-bottom {
+    display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 5px 5px;
+  border-radius: 6px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  /* font-size: 0.75rem; */
+  white-space: nowrap;
+
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.chip-left {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+
+  flex: 1;
+}
+
+.chip-right {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 120px; /* optional */
+}
+
+.chip-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-values {
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  font-size: smaller;
 }
 
 /* hide heavy layout elements in mini mode */

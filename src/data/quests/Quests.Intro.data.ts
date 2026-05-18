@@ -63,12 +63,12 @@ export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
       itemAmount: 10
     },
     {
-      xp: 10
+      xp: 20
     }
   ],
   startRequirements: [
     {
-      level: 1,
+      level: 2,
       completed: false,
     },
     {
@@ -84,13 +84,13 @@ export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
   ],
   completionRequirements: [
     {
-      timeMinutes: 0.5,
+      timeMinutes: 1,
       completed: false
     }
   ]
 }
 
-export const QUEST_INTRO_HIDE_N_SEEK: Quest = {
+export const QUEST_INTRO_SWEEP_STREETS: Quest = {
   id: QUEST_INTRO_IDS.SWEEP_STREETS,
   title: 'Sweep Streets',
   description: 'Sweep the streets of the town for some easy gold.',
@@ -123,5 +123,5 @@ export const QUEST_INTRO_HIDE_N_SEEK: Quest = {
 export const QUEST_INTRO_ALL = [
   QUEST_INTRO_ADVENTURERS_GUILD,
   QUEST_INTRO_MERCHANT_FAVOR,
-  QUEST_INTRO_HIDE_N_SEEK
+  QUEST_INTRO_SWEEP_STREETS
 ]

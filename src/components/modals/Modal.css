@@ -24,6 +24,7 @@
   letter-spacing: 1px;
   opacity: 0%;
   animation: modalFadeIn 0.6s ease-in forwards;
+  font-size: 12px;
 }
 
 .modal-layout {
@@ -95,7 +96,10 @@
   }
 }
 
+
+
 .modal-header {
+  font-size: 1.5em;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -127,6 +131,7 @@
 
 .modal-body {
   color: var(--text);
+  font-size: 1.5em;
 
   background-color: var(--bg-dark);
   border: solid var(--text);
@@ -141,11 +146,16 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
-  font-size: 0.8em;
 }
 
 .modal-actions button {
   max-width: 250px;
+}
+
+.confirm-content {
+  padding: 5px;
+  font-size: smaller;
+  text-align: center;
 }
 
 @keyframes modalFadeIn {

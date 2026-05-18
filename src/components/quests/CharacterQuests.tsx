@@ -11,6 +11,8 @@ import type { AppProperties } from '../../interfaces/AppProperties.types'
 import useScrollReveal from '../../hooks/useScrollReveal'
 
 interface CharacterQuestsProps extends AppProperties {
+  showOneTimeCompletedQuests: boolean
+  showIneligibleQuests: boolean
 }
 
 export interface QuestWithQuestProgress {
@@ -31,10 +33,9 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     character,
     questGroups,
     quests,
-    allQuestsWithProgress
+    allQuestsWithProgress,
   } = props
   useScrollReveal()
-
   const [showPopupQuest, setShowPopupQuest] = useState(false)
   const [popupQuestContent, setPopupQuestContent] = useState<React.ReactNode>(undefined)
   const [popupTitle, setPopupTitle] = useState('')
@@ -89,27 +90,38 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     <div className='quest-groups'>
       {questGroups.map(qg => {
         const relatedQuests = allQuestsWithProgress?.filter(qwp => qwp?.questGroup?.id === qg.id)
+        relatedQuests?.sort((a, b) => {
+          const aLevel = a.quest.startRequirements.find(sr => sr.level)?.level
+          const bLevel = b.quest.startRequirements.find(sr => sr.level)?.level
 
+          const aNoReq = aLevel == null
+          const bNoReq = bLevel == null
+
+          // 1. no requirement first
+          if (aNoReq !== bNoReq) return aNoReq ? -1 : 1
+
+          // 2. both have no requirement → equal
+          if (aNoReq && bNoReq) return 0
+
+          // 3. both have requirement → sort by level
+          return (aLevel! - bLevel!)
+        })
         return (
           <div key={qg.id} className='quest-group'>
             <div className='quest-group-title'>
-              {qg.title}
-            </div>
-            <div className='quest-group-description'>
-              {qg.description}
+              {qg.title} <span className='quest-group-description'>{qg.description}</span>
             </div>
             <div className='quest-group-quest-list reveal'>
               {relatedQuests?.map(q => {
-                return <div>
-                  <CharacterQuest
-                    {...props}
-                    key={q.quest.id}
-                    handleShowPopup={handleShowPopup}
-                    quest={q.quest}
-                    showActions={true}
-                  />
-                </div>
+                return <CharacterQuest
+                  {...props}
+                  key={q.quest.id}
+                  handleShowPopup={handleShowPopup}
+                  quest={q.quest}
+                  showActions={true}
+                />
               })}
+              
             </div>
           </div>
         )

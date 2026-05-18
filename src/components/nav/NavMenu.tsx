@@ -101,6 +101,7 @@ export default function NavMenu(props: NavMenuProps) {
     { title: 'Overview', navTo: '/' },
     { title: `Adventurer's Guild`, navTo: '/adventurers-guild' },
     { title: `Tavern`, navTo: '/tavern' },
+    { title: `Shoppe`, navTo: '/shoppe' },
   ]
 
   const professionItems = [
