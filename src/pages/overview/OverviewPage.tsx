@@ -110,6 +110,13 @@ export default function OverviewPage(props: OverviewPageProps){
 
     <div id='overview-top'>
       <div className='page-main'>
+        <div className='character-section-title'>
+          <div className='page-header-banner'>
+            <div className='page-header-title'>
+              OVERVIEW
+            </div>
+          </div>
+        </div>
         <PageHeader showActions={!character?.name ? true : false}>
           <button id='tutorial-new-character' className='basic'
             onClick={() => {

@@ -66,32 +66,84 @@ export default function ProfessionItem(props: ProfessionItemProps){
     </div>
   }
   
-  const content = <div className='list-item' onClick={clickFn}>
-    <div className='list-item-title'>
+  const content = <div className='shoppe-item open' >
+    <div className='shoppe-item-name'>
       {professionItem.name} <span className='item-amount'>x{amount}</span>
     </div>
-    <div className='list-item-description'>
+    <div className='shoppe-item-description'>
       {professionItem.description}
     </div>
-    <div className='list-item-info'>
-      {professionItem.profession && professionItem.profession.levelRequired > 0 && <>
-        <span className='adv-g-highlight'>Level {professionItem.profession.levelRequired}</span> required.
+    <div className='shoppe-item-info-list' style={{justifyContent: 'center'}}>
+      <div className='shoppe-item-info small'>
+        <div>
+          <span style={{color: 'gold'}}>{characterAmount}</span>
+        </div>
+        <div>
+           in Inventory
+        </div>
+      </div>
+
+      <div className='shoppe-item-info small'>
+        {professionItem.profession && professionItem.profession.levelRequired > 0 && <>
+          <span style={{color: 'gold'}}>Lv. {professionItem.profession.levelRequired}</span> required.
+        </>}
+        {professionItem.profession && !professionItem.profession.levelRequired && <>
+        <span style={{color: 'gold'}}>No level</span> required.
       </>}
-      {professionItem.profession && !professionItem.profession.levelRequired && <>
-        <span className='adv-g-highlight'>No level</span> required.
-      </>}
+      </div>
+
+      <div className='shoppe-item-info small'>
+        <div>
+          +<span style={{color: 'gold'}}>{xp}</span>
+        </div>
+        <div style={{textTransform: 'capitalize', color: 'gold'}}>
+          {professionItem.profession?.type}
+        </div>
+        <div>
+           XP
+        </div>
+      </div>
+
+      <div className='shoppe-item-info small'>
+        <div>
+          <span style={{color: 'gold'}}>{stamina}</span>
+        </div>
+        <div style={{color: 'gold'}}>
+          Stamina
+        </div>
+        <div>
+           Required
+        </div>
+      </div>
+      
+      {seconds !== professionItem.profession?.timeInSeconds && <div className='shoppe-item-info small'>
+        <div>
+          <span style={{color: 'gold'}}>{professionItem.profession?.timeInSeconds?.toLocaleString() ?? 5}</span>
+        </div>
+        <div style={{color: 'gold'}}>
+          Second(s)
+        </div>
+        <div>
+           per Action
+        </div>
+      </div>}
+    
+      <div className='shoppe-item-info small'>
+        <div>
+          <span style={{color: 'gold'}}>{seconds?.toLocaleString() ?? 5}</span>
+        </div>
+        <div style={{color: 'gold'}}>
+          Second(s)
+        </div>
+        <div>
+           Total
+        </div>
+      </div>
     </div>
-    <div className='list-item-info'>
-      <span className='adv-g-highlight'>{xp} <span style={{fontSize: 'smaller', color: 'gold'}}>{professionItem.profession && professionItem.profession.type.toUpperCase()}</span> XP</span> gained.
-    </div>
-    <div className='list-item-info'>
-      <span className='adv-g-highlight'>{stamina} Stamina</span> required.
-    </div>
-    <div className='list-item-info'>
-      <span className='adv-g-highlight'>{seconds?.toLocaleString() ?? 5} second(s)</span> required.
-    </div>
-    <div className='list-item-info'>
-      <span className='adv-g-highlight'>{characterAmount} total</span> in inventory.
+    <div className="shoppe-item-bottom">
+      <div className={`shoppe-item-info ${canDo === true ? 'add' : 'zero'}`} onClick={clickFn}>
+        COLLECT {amount}
+      </div>
     </div>
   </div> 
 

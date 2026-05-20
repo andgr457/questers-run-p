@@ -89,14 +89,17 @@ export default function ShoppeLists(props: ShoppeListsProps){
       }
       const typeItems = itemsByType[propertyName]
       return <div className='shoppe-item-type-group '>
-        <div className='shoppe-item-type-group-title'>
-          <div>
-            {propertyName?.toUpperCase()}S [{typeItems.length}]
-          </div>
-          <div>
-            {cartItems.length > 0 && toCartButton}
+        <div className='character-section-title'>
+          <div className='page-header-banner'>
+            <div className='page-header-title'>
+              {propertyName?.toUpperCase()} [{typeItems.length}]
+            </div>
+            <div>
+                {cartItems.length > 0 && toCartButton}
+            </div>
           </div>
         </div>
+
         <ScrollableShoppeList>
           {typeItems.map(i => {
             return (
@@ -113,9 +116,14 @@ export default function ShoppeLists(props: ShoppeListsProps){
       </div>
     })}
     <div className='shoppe-item-type-group'>
-      <div className='shoppe-item-type-group-title'>
-        <div>
-          RESOURCES [{itemsByType?.['resource']?.length ?? 0}] 
+      <div className='character-section-title'>
+        <div className='page-header-banner'>
+          <div className='page-header-title'>
+            RESOURCES [{itemsByType?.['resource']?.length ?? 0}] 
+          </div>
+          <div>
+              {cartItems.length > 0 && toCartButton}
+          </div>
         </div>
       </div>
 
@@ -129,12 +137,14 @@ export default function ShoppeLists(props: ShoppeListsProps){
             key={propertyName}
             className='shoppe-item-type-group'
           >
-            <div className='shoppe-item-type-group-title-sub'>
-              <div>
-                {propertyName?.toUpperCase()} [{typeItems.length}]
-              </div>
-              <div>
-                {cartItems.length > 0 && toCartButton}
+            <div className='character-section-title'>
+              <div className='page-header-banner'>
+                <div className='page-header-title'>
+                  {propertyName?.toUpperCase()} [{typeItems.length}]
+                </div>
+                <div>
+                    {cartItems.length > 0 && toCartButton}
+                </div>
               </div>
             </div>
 

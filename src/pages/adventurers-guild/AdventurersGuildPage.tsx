@@ -124,6 +124,13 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
       }}
     />}
     <div className='page-main'>
+      <div className='character-section-title'>
+        <div className='page-header-banner'>
+          <div className='page-header-title'>
+            ADVENTURER'S GUILD
+          </div>
+        </div>
+      </div>
       <PageHeader showActions={true}>
         
         <button id='tutorial-join-guild' className='yellow'
@@ -159,8 +166,12 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
       </PageHeader>
       <div>
         {showModule === 'quest-board' && <div >
-          <div className='app-module-title'>
-            Quest Board
+          <div className='character-section-title'>
+            <div className='page-header-banner'>
+              <div className='page-header-title'>
+                QUEST BOARD
+              </div>
+            </div>
           </div>
           
           <CharacterQuests {...props} showOneTimeCompletedQuests={showOneTimeCompletedQuests} showIneligibleQuests={showIneligibleQuests} />

@@ -43,9 +43,6 @@ export default function TavernItemsList(props: TavernItemsListProps){
 
   return <div >
     <div className='dark-centered-section'>
-      TAVERN
-    </div>
-    <div className='dark-centered-section'>
       <div style={{width: '90%', textAlign: 'center'}}>
         <span className="" style={{fontSize: '0.75em'}}>
           {!canDo && <div>

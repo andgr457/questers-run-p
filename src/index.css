@@ -505,10 +505,8 @@ ul li {
 /* MAIN SCREEN LAYOUT */
 
 .app-screen-layout {
-  padding: 5px;
   background: var(--bg-dark);
   display: flex;
-  gap: 5px;
 
   height: 90.5vh;      /* 👈 KEY */
   overflow: hidden;   /* 👈 prevents page scroll */
@@ -525,8 +523,8 @@ ul li {
   gap: 4px;
   overflow-y: auto;
   position: sticky;
-  top: 10px;
   max-width: 350px;
+  border-right: solid 1px var(--bg-dark-2);
 }
 
 /* RIGHT COLUMN */

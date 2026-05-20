@@ -44,8 +44,6 @@
 
   border-radius: 10px;
 
-  box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-
   letter-spacing: 1px;
 
   opacity: 0%;
@@ -99,26 +97,20 @@
 
 
 .modal-header {
-  font-size: 1.5em;
+  font-size: 1.2em;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--blue-sd-darker);
+  background-color: var(--blue-sd-dark);
+  text-transform: uppercase;
   color: var(--text);
-  border-radius: 10px 10px 0 0;
+  border-radius: 3px 3px 0 0;
   border: solid var(--text);
   border-width: 1px 1px 0px 1px;
   height: 45px;
-  padding-left: 20px;
-  padding-right: 20px;
-  text-shadow:
-  0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 2px var(--text)
-  ,0 0 7px var(--bg-dark)
-  ,0 0 5px var(--bg-dark)
-  ,0 0 5px var(--bg-dark);
+  padding-left: 10px;
+  padding-right: 10px;
+
   letter-spacing: 3px;
 }
 
@@ -131,13 +123,13 @@
 
 .modal-body {
   color: var(--text);
-  font-size: 1.5em;
+  font-size: 1.1em;
 
   background-color: var(--bg-dark);
   border: solid var(--text);
   border-width: 1px 1px 1px 1px;
   padding: 10px;
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 3px 3px;
   overflow: auto;
 }
 
@@ -149,17 +141,20 @@
 }
 
 .modal-actions button {
-  max-width: 250px;
+  font-size: 10px;
+  min-width: 100px;
 }
 
 .confirm-content {
   padding: 5px;
+  margin-bottom: 7px;
   font-size: smaller;
   text-align: center;
 }
 
 .confirm-description {
   margin-bottom: 7px;
+  text-align: center;
 }
 
 @keyframes modalFadeIn {
