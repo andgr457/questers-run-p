@@ -19,7 +19,7 @@ export default function ConfirmModal(props: ConfirmModalProps) {
     rightTitle={props.title}
   >
     <div className={`confirm-modal ${props.isYesNo === true ? 'confirm-yes-no' : 'confirm-ok'}`}>
-      <div className='confirm-description' style={{textAlign: 'center'}}>
+      <div className='confirm-description'>
         {props.message}
       </div>
       {!props.content ? <></> : <div className='confirm-content'>{props.content}</div>}
@@ -29,14 +29,14 @@ export default function ConfirmModal(props: ConfirmModalProps) {
           <button 
             className='success'
             onClick={props.onConfirm}
-            style={{width: '10%', textAlign: 'center'}}
+            
           >
             Yes
           </button>
           <button 
             className='danger'
             onClick={props.onClose}
-            style={{width: '10%', textAlign: 'center'}}
+            
           >
             No
           </button>

@@ -9,7 +9,7 @@
 }
 
 .state-overlay-content.active.blur {
-  filter: blur(1px);
+  filter: blur(2px);
   opacity: 0.6;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .state-overlay.darken {
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.797);
 }
 
 .state-overlay.locked {

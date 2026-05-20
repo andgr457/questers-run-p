@@ -32,8 +32,8 @@
   padding: 5px;
   background: var(--bg-dark);
   color: var(--text);
-  border-top: solid 1px var(--gold);
-  border-bottom: solid 1px var(--gold-dark);
+  border-top: solid 1px var(--text);
+  border-bottom: solid 1px var(--text);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -231,7 +231,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 20;
+  z-index: 990;
 
   width: 34px;
   height: 70px;
@@ -297,6 +297,10 @@
 }
 
 @media (max-width: 768px) {
+  .shoppe-item {
+    width: 95vw;
+
+  }
   .shoppe-item.cart {
     width: 100%;
     min-height: fit-content;

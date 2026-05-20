@@ -9,6 +9,7 @@ import CustomContainer from '../CustomContainer'
 import CharacterQuestPopup from './CharacterQuestPopup'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import useScrollReveal from '../../hooks/useScrollReveal'
+import ScrollableShoppeList from '../shoppe/ShoppeListScrollable'
 
 interface CharacterQuestsProps extends AppProperties {
   showOneTimeCompletedQuests: boolean
@@ -108,21 +109,27 @@ export default function CharacterQuests(props: CharacterQuestsProps){
         })
         return (
           <div key={qg.id} className='quest-group'>
-            <div className='quest-group-title'>
-              {qg.title} <span className='quest-group-description'>{qg.description}</span>
+            <div className='character-section-title'>
+              <div className='page-header-banner'>
+                <div className='page-header-title'>
+                  {qg.title} <span className='quest-group-description'>{qg.description}</span>
+                </div>
+              </div>
             </div>
-            <div className='quest-group-quest-list reveal'>
-              {relatedQuests?.map(q => {
-                return <CharacterQuest
-                  {...props}
-                  key={q.quest.id}
-                  handleShowPopup={handleShowPopup}
-                  quest={q.quest}
-                  showActions={true}
-                />
-              })}
-              
-            </div>
+              <div className=''>
+                <ScrollableShoppeList>
+                {relatedQuests?.map(q => {
+                  return <CharacterQuest
+                    {...props}
+                    key={q.quest.id}
+                    handleShowPopup={handleShowPopup}
+                    quest={q.quest}
+                    showActions={true}
+                  />
+                })}
+                
+                </ScrollableShoppeList>
+              </div>
           </div>
         )
       })}
