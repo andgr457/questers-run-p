@@ -16,7 +16,7 @@ interface AdventurersGuildPageProps extends AppProperties {
 }
 
 export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
-    const {
+  const {
     character,
     setLocation,
     handleSetCharacter,

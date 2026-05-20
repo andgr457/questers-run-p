@@ -6,10 +6,8 @@ import type { ShoppeCartItem } from './ShoppeCart';
 
 export interface ShoppeBuyItemSettings {
   item: Item
-  canBuy: boolean
   totalBuy: number
   totalSell: number
-  neededGold: number
 }
 
 interface ShoppeItemProps extends AppProperties {
@@ -26,6 +24,7 @@ export default function ShoppeItem(props: ShoppeItemProps){
     amount,
     characterInventories,
     cartItems,
+    characterGold,
     handleAddItemToCart,
   } = props
   const relatedCartItem = cartItems.find(ci => ci.item.id === shoppeItem.item.id && ci.transactionType === 'sell')
@@ -33,11 +32,6 @@ export default function ShoppeItem(props: ShoppeItemProps){
 
   const item = shoppeItem.item
   const characterItemAmount = characterServiceGetItemAmount(characterInventories ?? [], item.id)
-  
-  let youHaveTitle = `Inventory ${characterItemAmount}`
-  if(sellCartAmount > 0){
-    youHaveTitle += ` Cart ${sellCartAmount}`
-  }
 
   let hasEffects = false
   if(item.stats){
@@ -50,6 +44,19 @@ export default function ShoppeItem(props: ShoppeItemProps){
       }
     }
   }
+  let buyAmount = amount
+  let buyCost = item.gold.buy * amount
+  if(buyCost > characterGold){
+    buyAmount = Math.floor(characterGold / buyCost)
+    buyCost = item.gold.buy * buyAmount
+  }
+  let sellAmount = amount
+  let sellCost = item.gold.sell * amount
+  if(amount > characterItemAmount){
+    sellAmount = characterItemAmount
+    sellCost = item.gold.sell * sellAmount
+  }
+  
   const content = <div className={`shoppe-item open`}>
     <div className='shoppe-item-name'>
       {item.name}
@@ -57,27 +64,37 @@ export default function ShoppeItem(props: ShoppeItemProps){
     <div className='shoppe-item-description'>
       {item.description}
     </div>
-    <div className='shopp-item-info-list'>
+    <div className='shoppe-item-info-list'>
       <div className='shoppe-item-info'>
-        Buy: <span style={{color: 'gold'}}>{shoppeItem.totalBuy.toLocaleString()}g</span>
+        Buy 1: <span style={{color: 'gold'}}>{item.gold.buy.toLocaleString()}g</span>
       </div>
       <div className='shoppe-item-info' >
-        Sell: <span style={{color: 'gold'}}>{shoppeItem.totalSell.toLocaleString()}g</span>
+        Sell 1: <span style={{color: 'gold'}}>{item.gold.sell.toLocaleString()}g</span>
       </div>
-      <div className='shoppe-item-info' >
-        Need: <span style={{color: 'gold'}}>{shoppeItem.neededGold.toLocaleString()}g</span>
-      </div>
+      {buyCost > characterGold && <div className='shoppe-item-info'>
+        Buy{buyAmount > 1 ? ` ${buyAmount}` : ` ${amount}`}: <span style={{color: 'gold'}}>{buyCost > 0 ? buyCost.toLocaleString() : shoppeItem.totalBuy.toLocaleString()}g</span>
+      </div>}
+      {sellAmount > characterItemAmount && <div className='shoppe-item-info' >
+        Sell{sellAmount > 1 ? ` ${sellAmount}` : ` ${amount}`}: <span style={{color: 'gold'}}>{sellCost > 0 ? sellCost.toLocaleString() : shoppeItem.totalSell.toLocaleString()}g</span>
+      </div>}
+      
+    </div>
+    <div className='shoppe-item-info-list'>
       <div className='shoppe-item-info'>
         Inv: <span style={{color: 'gold'}}>{characterItemAmount - sellCartAmount}</span>
       </div>
       <div className='shoppe-item-info'>
         Cart: <span style={{color: 'gold'}}>{sellCartAmount}</span>
       </div>
+      {item.profession?.type && <div className='shoppe-item-info profession'>
+        {item.profession?.type}
+      </div>}
     </div>
+
     {hasEffects === true && <div className='shoppe-item-sub-title'>
       Effects
     </div>}
-    {hasEffects === true && <div className='shopp-item-info-list'>
+    {hasEffects === true && <div className='shoppe-item-info-list'>
       {item.stats && Object.getOwnPropertyNames(item.stats).map(propertyName => {
         //@ts-ignore
         const stat: Stat = item.stats[propertyName]
@@ -89,11 +106,11 @@ export default function ShoppeItem(props: ShoppeItemProps){
     </div>}
 
     <div className="shoppe-item-bottom">
-      <div className='shoppe-item-info add' onClick={() => {shoppeItem.canBuy && handleAddItemToCart(shoppeItem.item.id, 'buy', amount)}}>
-        BUY {shoppeItem.canBuy ? amount : 0}
+      <div className={`shoppe-item-info ${buyAmount > 0 ? 'add' : 'zero'}`} onClick={() => {buyAmount > 0 && handleAddItemToCart(shoppeItem.item.id, 'buy', buyAmount)}}>
+        BUY {buyAmount}
       </div>
-      <div className='shoppe-item-info add' onClick={() => {characterItemAmount >= amount && handleAddItemToCart(shoppeItem.item.id, 'sell', amount)}}>
-        SELL {characterItemAmount >= amount ? amount : 0}
+      <div className={`shoppe-item-info ${sellAmount > 0 ? 'add' : 'zero'}`} onClick={() => {sellAmount > 0 && handleAddItemToCart(shoppeItem.item.id, 'sell', sellAmount)}}>
+        SELL {sellAmount}
       </div>
     </div>
   </div>
