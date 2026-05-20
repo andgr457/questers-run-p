@@ -3,6 +3,7 @@ import type { AppProperties } from '../../interfaces/AppProperties.types'
 import type { Item } from '../../interfaces/items/Item.types'
 import ProfessionItem from './ProfessionItem'
 import { sleep } from '../../services/CommonServices'
+import SpinnerOverlay from '../spinner/SpinnerOverlay'
 
 interface ProfessionItemsListProps extends AppProperties {
   professionItems: Item[]
@@ -66,13 +67,13 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
         {profession?.toUpperCase()}
       </div>
     </div>
-    <div className='dark-centered-section'>
+    <SpinnerOverlay loading={!canDo} blur={true}><div className='dark-centered-section'>
       {collectAmountSelections.map(amt => {
         return <button className={`${amt === collectAmount ? 'yellow' : 'basic'}`} onClick={() => {setCollectAmount(amt)}}>
           <span style={{textTransform: 'lowercase'}}>x</span>{amt}
         </button>
       })}
-    </div>
+    </div></SpinnerOverlay>
     <div className='dark-centered-section'>
       <div style={{width: '90%', textAlign: 'center'}}>
         <span className="" style={{fontSize: '0.75em'}}>

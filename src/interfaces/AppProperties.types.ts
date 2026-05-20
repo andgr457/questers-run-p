@@ -11,6 +11,7 @@ export interface AppProperties extends AppFunctions {
   achievements?: Achievement[]
   location?: string
   character?: Character
+  characterGold?: number
   characterClass?: CharacterClass
   characterInventories?: Inventory[]
   characterQuestProgress?: QuestWithQuestProgress

@@ -158,6 +158,10 @@
   text-align: center;
 }
 
+.confirm-description {
+  margin-bottom: 7px;
+}
+
 @keyframes modalFadeIn {
   from {
     opacity: 0;
