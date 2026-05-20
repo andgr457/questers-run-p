@@ -118,16 +118,15 @@ export default function CharacterQuests(props: CharacterQuestsProps){
             </div>
               <div className=''>
                 <ScrollableShoppeList>
-                {relatedQuests?.map(q => {
-                  return <CharacterQuest
-                    {...props}
-                    key={q.quest.id}
-                    handleShowPopup={handleShowPopup}
-                    quest={q.quest}
-                    showActions={true}
-                  />
-                })}
-                
+                  {relatedQuests?.map(q => {
+                    return <CharacterQuest
+                      {...props}
+                      key={q.quest.id}
+                      handleShowPopup={handleShowPopup}
+                      quest={q.quest}
+                      showActions={true}
+                    />
+                  })}
                 </ScrollableShoppeList>
               </div>
           </div>

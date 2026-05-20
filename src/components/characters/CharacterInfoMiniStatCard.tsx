@@ -11,7 +11,8 @@ interface CharacterInfoMiniStatCardProps {
 export default function CharacterInfoMiniStatCard(props: CharacterInfoMiniStatCardProps) {
   const {
     statItem,
-    barWidth = '125px'
+    barWidth = '125px',
+    className = 'attribute-fill'
   } = props
 
   if (!statItem) return null
@@ -55,7 +56,7 @@ export default function CharacterInfoMiniStatCard(props: CharacterInfoMiniStatCa
             <div
               className={`
                 character-stat-card-fill
-                ${'attribute-fill'}
+                ${className}
               `}
               style={{
                 width: `${progress}%`

@@ -36,7 +36,7 @@ export default function CharacterInfoXP(props: CharacterInfoXPProps){
 
     <div className='character-progress-bar'>
       <div
-        className='character-progress-fill level-fill'
+        className='character-progress-fill level-fill purple'
         style={{ width: `${levelProgress}%` }}
       />
     </div>
