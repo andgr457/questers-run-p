@@ -215,6 +215,16 @@ button {
   ,0 0 5px var(--bg-dark);
 }
 
+button.hash-nav {
+  text-shadow: 0 0 5px var(--bg-dark) !important;
+  border: solid var(--text) 1px!important;
+  background-color: var(--bg-dark)!important;
+  color: var(--text)!important;
+  font-size: 10px;
+  padding: 3px;
+  width: 80px;
+}
+
 button.expander {
   text-shadow: 0 0 5px var(--text);
   border: solid var(--bg-dark-3) 2px;

@@ -12,17 +12,17 @@ interface ShoppeCartProps extends AppProperties {
   cartTotal: number
   handleClearCart: () => void
   handleRemoveCartItem: (itemId: string, transactionType: 'buy' | 'sell') => void
-  handleConfirmCartTransactions: () => void
-
+  handleCheckout: () => void
 }
 
 export default function ShoppeCart(props: ShoppeCartProps){
   const {
     cartItems,
-    handleClearCart,
-    handleConfirmCartTransactions,
     handleRemoveCartItem,
+    handleCheckout,
+    characterGold
   } = props
+
   const buying = cartItems.filter(ci => ci.transactionType === 'buy')
   const selling = cartItems.filter(ci => ci.transactionType === 'sell')
   const buyingTotal = buying.reduce((total, ci) => {
@@ -36,36 +36,34 @@ export default function ShoppeCart(props: ShoppeCartProps){
   const buyingInCart = buying.length > 0
   const sellingInCart = selling.length > 0
 
-  return <div >
-    <div className='page-header-main'>
-      CART
-    </div>
+  return <div id='cart' className='shoppe-cart'>
     <div className={`shoppe-cart-empty ${neitherInCart === true ? 'open' : ''}`} style={{backgroundColor: 'var(--bg-dark-2)', textAlign: 'center', color: 'gold', padding: '5px', fontSize: '0.7em', opacity: '80%'}}>
       Empty Cart
     </div>
-    {eitherInCart === true && <div className='flex-wrap' style={{gap: '15px', justifyContent: 'center', padding: '5px'}}>
-      <button className='basic' onClick={handleClearCart}>CLEAR CART</button>
-      <button className='success' onClick={handleConfirmCartTransactions}>CONFIRM</button>
+    {cartItems.length > 0 && <div className='shoppe-cart-sticky-actions'>
+      <button className='success' onClick={handleCheckout} style={{width: '100%'}}>CHECKOUT</button>
     </div>}
-
-    <div className={`shoppe-item-list ${eitherInCart === true ? 'open' : ''}`}>
-      <div className={`shoppe-item ${eitherInCart === true ? 'open' : ''}`} style={{width: '15%'}}>
-        <div className='list-item-title'>
+    <div className='flex-wrap' style={{gap: '5px'}}>
+      <div className={`shoppe-item ${eitherInCart === true ? 'open' : ''} cart`}>
+        <div className='shoppe-item-name'>
           TOTAL
         </div>
-        <div className='list-item-info' style={{textAlign: 'center'}}>
-          Buying - {buying.length} Item(s)<br/><span style={{color:'gold'}}>{buyingTotal}g</span>
+        <div className='shoppe-item-info'>
+          Buying x<span style={{color: 'gold'}}>{buying.length}</span>: <span style={{color: 'gold'}}>{buyingTotal}g</span>
         </div>
-        <div className='list-item-info' style={{textAlign: 'center'}}>
-          Selling - {selling.length} Item(s)<br/><span style={{color:'gold'}}>{sellingTotal}g</span>
+        <div className='shoppe-item-info'>
+          Selling x<span style={{color: 'gold'}}>{selling.length}</span>: <span style={{color: 'gold'}}>{sellingTotal}g</span>
         </div>
-        <div className='list-item-info' style={{textAlign: 'center'}}>
-          Total - {cartItems.length} Item(s)<br/><span style={{color:'gold'}}>{sellingTotal + buyingTotal}g</span>
+        <div className='shoppe-item-info' style={{textAlign: 'center'}}>
+          Total x<span style={{color: 'gold'}}>{cartItems.length}</span>: <span style={{color: 'gold'}}>{sellingTotal + buyingTotal}g</span>
         </div>
+        {characterGold && <div className='shoppe-item-info' style={{textAlign: 'center'}}>
+          Hayz: <span style={{color: 'gold'}}>{characterGold}g</span> {'>'} <span style={{color: 'gold'}}>{characterGold - (sellingTotal + buyingTotal)}g</span>
+        </div>}
       </div>
 
-      <div className={`shoppe-item ${buyingInCart === true ? 'open' : ''}`} style={{width: 'fit-content'}}>
-        <div className='list-item-title'>
+      <div className={`shoppe-item ${buyingInCart === true ? 'open' : ''} cart`}>
+        <div className='shoppe-item-name'>
           BUYING
         </div>
         {buying.map(ci => {
@@ -75,18 +73,25 @@ export default function ShoppeCart(props: ShoppeCartProps){
           } else {
             total = ci.item.gold.sell * ci.amount
           }
-          return <div className='list-item-info' style={{textAlign: 'center'}}>
-            <div style={{float: 'left'}}>
-              <span>x{ci.amount}</span> - <span>{ci.item.name}</span> - <span style={{color: 'gold'}}>{total}g</span>
+          return <div className='shoppe-item-info cart'>
+            <div>
+              x<span style={{color: 'gold'}}>{ci.amount}</span>
             </div>
-            <div style={{float: 'right'}} onClick={() => {handleRemoveCartItem(ci.item.id, ci.transactionType)}}>
-              &nbsp;&nbsp;&nbsp;&nbsp;<span style={{color: 'gold'}}>X</span>
+            <div>
+               <span>{ci.item.name}</span>
+            </div>
+            <div>
+              <span style={{color: 'gold'}}>{total}g</span>
+            </div>
+            <div onClick={() => {handleRemoveCartItem(ci.item.id, ci.transactionType)}}>
+              <span style={{color: 'gold', fontSize: '0.6em'}}>REMOVE</span>
             </div>
           </div>
         })}
       </div>
-      <div className={`shoppe-item ${sellingInCart === true ? 'open' : ''}`} style={{width: 'fit-content'}}>
-        <div className='list-item-title'>
+
+      <div className={`shoppe-item ${sellingInCart === true ? 'open' : ''} cart`}>
+        <div className='shoppe-item-name'>
           SELLING
         </div>
         {selling.map(ci => {
@@ -96,13 +101,20 @@ export default function ShoppeCart(props: ShoppeCartProps){
           } else {
             total = ci.item.gold.sell * ci.amount
           }
-          return <div className='list-item-info' style={{textAlign: 'center'}}>
-            <div style={{float: 'left'}}>
-              <span>x{ci.amount}</span> - <span>{ci.item.name}</span> - <span style={{color: 'gold'}}>{total}g</span>
+          return <div className='shoppe-item-info cart'>
+            <div>
+              x<span style={{color: 'gold'}}>{ci.amount}</span>
             </div>
-            <div style={{float: 'right'}} onClick={() => {handleRemoveCartItem(ci.item.id, ci.transactionType)}}>
-              &nbsp;&nbsp;&nbsp;&nbsp;<span style={{color: 'gold'}}>X</span>
+            <div>
+               <span>{ci.item.name}</span>
             </div>
+            <div>
+              <span style={{color: 'gold'}}>{total}g</span>
+            </div>
+            <div onClick={() => {handleRemoveCartItem(ci.item.id, ci.transactionType)}}>
+              <span style={{color: 'gold', fontSize: '0.6em'}}>REMOVE</span>
+            </div>
+        
           </div>
         })}
       </div>

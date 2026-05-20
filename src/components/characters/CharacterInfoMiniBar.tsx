@@ -1,46 +1,27 @@
-import { useEffect, useState } from 'react'
 import { StatSort, type Stat } from '../../interfaces/characters/Character.types'
 import './CharacterInfoMiniBar.css'
 import CharacterInfoMiniStatCard from './CharacterInfoMiniStatCard'
-import { CharacterService } from '../../services/characters/CharacterService'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
-import type { Inventory } from '../../interfaces/inventories/Inventory.types'
 import { sleep } from '../../services/CommonServices'
 import './CharacterStatCard.css'
 
 interface CharacterInfoMiniBarProps extends AppProperties {
+
 }
 
 export default function CharacterInfoMiniBar(props: CharacterInfoMiniBarProps) {
-  const [characterGold, setCharacterGold] = useState(0)
 
   const { 
     character, 
     characterClass, 
-    characterInventories,
     characterQuestProgress,
     location,
-    handleSetRequestedWindowId
+    handleSetRequestedWindowId,
+    characterGold
   } = props
 
   const statNames = ['hp', 'mp', 'stamina']
-
-  useEffect(() => {
-    const load = async () => {
-      if (!character || !characterClass) return
-
-      const characterService = new CharacterService(
-        character,
-        characterClass,
-        characterInventories as Inventory[]
-      )
-
-      setCharacterGold(characterService.getGold())
-    }
-
-    load()
-  }, [character, characterClass, characterInventories])
-
+  
   async function toggleWindow(id: string) {
     handleSetRequestedWindowId?.('')
     await sleep(50)
@@ -70,7 +51,7 @@ export default function CharacterInfoMiniBar(props: CharacterInfoMiniBarProps) {
           </div>
           {divider}
           <div className="mini-gold" style={{cursor: 'pointer'}} onClick={() => {toggleWindow?.('inventory')}}>
-            {characterGold.toLocaleString()}g
+            {characterGold?.toLocaleString()}g
           </div>
           {divider}
           <div className="mini-class" style={{cursor: 'pointer'}} onClick={() => {toggleWindow?.('quest')}}>

@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './CharacterInfo.css'
-import { CharacterService } from '../../services/characters/CharacterService'
-import type { Inventory } from '../../interfaces/inventories/Inventory.types'
 import { type Stat } from '../../interfaces/characters/Character.types'
 import CharacterInfoXP from './CharacterInfoXP'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
@@ -15,28 +13,11 @@ export default function CharacterInfo(props: CharacterInfoProps) {
   const {
     character,
     characterClass,
-    characterInventories,
     showExpander = true,
+    characterGold
   } = props
 
-  const [characterGold, setCharacterGold] = useState(0)
   const [showAll, setShowAll] = useState(true)
-
-  useEffect(() => {
-    const load = async function () {
-      if (!character || !characterClass) return
-
-      const characterService = new CharacterService(
-        character,
-        characterClass,
-        characterInventories as Inventory[]
-      )
-
-      setCharacterGold(characterService.getGold())
-    }
-
-    load()
-  }, [character, characterClass, characterInventories])
 
   if (!character) {
     return null
@@ -87,7 +68,7 @@ export default function CharacterInfo(props: CharacterInfoProps) {
             </div>
             <div style={{float: 'right'}}>
               <span style={{color: 'gold'}}>
-                {characterGold.toLocaleString()}g
+                {characterGold?.toLocaleString()}g
               </span>
             </div>
           </div>

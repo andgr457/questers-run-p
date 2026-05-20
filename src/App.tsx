@@ -42,6 +42,10 @@ import PageLayout from './pages/PageLayout';
 import type { ShoppeCartItem } from './components/shoppe/ShoppeCart';
 import CharacterInventory from './components/inventory/CharacterInventory';
 import CharacterQuestCurrent from './components/quests/CharacterQuestCurrent';
+import { shoppeServiceConfirmCart } from './services/Shoppe.Service';
+import { tavernServiceItemComplete, tavernServiceItemStart } from './services/Tavern.Services';
+import { characterServiceGetItemAmount } from './services/Character.Service';
+import { professionServiceItemComplete } from './services/Profession.Services';
 
 function App() {
   const [location, setLocation] = useState('Overview')
@@ -180,38 +184,32 @@ function App() {
     load()
   }, [character])
 
+  //INVENTORY HANDLERS
+  const handleAddInventory = useCallback((inventory: Inventory[]) => {
+    const newInventories = []
+    for(const i of inventory){
+      newInventories.push(i)
+    }
+    for(const i of inventories){
+      newInventories.push(i)
+    }
+    setInventories(newInventories)
+  }, [inventories])
+
+  //SHOPPE HANDLERS
   const handleShoppeConfirmation = useCallback(async (cartItems: ShoppeCartItem[]) => {
-    if(cartItems?.length === 0) return
-    const backpack = characterInventories?.find(ci => ci.title === 'Backpack')
-    const currency = characterInventories?.find(ci => ci.title === 'Currency')
-    if(!backpack || !currency) return
-    const txnMessages = []
-    for(const si of cartItems){
-      let quantity = 0
-      let gold = 0
-      if(si.transactionType === 'buy'){
-        quantity = si.amount
-        gold =  (si.amount * si.item.gold.buy) * -1
-        txnMessages.push(`${quantity} ${si.item.name} purchased for ${gold} gold.`)
-      } else {
-        quantity = si.amount * -1
-        gold = si.amount * si.item.gold.sell
-        txnMessages.push(`${si.amount} ${si.item.name} sold for ${gold} gold.`)
-      }
-      backpack.transactions.push({
-        id: `invtxn_shoppe_item_${si.item.id}__${character?.id}__${DateTime.utc().toMillis()}`,
-        date: DateTime.utc().toISO(),
-        itemId: si.item.id,
-        note: `Shoppe Item Transaction`,
-        quantity: quantity
-      })
-      currency.transactions.push({
-        id: `invtxn_shoppe_gold__${si.item.id}__${character?.id}__${DateTime.utc().toMillis()}`,
-        date: DateTime.utc().toISO(),
-        itemId: ITEM_CURRENCY_IDS.GOLD,
-        note: `Shoppe Item Transaction`,
-        quantity: gold
-      })
+    const {
+      backpack,
+      currency,
+      txnMessages
+    } = shoppeServiceConfirmCart(
+      cartItems,
+      characterInventories ?? [],
+      character as Character
+    )
+
+    if(!backpack || !currency){
+      return
     }
 
     const newAllInventories = []
@@ -225,6 +223,7 @@ function App() {
       }
     }
     setInventories(newAllInventories)
+
     await showConfirm({
       isYesNo: false,
       title: 'Shoppe Purchase Complete',
@@ -237,30 +236,20 @@ function App() {
         })}
       </div>
     })
-  }, [inventories, characterInventories])
+  }, [inventories, characterInventories, character])
 
-  const handleAddInventory = useCallback((inventory: Inventory[]) => {
-    const newInventories = []
-    for(const i of inventory){
-      newInventories.push(i)
-    }
-    for(const i of inventories){
-      newInventories.push(i)
-    }
-    setInventories(newInventories)
-  }, [inventories])
-
+  //TAVERN HANDLERS
   const handleTavernItemStart = useCallback(async (goldCost: number) =>{
-    const currency = characterInventories?.find(i => i.title === 'Currency')
-    if(currency){
-      currency.transactions.push({
-        id: `invtxn__${ITEM_CURRENCY_IDS.GOLD}__${character?.id}__${DateTime.utc().toMillis()}`,
-        date: DateTime.utc().toISO(),
-        itemId: ITEM_CURRENCY_IDS.GOLD,
-        note: `Tavern cost`,
-        quantity: goldCost * -1
-      })
-    }
+    const {
+      currency
+    } = tavernServiceItemStart(
+      goldCost,
+      characterInventories ?? [],
+      character as Character
+    )
+
+    if(!currency) return
+
     const newInv = []
     for(const inv of inventories){
       if(inv.id === currency?.id){
@@ -270,105 +259,51 @@ function App() {
       }
     }
     setInventories(newInv)
-  }, [inventories, characterInventories])
+  }, [inventories, characterInventories, character])
 
   const handleTavernItemComplete = useCallback(async (percentChange: number) => {
-    const newCharacter = {...character as Character}
-    const divisor = percentChange / 100
-
-    if(newCharacter.stats){
-      if(newCharacter.stats.hp){
-        if(newCharacter.stats?.hp?.max){
-          const amountToAdd = newCharacter.stats.hp.max * divisor
-          newCharacter.stats.hp.value += amountToAdd
-          if(newCharacter.stats.hp.value > newCharacter.stats.hp.max){
-            newCharacter.stats.hp.value = newCharacter.stats.hp.max
-          }
-        }
-      }
-      if(newCharacter.stats.mp){
-        if(newCharacter.stats?.mp?.max){
-          const amountToAdd = newCharacter.stats.mp.max * divisor
-          newCharacter.stats.mp.value += amountToAdd
-          if(newCharacter.stats.mp.value > newCharacter.stats.mp.max){
-            newCharacter.stats.mp.value = newCharacter.stats.mp.max
-          }
-        }
-      }
-      if(newCharacter.stats.stamina){
-        if(newCharacter.stats?.stamina?.max){
-          const amountToAdd = newCharacter.stats.stamina.max * divisor
-          newCharacter.stats.stamina.value += amountToAdd
-          if(newCharacter.stats.stamina.value > newCharacter.stats.stamina.max){
-            newCharacter.stats.stamina.value = newCharacter.stats.stamina.max
-          }
-        }
-      }
-    }
+    const {
+      newCharacter
+    } = tavernServiceItemComplete(
+      character as Character,
+      percentChange
+    )
+    if(!newCharacter) return
     setCharacter({...newCharacter as Character})
   }, [character])
 
-  const handleProfessionStatLevel = (c: Character, item: Item, amount: number) => {
-    //@ts-ignore
-    const characterProfessionStat = {...c?.professions[item.profession.type as ProfessionType]}
-    if(typeof characterProfessionStat?.xp === 'number' && typeof characterProfessionStat?.nextLevelXP === 'number' && item?.profession){
-      const firstXpValue = (amount * item?.profession?.xp) + characterProfessionStat.xp
-      const overNextLevelValue = characterProfessionStat.nextLevelXP - firstXpValue
-      let canLevel = overNextLevelValue <= 0
-      if(canLevel && typeof characterProfessionStat.level === 'number'){
-        const leftOverXp = Math.abs(overNextLevelValue)
-        characterProfessionStat.level += 1
-        characterProfessionStat.xp = 0 + leftOverXp
-        characterProfessionStat.nextLevelXP += 10
-      } else {
-        characterProfessionStat.xp += (amount * item?.profession?.xp)
-      }
-      const newCharacter = {...c as Character}
-      //@ts-ignore
-      newCharacter.professions[item.profession.type] = {...characterProfessionStat}
-      if(newCharacter.stats.stamina && item && item.profession){
-        const staminaDrain = item.profession.stamina * amount
-        const newValue = newCharacter.stats.stamina.value - staminaDrain
-        newCharacter.stats.stamina.value = newValue
-      }
-      setCharacter({...newCharacter})
-    }
-  }
+  const handleProfessionItemComplete = useCallback(async (professionItemId: string, amount: number) => {
+    const professionItem = items.find(i => i.id === professionItemId)
+    if(!professionItem) return
 
-  const handleDoProfessionItemComplete = useCallback(async (professionItemId: string, amount: number) => {
-    let invRef = undefined
-    for(const inv of characterInventories ?? []){
-      const invTxns = inv.transactions.filter(t => t.itemId === professionItemId)
-      
-      if(invTxns.length > 0){
-        invRef = inv
-        break
-      }
+    const {
+      inventoryRef,
+      professionStat,
+      staminaStat
+    } = professionServiceItemComplete(
+      characterInventories ?? [],
+      character as Character,
+      professionItem as Item,
+      amount
+    )
+    if(!inventoryRef || !professionStat || !staminaStat){
+      return
     }
-    if(!invRef){
-      invRef = characterInventories?.find(i => i.title === 'Backpack')
-    }
-    invRef?.transactions.push({
-      id: `invtxn__${professionItemId}__${character?.id}__${DateTime.utc().toMillis()}`,
-      date: DateTime.utc().toISO(),
-      itemId: professionItemId,
-      note: `Profession addition`,
-      quantity: amount
-    })
 
     const newAllInventories = []
     for(const inv of inventories){
-      if(inv.id === invRef?.id){
-        newAllInventories.push(invRef)
+      if(inv.id === inventoryRef.id){
+        newAllInventories.push(inventoryRef)
       } else {
         newAllInventories.push(inv)
       }
     }
     setInventories(newAllInventories)
-    const item = items.find(i => i.id === professionItemId)
-    if(typeof item?.profession?.xp === 'number'){
-      handleProfessionStatLevel(character as Character, item, amount)
-    }
+    const newCharacter = {...character as Character}
+    //@ts-ignore
+    newCharacter.professions[professionItem.type] = professionStat
+    newCharacter.stats.stamina = staminaStat
+    setCharacter({...newCharacter})
   }, [items, characterInventories, inventories, character])
 
   const handleAbandonQuest = useCallback(async (questProgressId: string) => {
@@ -567,6 +502,7 @@ function App() {
     location,
     character: character as Character,
     characterClass: characterClass as CharacterClass,
+    characterGold: characterServiceGetItemAmount(characterInventories ?? [], ITEM_CURRENCY_IDS.GOLD),
     characterInventories: inventories,
     characterQuestProgress: characterQuestProgress?.find(cqp => cqp.questProgress?.status === 'in-progress'),
     items,
@@ -578,7 +514,7 @@ function App() {
     handleResetEverything,
     handleResetProfession,
     handleAddInventory,
-    handleDoProfessionItemComplete,
+    handleDoProfessionItemComplete: handleProfessionItemComplete,
     handleTavernItemStart,
     handleTavernItemComplete,
     handleAddQuest,
