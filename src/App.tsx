@@ -66,7 +66,6 @@ function App() {
   const [requestedWindowId, setRequestedWindowId] = useState<string | undefined>(undefined)
   
   const {showConfirm} = useConfirm()
-  const isMobile = useIsMobile()
   const handleResetEverything = useCallback(async () => {
     if(!await showConfirm({
       title: 'Are you sure?',
