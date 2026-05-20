@@ -175,8 +175,12 @@ export default function ShoppePage(props: ShoppePageProps){
   }, [cartItems])
 
   return <div>
-    <div className='page-header-main'>
-      SHOPPE
+    <div className='character-section-title'>
+      <div className='page-header-banner'>
+        <div className='page-header-title'>
+          SHOPPE
+        </div>
+      </div>
     </div>
     
     <div className='shoppe-cart-sticky'>

@@ -1,7 +1,7 @@
 .window-layer {
   position: fixed;
   inset: 0;
-
+  font-size: 12px;
   pointer-events: none;
 
   z-index: 5000;
@@ -21,7 +21,7 @@
 
   /* background: var(--bg-dark); */
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 3px;
 
   overflow: hidden;
 
@@ -53,9 +53,9 @@
   flex-shrink: 0;
   touch-action: none;
   height: 45px;
-
-  padding-left: 20px;
-  padding-right: 20px;
+  font-size: 1.2em;
+  padding: 7px;
+  text-transform: uppercase;
 
   display: flex;
   justify-content: space-between;
@@ -65,10 +65,10 @@
 
   user-select: none;
 
-  background-color: var(--blue-sd-darker);
+  background-color: var(--blue-sd-dark);
   color: var(--text);
 
-  border-radius: 10px 10px 0 0;
+  border-radius: 3px 3px 0 0;
   border: solid var(--text);
   border-width: 1px 1px 0px 1px;
 
@@ -103,7 +103,7 @@
 
   box-sizing: border-box;
 
-  padding: 10px;
+  padding: 7px;
 
   color: var(--text);
 
@@ -112,7 +112,7 @@
   border: solid var(--text);
   border-width: 1px 1px 1px 1px;
 
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 3px 3px;
 }
 
 /* =========================

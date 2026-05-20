@@ -4,6 +4,7 @@ import type { Item } from '../../interfaces/items/Item.types'
 import ProfessionItem from './ProfessionItem'
 import { sleep } from '../../services/CommonServices'
 import SpinnerOverlay from '../spinner/SpinnerOverlay'
+import ScrollableShoppeList from '../shoppe/ShoppeListScrollable'
 
 interface ProfessionItemsListProps extends AppProperties {
   professionItems: Item[]
@@ -62,18 +63,23 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
   const profession = window.location.href.replace(window.location.origin, '').split('/').pop()
 
   return <div >
-    <div className='dark-centered-section'>
-      <div>
-        {profession?.toUpperCase()}
+    <div className='character-section-title'>
+      <div className='page-header-banner'>
+        <div className='page-header-title'>
+          {profession?.toUpperCase()}
+        </div>
       </div>
     </div>
-    <SpinnerOverlay loading={!canDo} blur={true}><div className='dark-centered-section'>
-      {collectAmountSelections.map(amt => {
-        return <button className={`${amt === collectAmount ? 'yellow' : 'basic'}`} onClick={() => {setCollectAmount(amt)}}>
-          <span style={{textTransform: 'lowercase'}}>x</span>{amt}
-        </button>
-      })}
-    </div></SpinnerOverlay>
+
+    <SpinnerOverlay loading={!canDo} blur={true}>
+      <div className='dark-centered-section'>
+        {collectAmountSelections.map(amt => {
+          return <button className={`${amt === collectAmount ? 'yellow' : 'basic'}`} onClick={() => {setCollectAmount(amt)}}>
+            <span style={{textTransform: 'lowercase'}}>x</span>{amt}
+          </button>
+        })}
+      </div>
+    </SpinnerOverlay>
     <div className='dark-centered-section'>
       <div style={{width: '90%', textAlign: 'center'}}>
         <span className="" style={{fontSize: '0.75em'}}>
@@ -113,10 +119,11 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
         </div>
       </div>
     </div>
-    <div className='item-list'>
+
+    <ScrollableShoppeList>
       {professionItems.map(i => {
         return <ProfessionItem amount={collectAmount} {...props} professionItem={i} handleDoProfessionItem={handleProfessionItemClicked} canDo={canDo} />
       })}
-    </div>
+    </ScrollableShoppeList>
   </div>
 }
