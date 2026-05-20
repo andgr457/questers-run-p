@@ -76,21 +76,55 @@ export default function TavernItem(props: TavernItemProps){
   } : () => {}
 
   
-  const content = <div className='list-item' onClick={clickFn}>
-    <div className='list-item-title'>
+  const content = <div className='shoppe-item open'>
+    <div className='shoppe-item-name'>
       {tavernItem.title}
     </div>
-    <div className='list-item-description'>
+    <div className='shoppe-item-description'>
       {tavernItem.description}
     </div>
-    <div className='list-item-info'>
-      <span className='adv-g-highlight' style={{color: 'gold'}}>{reqGold} gold</span> required.
+    <div className='shoppe-item-info-list' style={{justifyContent: 'center'}}>
+      <div className='shoppe-item-info small'>
+        <div>
+          <span style={{color: 'gold'}}>{reqGold}</span>
+        </div>
+        <div style={{color: 'gold'}}>
+          Gold
+        </div>
+        <div>
+           Required
+        </div>
+      </div>
+
+      <div className='shoppe-item-info small'>
+        <div>
+          <span style={{color: 'gold'}}>{seconds}</span>
+        </div>
+        <div>
+          Second(s)
+        </div>
+      </div>
+
+      <div className='shoppe-item-info small'>
+        <div>
+          <span style={{color: 'gold'}}>{percent}%</span>
+        </div>
+        <div>
+          HP
+        </div>
+        <div>
+          MP
+        </div>
+        <div>
+          STAM
+        </div>
+      </div>
     </div>
-    <div className='list-item-info'>
-      <span className='adv-g-highlight'>{seconds} second(s)</span> required.
-    </div>
-    <div className='list-item-info'>
-      <span className='adv-g-highlight'>{percent}% HP MP STAM</span> gained.
+
+    <div className="shoppe-item-bottom">
+      <div className={`shoppe-item-info ${canDo === true ? 'add' : 'zero'}`} onClick={clickFn}>
+        CONFIRM
+      </div>
     </div>
   </div> 
 

@@ -72,9 +72,9 @@ export default function CharacterInfo(props: CharacterInfoProps) {
               </span>
             </div>
           </div>
-          <CharacterInfoMiniStatCard statItem={character.stats['hp'] as Stat} />
-          <CharacterInfoMiniStatCard statItem={character.stats['mp'] as Stat} />
-          <CharacterInfoMiniStatCard statItem={character.stats['stamina'] as Stat} />
+          <CharacterInfoMiniStatCard className='level-fill red' statItem={character.stats['hp'] as Stat} />
+          <CharacterInfoMiniStatCard className='level-fill blue' statItem={character.stats['mp'] as Stat} />
+          <CharacterInfoMiniStatCard className='level-fill green' statItem={character.stats['stamina'] as Stat} />
           <CharacterInfoMiniStatCard statItem={character.stats['agility'] as Stat} />
           <CharacterInfoMiniStatCard statItem={character.stats['intelligence'] as Stat} />
           <CharacterInfoMiniStatCard statItem={character.stats['strength'] as Stat} />

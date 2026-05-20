@@ -46,6 +46,7 @@ import { shoppeServiceConfirmCart } from './services/Shoppe.Service';
 import { tavernServiceItemComplete, tavernServiceItemStart } from './services/Tavern.Services';
 import { characterServiceGetItemAmount } from './services/Character.Service';
 import { professionServiceItemComplete } from './services/Profession.Services';
+import { useIsMobile } from './hooks/useIsMobile';
 
 function App() {
   const [location, setLocation] = useState('Overview')
@@ -65,7 +66,7 @@ function App() {
   const [requestedWindowId, setRequestedWindowId] = useState<string | undefined>(undefined)
   
   const {showConfirm} = useConfirm()
-  
+  const isMobile = useIsMobile()
   const handleResetEverything = useCallback(async () => {
     if(!await showConfirm({
       title: 'Are you sure?',
@@ -540,7 +541,9 @@ function App() {
               windowRequestId={requestedWindowId}
             />
           </div>
+          
           <PageLayout 
+            {...appProps}
             leftChildren={character?.name && appOnSideBar}
             rightChildren={<Routes>
               <Route path="/" element={<OverviewPage {...appProps} />} />

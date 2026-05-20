@@ -3,6 +3,7 @@ import type { AppProperties } from '../../interfaces/AppProperties.types'
 import { sleep } from '../../services/CommonServices'
 import type { TavernListItem } from '../../interfaces/tavern/Tavern.types'
 import TavernItem from './TavernItem'
+import ScrollableShoppeList from '../shoppe/ShoppeListScrollable'
 
 interface TavernItemsListProps extends AppProperties {
   tavernItems: TavernListItem[]
@@ -81,10 +82,10 @@ export default function TavernItemsList(props: TavernItemsListProps){
         </div>
       </div>
     </div>
-    <div className='item-list'>
+    <ScrollableShoppeList>
       {tavernItems.map(i => {
         return <TavernItem {...props} tavernItem={i} canDo={canDo} handleTavernItemClicked={handleTavernItemClicked}  />
       })}
-    </div>
+    </ScrollableShoppeList>
   </div>
 }
