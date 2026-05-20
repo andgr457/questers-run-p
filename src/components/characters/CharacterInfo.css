@@ -272,8 +272,46 @@
       #6bc7ff
     );
 
-  box-shadow:
-    0 0 12px rgba(100, 180, 255, 0.6);
+}
+
+.level-fill.red {
+  background:
+    linear-gradient(
+      90deg,
+      #ff6b6b,
+      #f85252,
+      #f82a2a
+    );
+}
+
+.level-fill.purple {
+  background:
+    linear-gradient(
+      90deg,
+      #ea72fd,
+      #e751fe,
+      #dc27f7
+    );
+}
+
+.level-fill.blue {
+  background:
+    linear-gradient(
+      90deg,
+      #7e72fd,
+      #5445fa,
+      #3826ff
+    );
+}
+
+.level-fill.green {
+  background:
+    linear-gradient(
+      90deg,
+      #72fd7e,
+      #4cfa5a,
+      #28fc39
+    );
 }
 
 /* STAT XP */
