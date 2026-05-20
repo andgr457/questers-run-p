@@ -46,7 +46,6 @@ import { shoppeServiceConfirmCart } from './services/Shoppe.Service';
 import { tavernServiceItemComplete, tavernServiceItemStart } from './services/Tavern.Services';
 import { characterServiceGetItemAmount } from './services/Character.Service';
 import { professionServiceItemComplete } from './services/Profession.Services';
-import { useIsMobile } from './hooks/useIsMobile';
 
 function App() {
   const [location, setLocation] = useState('Overview')
