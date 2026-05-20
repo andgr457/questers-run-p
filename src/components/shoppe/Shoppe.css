@@ -43,7 +43,7 @@
 }
 
 .shoppe-item {
-  width: 200px;
+  width: 250px;
   height: fit-content;
   min-height: 250px;
   cursor: pointer;
@@ -92,6 +92,8 @@
   border-radius: 3px;
   color: gold;
   text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .shoppe-item-description {
@@ -116,12 +118,14 @@
 
 .shoppe-item-info {
   font-size: 0.8em;
-  padding: 3px;
+  padding: 5px;
   margin-top: 3px;
   border-radius: 6px;
   background: rgb(255 255 255 / 0.03);
   text-align: center;
   transition: all 0.2s;
+  min-width: fit-content;
+  letter-spacing: 1px;
 }
 
 .shoppe-item-info.add {
@@ -135,7 +139,6 @@
 
 .shoppe-item-info:hover {
   filter: brightness(1.1);
-  transform: scale(1.05);
 }
 
 .shoppe-cart-empty {
@@ -149,12 +152,23 @@
   opacity: 1;
 }
 
-.shoppe-cart {
-
+.shopp-item-info-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
 }
 
-.shoppe-cart-item {
-
+.shoppe-item-sub-title {
+  font-size: 0.9em;
+  text-align: center;
+  border-top: solid 1px var(--text);
+  border-bottom: solid 1px var(--text);
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: gold;
 }
 
 .shoppe-cart-list {

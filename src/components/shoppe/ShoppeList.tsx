@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import type { AppProperties } from '../../interfaces/AppProperties.types';
 import ShoppeItem, { type ShoppeBuyItemSettings } from './ShoppeItem';
+import type { ShoppeCartItem } from './ShoppeCart';
 
 interface ShoppeListProps extends AppProperties {
   characterGold: number
+  cartItems: ShoppeCartItem[]
   handleAddItemToCart: (itemId: string, transactionType: 'buy' | 'sell', amount: number) => void
 }
 

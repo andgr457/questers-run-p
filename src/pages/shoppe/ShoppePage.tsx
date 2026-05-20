@@ -4,8 +4,8 @@ import '../../components/shoppe/Shoppe.css'
 import ShoppeList from '../../components/shoppe/ShoppeList';
 import ShoppeCart, { type ShoppeCartItem } from '../../components/shoppe/ShoppeCart';
 import { useConfirm } from '../../providers/ConfirmProvider';
-import { getCharacterItemAmount } from '../../services/characters/Character.Service';
 import { ITEM_CURRENCY_IDS } from '../../data/items/currency/Item.Currency.data';
+import { characterServiceGetItemAmount } from '../../services/Character.Service';
 
 interface ShoppePageProps extends AppProperties {
 
@@ -71,12 +71,12 @@ export default function ShoppePage(props: ShoppePageProps){
   }, [cartItems])
 
   const handleAddItemToCart = useCallback(async (itemId: string, transactionType: 'buy' | 'sell', amount: number) => {
-    const currentCharacterGold = getCharacterItemAmount(characterInventories ?? [], ITEM_CURRENCY_IDS.GOLD)
+    const currentCharacterGold = characterServiceGetItemAmount(characterInventories ?? [], ITEM_CURRENCY_IDS.GOLD)
 
     const item = items?.find(i => i.id === itemId)
     if (!item) return
 
-    const characterItemAmount = getCharacterItemAmount(
+    const characterItemAmount = characterServiceGetItemAmount(
       characterInventories ?? [],
       itemId
     )
@@ -150,7 +150,7 @@ export default function ShoppePage(props: ShoppePageProps){
     characterInventories
   ])
 
-  let characterGold = getCharacterItemAmount(characterInventories ?? [], ITEM_CURRENCY_IDS.GOLD)
+  let characterGold = characterServiceGetItemAmount(characterInventories ?? [], ITEM_CURRENCY_IDS.GOLD)
   const cartTotal = cartItems.reduce((total, ci) => {
     if (ci.transactionType === 'buy') {
       return total + (ci.item.gold.buy * ci.amount)
@@ -175,6 +175,7 @@ export default function ShoppePage(props: ShoppePageProps){
       {...props} 
       characterGold={characterGold} 
       handleAddItemToCart={handleAddItemToCart}
+      cartItems={cartItems}
     />
   </div>
 }
