@@ -71,25 +71,17 @@ export default function PageLayout(props: PageLayoutProps) {
         <div className="app-screen right">
           {character?.name && !window.location.href.includes('/shoppe') && <div className='shoppe-cart-sticky'>
             <div className='character-mini-items' style={{alignItems: 'center'}}>
+
               <div className='character-mini-item'>
                 <div>
-                  {character?.name}
-                </div>
-                <div>
-                  <span style={{color: 'gold'}}>{characterGold?.toLocaleString()}g</span>
-                </div>
-              </div>
-              <div className='character-mini-item'>
-                <div>
-                  Lv.
-                </div>
-                <div>
-                  <span style={{color: 'gold'}}>{character.level?.toLocaleString()}</span>
+                  <span style={{ color: 'gold' }}>
+                    {characterGold?.toLocaleString()}g
+                  </span>
                 </div>
               </div>
 
               <div className='character-mini-item' title={`${levelProgress}%`}>
-                <div style={{width: '50px'}}>
+                <div className='character-mini-bar'>
                   <div className='character-progress-bar'>
                     <div
                       className='character-progress-fill level-fill purple'
@@ -100,7 +92,7 @@ export default function PageLayout(props: PageLayoutProps) {
               </div>
 
               <div className='character-mini-item' title={`${hpProgress}%`}>
-                <div style={{width: '50px'}}>
+                <div className='character-mini-bar'>
                   <div className='character-progress-bar'>
                     <div
                       className='character-progress-fill level-fill red'
@@ -111,7 +103,7 @@ export default function PageLayout(props: PageLayoutProps) {
               </div>
 
               <div className='character-mini-item' title={`${mpProgress}%`}>
-                <div style={{width: '50px'}}>
+                <div className='character-mini-bar'>
                   <div className='character-progress-bar'>
                     <div
                       className='character-progress-fill level-fill blue'
@@ -122,7 +114,7 @@ export default function PageLayout(props: PageLayoutProps) {
               </div>
 
               <div className='character-mini-item' title={`${staminaProgress}%`}>
-                <div style={{width: '50px'}}>
+                <div className='character-mini-bar'>
                   <div className='character-progress-bar'>
                     <div
                       className='character-progress-fill level-fill green'
