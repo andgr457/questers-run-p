@@ -30,6 +30,9 @@ export function characterServiceModifyBaseStatValue(
   }
 
   newStat.value += amount
+  if(newStat.value < 0){
+    newStat.value = 0
+  }
 
   return newStat
 }
@@ -103,4 +106,67 @@ export function characterServiceModifyProfessionStat(
 
   //@ts-ignore
   return {professionStat: newStat, staminaStat: staminaStat}
+}
+
+export function characterServiceModifyStats(
+  character: Character,
+  xp: number,
+  stamina: number
+): Character {
+  const updatedCharacter: Character = {
+    ...character,
+    stats: {
+      ...character.stats,
+      hp: { ...character.stats.hp },
+      mp: { ...character.stats.mp },
+      stamina: { ...character.stats.stamina }
+    }
+  }
+
+  const totalXp = updatedCharacter.xp + xp
+
+  if (totalXp >= updatedCharacter.levelNextXP) {
+    const leftover = totalXp - updatedCharacter.levelNextXP
+
+    updatedCharacter.level += 1
+    updatedCharacter.xp = leftover
+    updatedCharacter.levelNextXP += 10
+
+    updatedCharacter.stats.hp.max += 10
+    updatedCharacter.stats.hp.value = updatedCharacter.stats.hp.max
+
+    updatedCharacter.stats.mp.max += 10
+    updatedCharacter.stats.mp.value = updatedCharacter.stats.mp.max
+
+    updatedCharacter.stats.stamina.max += 10
+    updatedCharacter.stats.stamina.value = updatedCharacter.stats.stamina.max
+
+    return updatedCharacter
+  }
+
+  updatedCharacter.xp = totalXp
+  updatedCharacter.stats.stamina.value += stamina
+  return updatedCharacter
+}
+
+export function characterServiceModifyHp(
+  character: Character,
+  value: number
+): Character {
+  const updatedCharacter: Character = {
+    ...character,
+    stats: {
+      ...character.stats,
+      hp: { ...character.stats.hp }
+    }
+  }
+
+  const hp = updatedCharacter.stats.hp
+
+  hp.value = Math.max(
+    0,
+    Math.min(hp.max, hp.value + value)
+  )
+
+  return updatedCharacter
 }

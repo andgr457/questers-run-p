@@ -1,0 +1,181 @@
+.combat-log {
+  font-size: 11px;
+  height: 75px;
+  overflow-y: auto;
+  padding: 0 5px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.25);
+}
+
+.combat-log-line {
+  padding: 2px 0;
+  opacity: 0.9;
+  color: var(--text);
+}
+
+.combat-vs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+  margin: 10px auto;
+  gap: 10px;
+}
+
+.combat-side {
+  flex: 1;
+  min-width: 0;
+}
+
+.combat-name {
+  font-size: 12px;
+  color: gold;
+  margin-bottom: 4px;
+}
+
+.combat-bar {
+  height: 8px;
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.combat-fill {
+  height: 100%;
+  transition: width 0.2s ease;
+}
+
+.combat-fill.player {
+  background: linear-gradient(90deg, #4caf50, #2e7d32);
+}
+
+.combat-fill.mob {
+  background: linear-gradient(90deg, #e53935, #b71c1c);
+}
+
+.combat-hp {
+  font-size: 10px;
+  opacity: 0.8;
+  margin-top: 2px;
+  color: var(--text);
+}
+
+.combat-vs-center {
+  font-size: 12px;
+  font-weight: bold;
+  color: rgba(255,255,255,0.5);
+}
+
+/* =========================
+   CONSUMABLE HUD (DESKTOP)
+========================= */
+
+.consumablesPanel {
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08);
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* LEFT SIDE CONTROLS */
+.consumableActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  flex: 0 0 auto;
+
+  order: 1; /* 👈 FORCE LEFT */
+}
+
+/* SELECT (fills remaining space) */
+.consumableSelect {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+
+  order: 2; /* 👈 FORCE RIGHT OF ACTIONS */
+
+  padding: 6px 8px;
+  font-size: 12px;
+
+  border-radius: 3px;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: white;
+  outline: none;
+
+  box-sizing: border-box;
+}
+
+/* BUTTON */
+.consumableBtn {
+  padding: 5px 8px;
+  font-size: 11px;
+  border-radius: 3px;
+  border: 1px solid #444;
+  background: #222;
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.consumableBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.autoUseToggle {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  color: gold;
+}
+
+/* =========================
+   MOBILE FIX (CRITICAL)
+========================= */
+
+@media (max-width: 600px) {
+
+  .combat-vs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .combat-vs-center {
+    display: none;
+  }
+
+  .combat-log {
+    height: 110px;
+    font-size: 12px;
+  }
+
+  .consumablesPanel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+
+  .consumableActions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .consumableSelect {
+    width: 100%;
+    max-width: 100%;
+  }
+}

@@ -10,9 +10,10 @@ export interface ProfessionStats {
 export const ProfessionSort = {
   'Gathering': 0,
   'Mining': 1,
+  'Fishing': 2
 }
 
-
+export type ProfessionStatName = 'Gathering' | 'Mining' | 'Fishing'
 export type ProfessionType = 'gathering' | 'mining' | 'fishing' | 'alchemy'
 export const ProfessionTypes = {
   Gathering: 'gathering' as ProfessionType,

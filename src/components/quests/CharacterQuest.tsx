@@ -5,6 +5,7 @@ import type { Quest } from '../../interfaces/quests/Quests.types'
 import StateOverlay from '../state-overlay/StateOverlay'
 import { useState } from 'react'
 import { QUEST_INTRO_IDS } from '../../data/quests/Quests.Intro.data'
+import { GuildRankByLevel } from '../../interfaces/characters/Character.types'
 
 interface CharacterQuestProps extends AppProperties {
   handleShowPopup: (popupType: 'quest' | 'quest-group', relatedId: string) => void
@@ -30,6 +31,8 @@ export default function CharacterQuest(props: CharacterQuestProps){
       questItemClassName = 'quest-item',
       showOneTimeCompletedQuests,
       showIneligibleQuests,
+      mobs,
+      characterMobProgress
     } = props
     const [hideBlur, setHideBlur] = useState(false)
 
@@ -179,6 +182,14 @@ export default function CharacterQuest(props: CharacterQuestProps){
                   const requiredAchievement = achievements?.find(a => a?.id === r.achievementId)
                   const requiredItem = items?.find(i => i?.id === r.itemId)
                   const requiredQuest = allQuestsWithProgress?.find(qwp => qwp.quest.id === r.questId)
+                  const requiresGuildRank = typeof r.guildRankLevel === 'number'
+
+                  let requiredRank = ''
+                  if(typeof r.guildRankLevel === 'number'){
+                    //@ts-ignore
+                    requiredRank = GuildRankByLevel[r.guildRankLevel as number]
+                  }
+
                   const txns = thisQuestCharacterProgress?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === r.itemId) ?? []
                   let txnTotal = 0
                   for(const txn of txns){
@@ -193,6 +204,7 @@ export default function CharacterQuest(props: CharacterQuestProps){
                       {r.questId && <div title={requiredQuest?.quest?.description}>Quest: <strong>{requiredQuest?.quest?.title}</strong></div>}
                       {r.achievementId && <div title={requiredAchievement?.description}>Achivement: <strong>{requiredAchievement?.title}</strong></div>}
                       {r.itemId && r.itemAmount && <><strong>{txnTotal > r.itemAmount ? r.itemAmount : txnTotal}/{r.itemAmount} {requiredItem?.name}</strong></>}
+                      {requiresGuildRank === true && <div>Guild Rank: <strong>{requiredRank}</strong></div>}
                       {r.stats && <> 
                         {Object.getOwnPropertyNames(r.stats).map(propertyName => {
                           //@ts-ignore
@@ -220,6 +232,7 @@ export default function CharacterQuest(props: CharacterQuestProps){
                 {quest?.completionRequirements?.map(r => {
                   const achievement = achievements?.find(a => a?.id === r.achievementId)
                   const item = items?.find(i => i?.id === r.itemId)
+                  const mob = mobs?.find(m => m.id === r.mobId)
 
                   let txns = thisQuestCharacterProgress?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === r.itemId) ?? []
                   if(!txns || txns.length === 0){
@@ -229,6 +242,7 @@ export default function CharacterQuest(props: CharacterQuestProps){
                   for(const txn of txns){
                     txnTotal += txn.quantity
                   }
+                  const characterQuestMobProgress = characterMobProgress?.filter(mp => mp.questProgressId === thisQuestCharacterProgress?.questProgress?.id && thisQuestCharacterProgress?.questProgress?.status === 'in-progress')
                   return <CharacterQuestRequirement 
                     started={thisQuestCharacterProgress?.questProgress?.status === 'in-progress'}
                     completed={r.completed === true}
@@ -238,6 +252,9 @@ export default function CharacterQuest(props: CharacterQuestProps){
                     questItemTotal={r.itemAmount}
                     timeMinutes={r.timeMinutes}
                     startDate={characterQuestProgress?.questProgress?.startDate}
+                    mob={mob}
+                    characterMobTotal={characterQuestMobProgress?.length}
+                    questMobTotal={r.mobAmount}
                   />                
                 })}
               </div>

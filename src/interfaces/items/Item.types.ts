@@ -6,7 +6,8 @@ export const ITEM_TYPES = {
   WEAPONS: 'weapon' as ItemType,
   ARMOR: 'armor' as ItemType,
   CURRENCY: 'currency' as ItemType,
-  CONSUMABLE: 'consumable' as ItemType
+  CONSUMABLE: 'consumables' as ItemType,
+  MOB: 'mob' as ItemType
 }
 
 export const ITEM_RARITY = {
@@ -26,6 +27,7 @@ export type ItemType =
   | 'armor' 
   | 'currency' 
   | 'consumables'
+  | 'mob'
   //Everything except currencies
   | 'general'
 export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'legendary' | 'epic' | 'unique'
@@ -47,7 +49,7 @@ export interface Item {
   description: string
   rarity: ItemRarity
   type: ItemType
-  stats: Stats
+  stats: Partial<Stats>
   gold: ItemGold,
   profession?: ProfessionSettings | undefined
 }

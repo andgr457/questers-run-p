@@ -12,8 +12,8 @@ export default function CharacterQuestCurrent(props: CharacterQuestCurrentProps)
     character,
     characterQuestProgress
   } = props
-  return <div>
-    {characterQuestProgress && <CharacterQuest showIneligibleQuests={true} showOneTimeCompletedQuests={true} questItemClassName='quest-item popup' showActions={false} handleShowPopup={() => {}} {...props} quest={props.characterQuestProgress?.quest as Quest}/>}
+  return <div style={{background: 'var(--bg-dark)'}}>
+    {characterQuestProgress && <CharacterQuest showIneligibleQuests={true} showOneTimeCompletedQuests={true} questItemClassName='quest-item current' showActions={false} handleShowPopup={() => {}} {...props} quest={props.characterQuestProgress?.quest as Quest}/>}
     {!characterQuestProgress && <CustomContainerItem>{character?.name} is not currently on a quest.</CustomContainerItem>}
   </div>
 }

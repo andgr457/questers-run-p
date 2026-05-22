@@ -40,7 +40,6 @@ export function professionServiceItemComplete(
     id: `invtxn__${professionItem.id}__${character?.id}__${DateTime.utc().toMillis()}`,
     date: DateTime.utc().toISO(),
     itemId: professionItem.id,
-    note: `Profession Item Transaction`,
     quantity: amount
   })
 

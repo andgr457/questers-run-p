@@ -69,12 +69,12 @@ export const ITEM_GATHERING_APPLE: Item = {
     hp: {
       name: 'HP',
       value: 5,
-      hint: ''
+      max: 0
     },
     stamina: {
       name: 'STAM',
       value: 5,
-      hint: ''
+      max: 0
     }
   }
 }

@@ -1,12 +1,12 @@
-import type { ProfessionStats } from '../professsions/Profession.types'
+import type { ProfessionStatName, ProfessionStats } from '../professsions/Profession.types'
 
 export interface Stats {
-  hp?: Stat
-  mp?: Stat
-  stamina?: Stat
-  strength?: Stat
-  intelligence?: Stat
-  agility?: Stat
+  hp: Stat
+  mp: Stat
+  stamina: Stat
+  strength: Stat
+  intelligence: Stat
+  agility: Stat
 }
 
 export type StatName = 'AGI' | 'STR' | 'INT' | 'HP' | 'MP' | 'STAM'
@@ -28,10 +28,10 @@ export const StatSort = {
 }
 
 export interface Stat {
-  name: StatName | string
+  name: StatName | ProfessionStatName
   value: number
-  max?: number
-  hint: string
+  max: number
+  hint?: string
   level?: number
   xp?: number
   nextLevelXP?: number
@@ -56,6 +56,32 @@ export interface CharacterClass {
 export interface CharacterAchievements {
   achievementId: string
   achievementDate: string
+}
+
+export const GuildRankLevelByRank = {
+  '': 0,
+  'F': 1,
+  'E': 2,
+  'D': 3,
+  'C': 4,
+  'B': 5,
+  'A': 6,
+  'S': 7,
+  'SS': 8,
+  '◇': 9,
+}
+
+export const GuildRankByLevel = {
+  0: '',
+  1: 'F',
+  2: 'E',
+  3: 'D',
+  4: 'C',
+  5: 'B',
+  6: 'A',
+  7: 'S',
+  8: 'SS',
+  9: '◇',
 }
 
 export type GuildRank = '' | 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S' | 'SS' | '◇'

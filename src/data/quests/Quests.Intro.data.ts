@@ -74,9 +74,9 @@ export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
     {
       stats: {
         stamina: {
-          name: 'Stamina',
+          name: 'STAM',
           value: 10,
-          hint: ''
+          max: 0,
         }
       },
       completed: false

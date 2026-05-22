@@ -22,7 +22,7 @@ export const ITEM_POTION_MANA_WEAK: Item = {
     mp: {
       name: 'MP',
       value: 20,
-      hint: ''
+      max: 0
     }
   }
 }

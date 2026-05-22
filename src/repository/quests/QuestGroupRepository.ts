@@ -1,4 +1,5 @@
 import { QUEST_GROUP_GATHRING } from '../../data/quests/Quests.Gathering.data';
+import { QUEST_GROUP_HUNTING } from '../../data/quests/Quests.Hunting.data';
 import { QUEST_GROUP_INTRO } from '../../data/quests/Quests.Intro.data';
 import type { QuestGroup } from '../../interfaces/quests/Quests.types';
 
@@ -8,7 +9,7 @@ export class QuestGroupRepository {
     return [
       QUEST_GROUP_INTRO,
       QUEST_GROUP_GATHRING,
-      
+      QUEST_GROUP_HUNTING,
     ]
   }
 }
