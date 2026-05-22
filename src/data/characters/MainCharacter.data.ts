@@ -11,6 +11,7 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
   xp: 0,
   levelNextXP: 100,
   guildRank: '',
+  gameVersion: '',
   stats: {
     agility: {
       name: 'AGI',
@@ -18,7 +19,8 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       hint: '',
       xp: 0,
       nextLevelXP: 100,
-      level: 1
+      level: 1,
+      max: 0,
     },
     hp: {
       name: 'HP',
@@ -35,7 +37,8 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       hint: '',
       xp: 0,
       nextLevelXP: 100,
-      level: 1
+      level: 1,
+      max: 0,
     },
     mp: {
       name: 'MP',
@@ -61,7 +64,8 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       hint: '',
       xp: 0,
       nextLevelXP: 100,
-      level: 1
+      level: 1,
+      max: 0,
     },
   },
   professions: {
@@ -72,6 +76,7 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       level: 0,
       nextLevelXP: 100,
       xp: 0,
+      max: 0
     },
     mining: {
       name: 'Mining',
@@ -80,6 +85,7 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       level: 0,
       nextLevelXP: 100,
       xp: 0,
+      max: 0
     },
     fishing: {
       name: 'Fishing',
@@ -88,6 +94,7 @@ export const CHARACTER_MAIN_DEFAULT: Character =  {
       level: 0,
       nextLevelXP: 100,
       xp: 0,
+      max: 0
     },
   }
 }

@@ -8,32 +8,32 @@ export const CLASS_WARRIOR: CharacterClass = {
     agility: {
       name: 'AGI',
       value: 1,
-      hint: ''
+      max: 0
     },
     intelligence: {
       name: 'INT',
       value: 1,
-      hint: ''
+      max: 0
     },
     strength: {
       name: 'STR',
       value: 3,
-      hint: ''
+      max: 0
     },
     hp: {
       name: 'HP',
       value: 10,
-      hint: ''
+      max: 0
     },
     mp: {
       name: 'MP',
       value: 1,
-      hint: ''
+      max: 0
     },
     stamina: {
       name: 'STAM',
       value:  10,
-      hint: ''
+      max: 0
     },
   }
 }
@@ -46,32 +46,32 @@ export const CLASS_HUNTER: CharacterClass = {
     agility: {
       name: 'AGI',
       value: 3,
-      hint: ''
+      max: 0
     },
     intelligence: {
       name: 'INT',
       value: 1,
-      hint: ''
+      max: 0
     },
     strength: {
       name: 'STR',
       value: 1,
-      hint: ''
+      max: 0
     },
     hp: {
       name: 'HP',
       value: 5,
-      hint: ''
+      max: 0
     },
     mp: {
       name: 'MP',
       value: 5,
-      hint: ''
+      max: 0
     },
     stamina: {
       name: 'STAM',
       value:  15,
-      hint: ''
+      max: 0
     },
   }
 }
@@ -84,32 +84,32 @@ export const CLASS_MAGE: CharacterClass = {
     agility: {
       name: 'AGI',
       value: 1,
-      hint: ''
+      max: 0
     },
     intelligence: {
       name: 'INT',
       value: 3,
-      hint: ''
+      max: 0
     },
     strength: {
       name: 'STR',
       value: 1,
-      hint: ''
+      max: 0
     },
     hp: {
       name: 'HP',
       value: 5,
-      hint: ''
+      max: 0
     },
     mp: {
       name: 'MP',
       value: 15,
-      hint: ''
+      max: 0
     },
     stamina: {
       name: 'STAM',
       value:  5,
-      hint: ''
+      max: 0
     },
   }
 }

@@ -17,9 +17,11 @@ export default function OverviewPage(props: OverviewPageProps){
     character,
     characterInventories,
     allQuestsWithProgress,
-    allQuestProgress,
     setLocation,
     handleSetCharacter,
+    characterMobProgress,
+    mobs,
+    quests
   } = props
   const [showTutorial, setShowTutorial] = useState(character ? false : true)
 
@@ -93,9 +95,54 @@ export default function OverviewPage(props: OverviewPageProps){
     return []
   }, [character, characterInventories])
 
-  const allCharacterQuestsProgress = allQuestsWithProgress?.filter(qp => qp.questProgress?.characterId === character?.id)
-  const allCharacterQuestProgress = allQuestProgress?.filter(qp => qp.characterId === character?.id)
-  const allCompleteCharacterQuestProgress = allCharacterQuestProgress?.filter(qp => qp.status === 'complete')
+  const completedQuestProgress = useMemo(() => {
+    return (allQuestsWithProgress ?? []).filter(qp => qp.questProgress?.status === 'complete' && qp.questProgress?.characterId === character.id)
+  }, [allQuestsWithProgress, character])
+
+  const questCompletionCounts = useMemo(() => {
+    const map = new Map<string, { questId: string; title: string; count: number }>()
+
+    for (const qp of completedQuestProgress) {
+      const questId = qp.quest.id
+      const existing = map.get(questId)
+
+      if (existing) {
+        existing.count += 1
+      } else {
+        map.set(questId, {
+          questId,
+          title: (quests ?? []).find(q => q.id === questId)?.title ?? 'Unknown Quest',
+          count: 1
+        })
+      }
+    }
+
+    return Array.from(map.values())
+  }, [completedQuestProgress, quests])
+
+  const mobKillCounts = useMemo(() => {
+    const map = new Map<string, { mobId: string; name: string; count: number }>()
+
+    for (const mp of characterMobProgress ?? []) {
+      const mobId = mp.mobId
+      const existing = map.get(mobId)
+
+      const increment = 1
+
+      if (existing) {
+        existing.count += increment
+      } else {
+        map.set(mobId, {
+          mobId,
+          name: mobs?.find(m => m.id === mobId)?.name ?? 'Unknown Mob',
+          count: increment
+        })
+      }
+    }
+
+    return Array.from(map.values())
+  }, [characterMobProgress, mobs])
+
   return <>
     {!character?.name && showTutorial === true  && <TutorialOverlay 
       steps={tutorialSteps} 
@@ -134,9 +181,11 @@ export default function OverviewPage(props: OverviewPageProps){
             </div>
             
             <div className='list-item-info'>
-              Quests Completed: <span style={{color: 'gold'}}>{allCompleteCharacterQuestProgress?.length ?? 0}</span>
+              Quests Completed: <span style={{color: 'gold'}}>{completedQuestProgress?.length ?? 0}</span>
             </div>
-            
+            <div className='list-item-info'>
+              Mobs Hunted: <span style={{color: 'gold'}}>{mobKillCounts?.length ?? 0}</span>
+            </div>
             <div className='list-item-info'>
               Achivements Earned: <span style={{color: 'gold'}}>{character?.achievements?.length ?? 0}</span>
             </div>
@@ -146,13 +195,32 @@ export default function OverviewPage(props: OverviewPageProps){
             <div className='list-item-title'>
               Quests Complete
             </div>
+
+            <div className='list-item-info'>
+              {questCompletionCounts.length === 0 && <div>No quests completed yet.</div>}
+              {questCompletionCounts.length > 0 && questCompletionCounts.map(q => {
+                return (
+                  <div key={q.questId}>
+                    <span style={{ color: 'gold' }}>x{q.count}</span> {q.title}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className='list-item'>
+            <div className='list-item-title'>
+              MOBS HUNTED
+            </div>
             
             <div className='list-item-info'>
-              {allCharacterQuestsProgress?.map(q => {
-                const amount = allCompleteCharacterQuestProgress?.filter(cq => cq.questId === q.questProgress?.questId)?.length
-                return <div>
-                  <span style={{color: 'gold'}}>x{amount}</span> {q.quest.title}
-                </div>
+              {mobKillCounts?.length === 0 && <div>No mobs hunted yet.</div>}
+              {mobKillCounts?.length > 0 && mobKillCounts.map(m => {
+                return (
+                  <div key={m.mobId}>
+                    <span style={{ color: 'gold' }}>x{m.count}</span> {m.name}
+                  </div>
+                )
               })}
             </div>
           </div>

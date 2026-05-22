@@ -11,7 +11,8 @@ export default function CharacterInfoXP(props: CharacterInfoXPProps){
   } = props
 
   const levelProgress = useMemo(() => {
-    if (!character.levelNextXP) return 0
+    if(typeof character.xp !== 'number') return 0
+    if(typeof character.levelNextXP !== 'number') return 0
 
     return Math.min(
       100,
@@ -20,7 +21,7 @@ export default function CharacterInfoXP(props: CharacterInfoXPProps){
         (character.xp / character.levelNextXP) * 100
       )
     )
-  }, [character])
+  }, [character.xp, character.levelNextXP])
   
   return <div
     className='character-progress-card main-level'

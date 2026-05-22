@@ -35,7 +35,8 @@ export interface QuestStartRequirement{
   achievementId?: string
   questId?: string
   level?: number
-  stats?: Stats
+  stats?: Partial<Stats>
+  guildRankLevel?: number
   completed: boolean
 }
 
@@ -44,6 +45,8 @@ export interface QuestCompletionRequirement{
   itemAmount?: number
   achievementId?: string
   timeMinutes?: number
+  mobId?: string
+  mobAmount?: number
   completed: boolean
 }
 

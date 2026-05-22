@@ -8,19 +8,22 @@ import CharacterQuestCurrent from '../quests/CharacterQuestCurrent';
 import CharacterInventory from '../inventory/CharacterInventory';
 import Settings from '../settings/Settings';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import AchievementsList from '../achievements/AchievementsList';
 
 interface NavMenuProps extends AppProperties {
   windowRequestId?: string
 }
 
 export default function NavMenu(props: NavMenuProps) {
-  const [subNavSelected, setSubNavSelected] = useState('town')
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  
   const {
     character,
     windowRequestId,
     handleSetRequestedWindowId
   } = props
+  const [subNavSelected, setSubNavSelected] = useState('town')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   const isMobile = useIsMobile()
   const characterNotExists = !character?.name
 
@@ -104,6 +107,12 @@ export default function NavMenu(props: NavMenuProps) {
       {...props}
     />)
   }  
+
+  function toggleAchievements() {
+    toggleWindow('achievements', 'Achievements', <AchievementsList 
+      {...props}
+    />)
+  }  
   
   const handleNavigate = async (url: string) => {
     // setSubNavSelected('')
@@ -113,19 +122,28 @@ export default function NavMenu(props: NavMenuProps) {
     navigate(url)
   }
 
-  const townItems = [
+  let townItems = [
     { title: 'Overview', navTo: '/' },
     { title: `Adventurer's Guild`, navTo: '/adventurers-guild' },
     { title: `Tavern`, navTo: '/tavern' },
     { title: `Shoppe`, navTo: '/shoppe' },
   ]
 
-  const professionItems = [
+  let professionItems = [
     { title: 'Gathering', navTo: '/profession/gathering' },
     { title: 'Fishing', navTo: '/profession/fishing' },
-    { title: 'Cooking', navTo: '/profession/cooking' },
     { title: 'Mining', navTo: '/profession/mining' },
   ]
+
+  let huntingItems = [
+    { title: 'Forest', navTo: '/hunting/forest' },
+  ]
+
+  if(characterNotExists){
+    townItems = [{ title: 'Overview', navTo: '/' }]
+    professionItems = []
+    huntingItems = []
+  }
 
   const divider = <div className='nav-divider'>|</div>
   return (
@@ -199,6 +217,26 @@ export default function NavMenu(props: NavMenuProps) {
 
             <div className='flex-wrap gap-2'>
               <div
+                className={`nav-item ${
+                  subNavSelected === 'hunting'
+                    ? 'active'
+                    : ''
+                }`}
+                onMouseEnter={() => {
+                  setSubNavSelected('hunting')
+                }}
+                onClick={() => {
+                  setSubNavSelected('hunting')
+                }}
+              >
+                Hunting
+              </div>
+            </div>
+
+            {divider}
+
+            <div className='flex-wrap gap-2'>
+              <div
                 className={`nav-item window-button ${
                   isWindowOpen('character')
                     ? 'active'
@@ -237,6 +275,21 @@ export default function NavMenu(props: NavMenuProps) {
                 onClick={toggleQuest}
               >
                 Quest
+              </div>
+            </div>
+
+            {divider}
+
+            <div className='flex-wrap gap-2'>
+              <div
+                className={`nav-item window-button ${
+                  isWindowOpen('achievements')
+                    ? 'active'
+                    : ''
+                }`}
+                onClick={toggleAchievements}
+              >
+                Achievements
               </div>
             </div>
 
@@ -304,21 +357,44 @@ export default function NavMenu(props: NavMenuProps) {
 
         <div className='mobile-menu-section'>
           <div className='mobile-menu-title'>
+            Hunting
+          </div>
+
+          {huntingItems.map(i => (
+            <div
+              key={i.navTo}
+              className='nav-item'
+              onClick={() => {
+                handleNavigate(i.navTo)
+                setMobileMenuOpen(false)
+              }}
+            >
+              {i.title}
+            </div>
+          ))}
+        </div>
+
+        <div className='mobile-menu-section'>
+          <div className='mobile-menu-title'>
             Windows
           </div>
-          <div className='nav-item' onClick={toggleCharacter}>
+          <div className='nav-item' onClick={() => {toggleCharacter(); setMobileMenuOpen(false);}}>
             Character
           </div>
 
-          <div className='nav-item' onClick={toggleInventory}>
+          <div className='nav-item' onClick={() => {toggleInventory(); setMobileMenuOpen(false)}}>
             Inventory
           </div>
 
-          <div className='nav-item' onClick={toggleQuest}>
+          <div className='nav-item' onClick={() => {toggleQuest(); setMobileMenuOpen(false)}}>
             Quest
           </div>
 
-          <div className='nav-item' onClick={toggleSettings}>
+          <div className='nav-item' onClick={() => {toggleAchievements(); setMobileMenuOpen(false)}}>
+            Achievements
+          </div>
+
+          <div className='nav-item' onClick={() => {toggleSettings(); setMobileMenuOpen(false)}}>
             Settings
           </div>
         </div>
@@ -345,6 +421,23 @@ export default function NavMenu(props: NavMenuProps) {
       {/* profession sub items */}
       <div className={`nav-sub-items ${subNavSelected === 'profession' ? 'open' : ''}`}>
          {professionItems.map(i => {
+          const path = window.location.href.replace(window.location.origin, '')
+          return <div
+          onClick={() => {handleNavigate(i.navTo)}}
+            className={`nav-item ${
+              path === i.navTo
+                  ? 'active'
+                  : ''
+              }`}
+          >
+            {i.title}
+          </div>
+        })}
+      </div>
+
+      {/* hunting sub items */}
+      <div className={`nav-sub-items ${subNavSelected === 'hunting' ? 'open' : ''}`}>
+         {huntingItems.map(i => {
           const path = window.location.href.replace(window.location.origin, '')
           return <div
           onClick={() => {handleNavigate(i.navTo)}}

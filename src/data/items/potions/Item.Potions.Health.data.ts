@@ -22,8 +22,8 @@ export const ITEM_POTION_HEALTH_WEAK: Item = {
     hp: {
       name: 'HP',
       value: 20,
-      hint: ''
-    }
+      max: 0,
+    },
   }
 }
 

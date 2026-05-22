@@ -11,7 +11,7 @@ import WindowLayer from './components/windows/WindowLayer';
 import type { Character, CharacterClass, Stat } from './interfaces/characters/Character.types';
 import { LOCAL_STORAGE_KEYS } from './common/constants/LocalStorageKeys';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Inventory } from './interfaces/inventories/Inventory.types';
 import type { Quest, QuestGroup, QuestProgress } from './interfaces/quests/Quests.types';
 import type { Item } from './interfaces/items/Item.types';
@@ -44,27 +44,135 @@ import CharacterInventory from './components/inventory/CharacterInventory';
 import CharacterQuestCurrent from './components/quests/CharacterQuestCurrent';
 import { shoppeServiceConfirmCart } from './services/Shoppe.Service';
 import { tavernServiceItemComplete, tavernServiceItemStart } from './services/Tavern.Services';
-import { characterServiceGetItemAmount } from './services/Character.Service';
+import { characterServiceGetItemAmount, characterServiceModifyStats } from './services/Character.Service';
 import { professionServiceItemComplete } from './services/Profession.Services';
+import { type Loot, type Mob, type MobProgress } from './interfaces/mobs/Mob.types';
+import { MobRepository } from './repository/mobs/MobsRepository';
+import HuntingForestPage from './pages/hunting/HuntingForestPage';
+import { GAME_VERSION } from './services/AppService';
 
 function App() {
-  const [location, setLocation] = useState('Overview')
-  const [character, setCharacter] = useLocalStorage<Character | undefined>(LOCAL_STORAGE_KEYS.CHARACTERS_MAIN, undefined)
-  const [characterClass, setCharacterClass] = useState<CharacterClass | undefined>(undefined)
-  const [characterInventories, setCharacterInventories] = useState<Inventory[] | undefined>(undefined)
+  const {showConfirm} = useConfirm()
+
+  const [character, setCharacter] = useLocalStorage<Character | undefined>(
+    LOCAL_STORAGE_KEYS.CHARACTERS_MAIN,
+    undefined
+  )
+
+  useEffect(() => {
+    if (!character) return
+
+    if (character.gameVersion === GAME_VERSION) return
+
+    const run = async () => {
+      const confirmed = await showConfirm({
+        isYesNo: true,
+        title: 'New Alpha Version',
+        message: `New version ${GAME_VERSION} has been released and requires a full reset.`
+      })
+
+      if (confirmed) {
+        await handleResetEverything()
+      }
+    }
+
+    run()
+  }, [character])
+
   const [inventories, setInventories] = useLocalStorage<Inventory[]>(LOCAL_STORAGE_KEYS.INVENTORIES, [])
   const [allQuestProgress, setAllQuestProgress] = useLocalStorage<QuestProgress[]>(LOCAL_STORAGE_KEYS.QUEST_PROGRESS, [])
+  const [allQuestsWithQuestProgress, setAllQuestsWithQuestProgress] = useState<QuestWithQuestProgress[]>([])
+  const [characterQuestProgress, setCharacterQuestProgress] = useState<QuestWithQuestProgress[]>([])
   
-  const [allQuestsWithQuestProgress, setAllQuestsWithQuestProgress] = useState<QuestWithQuestProgress[] | undefined>(undefined)
-  const [characterQuestProgress, setCharacterQuestProgress] = useState<QuestWithQuestProgress[] | undefined>(undefined)
+  const [allMobProgress, setAllMobProgress] = useLocalStorage<MobProgress[]>(LOCAL_STORAGE_KEYS.MOB_PROGRESS, [])
+  const [characterMobProgress, setCharacterMobProgress] = useState<MobProgress[]>([])
+
+  const [characterClass, setCharacterClass] = useState<CharacterClass | undefined>(undefined)
+  const [characterInventories, setCharacterInventories] = useState<Inventory[]>([])
+  const [location, setLocation] = useState('Overview')
+  
   const [quests, setQuests] = useState<Quest[]>([])
   const [questGroups, setQuestGroups] = useState<QuestGroup[]>([])
   const [achievements, setAchievements] = useState<Achievement[]>([])
 
   const [items, setItems] = useState<Item[]>([])
+  const [mobs, setMobs] = useState<Mob[]>([])
   const [requestedWindowId, setRequestedWindowId] = useState<string | undefined>(undefined)
   
-  const {showConfirm} = useConfirm()
+  
+  useEffect(() => {
+    if (!character) return
+    if (!quests.length || !questGroups.length) return
+    if (!items.length || !mobs.length || !achievements.length || !mobs.length) return
+
+    const run = async () => {
+      const questService = new QuestService()
+
+      const progress = await questService.getQuestsWithQuestProgress(
+        character,
+        quests,
+        questGroups,
+        allQuestProgress ?? [],
+        inventories ?? [],
+        achievements,
+        items,
+        mobs,
+        allMobProgress ?? []
+      )
+
+      setAllQuestsWithQuestProgress(progress)
+      setCharacterQuestProgress(
+        progress.filter(p => p.questProgress?.characterId === character.id)
+      )
+      setCharacterInventories(
+        inventories?.filter(i => i.characterId === character.id) ?? []
+      )
+      setCharacterMobProgress(
+        allMobProgress?.filter(mp => mp.characterId === character.id) ?? []
+      )
+    }
+
+    run()
+  }, [
+    character,
+    quests,
+    questGroups,
+    allQuestProgress,
+    inventories,
+    achievements,
+    items,
+    mobs,
+    allMobProgress
+  ])
+
+  useEffect(() => {
+    const load = async () => { 
+      const itemRepo = new ItemRepository()
+      setItems(await itemRepo.list())
+      const questRepo = new QuestRepository()
+      setQuests(await questRepo.list())
+      const questGroupRepo = new QuestGroupRepository()
+      setQuestGroups(await questGroupRepo.list())
+      const achievementRepo = new AchievementRepository()
+      setAchievements(await achievementRepo.list())
+      const mobRepo = new MobRepository()
+      setMobs(await mobRepo.list())
+    }
+    load()
+  }, [])
+  
+  useEffect(() => {
+    const load = async function () {
+      if(character?.name){
+        const classRepo = new CharacterClassRepository()
+        const allClasses = await classRepo.list()
+        
+        setCharacterClass(allClasses.find(ac => ac.id === character.classId))
+      }
+    }
+    load()
+  }, [character])
+
   const handleResetEverything = useCallback(async () => {
     if(!await showConfirm({
       title: 'Are you sure?',
@@ -75,6 +183,7 @@ function App() {
     setCharacter(null as any)
     setInventories([])
     setAllQuestProgress([])
+    setAllMobProgress([])
     window.location.href = '/'
   }, [])
 
@@ -110,86 +219,13 @@ function App() {
     window.location.href = '/'
   }, [character])
 
-  const dataRef = useRef({
-    character,
-    questGroups,
-    quests,
-    allQuestProgress,
-    inventories
-  });
-
-  useEffect(() => {
-    dataRef.current = {
-      character,
-      questGroups,
-      quests,
-      allQuestProgress,
-      inventories
-    };
-  }, [character, questGroups, quests, allQuestProgress, inventories]);
-
-  
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const {
-        character,
-        questGroups,
-        quests,
-        allQuestProgress,
-        inventories
-      } = dataRef.current;
-
-      if (!character || !questGroups || !quests || !inventories) return;
-
-      const questService = new QuestService();
-      const progress = await questService.getQuestsWithQuestProgress(
-        character,
-        quests,
-        questGroups,
-        allQuestProgress,
-        inventories
-      )
-      setAllQuestsWithQuestProgress(progress)
-      setCharacterQuestProgress(progress.filter(p => p.questProgress?.characterId === character.id))
-      setCharacterInventories(inventories.filter(i => i.characterId === character.id))
-    }, 250);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const load = async () => { 
-      const itemRepo = new ItemRepository()
-      setItems(await itemRepo.list())
-      const questRepo = new QuestRepository()
-      setQuests(await questRepo.list())
-      const questGroupRepo = new QuestGroupRepository()
-      setQuestGroups(await questGroupRepo.list())
-      const achievementRepo = new AchievementRepository()
-      setAchievements(await achievementRepo.list())
-    }
-    load()
-  }, [])
-  
-  useEffect(() => {
-    const load = async function () {
-      if(character?.name){
-        const classRepo = new CharacterClassRepository()
-        const allClasses = await classRepo.list()
-        
-        setCharacterClass(allClasses.find(ac => ac.id === character.classId))
-      }
-    }
-    load()
-  }, [character])
-
   //INVENTORY HANDLERS
   const handleAddInventory = useCallback((inventory: Inventory[]) => {
     const newInventories = []
     for(const i of inventory){
       newInventories.push(i)
     }
-    for(const i of inventories){
+    for(const i of inventories ?? []){
       newInventories.push(i)
     }
     setInventories(newInventories)
@@ -212,7 +248,7 @@ function App() {
     }
 
     const newAllInventories = []
-    for(const inv of inventories){
+    for(const inv of inventories ?? []){
       if(inv.id === currency.id){
         newAllInventories.push(currency)
       } else if (inv.id === backpack.id) {
@@ -250,7 +286,7 @@ function App() {
     if(!currency) return
 
     const newInv = []
-    for(const inv of inventories){
+    for(const inv of inventories ?? []){
       if(inv.id === currency?.id){
         newInv.push({...currency})
       } else {
@@ -290,7 +326,7 @@ function App() {
     }
 
     const newAllInventories = []
-    for(const inv of inventories){
+    for(const inv of inventories ?? []){
       if(inv.id === inventoryRef.id){
         newAllInventories.push(inventoryRef)
       } else {
@@ -388,7 +424,6 @@ function App() {
             id: `invtxn__${r.itemId}__${questProgress?.questProgress?.characterId}__${DateTime.utc().toMillis()}`,
             date: DateTime.utc().toISO(),
             itemId: r.itemId,
-            note: 'Gold Quest Reward',
             quantity: r.itemAmount as number
           })
           questRewardMessages.push(`Quest Reward: ${r.itemAmount?.toLocaleString()} gold received!`)
@@ -397,7 +432,6 @@ function App() {
             id: `invtxn__${r.itemId}__${questProgress?.questProgress?.characterId}__${DateTime.utc().toMillis()}`,
             date: DateTime.utc().toISO(),
             itemId: r.itemId as string,
-            note: 'Item Quest Reward',
             quantity: r.itemAmount as number
           })
           const item = items.find(i => i.id === r.itemId)
@@ -416,7 +450,6 @@ function App() {
             id: `invtxn__${req.itemId}__${questProgress?.questProgress?.characterId}__${DateTime.utc().toMillis()}`,
             date: DateTime.utc().toISO(),
             itemId: req.itemId as string,
-            note: 'Quest Item Removal',
             quantity: (req.itemAmount * -1) as number
           })
         }
@@ -425,7 +458,7 @@ function App() {
 
     //all inv
     const allInv = []
-    for(const inv of inventories){
+    for(const inv of inventories ?? []){
       if(inv.id === currency.id){
         allInv.push(currency)
       } else if(inv.id === backpack.id){
@@ -436,21 +469,7 @@ function App() {
     }
     setInventories(allInv)
     if(totalXp > 0){
-      const newCharacter = {...character}
-      if(typeof newCharacter.xp === 'number' && typeof newCharacter.levelNextXP === 'number'){
-        const firstXpValue = totalXp + newCharacter.xp
-        const overNextLevelValue = newCharacter.levelNextXP - firstXpValue
-        let canLevel = overNextLevelValue <= 0
-        if(canLevel && typeof newCharacter.level === 'number'){
-          const leftOverXp = Math.abs(overNextLevelValue)
-          newCharacter.level += 1
-          newCharacter.xp = 0 + leftOverXp
-          newCharacter.levelNextXP += 10
-        } else {
-          console.log('adding xp to character', newCharacter.xp, totalXp)
-          newCharacter.xp += totalXp
-        }
-      }
+      const newCharacter = characterServiceModifyStats({...character as Character}, totalXp, 0)
       
       setCharacter({...newCharacter} as Character)
       questRewardMessages.push(`Quest Reward: ${totalXp?.toLocaleString()} XP received!`)
@@ -463,7 +482,7 @@ function App() {
     }
 
     const newProgress = []
-    for(const p of allQuestProgress){
+    for(const p of allQuestProgress ?? []){
       if(p.id === progress?.id){
         newProgress.push(newQuestProgress)
       } else {
@@ -489,6 +508,224 @@ function App() {
 
   }, [characterQuestProgress, allQuestProgress, character, items, characterInventories, history, inventories])
 
+  const handleHuntingMobTick = useCallback((mobDamage: number) => {
+    setCharacter(prev => {
+      if (!prev) return prev
+
+      const hp = Math.max(
+        0,
+        (prev.stats.hp?.value ?? 0) - mobDamage
+      )
+
+      return {
+        ...prev,
+        stats: {
+          ...prev.stats,
+          hp: {
+            ...prev.stats.hp,
+            value: hp
+          }
+        }
+      }
+    })
+  }, [setCharacter])
+
+  const handleHuntingMobComplete = useCallback(async (mobId: string, xpGained: number, characterId: string, loot: Loot[]) => {
+    if(!inventories) return
+    const mobStaminaDrain = -5
+    setCharacter(prev => {
+      if (!prev) return prev
+      return characterServiceModifyStats(prev, xpGained, mobStaminaDrain)
+    })
+
+    const mob = mobs.find(m => m.id === mobId)
+    if (!mob) return
+
+    const now = DateTime.utc()
+    const timeId = now.toMillis()
+
+    const updatedInventories = inventories.map(inv => {
+      if(inv.characterId !== characterId){
+        return inv
+      }
+      
+      if (inv.title !== 'Backpack' && inv.title !== 'Currency') {
+        return inv
+      }
+
+      const isCurrency = inv.title === 'Currency'
+      const updatedTransactions = [...inv.transactions]
+
+      for (const lootItem of loot) {
+        if (isCurrency && lootItem.itemId === ITEM_CURRENCY_IDS.GOLD) {
+          updatedTransactions.push({
+            id: `invtxn__${lootItem.itemId}__${mobId}__${timeId}`,
+            date: now.toISO(),
+            itemId: lootItem.itemId,
+            quantity: lootItem.itemAmount
+          })
+        }
+
+        if (!isCurrency && lootItem.itemId !== ITEM_CURRENCY_IDS.GOLD) {
+          updatedTransactions.push({
+            id: `invtxn__${lootItem.itemId}__${mobId}__${timeId}`,
+            date: now.toISO(),
+            itemId: lootItem.itemId,
+            quantity: lootItem.itemAmount
+          })
+        }
+      }
+
+      return {
+        ...inv,
+        transactions: updatedTransactions
+      }
+    })
+
+    setInventories(updatedInventories)
+
+    const characterQuestInProgress = allQuestsWithQuestProgress?.find(
+      cqp => cqp.questProgress?.status === 'in-progress'
+    )
+
+    let mobQuestProgressId: string | undefined = undefined
+
+    const quest = characterQuestInProgress?.quest
+    const progress = characterQuestInProgress?.questProgress
+
+    if (quest && progress) {
+      for (const req of quest.completionRequirements ?? []) {
+        if (req.mobId !== mobId || typeof req.mobAmount !== 'number') continue
+        const thisQuestMobsProgressAmount = allMobProgress?.filter(mp => mp.characterId === characterId && mp.questProgressId === progress.id)?.length ?? 0
+
+        if (thisQuestMobsProgressAmount < req.mobAmount) {
+          mobQuestProgressId = progress.id
+          break
+        }
+      }
+    }
+
+    const newMobProgress: MobProgress = {
+      id: `mobprog__${mobId}__${characterId}__${DateTime.utc().toISO()}`,
+      characterId,
+      defeatedDate: DateTime.utc().toISO(),
+      mobId,
+      questProgressId: mobQuestProgressId
+    }
+
+    const newProgress = []
+    newProgress.push(newMobProgress)
+    for(const p of allMobProgress ?? []){
+      newProgress.push(p)
+    }
+    setAllMobProgress(newProgress)
+  }, [setCharacter, mobs, items, inventories, allMobProgress, allQuestsWithQuestProgress])
+
+  const applyConsumableStats = (prev: Character, item: Item): Character => {
+    const stats = item.stats
+    const newStats = { ...prev.stats }
+
+    if (stats.hp?.value) {
+      newStats.hp = {
+        ...newStats.hp,
+        value: Math.min(
+          newStats.hp?.max ?? Infinity,
+          (newStats.hp?.value ?? 0) + stats.hp.value
+        )
+      }
+    }
+
+    if (stats.mp?.value) {
+      newStats.mp = {
+        ...newStats.mp,
+        value: Math.min(
+          newStats.mp?.max ?? Infinity,
+          (newStats.mp?.value ?? 0) + stats.mp.value
+        )
+      }
+    }
+
+    if (stats.stamina?.value) {
+      newStats.stamina = {
+        ...newStats.stamina,
+        value: Math.min(
+          newStats.stamina?.max ?? Infinity,
+          (newStats.stamina?.value ?? 0) + stats.stamina.value
+        )
+      }
+    }
+
+    return {
+      ...prev,
+      stats: newStats
+    }
+  }
+
+  const useConsumable = async (item: Item, characterId: string) => {
+    if (!character) return
+
+    const stats = item.stats ?? {}
+
+    const willHaveEffect = Object.entries(stats).some(([key, stat]) => {
+      const charStat = (character.stats as any)[key]
+
+      if (!stat?.value || !charStat) return false
+
+      const max = charStat.max ?? 0
+      const value = charStat.value ?? 0
+
+      return value < max
+    })
+
+    // 🔥 SKIP IF NOTHING WOULD CHANGE
+    if (!willHaveEffect) {
+      await showConfirm({
+        isYesNo: false,
+        title: `Stats Full`,
+        message: `${character.name} decided not to use ${item.name} as it will have no affect.`
+      })
+      return
+    }
+
+    setCharacter(prev => {
+      if (!prev) return prev
+      return applyConsumableStats(prev, item)
+    })
+
+    const updatedInventories = inventories?.map(inv => {
+      if (inv.characterId !== characterId) return inv
+      if (inv.title !== 'Backpack') return inv
+
+      const existingIndex = inv.transactions.findIndex(
+        t => t.itemId === item.id
+      )
+
+      if (existingIndex === -1) return inv
+
+      const updatedTransactions = [...inv.transactions]
+
+      const existing = updatedTransactions[existingIndex]
+
+      const newQty = (existing.quantity ?? 0) - 1
+
+      if (newQty <= 0) {
+        updatedTransactions.splice(existingIndex, 1)
+      } else {
+        updatedTransactions[existingIndex] = {
+          ...existing,
+          quantity: newQty
+        }
+      }
+
+      return {
+        ...inv,
+        transactions: updatedTransactions
+      }
+    })
+
+    setInventories(updatedInventories)
+  }
+
   const currencyPouch = inventories?.find(i => i.title === 'Currency')
   let totalGold = 0
   currencyPouch?.transactions?.map(txn => {
@@ -509,11 +746,13 @@ function App() {
     quests,
     allQuestProgress,
     allQuestsWithProgress: allQuestsWithQuestProgress,
-    
+    mobs,
+    characterMobProgress,
+    useConsumable,
     handleResetEverything,
     handleResetProfession,
     handleAddInventory,
-    handleDoProfessionItemComplete: handleProfessionItemComplete,
+    handleProfessionItemComplete,
     handleTavernItemStart,
     handleTavernItemComplete,
     handleAddQuest,
@@ -522,7 +761,9 @@ function App() {
     handleSetRequestedWindowId: setRequestedWindowId,
     handleSetCharacter: setCharacter,
     setLocation,
-    handleShoppeConfirmation
+    handleShoppeConfirmation,
+    handleHuntingMobTick,
+    handleHuntingMobComplete
   }
 
   const appOnSideBar = requestedWindowId === 'character' ? <CharacterInfo {...appProps} showExpander={true} /> :
@@ -554,6 +795,7 @@ function App() {
                   <Route path='/profession/gathering' element={<ProfessionGatheringPage {...appProps} />} />
                   <Route path='/profession/mining' element={<ProfessionMiningPage {...appProps} />} />
                   <Route path='/profession/fishing' element={<ProfessionFishingPage {...appProps} />} />
+                  <Route path='/hunting/forest' element={<HuntingForestPage {...appProps} />} />
 
                 </>
               }

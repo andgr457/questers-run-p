@@ -1,28 +1,24 @@
 import { DateTime } from 'luxon';
 import type { QuestWithQuestProgress } from '../../components/quests/CharacterQuests';
 import type { Achievement } from '../../interfaces/achievements/Achievement.types';
-import type { Character } from '../../interfaces/characters/Character.types';
+import { GuildRankLevelByRank, type Character } from '../../interfaces/characters/Character.types';
 import type { Inventory, InventoryTransaction } from '../../interfaces/inventories/Inventory.types';
 import type { Item } from '../../interfaces/items/Item.types';
 import type { Quest, QuestGroup, QuestProgress } from '../../interfaces/quests/Quests.types';
-import { AchievementRepository } from '../../repository/achievements/AchievementRepository';
-import { ItemRepository } from '../../repository/items/ItemRepository';
+import type { Mob, MobProgress } from '../../interfaces/mobs/Mob.types';
 
 export class QuestService {
-  protected achievementRepo: AchievementRepository
-  protected itemRepo: ItemRepository
-  
-  constructor(){
-    this.achievementRepo = new AchievementRepository()
-    this.itemRepo = new ItemRepository()
-  }
 
   async getQuestsWithQuestProgress(
     character: Character, 
     quests: Quest[], 
     questGroups: QuestGroup[], 
     characterQuestProgress: QuestProgress[],
-    characterInventories: Inventory[]
+    characterInventories: Inventory[],
+    achievements: Achievement[],
+    items: Item[],
+    mobs: Mob[],
+    mobProgress: MobProgress[]
   ): Promise<QuestWithQuestProgress[]> {
     let anyQuestInProgress = false
     
@@ -36,14 +32,21 @@ export class QuestService {
       let canComplete = true
       
       const relatedAchievements: Achievement[] = []
+      const relatedMobs: Mob[] = []
       const relatedItems: Item[] = []
       const relatedQuests: Quest[] = []
       const relatedTxns: InventoryTransaction[] = []
       for(const req of q.startRequirements){
         req.completed = false
+        if(typeof req.guildRankLevel === 'number'){
+          const characterRankLevel = GuildRankLevelByRank[character.guildRank]
+          if(characterRankLevel >= req.guildRankLevel){
+            req.completed = true
+          }
+        }
         if(req.itemId){
           if(!relatedItems.find(ri => ri.id === req.itemId)){
-            const item = await this.itemRepo.byId(req.itemId)
+            const item = items.find(i => i.id === req.itemId)
             relatedItems.push(item as Item)
             for(const inventory of characterInventories){
               for(const txn of inventory.transactions){
@@ -59,7 +62,7 @@ export class QuestService {
         }
         if(req.achievementId){
           if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
-            const achievement = await this.achievementRepo.byId(req.achievementId)
+            const achievement = achievements.find(a => a.id === req.achievementId)
             relatedAchievements.push(achievement as Achievement)
           }
         }
@@ -72,9 +75,21 @@ export class QuestService {
       }
       for(const req of q.completionRequirements){
         req.completed = false
+        if(req.achievementId){
+          if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
+            const achievement = achievements.find(a => a.id === req.achievementId)
+            relatedAchievements.push(achievement as Achievement)
+          }
+        }
+        if(req.mobId){
+          if(!relatedMobs.find(rm => rm.id === req.mobId)){
+            const mob = mobs.find(m => m.id === req.mobId)
+            relatedMobs.push(mob as Mob)
+          }
+        }
         if(req.itemId){
           if(!relatedItems.find(ri => ri.id === req.itemId)){
-            const item = await this.itemRepo.byId(req.itemId)
+            const item = items.find(i => i.id === req.itemId)
             relatedItems.push(item as Item)
             for(const inventory of characterInventories){
               for(const txn of inventory.transactions){
@@ -90,7 +105,7 @@ export class QuestService {
         }
         if(req.achievementId){
           if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
-            const achievement = await this.achievementRepo.byId(req.achievementId)
+            const achievement = achievements.find(a => a.id === req.achievementId)
             relatedAchievements.push(achievement as Achievement)
           }
         }
@@ -105,8 +120,18 @@ export class QuestService {
             canComplete = false
           }
           if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
-            const achievement = await this.achievementRepo.byId(req.achievementId)
+            const achievement = achievements.find(a => a.id === req.achievementId)
             relatedAchievements.push(achievement as Achievement)
+          }
+        }
+
+        if(req.mobId && typeof req.mobAmount === 'number'){
+          const characterQuestMobProgress = mobProgress.filter(mp => mp.characterId === character.id && mp.questProgressId === progress?.id && progress?.status === 'in-progress')
+          const progressAmount = characterQuestMobProgress.length
+          if(progressAmount >= req.mobAmount){
+            req.completed = true
+          } else {
+            canComplete = false
           }
         }
 
@@ -148,6 +173,12 @@ export class QuestService {
       let canTake = anyQuestInProgress === false
       for(const req of q.startRequirements){
         req.completed = false
+        if(typeof req.guildRankLevel === 'number'){
+          const characterRankLevel = GuildRankLevelByRank[character.guildRank]
+          if(characterRankLevel >= req.guildRankLevel){
+            req.completed = true
+          }
+        }
         if(req.achievementId){
           if(character.achievements.find(a => a.achievementId === req.achievementId)){
             req.completed = true
@@ -208,7 +239,7 @@ export class QuestService {
         if(reward.itemId){
           const relatedItem = relatedItems.find(ri => ri.id === reward.itemId)
           if(!relatedItem){
-            const item = await this.itemRepo.byId(reward.itemId)
+            const item = items.find(i => i.id === reward.itemId)
             rewardItems.push(item as Item)
           }
         }
@@ -224,7 +255,8 @@ export class QuestService {
         questRequirementsAchievements: relatedAchievements,
         questRequirementsItems: relatedItems,
         questRequirementsInventoryTxns: relatedTxns,
-        questRewardItems: rewardItems
+        questRewardItems: rewardItems,
+        questMobs: relatedMobs
       }
       questsWithProgress.push(mergeItem)
     }

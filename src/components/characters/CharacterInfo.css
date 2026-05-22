@@ -219,13 +219,13 @@
 
 .character-progress-header {
   font-weight: 700;
-  font-size: 0.6em;
+  font-size: 0.6rem;
   letter-spacing: 1px;
 }
 
 .character-progress-footer {
   opacity: 0.75;
-  font-size: 0.6em;
+  font-size: 0.6rem;
   letter-spacing: 1px;
 }
 

@@ -28,6 +28,7 @@ import { QUEST_INTRO_ADVENTURERS_GUILD } from '../../data/quests/Quests.Intro.da
 
 import { useConfirm } from '../../providers/ConfirmProvider'
 import CharacterStatCardMin from './CharacterStatCardMin'
+import { GAME_VERSION } from '../../services/AppService'
 
 interface NewCharacterModalProps extends AppProperties {
 
@@ -193,6 +194,7 @@ export default function CharacterNewRename(
     const createdCharacter: Character = {
       ...characterForm,
       name: trimmedName,
+      gameVersion: GAME_VERSION
     }
 
     createdCharacter.achievements.push({

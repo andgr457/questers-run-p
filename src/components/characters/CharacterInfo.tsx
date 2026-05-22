@@ -68,7 +68,7 @@ export default function CharacterInfo(props: CharacterInfoProps) {
             </div>
             <div style={{float: 'right'}}>
               <span style={{color: 'gold'}}>
-                {characterGold?.toLocaleString()}g
+                {characterGold?.toLocaleString()} g
               </span>
             </div>
           </div>

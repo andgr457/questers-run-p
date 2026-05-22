@@ -36,14 +36,12 @@ export function shoppeServiceConfirmCart(
       id: `invtxn_shoppe_item_${si.item.id}__${character?.id}__${DateTime.utc().toMillis()}`,
       date: DateTime.utc().toISO(),
       itemId: si.item.id,
-      note: `Shoppe ${si.transactionType.toUpperCase()} Item Transaction`,
       quantity: quantity
     })
     currency.transactions.push({
       id: `invtxn_shoppe_gold__${si.item.id}__${character?.id}__${DateTime.utc().toMillis()}`,
       date: DateTime.utc().toISO(),
       itemId: ITEM_CURRENCY_IDS.GOLD,
-      note: `Shoppe ${si.transactionType.toUpperCase()} Gold Transaction`,
       quantity: gold
     })
   }
