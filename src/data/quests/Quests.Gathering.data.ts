@@ -43,9 +43,9 @@ export const QUEST_GATHERING_STICKS_N_STONES: Quest = {
     {
       stats: {
         stamina: {
-          name: 'Stamina',
+          name: 'STAM',
           value: 10,
-          hint: ''
+          max: 0
         }
       },
       completed: false

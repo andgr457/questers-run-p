@@ -15,6 +15,5 @@ export interface InventoryTransaction {
   id: string
   itemId: string
   quantity: number
-  note: string
   date: string
 }

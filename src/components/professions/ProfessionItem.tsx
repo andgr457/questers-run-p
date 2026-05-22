@@ -7,7 +7,7 @@ import StateOverlay from '../state-overlay/StateOverlay'
 interface ProfessionItemProps extends AppProperties {
   professionItem: Item
   canDo: boolean
-  handleDoProfessionItem: (itemId: string, amount: number, timeSeconds: number) => Promise<void>
+  handleProfessionItemClicked: (itemId: string, amount: number, timeSeconds: number) => Promise<void>
   amount: number
 }
 
@@ -17,8 +17,9 @@ export default function ProfessionItem(props: ProfessionItemProps){
     character,
     characterInventories,
     canDo,
-    handleDoProfessionItem,
-    amount
+    handleProfessionItemClicked,
+    amount,
+    characterQuestProgress
   } = props
 
   let characterAmount = 0
@@ -41,7 +42,7 @@ export default function ProfessionItem(props: ProfessionItemProps){
   }
   const clickFn = canDo === true ? async () => {
     
-    await handleDoProfessionItem(professionItem.id, amount, professionItem?.profession?.timeInSeconds as number ?? 5)
+    await handleProfessionItemClicked(professionItem.id, amount, professionItem?.profession?.timeInSeconds as number ?? 5)
   } : () => {}
 
   let stateOverlayActive = false
@@ -65,7 +66,8 @@ export default function ProfessionItem(props: ProfessionItemProps){
       {stateOverlaySubText.map(t => <div>{t}</div>)}
     </div>
   }
-  
+
+  const questCompletionRequirement = characterQuestProgress?.quest?.completionRequirements?.find(req => req.itemId === professionItem.id)
   const content = <div className='shoppe-item open' >
     <div className='shoppe-item-name'>
       {professionItem.name} <span className='item-amount'>x{amount}</span>
@@ -82,6 +84,15 @@ export default function ProfessionItem(props: ProfessionItemProps){
            in Inventory
         </div>
       </div>
+
+      {typeof questCompletionRequirement?.itemAmount === 'number' && <div className='shoppe-item-info small'>
+        <div>
+          <span style={{color: 'var(--blue-sd-lighter-2)'}}>{Math.min(questCompletionRequirement.itemAmount ?? 0, characterAmount)} / {questCompletionRequirement.itemAmount}</span>
+        </div>
+        <div>
+           Quest Item(s)
+        </div>
+      </div>}
 
       <div className='shoppe-item-info small'>
         {professionItem.profession && professionItem.profession.levelRequired > 0 && <>

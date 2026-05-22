@@ -233,7 +233,7 @@
   transform: translateY(-50%);
   z-index: 990;
 
-  width: 34px;
+  width: 24px;
   height: 70px;
 
   border: none;
@@ -244,7 +244,7 @@
 
   cursor: pointer;
 
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 
   transition: 0.15s;
 }

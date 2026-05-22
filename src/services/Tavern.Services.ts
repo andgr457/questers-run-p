@@ -18,7 +18,6 @@ export function tavernServiceItemStart(
     id: `invtxn__${ITEM_CURRENCY_IDS.GOLD}__${character?.id}__${DateTime.utc().toMillis()}`,
     date: DateTime.utc().toISO(),
     itemId: ITEM_CURRENCY_IDS.GOLD,
-    note: `Tavern Purchase`,
     quantity: goldCost * -1
   })
 

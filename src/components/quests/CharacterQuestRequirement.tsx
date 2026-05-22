@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon'
 import type { Achievement } from '../../interfaces/achievements/Achievement.types'
 import type { Item } from '../../interfaces/items/Item.types'
+import type { Mob } from '../../interfaces/mobs/Mob.types'
+import { useNavigate } from 'react-router-dom'
 
 interface CharacterQuestRequirementProps {
   started: boolean
@@ -11,6 +13,9 @@ interface CharacterQuestRequirementProps {
   item?: Item
   questItemTotal?: number
   characterItemTotal?: number
+  mob?: Mob
+  characterMobTotal?: number
+  questMobTotal?: number
 }
 
 export default function CharacterQuestRequirement(props: CharacterQuestRequirementProps){
@@ -21,9 +26,14 @@ export default function CharacterQuestRequirement(props: CharacterQuestRequireme
     timeMinutes,
     achievement,
     startDate,
+    mob,
+    characterMobTotal = 0,
+    questMobTotal = 0,
     questItemTotal = 0,
     characterItemTotal = 0
   } = props
+
+  const navigate = useNavigate()
 
   let progressInfo = ''
   let progressPercent = 0
@@ -46,13 +56,25 @@ export default function CharacterQuestRequirement(props: CharacterQuestRequireme
       progressPercent = Math.min(100, (characterItemTotal / questItemTotal) * 100)
     }
   }
-  
+  if(mob){
+    if(characterMobTotal && questMobTotal){
+      progressInfo = ''
+      progressPercent = Math.min(100, (characterMobTotal / questMobTotal) * 100)
+    }
+  }
+
+  const professionClickFn = item?.profession?.type ? () => {
+    navigate(`/profession/${item.profession?.type}`)
+  } : () => {}
+  const mobClickFn = mob ? () => {
+    navigate(`/hunting/${mob.location}`)
+  } : () => {}
+
+  const checkOrX = completed === true ? '✔' : '✘'
+
   return <div  className={completed === true ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
     <div>
-      <div style={{float: 'left'}}>
-        {completed === true ? '✔' : '✘'}&nbsp;
-      </div>
-      {timeMinutes && <><strong>{timeMinutes}</strong> minute(s) Long {progressInfo}</>}
+      {timeMinutes && <>{checkOrX} <strong>{timeMinutes}</strong> minute(s) Long {progressInfo}</>}
       {started === true && completed === false && timeMinutes && <><div
         className={`
           character-stat-card-bar
@@ -69,8 +91,35 @@ export default function CharacterQuestRequirement(props: CharacterQuestRequireme
           }}
         />
       </div></>}
-      {achievement?.id && <div title={achievement?.description}>Achivement: <strong>{achievement?.title}</strong></div>}
-      {item && <>{characterItemTotal} / {questItemTotal} <strong style={{fontSize: 'smaller'}}>{item?.name}</strong></>}
+      {achievement?.id && <div title={achievement?.description}>{checkOrX} Achivement: <strong>{achievement?.title}</strong></div>}
+      {item && <div className='quest-completion-req'>
+        <div>
+          {checkOrX}
+        </div>
+        <div className='quest-completion-req-amounts'>
+          {characterItemTotal} / {questItemTotal}
+        </div>
+        <div className='quest-completion-req-name'>
+          {item?.name}
+        </div>
+        <div className='quest-completion-req-nav-btn'>
+          <button className='button-requirement-nav' onClick={professionClickFn}>{item.profession?.type}</button>
+        </div>
+      </div>}
+      {mob && <div className='quest-completion-req'>
+        <div>
+          {checkOrX}
+        </div>
+        <div className='quest-completion-req-amounts'>
+          {characterMobTotal} / {questMobTotal}
+        </div>
+        <div className='quest-completion-req-name'>
+          {mob?.name}
+        </div>
+        <div className='quest-completion-req-nav-btn'>
+          <button className='button-requirement-nav' onClick={mobClickFn}>{mob.location} hunt</button>
+        </div>
+      </div>}
       {started === true && completed === false && item && <><div
         className={`
           character-stat-card-bar

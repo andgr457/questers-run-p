@@ -10,6 +10,7 @@ import CharacterQuestPopup from './CharacterQuestPopup'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import useScrollReveal from '../../hooks/useScrollReveal'
 import ScrollableShoppeList from '../shoppe/ShoppeListScrollable'
+import type { Mob } from '../../interfaces/mobs/Mob.types'
 
 interface CharacterQuestsProps extends AppProperties {
   showOneTimeCompletedQuests: boolean
@@ -27,6 +28,7 @@ export interface QuestWithQuestProgress {
   questRequirementsInventoryTxns: InventoryTransaction[]
   questRequirementsQuests: Quest[]
   questRewardItems: Item[]
+  questMobs: Mob[]
 }
 
 export default function CharacterQuests(props: CharacterQuestsProps){

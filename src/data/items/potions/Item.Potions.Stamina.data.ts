@@ -10,7 +10,7 @@ export const STAMINA_POTION_IDS = {
 
 export const ITEM_POTION_STAMINA_WEAK: Item = {
   id: STAMINA_POTION_IDS.WEAK,
-  name: 'Weak Mana Potion',
+  name: 'Weak Stamina Potion',
   description: 'Restores a small amount of stamina on use.',
   type: ITEM_TYPES.CONSUMABLE,
   rarity: ITEM_RARITY.COMMON,
@@ -22,7 +22,7 @@ export const ITEM_POTION_STAMINA_WEAK: Item = {
     stamina: {
       value: 20,
       name: 'STAM',
-      hint: ''
+      max: 0
     }
   }
 }

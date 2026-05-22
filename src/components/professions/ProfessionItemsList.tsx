@@ -13,7 +13,7 @@ interface ProfessionItemsListProps extends AppProperties {
 export default function ProfessionItemsList(props: ProfessionItemsListProps){
   const {
     professionItems,
-    handleDoProfessionItemComplete
+    handleProfessionItemComplete
   } = props
   const collectAmountSelections = [1, 5, 10, 15, 20, 50, 100]
   
@@ -40,18 +40,17 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
         totalSecondsLeft -= 1
         currentSecond += 1
         const progress = (currentSecond / secondsAmount ) * 100
-        console.log(progress)
         setTimeProgress(progress)
         setTimeLeft(totalSecondsLeft)
         await sleep(1000)
       }
       currentItemNumber += 1
       setItemNumber(currentItemNumber)
-      await handleDoProfessionItemComplete?.(itemId, 1)
+      await handleProfessionItemComplete?.(itemId, 1)
     }
     reset()
     setCanDo(true)
-  }, [handleDoProfessionItemComplete, professionItems])
+  }, [handleProfessionItemComplete, professionItems])
 
   const reset = () => {
     setTimeProgress(0)
@@ -122,7 +121,7 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
 
     <ScrollableShoppeList>
       {professionItems.map(i => {
-        return <ProfessionItem amount={collectAmount} {...props} professionItem={i} handleDoProfessionItem={handleProfessionItemClicked} canDo={canDo} />
+        return <ProfessionItem amount={collectAmount} {...props} professionItem={i} handleProfessionItemClicked={handleProfessionItemClicked} canDo={canDo} />
       })}
     </ScrollableShoppeList>
   </div>
