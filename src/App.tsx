@@ -300,7 +300,7 @@ function App() {
     setInventories(newAllInventories)
     const newCharacter = {...character as Character}
     //@ts-ignore
-    newCharacter.professions[professionItem.type] = professionStat
+    newCharacter.professions[professionItem.profession?.type] = professionStat
     newCharacter.stats.stamina = staminaStat
     setCharacter({...newCharacter})
   }, [items, characterInventories, inventories, character])
