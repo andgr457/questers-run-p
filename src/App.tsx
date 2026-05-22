@@ -49,12 +49,36 @@ import { professionServiceItemComplete } from './services/Profession.Services';
 import { type Loot, type Mob, type MobProgress } from './interfaces/mobs/Mob.types';
 import { MobRepository } from './repository/mobs/MobsRepository';
 import HuntingForestPage from './pages/hunting/HuntingForestPage';
+import { GAME_VERSION } from './services/AppService';
 
 function App() {
+  const {showConfirm} = useConfirm()
+
   const [character, setCharacter] = useLocalStorage<Character | undefined>(
     LOCAL_STORAGE_KEYS.CHARACTERS_MAIN,
     undefined
   )
+
+  useEffect(() => {
+    if (!character) return
+
+    if (character.gameVersion === GAME_VERSION) return
+
+    const run = async () => {
+      const confirmed = await showConfirm({
+        isYesNo: true,
+        title: 'New Alpha Version',
+        message: `New version ${GAME_VERSION} has been released and requires a full reset.`
+      })
+
+      if (confirmed) {
+        await handleResetEverything()
+      }
+    }
+
+    run()
+  }, [character])
+
   const [inventories, setInventories] = useLocalStorage<Inventory[]>(LOCAL_STORAGE_KEYS.INVENTORIES, [])
   const [allQuestProgress, setAllQuestProgress] = useLocalStorage<QuestProgress[]>(LOCAL_STORAGE_KEYS.QUEST_PROGRESS, [])
   const [allQuestsWithQuestProgress, setAllQuestsWithQuestProgress] = useState<QuestWithQuestProgress[]>([])
@@ -75,53 +99,6 @@ function App() {
   const [mobs, setMobs] = useState<Mob[]>([])
   const [requestedWindowId, setRequestedWindowId] = useState<string | undefined>(undefined)
   
-  const {showConfirm} = useConfirm()
-
-  const handleResetEverything = useCallback(async () => {
-    if(!await showConfirm({
-      title: 'Are you sure?',
-      message: 'This will reset everything in this browser\'s storage for this site. Are you sure you wish to continue?',
-      isYesNo: true
-    })) return
-
-    setCharacter(null as any)
-    setInventories([])
-    setAllQuestProgress([])
-    setAllMobProgress([])
-    window.location.href = '/'
-  }, [])
-
-  const handleResetProfession = useCallback(async (professionType: ProfessionType) => {
-    //@ts-ignore
-    let characterProfessionStat = {...character?.professions[professionType]}
-    if(!characterProfessionStat) return
-
-    if(!await showConfirm({
-      title: 'Are you sure?',
-      message: `This will reset the ${professionType.toUpperCase()} profession for your character. Are you sure you wish to continue?`,
-      isYesNo: true
-    })) return
-    
-    if(character){
-      //@ts-ignore
-      if(professionType === 'gathering'){
-        characterProfessionStat = {
-          name: 'Gathering',
-          hint: '',
-          value: 0,
-          level: 0,
-          nextLevelXP: 100,
-          xp: 0,
-        }
-        const newCharacter = {...character as Character}
-        //@ts-ignore
-        newCharacter.professions[professionType] = {...characterProfessionStat}
-        setCharacter({...newCharacter})
-      }
-    }
-
-    window.location.href = '/'
-  }, [character])
   
   useEffect(() => {
     if (!character) return
@@ -194,6 +171,52 @@ function App() {
       }
     }
     load()
+  }, [character])
+
+  const handleResetEverything = useCallback(async () => {
+    if(!await showConfirm({
+      title: 'Are you sure?',
+      message: 'This will reset everything in this browser\'s storage for this site. Are you sure you wish to continue?',
+      isYesNo: true
+    })) return
+
+    setCharacter(null as any)
+    setInventories([])
+    setAllQuestProgress([])
+    setAllMobProgress([])
+    window.location.href = '/'
+  }, [])
+
+  const handleResetProfession = useCallback(async (professionType: ProfessionType) => {
+    //@ts-ignore
+    let characterProfessionStat = {...character?.professions[professionType]}
+    if(!characterProfessionStat) return
+
+    if(!await showConfirm({
+      title: 'Are you sure?',
+      message: `This will reset the ${professionType.toUpperCase()} profession for your character. Are you sure you wish to continue?`,
+      isYesNo: true
+    })) return
+    
+    if(character){
+      //@ts-ignore
+      if(professionType === 'gathering'){
+        characterProfessionStat = {
+          name: 'Gathering',
+          hint: '',
+          value: 0,
+          level: 0,
+          nextLevelXP: 100,
+          xp: 0,
+        }
+        const newCharacter = {...character as Character}
+        //@ts-ignore
+        newCharacter.professions[professionType] = {...characterProfessionStat}
+        setCharacter({...newCharacter})
+      }
+    }
+
+    window.location.href = '/'
   }, [character])
 
   //INVENTORY HANDLERS

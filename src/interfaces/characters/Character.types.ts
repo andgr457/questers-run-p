@@ -101,6 +101,7 @@ export const GuildRanks = {
 
 export interface Character {
   id: string
+  gameVersion: string
   classId: string
   guildRank: GuildRank
   name: string
