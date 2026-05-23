@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { AppProperties } from '../interfaces/AppProperties.types';
+import NotificationList from '../components/notifications/NotificationList';
 
 interface PageLayoutProps extends AppProperties {
   leftChildren: React.ReactNode
@@ -9,7 +10,8 @@ interface PageLayoutProps extends AppProperties {
 export default function PageLayout(props: PageLayoutProps) {
   const {
     character,
-    characterGold
+    characterGold,
+    notifications
   } = props
 
   const levelProgress = useMemo(() => {
@@ -123,6 +125,7 @@ export default function PageLayout(props: PageLayoutProps) {
             </div>
 
           </div>}
+          <NotificationList notifications={notifications ?? []} />
           {props.rightChildren}
         </div>
       </div>

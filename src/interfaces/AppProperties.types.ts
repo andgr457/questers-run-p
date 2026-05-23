@@ -1,5 +1,6 @@
 import type { QuestWithQuestProgress } from '../components/quests/CharacterQuests';
 import type { ShoppeCartItem } from '../components/shoppe/ShoppeCart';
+import type { Notification } from '../hooks/useFloatingNotify';
 import type { Achievement } from './achievements/Achievement.types';
 import type { Character, CharacterClass } from './characters/Character.types';
 import type { Inventory } from './inventories/Inventory.types';
@@ -23,6 +24,7 @@ export interface AppProperties extends AppFunctions {
   questGroups?: QuestGroup[]
   items?: Item[]
   mobs?: Mob[]
+  notifications?: Notification[]
 }
 
 export interface AppFunctions {

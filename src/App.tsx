@@ -50,10 +50,11 @@ import { type Loot, type Mob, type MobProgress } from './interfaces/mobs/Mob.typ
 import { MobRepository } from './repository/mobs/MobsRepository';
 import HuntingForestPage from './pages/hunting/HuntingForestPage';
 import { GAME_VERSION } from './services/AppService';
+import { useFloatingNotifications } from './hooks/useFloatingNotify';
 
 function App() {
   const {showConfirm} = useConfirm()
-
+  const { notifications, addNotification } = useFloatingNotifications()
   const [character, setCharacter] = useLocalStorage<Character | undefined>(
     LOCAL_STORAGE_KEYS.CHARACTERS_MAIN,
     undefined
@@ -271,6 +272,7 @@ function App() {
         })}
       </div>
     })
+    addNotification(`Shoppe Transaction Complete`)
   }, [inventories, characterInventories, character])
 
   //TAVERN HANDLERS
@@ -748,6 +750,7 @@ function App() {
     allQuestsWithProgress: allQuestsWithQuestProgress,
     mobs,
     characterMobProgress,
+    notifications,
     useConsumable,
     handleResetEverything,
     handleResetProfession,
