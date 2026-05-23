@@ -51,6 +51,7 @@ import { MobRepository } from './repository/mobs/MobsRepository';
 import HuntingForestPage from './pages/hunting/HuntingForestPage';
 import { GAME_VERSION } from './services/AppService';
 import { useFloatingNotifications } from './hooks/useFloatingNotify';
+import NotificationList from './components/notifications/NotificationList';
 
 function App() {
   const {showConfirm} = useConfirm()
@@ -750,7 +751,7 @@ function App() {
     allQuestsWithProgress: allQuestsWithQuestProgress,
     mobs,
     characterMobProgress,
-    notifications,
+    addNotification,
     useConsumable,
     handleResetEverything,
     handleResetProfession,
@@ -806,6 +807,7 @@ function App() {
               <Route path="*" element={<OverviewPage  {...appProps}  />} />
             </Routes>}
           />
+          <NotificationList notifications={notifications} />
           <WindowLayer />
         </div>
       </BrowserRouter>

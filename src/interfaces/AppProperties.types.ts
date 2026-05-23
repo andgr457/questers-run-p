@@ -28,6 +28,7 @@ export interface AppProperties extends AppFunctions {
 }
 
 export interface AppFunctions {
+  addNotification?: (text: string, icon?: string, lifetime?: number) => void
   setLocation?: (location: string) => void
   useConsumable?: (item: Item, characterId: string) => void
   handleSetCharacter?: (character: Character) => void
