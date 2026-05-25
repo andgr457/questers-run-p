@@ -1,28 +1,33 @@
+import { useNavigate } from 'react-router-dom'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
-import { GuildRankByLevel, GuildRankLevelByRank } from '../../interfaces/characters/Character.types'
+import { GuildRankByLevel, GuildRankLevelByRank, type Character } from '../../interfaces/characters/Character.types'
 import type { Mob } from '../../interfaces/mobs/Mob.types'
 import StateOverlay from '../state-overlay/StateOverlay'
 
 interface HuntingMobProps extends AppProperties {
   huntingMob: Mob
   canDo: boolean
-  handleHuntMobClicked: (mobId: string) => Promise<void>
+  handleHuntMobClicked: (mob: Mob, char: Character) => Promise<void>
 }
 
 export default function HuntingMob(props: HuntingMobProps) {
   const {
     character,
     canDo,
-    characterQuestProgress,
+    allQuestProgress,
     characterMobProgress,
     huntingMob,
     handleHuntMobClicked,
     items,
+    showConfirm,
+    quests
   } = props
+
+  const navigate = useNavigate()
 
   const clickFn = canDo
     ? async () => {
-        await handleHuntMobClicked(huntingMob.id)
+        await handleHuntMobClicked(huntingMob, character)
       }
     : undefined
 
@@ -44,14 +49,20 @@ export default function HuntingMob(props: HuntingMobProps) {
   // =========================
   // QUEST REQUIREMENT (mob kill tracking)
   // =========================
-  const questReq = characterQuestProgress?.quest?.completionRequirements?.find(
+  const inProgressQuestProgress = allQuestProgress?.find(aqp => 
+    aqp.characterId === character.id &&
+    aqp.status === 'in-progress'
+  )
+  const relatedInProgressQuest = quests?.find(q => q.id === inProgressQuestProgress?.questId)
+
+  const relatedQuest = relatedInProgressQuest?.completionRequirements?.find(
     req => req.mobId === huntingMob.id
   )
 
   const allRelatedMobProgress = characterMobProgress?.filter(mp => mp.mobId === huntingMob.id)
-  const questRelatedMobProgress = allRelatedMobProgress?.filter(mp => mp.questProgressId === characterQuestProgress?.questProgress?.id)
+  const questRelatedMobProgress = allRelatedMobProgress?.filter(mp => mp.questProgressId === inProgressQuestProgress?.id)
   const content = (
-    <div className="shoppe-item open">
+    <div id={huntingMob.id} className="shoppe-item open">
       <div className="shoppe-item-name">
         {huntingMob.name}
       </div>
@@ -61,16 +72,24 @@ export default function HuntingMob(props: HuntingMobProps) {
       </div>
 
       
-        {questReq && (
+        {relatedQuest && (
           <div className='shoppe-item-info-list' style={{ justifyContent: 'center' }}>
-            <div className="shoppe-item-info small">
+            <div className="shoppe-item-info small" onClick={async () => {
+                if(await showConfirm({
+                  isYesNo: true,
+                  title: 'Head Back?',
+                  message: 'Head back to the adventurers guild?'
+                })){
+                  navigate(`/town/adventurers-guild#${inProgressQuestProgress?.questId}`)
+                }
+              }}>
               <div>
                 <span style={{ color: 'var(--blue-sd-lighter-2)' }}>
                   {/* you can replace this with real tracked kills later */}
-                  {Math.min(questRelatedMobProgress?.length ?? 0, questReq.mobAmount as number)}
+                  {Math.min(questRelatedMobProgress?.length ?? 0, relatedQuest.mobAmount as number)}
                 </span>
                 {' / '}
-                {questReq.mobAmount}
+                {relatedQuest.mobAmount}
               </div>
               <div>Quest Progress</div>
             </div>

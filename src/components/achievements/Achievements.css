@@ -1,7 +1,7 @@
 .achievements {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 5px;
   height: 100%;
   overflow: hidden;
 }
@@ -20,6 +20,7 @@
   color: white;
   font-size: 14px;
   outline: none;
+  letter-spacing: 1px;
   transition: border-color 0.2s ease;
 }
 
@@ -30,7 +31,7 @@
 .achievements__list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 5px;
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -48,9 +49,10 @@
 .achievement-card {
   display: flex;
   align-items: flex-start;
+  
   gap: 16px;
-  padding: 16px;
-  border-radius: 18px;
+  padding: 7px;
+  border-radius: 3px;
   border: 1px solid #2c2c2c;
   background: linear-gradient(
     135deg,
@@ -59,17 +61,11 @@
   );
   transition:
     border-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.achievement-card:hover {
-  /* transform: translateY(-2px); */
+    transform 0.2s ease;
 }
 
 .achievement-card--unlocked {
   border-color: rgba(212, 160, 23, 0.4);
-  box-shadow: 0 8px 20px rgba(212, 160, 23, 0.12);
 }
 
 .achievement-card--locked {
@@ -80,13 +76,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 52px;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  padding: 3px;
+  /* min-width: 52px; */
+  /* width: 52px; */
+  /* height: 52px; */
+  border-radius: 3px;
   background: rgba(212, 160, 23, 0.12);
   border: 1px solid rgba(212, 160, 23, 0.25);
-  font-size: 24px;
+  font-size: 14px;
 }
 
 .achievement-card__content {
@@ -104,7 +101,7 @@
 .achievement-card__title {
   margin: 0;
   color: white;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -124,13 +121,13 @@
 .achievement-card__description {
   margin: 10px 0 0;
   color: #b0b0b0;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
 .achievement-card__date {
   margin-top: 12px;
   color: #d4a017;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
 }

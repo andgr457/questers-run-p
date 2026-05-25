@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import type { Stat } from '../../interfaces/characters/Character.types'
 import type { Item } from '../../interfaces/items/Item.types'
@@ -7,7 +8,7 @@ import StateOverlay from '../state-overlay/StateOverlay'
 interface ProfessionItemProps extends AppProperties {
   professionItem: Item
   canDo: boolean
-  handleProfessionItemClicked: (itemId: string, amount: number, timeSeconds: number) => Promise<void>
+  handleProfessionItemClicked: (item: Item, amount: number) => void
   amount: number
 }
 
@@ -19,8 +20,10 @@ export default function ProfessionItem(props: ProfessionItemProps){
     canDo,
     handleProfessionItemClicked,
     amount,
-    characterQuestProgress
+    quests,
+    allQuestProgress
   } = props
+  const navigate = useNavigate()
 
   let characterAmount = 0
   for(const inv of characterInventories ?? []){
@@ -42,7 +45,7 @@ export default function ProfessionItem(props: ProfessionItemProps){
   }
   const clickFn = canDo === true ? async () => {
     
-    await handleProfessionItemClicked(professionItem.id, amount, professionItem?.profession?.timeInSeconds as number ?? 5)
+    await handleProfessionItemClicked(professionItem, amount)
   } : () => {}
 
   let stateOverlayActive = false
@@ -50,7 +53,7 @@ export default function ProfessionItem(props: ProfessionItemProps){
   let stateOverlaySubText = []
   if(typeof professionItem.profession?.levelRequired === 'number' && typeof professionStat?.level === 'number'){
     if(professionStat?.level < professionItem.profession?.levelRequired){
-      stateOverlaySubText.push(`Level ${professionItem.profession?.levelRequired} Required`)
+      stateOverlaySubText.push(`${professionItem.profession?.type?.toUpperCase()} Level ${professionItem.profession?.levelRequired} Required`)
     }
   }
   if(typeof character?.stats?.stamina?.value === 'number' && typeof professionItem.profession?.stamina === 'number'){
@@ -67,7 +70,15 @@ export default function ProfessionItem(props: ProfessionItemProps){
     </div>
   }
 
-  const questCompletionRequirement = characterQuestProgress?.quest?.completionRequirements?.find(req => req.itemId === professionItem.id)
+  const characterInProgressQuestProgress = allQuestProgress?.find(aqp => 
+    aqp.characterId === character.id &&
+    aqp.status === 'in-progress'
+  )
+  const relatedQuest = quests?.find(q => q.id === characterInProgressQuestProgress?.questId)
+  const relatedQuestCompletionRequirement = relatedQuest?.completionRequirements.find(cr =>
+    cr.itemId === professionItem.id
+  )
+
   const content = <div className='shoppe-item open' >
     <div className='shoppe-item-name'>
       {professionItem.name} <span className='item-amount'>x{amount}</span>
@@ -85,9 +96,11 @@ export default function ProfessionItem(props: ProfessionItemProps){
         </div>
       </div>
 
-      {typeof questCompletionRequirement?.itemAmount === 'number' && <div className='shoppe-item-info small'>
+      {typeof relatedQuestCompletionRequirement?.itemAmount === 'number' && <div className='shoppe-item-info small'
+        onClick={() => {navigate(`/town/adventurers-guild#${relatedQuest?.id}`)}}
+      >
         <div>
-          <span style={{color: 'var(--blue-sd-lighter-2)'}}>{Math.min(questCompletionRequirement.itemAmount ?? 0, characterAmount)} / {questCompletionRequirement.itemAmount}</span>
+          <span style={{color: 'var(--blue-sd-lighter-2)'}}>{Math.min(relatedQuestCompletionRequirement.itemAmount ?? 0, characterAmount)} / {relatedQuestCompletionRequirement.itemAmount}</span>
         </div>
         <div>
            Quest Item(s)

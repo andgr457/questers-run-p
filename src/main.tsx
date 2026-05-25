@@ -4,11 +4,14 @@ import App from './App.tsx'
 import React from 'react'
 import './index.css'
 import { ConfirmProvider } from './providers/ConfirmProvider.tsx'
+import { WindowProvider } from './components/windows/WindowProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ConfirmProvider>
-      <App />
+      <WindowProvider>
+        <App />
+      </WindowProvider>
     </ConfirmProvider>
   </React.StrictMode>
 )

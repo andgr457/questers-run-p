@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import './Achievements.css'
+import { DateTime } from 'luxon'
 
 interface AchievementsListProps extends AppProperties {}
 
@@ -38,8 +39,21 @@ export default function AchievementsList(props: AchievementsListProps) {
     })
 
     return filtered.sort((a, b) => {
-      if (a.unlocked && !b.unlocked) return -1
-      if (!a.unlocked && b.unlocked) return 1
+      const aUnlocked = !!a.unlocked
+      const bUnlocked = !!b.unlocked
+
+      // unlocked first
+      if (aUnlocked && !bUnlocked) return -1
+      if (!aUnlocked && bUnlocked) return 1
+
+      // both unlocked → sort by date desc
+      if (aUnlocked && bUnlocked) {
+        const aDate = new Date(a.unlocked!.achievementDate).getTime()
+        const bDate = new Date(b.unlocked!.achievementDate).getTime()
+        return bDate - aDate
+      }
+
+      // both locked → sort by title
       return a.title.localeCompare(b.title)
     })
   }, [achievements, character?.achievements, search])
@@ -91,9 +105,9 @@ export default function AchievementsList(props: AchievementsListProps) {
                   {achievement.unlocked && (
                     <div className='achievement-card__date'>
                       Unlocked on{' '}
-                      {new Date(
+                      {DateTime.fromISO(
                         achievement.unlocked.achievementDate
-                      ).toLocaleDateString()}
+                      ).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)}
                     </div>
                   )}
                 </div>

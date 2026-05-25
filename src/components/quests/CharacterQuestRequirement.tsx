@@ -1,141 +1,237 @@
 import { DateTime } from 'luxon'
-import type { Achievement } from '../../interfaces/achievements/Achievement.types'
-import type { Item } from '../../interfaces/items/Item.types'
-import type { Mob } from '../../interfaces/mobs/Mob.types'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import type { QuestCompletionRequirement } from '../../interfaces/quests/Quests.types'
+
 interface CharacterQuestRequirementProps {
-  started: boolean
-  completed: boolean
-  timeMinutes?: number
-  achievement?: Achievement
+  req: QuestCompletionRequirement
   startDate?: string
-  item?: Item
-  questItemTotal?: number
-  characterItemTotal?: number
-  mob?: Mob
-  characterMobTotal?: number
-  questMobTotal?: number
+  handleRefresh?: () => void
 }
 
-export default function CharacterQuestRequirement(props: CharacterQuestRequirementProps){
+export default function CharacterQuestRequirement(
+  props: CharacterQuestRequirementProps,
+) {
   const {
-    started,
-    completed,
-    item,
-    timeMinutes,
-    achievement,
+    req,
     startDate,
-    mob,
-    characterMobTotal = 0,
-    questMobTotal = 0,
-    questItemTotal = 0,
-    characterItemTotal = 0
+    handleRefresh
   } = props
+
+  const {
+    completed,
+    achievementId,
+    achievementDescription,
+    achievementTitle,
+    itemAmount = 0,
+    itemCharacterAmount = 0,
+    itemDescription,
+    itemId,
+    itemName,
+    itemProfessionType,
+    mobAmount = 0,
+    mobCharacterAmount = 0,
+    mobDescription,
+    mobId,
+    mobLevel,
+    mobName,
+    mobLocationType,
+    // timeHours,
+    // timeLeftHours = 0,
+    // timeLeftMinutes = 0,
+    // timeLeftSeconds = 0,
+    timeMinutes,
+    // timeSeconds,
+  } = req
 
   const navigate = useNavigate()
 
+  const [now, setNow] = useState(Date.now())
+  const endTime =
+  startDate && timeMinutes
+    ? DateTime.fromISO(startDate, { zone: 'utc' })
+        .plus({ minutes: timeMinutes })
+        .toMillis()
+    : null
+  const isExpired = endTime ? now >= endTime : false
+  let isActiveTimer =
+    !completed &&
+    !!timeMinutes &&
+    !!startDate &&
+    !isExpired
+  const prevActiveRef = useRef(isActiveTimer)
+  useEffect(() => {
+    const wasActive = prevActiveRef.current
+
+    if (wasActive && !isActiveTimer) {
+      // timer just turned off
+      ;(async () => {
+        await handleRefresh?.()
+      })()
+    }
+
+    prevActiveRef.current = isActiveTimer
+  }, [isActiveTimer, handleRefresh])
+  useEffect(() => {
+    if (!isActiveTimer) return
+
+    const interval = setInterval(() => {
+      setNow(Date.now())
+    }, 250)
+
+    return () => clearInterval(interval)
+  }, [isActiveTimer])
+
   let progressInfo = ''
   let progressPercent = 0
-  if(timeMinutes && startDate){
-    const leftDate = DateTime.fromISO(startDate)
-    const elapsedMinutes = Math.abs(leftDate.diffNow('minutes').minutes)
-    const leftMinutes = timeMinutes - elapsedMinutes
-    if(leftMinutes < 0){
-      progressInfo = ''
-      progressPercent = 100
-    } else {
-      progressInfo = `| ${leftMinutes.toFixed(1)} minute(s) remaining.`
-      progressPercent = Math.min(100, (elapsedMinutes / timeMinutes) * 100)
 
-    }
-  }
-  if(item){
-    if(characterItemTotal && questItemTotal){
-      progressInfo = ``
-      progressPercent = Math.min(100, (characterItemTotal / questItemTotal) * 100)
-    }
-  }
-  if(mob){
-    if(characterMobTotal && questMobTotal){
-      progressInfo = ''
-      progressPercent = Math.min(100, (characterMobTotal / questMobTotal) * 100)
+  // TIMER PROGRESS
+  if (typeof timeMinutes === 'number' && startDate) {
+    const startMillis = DateTime.fromISO(startDate).toMillis()
+    const totalMillis = timeMinutes * 60 * 1000
+    const elapsedMillis = now - startMillis
+
+    const elapsedMinutes = elapsedMillis / 1000 / 60
+    const leftMinutes = Math.max(0, timeMinutes - elapsedMinutes)
+    const leftSeconds = leftMinutes / 60
+    progressPercent = Math.min(
+      100,
+      (elapsedMillis / totalMillis) * 100,
+    )
+
+    if (leftMinutes > 0) {
+      progressInfo = `| ${leftMinutes.toFixed(1)}min ${leftSeconds.toFixed(1)}sec remaining...`
     }
   }
 
-  const professionClickFn = item?.profession?.type ? () => {
-    navigate(`/profession/${item.profession?.type}`)
-  } : () => {}
-  const mobClickFn = mob ? () => {
-    navigate(`/hunting/${mob.location}`)
-  } : () => {}
+  // ITEM PROGRESS
+  if (itemId && itemAmount > 0) {
+    progressInfo = ''
+    progressPercent = Math.min(
+      100,
+      (itemCharacterAmount / itemAmount) * 100,
+    )
+  }
 
-  const checkOrX = completed === true ? '✔' : '✘'
+  // MOB PROGRESS
+  if (mobId && mobAmount > 0) {
+    progressInfo = ''
+    progressPercent = Math.min(
+      100,
+      (mobCharacterAmount / mobAmount) * 100,
+    )
+  }
 
-  return <div  className={completed === true ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
-    <div>
-      {timeMinutes && <>{checkOrX} <strong>{timeMinutes}</strong> minute(s) Long {progressInfo}</>}
-      {started === true && completed === false && timeMinutes && <><div
-        className={`
-          character-stat-card-bar
-          ${'attribute-bar'}
-        `}
-      >
-        <div
-          className={`
-            character-stat-card-fill
-            ${'attribute-fill'}
-          `}
-          style={{
-            width: `${progressPercent}%`
-          }}
-        />
-      </div></>}
-      {achievement?.id && <div title={achievement?.description}>{checkOrX} Achivement: <strong>{achievement?.title}</strong></div>}
-      {item && <div className='quest-completion-req'>
-        <div>
-          {checkOrX}
-        </div>
-        <div className='quest-completion-req-amounts'>
-          {characterItemTotal} / {questItemTotal}
-        </div>
-        <div className='quest-completion-req-name'>
-          {item?.name}
-        </div>
-        <div className='quest-completion-req-nav-btn'>
-          <button className='button-requirement-nav' onClick={professionClickFn}>{item.profession?.type}</button>
-        </div>
-      </div>}
-      {mob && <div className='quest-completion-req'>
-        <div>
-          {checkOrX}
-        </div>
-        <div className='quest-completion-req-amounts'>
-          {characterMobTotal} / {questMobTotal}
-        </div>
-        <div className='quest-completion-req-name'>
-          {mob?.name}
-        </div>
-        <div className='quest-completion-req-nav-btn'>
-          <button className='button-requirement-nav' onClick={mobClickFn}>{mob.location} hunt</button>
-        </div>
-      </div>}
-      {started === true && completed === false && item && <><div
-        className={`
-          character-stat-card-bar
-          ${'attribute-bar'}
-        `}
-      >
-        <div
-          className={`
-            character-stat-card-fill
-            ${'attribute-fill'}
-          `}
-          style={{
-            width: `${progressPercent}%`
-          }}
-        />
-      </div></>}
+  const professionClickFn = itemProfessionType
+    ? () => navigate(`/profession/${itemProfessionType}#${itemId}`)
+    : () => {}
+
+  const mobClickFn = mobLocationType
+    ? () => navigate(`/hunting/${mobLocationType}#${mobId}`)
+    : () => {}
+
+  const checkOrX = completed ? '✔' : '✘'
+
+  return (
+    <div
+      className={
+        completed
+          ? 'quest-item-requirements-item completed'
+          : 'quest-item-requirements-item'
+      }
+    >
+      <div>
+        {/* TIMER */}
+        {typeof timeMinutes === 'number' && 
+        (
+          <>
+            {checkOrX}{' '}
+            <strong>{timeMinutes}</strong> minute(s)
+            {' '}
+            Long {progressInfo}
+          </>
+        )}
+
+        {/* ACHIEVEMENT */}
+        {achievementId && (
+          <div title={achievementDescription}>
+            {checkOrX} Achievement:{' '}
+            <strong>{achievementTitle}</strong>
+          </div>
+        )}
+
+        {/* ITEM */}
+        {itemId && typeof itemAmount === 'number' && (
+          <div title={itemDescription} className="quest-completion-req">
+            <div>{checkOrX}</div>
+            <div className="quest-completion-req-amounts">
+              {itemCharacterAmount} / {itemAmount}
+            </div>
+            <div className="quest-completion-req-name">
+              {itemName}
+            </div>
+            <div className="quest-completion-req-nav-btn">
+              <button
+                className="basic"
+                onClick={professionClickFn}
+              >
+                {itemProfessionType}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* MOB */}
+        {mobId && typeof mobAmount === 'number' && (
+          <div title={mobDescription} className="quest-completion-req">
+            <div>{checkOrX}</div>
+            <div className="quest-completion-req-amounts">
+              {mobCharacterAmount} / {mobAmount}
+            </div>
+            <div className="quest-completion-req-name">
+              {mobName} Lv. {mobLevel}
+            </div>
+            <div
+              className="quest-completion-req-nav-btn"
+            >
+              <button
+                className="basic"
+                onClick={mobClickFn}
+              >
+                {mobLocationType}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* PROGRESS BAR (ONLY ACTIVE TIMER) */}
+        {isActiveTimer && (
+          <div className="character-stat-card-bar attribute-bar">
+            <div
+              className="character-stat-card-fill attribute-fill"
+              style={{
+                width: `${progressPercent}%`,
+                transition: 'width 0.2s linear',
+              }}
+            />
+          </div>
+        )}
+
+        {/* ITEM / MOB BAR (STATIC PROGRESS) */}
+        {!isActiveTimer &&
+          !completed &&
+          (itemId || mobId) && (
+            <div className="character-stat-card-bar attribute-bar">
+              <div
+                className="character-stat-card-fill attribute-fill"
+                style={{
+                  width: `${progressPercent}%`,
+                }}
+              />
+            </div>
+          )}
+      </div>
     </div>
-  </div>
+  )
 }

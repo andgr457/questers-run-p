@@ -196,17 +196,6 @@
   transition: transform 0.8s ease;
 }
 
-.character-progress-card:hover::before {
-  /* transform: translateX(100%); */
-}
-
-.character-progress-card:hover {
-  /* transform: translateY(-2px);
-  filter: brightness(1.08); */
-
-  /* border-color: rgba(255,255,255,0.15); */
-}
-
 .character-progress-header,
 .character-progress-footer {
   display: flex;
@@ -489,6 +478,9 @@
 /* MOBILE */
 
 @media (max-width: 700px) {
+  .character-info-main{
+    height: fit-content;
+  }
   .character-stats-grid {
     grid-template-columns: 1fr;
   }

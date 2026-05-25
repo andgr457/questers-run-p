@@ -6,7 +6,7 @@ export const ITEM_TYPES = {
   WEAPONS: 'weapon' as ItemType,
   ARMOR: 'armor' as ItemType,
   CURRENCY: 'currency' as ItemType,
-  CONSUMABLE: 'consumables' as ItemType,
+  CONSUMABLE: 'consumable' as ItemType,
   MOB: 'mob' as ItemType
 }
 
@@ -26,7 +26,7 @@ export type ItemType =
   | 'bolts'
   | 'armor' 
   | 'currency' 
-  | 'consumables'
+  | 'consumable'
   | 'mob'
   //Everything except currencies
   | 'general'

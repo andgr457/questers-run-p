@@ -12,22 +12,15 @@ type WindowContextType = {
   openWindow: (
     id: string,
     title: string,
-    content: React.ReactNode
+    Component: React.ComponentType<any>,
+    props?: any
   ) => void
 
   closeWindow: (id: string) => void
 
-  moveWindow: (
-    id: string,
-    x: number,
-    y: number
-  ) => void
+  moveWindow: (id: string, x: number, y: number) => void
 
-  resizeWindow: (
-    id: string,
-    width: number,
-    height: number
-  ) => void
+  resizeWindow: (id: string, width: number, height: number) => void
 
   focusWindow: (id: string) => void
 }
@@ -43,18 +36,12 @@ export function WindowProvider({
 
   function focusWindow(id: string) {
     setWindows(prev => {
-      const topZ = Math.max(
-        0,
-        ...prev.map(w => w.zIndex)
-      )
+      const topZ = Math.max(0, ...prev.map(w => w.zIndex))
 
-      return prev.map(window =>
-        window.id === id
-          ? {
-              ...window,
-              zIndex: topZ + 1
-            }
-          : window
+      return prev.map(w =>
+        w.id === id
+          ? { ...w, zIndex: topZ + 1 }
+          : w
       )
     })
   }
@@ -62,39 +49,33 @@ export function WindowProvider({
   function openWindow(
     id: string,
     title: string,
-    content: React.ReactNode
+    Component: React.ComponentType<any>,
+    props: any = {}
   ) {
     setWindows(prev => {
       const existing = prev.find(w => w.id === id)
+      const topZ = Math.max(0, ...prev.map(w => w.zIndex))
 
-      const topZ = Math.max(
-        0,
-        ...prev.map(w => w.zIndex)
-      )
-
-      // already open -> recenter + focus
+      // already exists → just focus + bring to front
       if (existing) {
-        return prev.map(win =>
-          win.id === id
+        return prev.map(w =>
+          w.id === id
             ? {
-                ...win,
-                x: window.innerWidth / 2 - 200,
-                y: window.innerHeight / 2 - 150,
-                zIndex: topZ + 1
+                ...w,
+                zIndex: topZ + 1,
+                props: props ?? w.props ?? {}   // 👈 CRITICAL FIX
               }
-            : win
+            : w
         )
       }
-
       return [
         ...prev,
         {
           id,
           title,
-          content,
+          Component,
+          props: props ?? {},
 
-          // x: window.innerWidth / 2 - 200,
-          // y: window.innerHeight / 2 - 150,
           x: 7,
           y: 90,
 
@@ -108,39 +89,21 @@ export function WindowProvider({
   }
 
   function closeWindow(id: string) {
-    setWindows(prev =>
-      prev.filter(w => w.id !== id)
-    )
+    setWindows(prev => prev.filter(w => w.id !== id))
   }
 
-  function moveWindow(
-    id: string,
-    x: number,
-    y: number
-  ) {
+  function moveWindow(id: string, x: number, y: number) {
     setWindows(prev =>
-      prev.map(window =>
-        window.id === id
-          ? { ...window, x, y }
-          : window
+      prev.map(w =>
+        w.id === id ? { ...w, x, y } : w
       )
     )
   }
 
-  function resizeWindow(
-    id: string,
-    width: number,
-    height: number
-  ) {
+  function resizeWindow(id: string, width: number, height: number) {
     setWindows(prev =>
-      prev.map(win =>
-        win.id === id
-          ? {
-              ...win,
-              width,
-              height
-            }
-          : win
+      prev.map(w =>
+        w.id === id ? { ...w, width, height } : w
       )
     )
   }
@@ -152,8 +115,8 @@ export function WindowProvider({
         openWindow,
         closeWindow,
         moveWindow,
-        focusWindow,
         resizeWindow,
+        focusWindow
       }}
     >
       {children}
@@ -165,9 +128,7 @@ export function useWindows() {
   const context = useContext(WindowContext)
 
   if (!context) {
-    throw new Error(
-      'useWindows must be inside WindowProvider'
-    )
+    throw new Error('useWindows must be inside WindowProvider')
   }
 
   return context

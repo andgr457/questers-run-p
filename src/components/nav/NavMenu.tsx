@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './NavMenu.css'
-import { useWindows } from '../windows/WindowProvider';
 import CharacterInfo from '../characters/CharacterInfo';
 import type { AppProperties } from '../../interfaces/AppProperties.types';
-import CharacterQuestCurrent from '../quests/CharacterQuestCurrent';
 import CharacterInventory from '../inventory/CharacterInventory';
-import Settings from '../settings/Settings';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import AchievementsList from '../achievements/AchievementsList';
+import SettingsPage from '../../pages/settings/SettingsPage';
 
 interface NavMenuProps extends AppProperties {
   windowRequestId?: string
@@ -19,7 +17,9 @@ export default function NavMenu(props: NavMenuProps) {
   const {
     character,
     windowRequestId,
-    handleSetRequestedWindowId
+    handleSetRequestedWindowId,
+    toggleWindow,
+    // closeWindow
   } = props
   const [subNavSelected, setSubNavSelected] = useState('town')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -27,92 +27,66 @@ export default function NavMenu(props: NavMenuProps) {
   const isMobile = useIsMobile()
   const characterNotExists = !character?.name
 
-  const {
-    windows,
-    openWindow,
-    closeWindow
-  } = useWindows()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(!windowRequestId) return
-    if(windowRequestId === 'character'){
-      toggleCharacter()
-    } else if(windowRequestId === 'inventory'){
-      toggleInventory()
-    } else if(windowRequestId === 'quest'){
-      toggleQuest()
-    } else if(windowRequestId === 'settings'){
-      toggleSettings()
-    }
+    if (!windowRequestId) return
 
+    if (windowRequestId === 'character') {
+      toggleCharacter()
+    } else if (windowRequestId === 'inventory') {
+      toggleInventory()
+    } else if (windowRequestId === 'settings') {
+      toggleSettings()
+    } else if (windowRequestId === 'achievements') {
+      toggleAchievements()
+    }
   }, [windowRequestId])
 
-  const isWindowOpen = (
-    id: string
-  ) => {
-    return windows.some(w => w.id === id)
-  }
-
-  function toggleWindow(id: string, title: string, content: React.ReactNode) {
-    if (isWindowOpen(id)) {
-      closeWindow(id)
-      return
-    }
-
-    openWindow(
-      id,
-      title,
-      <div>
-        {content}
-      </div>
-    )
-  }
-
-
   function toggleCharacter() {
-    if(isMobile){
-      toggleWindow('character', 'Character', <CharacterInfo 
-        {...props}
-        showExpander={false}
-      />)
+    if (isMobile) {
+      toggleWindow?.('character', 'Character', CharacterInfo, {
+        ...props,
+        showExpander: false
+      })
       return
     }
+
     handleSetRequestedWindowId?.('character')
   }
 
-  function toggleQuest() {
-    if(isMobile){
-      toggleWindow('quest', 'Current Quest', <CharacterQuestCurrent 
-        {...props}
-        
-      />)
-      return
-    }
-    handleSetRequestedWindowId?.('quest')
-  }
-
   function toggleInventory() {
-    if(isMobile){
-      toggleWindow('inventory', 'Inventory', <CharacterInventory 
-        {...props}
-      />)
+    if (isMobile) {
+      toggleWindow?.('inventory', 'Inventory', CharacterInventory, {
+        ...props
+      })
       return
     }
+
     handleSetRequestedWindowId?.('inventory')
   }
 
   function toggleSettings() {
-    toggleWindow('settings', 'Settings', <Settings 
-      {...props}
-    />)
-  }  
+    if (isMobile) {
+      toggleWindow?.('settings', 'Settings', SettingsPage, {
+        ...props
+      })
+      return
+    }
+
+    handleSetRequestedWindowId?.('settings')
+  }
 
   function toggleAchievements() {
-    toggleWindow('achievements', 'Achievements', <AchievementsList 
-      {...props}
-    />)
-  }  
+    if (isMobile) {
+      toggleWindow?.('achievements', 'Achievements', AchievementsList, {
+        ...props
+      })
+      return
+    }
+
+    handleSetRequestedWindowId?.('achievements')
+  }
   
   const handleNavigate = async (url: string) => {
     // setSubNavSelected('')
@@ -124,9 +98,9 @@ export default function NavMenu(props: NavMenuProps) {
 
   let townItems = [
     { title: 'Overview', navTo: '/' },
-    { title: `Adventurer's Guild`, navTo: '/adventurers-guild' },
-    { title: `Tavern`, navTo: '/tavern' },
-    { title: `Shoppe`, navTo: '/shoppe' },
+    { title: `Adventurer's Guild`, navTo: '/town/adventurers-guild' },
+    { title: `Tavern`, navTo: '/town/tavern' },
+    { title: `Shoppe`, navTo: '/town/shoppe' },
   ]
 
   let professionItems = [
@@ -237,11 +211,7 @@ export default function NavMenu(props: NavMenuProps) {
 
             <div className='flex-wrap gap-2'>
               <div
-                className={`nav-item window-button ${
-                  isWindowOpen('character')
-                    ? 'active'
-                    : ''
-                }`}
+                className={`nav-item window-button`}
                 onClick={toggleCharacter}
               >
                 Character
@@ -252,11 +222,7 @@ export default function NavMenu(props: NavMenuProps) {
 
             <div className='flex-wrap gap-2'>
               <div
-                className={`nav-item window-button ${
-                  isWindowOpen('inventory')
-                    ? 'active'
-                    : ''
-                }`}
+                className={`nav-item window-button`}
                 onClick={toggleInventory}
               >
                 Inventory
@@ -267,26 +233,7 @@ export default function NavMenu(props: NavMenuProps) {
 
             <div className='flex-wrap gap-2'>
               <div
-                className={`nav-item window-button ${
-                  isWindowOpen('quest')
-                    ? 'active'
-                    : ''
-                }`}
-                onClick={toggleQuest}
-              >
-                Quest
-              </div>
-            </div>
-
-            {divider}
-
-            <div className='flex-wrap gap-2'>
-              <div
-                className={`nav-item window-button ${
-                  isWindowOpen('achievements')
-                    ? 'active'
-                    : ''
-                }`}
+                className={`nav-item window-button`}
                 onClick={toggleAchievements}
               >
                 Achievements
@@ -297,11 +244,7 @@ export default function NavMenu(props: NavMenuProps) {
 
             <div className='flex-wrap gap-2'>
               <div
-                className={`nav-item window-button ${
-                  isWindowOpen('settings')
-                    ? 'active'
-                    : ''
-                }`}
+                className={`nav-item window-button`}
                 onClick={toggleSettings}
               >
                 Settings
@@ -384,10 +327,6 @@ export default function NavMenu(props: NavMenuProps) {
 
           <div className='nav-item' onClick={() => {toggleInventory(); setMobileMenuOpen(false)}}>
             Inventory
-          </div>
-
-          <div className='nav-item' onClick={() => {toggleQuest(); setMobileMenuOpen(false)}}>
-            Quest
           </div>
 
           <div className='nav-item' onClick={() => {toggleAchievements(); setMobileMenuOpen(false)}}>

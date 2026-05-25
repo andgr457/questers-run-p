@@ -1,288 +1,498 @@
 import { DateTime } from 'luxon'
+import { useCallback, useEffect, useState } from 'react'
 import CharacterQuestRequirement from './CharacterQuestRequirement'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
-import type { Quest } from '../../interfaces/quests/Quests.types'
-import StateOverlay from '../state-overlay/StateOverlay'
-import { useState } from 'react'
-import { QUEST_INTRO_IDS } from '../../data/quests/Quests.Intro.data'
-import { GuildRankByLevel } from '../../interfaces/characters/Character.types'
+import type { Quest, QuestGroup } from '../../interfaces/quests/Quests.types'
+import { QuestService } from '../../services/quests/QuestService'
+import type { QuestWithQuestProgressItem } from './CharacterQuests'
 
 interface CharacterQuestProps extends AppProperties {
-  handleShowPopup: (popupType: 'quest' | 'quest-group', relatedId: string) => void
   showActions?: boolean
   quest: Quest
   showOneTimeCompletedQuests: boolean
   showIneligibleQuests: boolean
   questItemClassName?: string
+  questId?: string
 }
 
-export default function CharacterQuest(props: CharacterQuestProps){
-    const {
-      achievements,
-      character,
-      characterQuestProgress,
-      allQuestsWithProgress,
-      showActions,
-      items,
+export default function CharacterQuest(props: CharacterQuestProps) {
+  const {
+    quest,
+    achievements,
+    character,
+    // characterQuestProgress,
+    // allQuestsWithProgress,
+    showActions,
+    items,
+    handleAddQuest,
+    handleAbandonQuest,
+    handleCompleteQuest,
+    questItemClassName = 'quest-item',
+    showOneTimeCompletedQuests,
+    showIneligibleQuests,
+    mobs,
+    // characterMobProgress,
+    quests,
+    questGroups,
+    // setAllQuestsWithQuestProgress,
+    allQuestProgress,
+    allInventories,
+    allMobProgress,
+  } = props
+
+  const [progressItem, setProgressItem] = useState<QuestWithQuestProgressItem | null>(null)
+  const [loading, setLoading] = useState(false)
+  const loadProgressItem = useCallback(async () => {
+    if (!quest || !character) return
+
+    setLoading(true)
+
+    const questService = new QuestService()
+
+    const progress = await questService.getQuestWithQuestProgress({
       quest,
-      handleAddQuest,
-      handleAbandonQuest,
-      handleCompleteQuest,
-      questItemClassName = 'quest-item',
-      showOneTimeCompletedQuests,
-      showIneligibleQuests,
-      mobs,
-      characterMobProgress
-    } = props
-    const [hideBlur, setHideBlur] = useState(false)
+      questGroup: questGroups?.find(qg => qg.id === quest.groupId) as QuestGroup,
+      allAchievements: achievements ?? [],
+      allInventories: allInventories ?? [],
+      allItems: items ?? [],
+      allMobs: mobs ?? [],
+      allMobProgress: allMobProgress ?? [],
+      allQuestProgress: allQuestProgress ?? [],
+      allQuests: quests ?? [],
+      character,
+    })
 
-    const characterAllProgress = allQuestsWithProgress?.filter(q => q.questProgress?.characterId === character?.id)
-    const characterQuestAllProgress = characterAllProgress?.filter(q => q.questProgress?.questId === quest?.id)
-    const completeProgress = characterQuestAllProgress?.filter(q => q.questProgress?.status === 'complete') ?? []
-    const anyPendingProgress = characterAllProgress?.filter(q => q.questProgress?.status === 'in-progress') ?? []
-    const thisQuestCharacterProgress = characterQuestAllProgress?.find(p => p.questProgress?.id === characterQuestProgress?.questProgress?.id)
-    const thisQuestProgress = allQuestsWithProgress?.find(q => q.quest.id === quest.id)
-    
-    let canTake = false
-    if(anyPendingProgress.length === 0){
-      if(quest.repeatable === true){
-        canTake = thisQuestProgress?.canTakeQuest ?? true
-      } else {
-        if(completeProgress.length === 0){
-          canTake = true
-        }
-      }
-    }
+    setProgressItem(progress)
+    setLoading(false)
+  }, [
+    quest,
+    character,
+    questGroups,
+    achievements,
+    items,
+    mobs,
+    allInventories,
+    allMobProgress,
+    allQuestProgress,
+    quests,
+  ])
 
-    let statusContent = thisQuestCharacterProgress?.questProgress?.status === 'in-progress'
-      ? 'inprogress'
-      : thisQuestCharacterProgress?.questProgress?.status === 'complete'
-      ? 'completed'
-      : ''
+    // initial load
+  useEffect(() => {
+    loadProgressItem()
+  }, [loadProgressItem])
 
-    if(quest.repeatable === false){
-      if(completeProgress.length === 1){
-        statusContent = ''
-      }
-    }
+  // optional external refresh hook
+  const handleRefreshClick = async () => {
+    await loadProgressItem()
+  }
 
-    const showButtons = !showActions ? false : true
-    const completedDate = completeProgress?.[0] && DateTime.fromISO(completeProgress[0].questProgress?.endDate as string).toLocal().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
-    let showOverlay = false
-    let showQuest = true
-    let overlayText = ''
-    const overlaySubTexts = []
-    if(quest.repeatable === false && completeProgress.length === 1){
-      showOverlay = true
-      overlayText = `One-Time Quest`
-      overlaySubTexts.push(<div>
-        Completed {completedDate}
-      </div>)
-      showQuest = !showOneTimeCompletedQuests ? false : true
-    } else if(characterQuestProgress?.questProgress){
-      if(characterQuestProgress.questProgress.status === 'in-progress' && characterQuestProgress.questProgress.questId !== quest.id){
-        showOverlay = true
-        overlayText = 'QUESTING'
-        overlaySubTexts.push(<div>
-          Already on the quest "{characterQuestProgress.quest.title}".
-        </div>)
-      }
-    } else if(character?.level){
-      const questLevelReq = quest.startRequirements.find(sr => sr.level)
-      if(questLevelReq?.level){
-        if(character.level < questLevelReq.level){
-          showOverlay = true
-          overlayText = 'REQUIRES'
-          overlaySubTexts.push(<div>
-            Level {questLevelReq.level}
-          </div>)
-        }
-      }
-    }
+  let statusContent = ''
+  if (progressItem?.questProgress?.status === 'in-progress') {
+    statusContent = 'inprogress'
+  }
 
-    let subText
-    if(overlaySubTexts.length > 0){
-      subText = <div>
-        {overlaySubTexts.map(st => {
-          return st
-        })}
-      </div>
-    }
+  if (
+    quest.repeatable === false &&
+    progressItem?.questProgress?.status === 'complete'
+  ) {
+    statusContent = 'completed'
+  }
 
-    if(!showQuest || (canTake === false && showIneligibleQuests === false)){
-      return null
-    }
+  const showButtons = showActions === true
 
-    return <div id={`${quest.id === QUEST_INTRO_IDS.ADVENTURERS_GUILD_ID ? 'tutorial-quest-complete' : quest.id}`} onMouseEnter={() => {setHideBlur(true)}} onMouseLeave={() => {setHideBlur(false)}}>
-      <StateOverlay active={hideBlur === false && showOverlay} text={overlayText} subText={subText}>
-        <div  className={`${questItemClassName} ${thisQuestCharacterProgress?.canCompleteQuest === true ? 'complete' : ''}`}>
-          {showButtons === true && <div className='quest-actions'>
-            {canTake === true && <button 
-              className={`success`}
-              onClick={async () => {
-                await handleAddQuest?.(quest, character?.id as string)
-              }}
-              >
-              Take
-            </button>}
-            {thisQuestCharacterProgress?.questProgress?.status === 'in-progress' && thisQuestCharacterProgress.canCompleteQuest === false && <button 
-                className={`danger`}
+  if(!progressItem){
+    return <div>Loading...</div>
+  }
+
+  if(progressItem.quest.repeatable === false && 
+    progressItem.questProgress?.status === 'complete' &&
+    !showOneTimeCompletedQuests
+  ){
+    return null
+  }
+
+  if(!showIneligibleQuests && !progressItem.startRequirements.every(req => req.completed === true)){
+    return null
+  }
+
+  return (
+    <div id={progressItem.quest.id}>
+      <div
+        className={`${questItemClassName} ${
+          progressItem?.canCompleteQuest === true
+            ? 'complete'
+            : ''
+        }`}
+      >
+        {showButtons === true && (
+          <div className='quest-actions'>
+            {progressItem.canTakeQuest === true && (
+              <button
+                className='success'
+                disabled={loading}
                 onClick={async () => {
-                  await handleAbandonQuest?.(thisQuestCharacterProgress?.questProgress?.id as string)
+                  await handleAddQuest?.(
+                    progressItem.quest,
+                    character?.id as string,
+                  )
+                  
                 }}
               >
-              Abandon
-            </button>}
-            {thisQuestCharacterProgress?.questProgress?.status === 'in-progress' && thisQuestCharacterProgress.canCompleteQuest === true && <button 
-                className={`success`}
-                onClick={async () => {
-                  await handleCompleteQuest?.(thisQuestCharacterProgress)
-                }}
-              >
-              Complete
-            </button>}
-             {statusContent && <div
+                Take
+              </button>
+            )}
+
+            {progressItem?.questProgress?.status === 'in-progress' && (
+              <>
+                {progressItem.canCompleteQuest === false && (
+                  <button
+                    className="danger"
+                    onClick={async () => {
+                      await handleAbandonQuest?.(
+                        progressItem?.questProgress?.id as string,
+                      )
+                      
+                    }}
+                  >
+                    Abandon
+                  </button>
+                )}
+
+                {progressItem.canCompleteQuest === false && <button
+                  className="success"
+                  onClick={async () => {
+                    await handleRefreshClick()
+                    
+                  }}
+                >
+                  Refresh
+                </button>}
+              </>
+            )}
+
+            {progressItem?.questProgress?.status === 'in-progress' &&
+              progressItem.canCompleteQuest === true && (
+                <button
+                  className='success'
+                  onClick={async () => {
+                    await handleCompleteQuest?.(
+                      progressItem,
+                    )
+                    
+                  }}
+                >
+                  Complete
+                </button>
+              )}
+
+            {statusContent && (
+              <div
                 className={`quest-status ${statusContent}`}
               >
-                {thisQuestCharacterProgress?.questProgress?.status}
-              </div>}
-          </div>}
-          
-          <div className='quest-item-header'>
-            {quest?.title}
+                {statusContent}
+              </div>
+            )}
           </div>
+        )}
 
-          <div className='quest-item-date'>
-            {quest?.repeatable === true ? 'repeatable' : 'one-time quest'}
-          </div>
+        <div className='quest-item-header'>
+          {progressItem.quest?.title}
+        </div>
 
-          {thisQuestCharacterProgress && <div>
-            {thisQuestCharacterProgress.questProgress?.startDate && <div className='quest-item-date'>
-              <div>Started on {DateTime.fromISO(thisQuestCharacterProgress.questProgress?.startDate as string).toLocal().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}</div>
-            </div>}
-            {quest.repeatable === false && completeProgress.length > 0 && completeProgress[0].questProgress?.endDate && <div className='quest-item-date'>
-              <div>Completed on {DateTime.fromISO(completeProgress[0].questProgress?.endDate as string).toLocal().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}</div>
-            </div>}
-            
-          </div>}
+        <div className='quest-item-date'>
+          {progressItem.quest?.repeatable === true
+            ? 'repeatable'
+            : 'one-time quest'}
+        </div>
 
-          <div className='quest-item-description'>
-            {quest?.description}
-          </div>
-          
-          <div className='quest-sections'>
-            <div>
-              <div className={`quest-item-requirements-header ${
-                quest?.startRequirements?.filter(req => req.completed === true).length === quest?.startRequirements.length ? 'success'
-                  : ''
-              }`}>
-                {quest?.startRequirements?.filter(req => req.completed === true)?.length ?? 0} / {quest?.startRequirements?.length ?? 0} Take Requirements</div>
-              <div className='quest-item-requirements-list'>
-                {quest?.startRequirements?.map(r => {
-                  const requiredAchievement = achievements?.find(a => a?.id === r.achievementId)
-                  const requiredItem = items?.find(i => i?.id === r.itemId)
-                  const requiredQuest = allQuestsWithProgress?.find(qwp => qwp.quest.id === r.questId)
-                  const requiresGuildRank = typeof r.guildRankLevel === 'number'
-
-                  let requiredRank = ''
-                  if(typeof r.guildRankLevel === 'number'){
-                    //@ts-ignore
-                    requiredRank = GuildRankByLevel[r.guildRankLevel as number]
-                  }
-
-                  const txns = thisQuestCharacterProgress?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === r.itemId) ?? []
-                  let txnTotal = 0
-                  for(const txn of txns){
-                    txnTotal += txn.quantity
-                  }
-                  return <div className={r.completed === true ? 'quest-item-requirements-item completed' : 'quest-item-requirements-item'}>
-                    <div >
-                      {!r.stats && <div style={{float: 'left'}}>
-                        {r.completed === true ? '✔' : '✘'}
-                      </div>}
-                      {r.level && <>Level <strong >{r.level}</strong></>}
-                      {r.questId && <div title={requiredQuest?.quest?.description}>Quest: <strong>{requiredQuest?.quest?.title}</strong></div>}
-                      {r.achievementId && <div title={requiredAchievement?.description}>Achivement: <strong>{requiredAchievement?.title}</strong></div>}
-                      {r.itemId && r.itemAmount && <><strong>{txnTotal > r.itemAmount ? r.itemAmount : txnTotal}/{r.itemAmount} {requiredItem?.name}</strong></>}
-                      {requiresGuildRank === true && <div>Guild Rank: <strong>{requiredRank}</strong></div>}
-                      {r.stats && <> 
-                        {Object.getOwnPropertyNames(r.stats).map(propertyName => {
-                          //@ts-ignore
-                          const name = r.stats[propertyName].name
-                          //@ts-ignore
-                          const value = r.stats[propertyName].value
-                          if(value === 0) return null
-                          return <div>
-                            {r.completed === true ? '✔' : '✘'} {name}: <strong>{value}</strong>
-                          </div>
-                        })}
-                      </>}
-                    </div>
-                  </div>
-                })}
-              </div>
-            </div>
-                
-            <div>
-              <div className={`quest-item-requirements-header ${quest?.completionRequirements?.filter(req => req.completed === true)?.length === quest.completionRequirements?.length ? 'success' : ''}`}>
-                {quest?.completionRequirements?.filter(req => req.completed === true)?.length ?? 0} / {quest?.completionRequirements?.length ?? 0} Completed Requirements
-              </div>
-              <div className='quest-item-requirements-list'>
-                
-                {quest?.completionRequirements?.map(r => {
-                  const achievement = achievements?.find(a => a?.id === r.achievementId)
-                  const item = items?.find(i => i?.id === r.itemId)
-                  const mob = mobs?.find(m => m.id === r.mobId)
-
-                  let txns = thisQuestCharacterProgress?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === r.itemId) ?? []
-                  if(!txns || txns.length === 0){
-                    txns = allQuestsWithProgress?.find(q => q.quest.id === quest.id)?.questRequirementsInventoryTxns?.filter(txn => txn.itemId === r.itemId) ?? []
-                  }
-                  let txnTotal = 0
-                  for(const txn of txns){
-                    txnTotal += txn.quantity
-                  }
-                  const characterQuestMobProgress = characterMobProgress?.filter(mp => mp.questProgressId === thisQuestCharacterProgress?.questProgress?.id && thisQuestCharacterProgress?.questProgress?.status === 'in-progress')
-                  return <CharacterQuestRequirement 
-                    started={thisQuestCharacterProgress?.questProgress?.status === 'in-progress'}
-                    completed={r.completed === true}
-                    achievement={achievement}
-                    characterItemTotal={txnTotal}
-                    item={item}
-                    questItemTotal={r.itemAmount}
-                    timeMinutes={r.timeMinutes}
-                    startDate={characterQuestProgress?.questProgress?.startDate}
-                    mob={mob}
-                    characterMobTotal={characterQuestMobProgress?.length}
-                    questMobTotal={r.mobAmount}
-                  />                
-                })}
-              </div>
-            </div>
-
-            <div>
-              <div className='quest-item-requirements-header success'>Rewards</div>
-              <div className='quest-item-requirements-list'>
-                {quest.rewards.map(r => {
-                  const item = items?.find(i => i?.id === r.itemId)
-                  return <div className='quest-reward'>
-                    <div>
-                      {r.xp && <>XP: <strong>{r.xp.toLocaleString()}</strong></>}
-                      {r.itemId && r.itemAmount && <>{item?.name}: <strong>{r.itemAmount}</strong></>}
-
-                    </div>
-                  </div>
-                })}
-              </div>
-            </div>
-
-            <div>
+        {progressItem && (
+          <div>
+            {progressItem.questProgress?.startDate && (
               <div className='quest-item-date'>
-                {completeProgress?.length} completed.
+                <div>
+                  Started on{' '}
+                  {DateTime.fromISO(
+                    progressItem.questProgress?.startDate as string,
+                  )
+                    .toLocal().toLocaleString(
+                      DateTime.DATETIME_SHORT_WITH_SECONDS,
+                    )}
+                </div>
               </div>
+            )}
+
+            {progressItem.quest.repeatable === false 
+              && progressItem.questProgress?.status === 'complete'
+              && progressItem.questProgress?.endDate && (
+                <div className='quest-item-date'>
+                  <div>
+                    Completed on{' '}
+                    {DateTime.fromISO(
+                      progressItem.questProgress.endDate as string,
+                    )
+                      .toLocal().toLocaleString(
+                        DateTime.DATETIME_SHORT_WITH_SECONDS,
+                      )}
+                  </div>
+                </div>
+              )}
+          </div>
+        )}
+
+        <div className='quest-item-description'>
+          {progressItem.quest.description}
+        </div>
+
+        <div className='quest-sections'>
+          <div>
+            <div
+              className={`quest-item-requirements-header ${
+                progressItem?.startRequirements?.filter(
+                  req => req.completed === true,
+                ).length ===
+                progressItem.quest?.startRequirements.length
+                  ? 'success'
+                  : ''
+              }`}
+            >
+              {progressItem?.startRequirements?.filter(
+                req => req.completed === true,
+              )?.length ?? 0}{' '}
+              / {progressItem.quest?.startRequirements?.length ?? 0}{' '}
+              Take Requirements
+            </div>
+
+            <div className='quest-item-requirements-list'>
+              {progressItem?.startRequirements?.map(
+                (r, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={
+                        r.completed === true
+                          ? 'quest-item-requirements-item completed'
+                          : 'quest-item-requirements-item'
+                      }
+                    >
+                      <div>
+                        {!r.stats && <div
+                          style={{
+                            float: 'left',
+                          }}
+                        >
+                          {r.completed === true
+                            ? '✔'
+                            : '✘'}
+                        </div>}
+
+                        {typeof r.level === 'number' && (
+                          <>
+                            Level{' '}
+                            <strong>
+                              {r.level}
+                            </strong>
+                          </>
+                        )}
+
+                        {r.questId && (
+                          <div
+                            title={
+                              r.questDescription
+                            }
+                          >
+                            Quest:{' '}
+                            <strong>
+                              {
+                                r.questTitle
+                              }
+                            </strong>
+                          </div>
+                        )}
+
+                        {r.achievementId && (
+                          <div
+                            title={
+                              r?.achivementDescription
+                            }
+                          >
+                            Achievement:{' '}
+                            <strong>
+                              {
+                                r.achivementTitle
+                              }
+                            </strong>
+                          </div>
+                        )}
+
+                        {r.itemId &&
+                          typeof r.itemAmount === 'number' && (
+                            <>
+                              <strong>
+                                {Math.min(
+                                  r.itemCharacterAmount ?? 0,
+                                  r.itemAmount,
+                                )}
+                                /{r.itemAmount}{' '}
+                                {r.itemName}
+                              </strong>
+                            </>
+                          )}
+
+                        {r.guildRank && (
+                          <div>
+                            Guild Rank:{' '}
+                            <strong>
+                              {r.guildRank}
+                            </strong>
+                          </div>
+                        )}
+
+                        {r.reqStats && (
+                          <>
+                            {r.reqStats.map(
+                              (reqStat) => {
+                                if (
+                                  reqStat.reqAmount === 0
+                                ) {
+                                  return null
+                                }
+
+                                return (
+                                  <div
+                                    key={
+                                      `${reqStat.statName}_${progressItem.quest.id}`
+                                    }
+                                  >
+                                    {reqStat.completed === true
+                                      ? '✔'
+                                      : '✘'}{' '}
+                                    {reqStat.statName.toUpperCase()}:{' '}
+                                    <strong>
+                                      {
+                                        reqStat.reqAmount
+                                      }
+                                    </strong>
+                                  </div>
+                                )
+                              },
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )
+                },
+              )}
+            </div>
+          </div>
+
+          <div>
+            <div
+              className={`quest-item-requirements-header ${
+                progressItem?.completionRequirements?.filter(
+                  req => req.completed === true,
+                )?.length === quest.completionRequirements?.length
+                  ? 'success'
+                  : ''
+              }`}
+            >
+              {progressItem?.completionRequirements?.filter(
+                req => req.completed === true,
+              )?.length ?? 0}{' '}
+              /{' '}
+              {progressItem.quest?.completionRequirements?.length ?? 0}{' '}
+              Completed Requirements
+            </div>
+
+            <div className='quest-item-requirements-list'>
+              {progressItem?.completionRequirements?.map(
+                (r, index) => {
+                 
+                  return (
+                    <CharacterQuestRequirement
+                      key={`${index}_completion_${progressItem.quest.id}`}
+                      req={r}
+                      
+                      startDate={
+                        progressItem?.questProgress?.startDate
+                      }
+                      handleRefresh={handleRefreshClick}
+                    />
+                  )
+                },
+              )}
+            </div>
+          </div>
+
+          <div>
+            <div className='quest-item-requirements-header success'>
+              Rewards
+            </div>
+
+            <div className='quest-item-requirements-list'>
+              {progressItem.questRewardItems.map(
+                (r, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className='quest-item-requirements-item'
+                    >
+                      <div>
+                        {typeof r.xp === 'number' && (
+                          <>
+                            XP:{' '}
+                            <strong>
+                              {r.xp.toLocaleString()}
+                            </strong>
+                          </>
+                        )}
+
+                        {r.itemId &&
+                          typeof r.itemAmount === 'number' && (
+                            <>
+                              {
+                                r.itemName
+                              }
+                              :{' '}
+                              <strong>
+                                {
+                                  r.itemAmount
+                                }
+                              </strong>
+                            </>
+                          )}
+
+                        {r.achivementId && (
+                          <>
+                            Achievement:{' '}
+                            <strong>
+                              {
+                                r.achievementTitle
+                              }
+                            </strong>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )
+                },
+              )}
+            </div>
+          </div>
+
+          <div>
+            <div className='quest-item-date'>
+              {allQuestProgress?.filter(
+                aqp => aqp.characterId === character.id &&
+                  aqp.questId === progressItem.quest.id &&
+                  aqp.status === 'complete'
+              )?.length}{' '}
+              completed.
             </div>
           </div>
         </div>
-      </StateOverlay>
+      </div>
     </div>
+  )
 }

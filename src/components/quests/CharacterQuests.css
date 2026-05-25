@@ -39,9 +39,8 @@
 
 .quest-item {
   border-radius: 3px;
-  max-width: 450px;
-  min-height: 500px;
-  min-width: 0;
+  max-width: 350px;
+  max-height: fit-content;
   background: var(--cool-bg-2);
   padding: 7px;
   box-shadow: 0 0 4px var(--text);
@@ -75,7 +74,6 @@
   padding: 5px;
   /* margin-bottom: 0.25rem; */
   letter-spacing: 2px;
-
   text-shadow:
     0 0 4px var(--bg-dark),
     0 0 2px var(--text);
@@ -190,6 +188,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+  justify-content: center;
+
 }
 
 .quest-actions button {

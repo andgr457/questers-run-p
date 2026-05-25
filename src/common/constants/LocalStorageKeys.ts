@@ -6,4 +6,5 @@ export const LOCAL_STORAGE_KEYS = {
   ACHIEVEMENTS: 'qr-achievements',
   QUEST_PROGRESS: 'qr-quest-progress',
   MOB_PROGRESS: 'qr-mob-progress',
+  SETTINGS: 'qr-settings',
 }

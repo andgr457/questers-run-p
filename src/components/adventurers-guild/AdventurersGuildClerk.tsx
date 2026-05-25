@@ -8,7 +8,7 @@ import { JumpyText } from '../JumpyText';
 import { GuildRanks } from '../../interfaces/characters/Character.types';
 
 interface AdventurersGuildClerkModalProps extends AppProperties {
-  onJoin: () => void
+  onJoin: () => Promise<void>
 }
 
 interface ButtonConfig {
@@ -86,7 +86,7 @@ export default function AdventurersGuildClerk(props: AdventurersGuildClerkModalP
             })
             setShowDiscussion(true)
             await sleep(250)
-            await onJoin?.()
+            onJoin?.()
           }
           newDiscussion = {
             discussion: ADVENTURERS_GUILD_DISCUSSIONS_JOIN.find(d => d.index === discussionIndex) as Discussion,

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import ConfirmModal from '../components/modals/ConfirmModal';
 
-interface ShowConfirmProps {
+export interface ShowConfirmProps {
   message: string
   title: string
   isYesNo: boolean

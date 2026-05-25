@@ -1,4 +1,3 @@
-import { ITEM_CURRENCY_GOLD } from '../../data/items/currency/Item.Currency.data'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import type { TavernListItem } from '../../interfaces/tavern/Tavern.types'
 import SpinnerOverlay from '../spinner/SpinnerOverlay'
@@ -14,9 +13,9 @@ export default function TavernItem(props: TavernItemProps){
   const {
     canDo,
     character,
-    characterInventories,
     tavernItem,
-    handleTavernItemClicked
+    handleTavernItemClicked,
+    characterGold
   } = props
 
   let stateOverlayActive = false
@@ -25,22 +24,15 @@ export default function TavernItem(props: TavernItemProps){
   const hpFull = character?.stats?.hp?.value === character?.stats.hp?.max
   const mpFull = character?.stats?.mp?.value === character?.stats.mp?.max
   const staminaFull = character?.stats?.stamina?.value === character?.stats.stamina?.max
-  const currency = characterInventories?.find(i => i.title === 'Currency')
   
-  let gold = 0
   let seconds = 0
   let reqGold = 0
   let percent = 0
   
-  currency?.transactions?.forEach(txn => {
-    if(txn.itemId === ITEM_CURRENCY_GOLD.id){
-      gold += txn.quantity
-    }
-  })
   if(tavernItem.requirements && tavernItem?.rewards){
     if(typeof tavernItem.requirements?.gold === 'number'){
       reqGold = tavernItem.requirements.gold
-      if(gold < reqGold){
+      if(characterGold < reqGold){
         stateOverlaySubText.push(`${reqGold} Gold Required`)
       }
     }

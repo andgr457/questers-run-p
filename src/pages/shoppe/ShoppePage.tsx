@@ -3,7 +3,6 @@ import type { AppProperties } from '../../interfaces/AppProperties.types';
 import '../../components/shoppe/Shoppe.css'
 import ShoppeLists from '../../components/shoppe/ShoppeLists';
 import ShoppeCart, { type ShoppeCartItem } from '../../components/shoppe/ShoppeCart';
-import { useConfirm } from '../../providers/ConfirmProvider';
 import { ITEM_CURRENCY_IDS } from '../../data/items/currency/Item.Currency.data';
 import { characterServiceGetItemAmount } from '../../services/Character.Service';
 
@@ -17,9 +16,9 @@ export default function ShoppePage(props: ShoppePageProps){
     characterInventories,
     items,
     handleShoppeConfirmation,
-    character
+    character,
+    showConfirm
   } = props
-  const {showConfirm} = useConfirm()
   const [cartItems, setCartItems] = useState<ShoppeCartItem[]>([])
   const [showCart, setShowCart] = useState(false)
 
@@ -174,15 +173,7 @@ export default function ShoppePage(props: ShoppePageProps){
     setCartItems([])
   }, [cartItems])
 
-  return <div>
-    <div className='character-section-title'>
-      <div className='page-header-banner'>
-        <div className='page-header-title'>
-          SHOPPE
-        </div>
-      </div>
-    </div>
-    
+  return <div>    
     <div className='shoppe-cart-sticky'>
       <div className='shoppe-item-info-list'>
         <div className='shoppe-item-info small'>

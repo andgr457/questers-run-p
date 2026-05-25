@@ -26,9 +26,9 @@ import {
 
 import { QUEST_INTRO_ADVENTURERS_GUILD } from '../../data/quests/Quests.Intro.data'
 
-import { useConfirm } from '../../providers/ConfirmProvider'
 import CharacterStatCardMin from './CharacterStatCardMin'
 import { GAME_VERSION } from '../../services/AppService'
+import { useNavigate } from 'react-router-dom'
 
 interface NewCharacterModalProps extends AppProperties {
 
@@ -45,7 +45,9 @@ export default function CharacterNewRename(
     handleAddInventory,
     handleAddQuest,
     handleSetCharacter,
+    showConfirm
   } = props
+  const navigate = useNavigate()
 
   const isRename = Boolean(character?.name)
 
@@ -68,8 +70,6 @@ export default function CharacterNewRename(
   const [newName, setNewName] = useState(
     character?.name ?? ''
   )
-
-  const { showConfirm } = useConfirm()
 
   /**
    * Load classes
@@ -226,8 +226,9 @@ export default function CharacterNewRename(
       QUEST_INTRO_ADVENTURERS_GUILD,
       createdCharacter.id
     )
-
-    handleSetCharacter?.(createdCharacter)
+    
+    handleSetCharacter?.({...createdCharacter})
+    navigate('/town/adventurers-guild')
 
   }, [
     currentName,
@@ -235,10 +236,6 @@ export default function CharacterNewRename(
     isRename,
     selectedClass,
     characterForm,
-    showConfirm,
-    handleSetCharacter,
-    handleAddInventory,
-    handleAddQuest,
   ])
 
   const handleCancel = useCallback(() => {
@@ -247,14 +244,12 @@ export default function CharacterNewRename(
   }, [character?.name])
 
   const characterClass = characterClasses.find(c => c.id === selectedClass?.id)
-  return <div className='adv-g-clerk-layout'>
-    <div className='adv-g-clerk-sidebar'>
-      <div className='adv-g-clerk-section'>
-        <div className='adv-g-clerk-section-title'>
-          Actions
-        </div>
+  return <div className='adv-g-clerk-layout'>    
+    <div className='adv-g-clerk-discussion'>
+      <div style={{width: '100%', textAlign: 'center'}}>
         <div key={`action-save`}>
           <button
+            style={{width: '85%'}}
             className='success'
             onClick={handleSubmit}
           >
@@ -272,14 +267,15 @@ export default function CharacterNewRename(
           )}
         </div>
       </div>
-    </div>
-    
-    <div className='adv-g-clerk-discussion'>
       <div className={`adv-g-clerk-discussion-content show`}>
-        <div>
+        
+        <div style={{textAlign: 'center', letterSpacing: '1px'}}>
           {isRename
             ? 'Apply for a name change.'
-            : ACHIEVEMENT_INTRO_MAIN_CHARACTER.description}
+            : <div>
+            <div>Welcome to Quester's Run!</div>
+            <div>Here you'll be able to progress through the world by completing quests, collecting materials, crafting items, weapons, and armor, as well as partying up with other adventurers to conquer monsters and dungeons.</div>    
+          </div>}
         </div>
         <div style={{marginTop: '5px'}}>
           <div>
