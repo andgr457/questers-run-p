@@ -2,14 +2,16 @@ import { useRef } from 'react'
 import type { WindowData } from './Windows.types'
 import { useWindows } from './WindowProvider'
 import { useIsMobile } from '../../hooks/useIsMobile'
+import type { AppProperties } from '../../interfaces/AppProperties.types'
 
-interface Props {
+interface GameWindowProps extends AppProperties {
   win: WindowData
 }
 
-export default function GameWindow(props: Props) {
-  const { win } = props
-
+export default function GameWindow(props: GameWindowProps) {
+  const {
+    win
+  } = props
   const {
     closeWindow,
     moveWindow,
@@ -34,9 +36,7 @@ export default function GameWindow(props: Props) {
   // =========================
   // DRAGGING
   // =========================
-  function handleDragStart(
-    e: React.MouseEvent<HTMLDivElement>
-  ) {
+  function handleDragStart(e: React.MouseEvent<HTMLDivElement>) {
     dragging.current = true
 
     dragOffset.current = {
@@ -62,7 +62,6 @@ export default function GameWindow(props: Props) {
 
   function handleDragEnd() {
     dragging.current = false
-
     window.removeEventListener('mousemove', handleDragMove)
     window.removeEventListener('mouseup', handleDragEnd)
   }
@@ -70,9 +69,7 @@ export default function GameWindow(props: Props) {
   // =========================
   // RESIZING
   // =========================
-  function handleResizeStart(
-    e: React.MouseEvent<HTMLDivElement>
-  ) {
+  function handleResizeStart(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation()
 
     resizing.current = true
@@ -93,11 +90,8 @@ export default function GameWindow(props: Props) {
   function handleResizeMove(e: MouseEvent) {
     if (!resizing.current) return
 
-    const deltaX =
-      e.clientX - resizeStart.current.mouseX
-
-    const deltaY =
-      e.clientY - resizeStart.current.mouseY
+    const deltaX = e.clientX - resizeStart.current.mouseX
+    const deltaY = e.clientY - resizeStart.current.mouseY
 
     const newWidth = Math.max(
       win.minWidth || 300,
@@ -114,7 +108,6 @@ export default function GameWindow(props: Props) {
 
   function handleResizeEnd() {
     resizing.current = false
-
     window.removeEventListener('mousemove', handleResizeMove)
     window.removeEventListener('mouseup', handleResizeEnd)
   }
@@ -122,6 +115,11 @@ export default function GameWindow(props: Props) {
   // =========================
   // RENDER
   // =========================
+
+  const Component = win.Component
+
+  if (!Component) return null
+
   return (
     <div
       className={`window ${isMobile ? 'mobile' : ''}`}
@@ -138,10 +136,7 @@ export default function GameWindow(props: Props) {
       }
       onMouseDown={() => focusWindow(win.id)}
     >
-      <div
-        className="window-header"
-        onMouseDown={handleDragStart}
-      >
+      <div className="window-header" onMouseDown={handleDragStart}>
         <div>{win.title}</div>
 
         <div
@@ -153,7 +148,10 @@ export default function GameWindow(props: Props) {
       </div>
 
       <div className="window-content">
-        {win.content}
+        <Component
+          {...win.props}
+          {...props}
+        />
       </div>
 
       <div

@@ -1,266 +1,317 @@
-import { DateTime } from 'luxon';
-import type { QuestWithQuestProgress } from '../../components/quests/CharacterQuests';
-import type { Achievement } from '../../interfaces/achievements/Achievement.types';
-import { GuildRankLevelByRank, type Character } from '../../interfaces/characters/Character.types';
-import type { Inventory, InventoryTransaction } from '../../interfaces/inventories/Inventory.types';
-import type { Item } from '../../interfaces/items/Item.types';
-import type { Quest, QuestGroup, QuestProgress } from '../../interfaces/quests/Quests.types';
-import type { Mob, MobProgress } from '../../interfaces/mobs/Mob.types';
+import { DateTime } from 'luxon'
+import type { Achievement } from '../../interfaces/achievements/Achievement.types'
+import { GuildRankByLevel, GuildRankLevelByRank, type Character, type Stat } from '../../interfaces/characters/Character.types'
+import type { Inventory } from '../../interfaces/inventories/Inventory.types'
+import type { Item } from '../../interfaces/items/Item.types'
+import type { Quest, QuestCompletionRequirement, QuestGroup, QuestProgress, QuestRewardProgressItem, QuestStartRequirement, QuestStartRequirementStat } from '../../interfaces/quests/Quests.types'
+import type { Mob, MobProgress } from '../../interfaces/mobs/Mob.types'
+import { characterServiceGetItemAmount } from '../Character.Service'
+import type { QuestWithQuestProgressItem } from '../../components/quests/CharacterQuests'
+
+interface GetQuestWithProgressProps {
+  quest: Quest,
+  questGroup: QuestGroup,
+  allQuestProgress: QuestProgress[],
+  character: Character,
+  allAchievements: Achievement[],
+  allInventories: Inventory[],
+  allItems: Item[],
+  allQuests: Quest[],
+  allMobProgress: MobProgress[],
+  allMobs: Mob[],
+}
 
 export class QuestService {
+  private formatTimeLeft(totalMinutes: number, startTime: DateTime | string) {
+    const start = typeof startTime === 'string'
+      ? DateTime.fromISO(startTime)
+      : startTime
 
-  async getQuestsWithQuestProgress(
-    character: Character, 
-    quests: Quest[], 
-    questGroups: QuestGroup[], 
-    characterQuestProgress: QuestProgress[],
-    characterInventories: Inventory[],
-    achievements: Achievement[],
-    items: Item[],
-    mobs: Mob[],
-    mobProgress: MobProgress[]
-  ): Promise<QuestWithQuestProgress[]> {
-    let anyQuestInProgress = false
-    
-    const questsWithProgress: QuestWithQuestProgress[] = []
-    for(const q of quests){
-      const progress = characterQuestProgress?.find(qp => qp.questId === q.id && qp.characterId === character.id)
-      if(progress && progress.status === 'in-progress'){
-        anyQuestInProgress = true  
-      }
+    const end = start.plus({ minutes: totalMinutes })
+    const now = DateTime.now()
 
-      let canComplete = true
-      
-      const relatedAchievements: Achievement[] = []
-      const relatedMobs: Mob[] = []
-      const relatedItems: Item[] = []
-      const relatedQuests: Quest[] = []
-      const relatedTxns: InventoryTransaction[] = []
-      for(const req of q.startRequirements){
-        req.completed = false
-        if(typeof req.guildRankLevel === 'number'){
-          const characterRankLevel = GuildRankLevelByRank[character.guildRank]
-          if(characterRankLevel >= req.guildRankLevel){
-            req.completed = true
-          }
-        }
-        if(req.itemId){
-          if(!relatedItems.find(ri => ri.id === req.itemId)){
-            const item = items.find(i => i.id === req.itemId)
-            relatedItems.push(item as Item)
-            for(const inventory of characterInventories){
-              for(const txn of inventory.transactions){
-                if(txn.itemId === req.itemId){
-                  const exists = relatedTxns.find(rt => rt.id === txn.id)
-                  if(!exists){
-                    relatedTxns.push(txn)
-                  }
-                }
-              }
-            }
-          }
-        }
-        if(req.achievementId){
-          if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
-            const achievement = achievements.find(a => a.id === req.achievementId)
-            relatedAchievements.push(achievement as Achievement)
-          }
-        }
-        if(req.questId){
-          if(!relatedQuests.find(rq => rq.id === req.questId)){
-            const quest = quests.find(quest => quest.id === req.questId)
-            relatedQuests.push(quest as Quest)
-          }
-        }
+    const timeLeftSeconds = Math.max(
+      0,
+      Math.round(end.diff(now, 'seconds').seconds)
+    )
+
+    const totalSeconds = Math.round(totalMinutes * 60)
+
+    return {
+      totalTimeHours: Math.floor(totalMinutes / 60),
+      totalTimeMinutes: totalMinutes,
+      totalTimeSeconds: totalSeconds,
+
+      timeLeftHours: timeLeftSeconds / 3600,
+      timeLeftMinutes: (timeLeftSeconds % 3600) / 60,
+      timeLeftSeconds,
+    }
+  }
+
+  async getQuestWithQuestProgress(
+    props: GetQuestWithProgressProps
+  ): Promise<QuestWithQuestProgressItem> {
+    const {
+      quest,
+      questGroup,
+      allQuestProgress,
+      character,
+      allAchievements,
+      allInventories,
+      allItems,
+      allQuests,
+      allMobProgress,
+      allMobs,
+    } = props
+    let canTakeQuest = false
+    let canCompleteQuest = false
+    const startRequirements: QuestStartRequirement[] = []
+    const completionRequirements: QuestCompletionRequirement[] = []
+    const rewards: QuestRewardProgressItem[] = []
+    const characterMobProgress = allMobProgress.filter(mp => mp.characterId === character.id)
+    const characterProgressItems = allQuestProgress.filter(aqp => aqp.characterId === character.id)
+    const characterProgressItemInProgress = characterProgressItems.find(cpi => cpi.questId === quest.id && cpi.status === 'in-progress')
+    const characterProgressItemComplete = characterProgressItems.find(cpi => cpi.questId === quest.id && cpi.status === 'complete')
+    const characterInvenentoryBags = allInventories.filter(i => i.characterId === character.id)
+    const isNonRepeatableAndComplete = quest.repeatable === false && typeof characterProgressItemComplete !== 'undefined'
+
+    //start requirements
+    for(const requirement of quest.startRequirements){
+      const req = structuredClone(requirement)
+      req.completed = false
+
+      //start requirement - achievement needed
+      if(req.achievementId){
+        const characterHasAchivement = character.achievements.find(a => a.achievementId === req.achievementId)
+        const achievement = allAchievements.find(a => a.id === req.achievementId)
+        startRequirements.push({
+          ...req,
+          achivementTitle: achievement?.title,
+          achivementDescription: achievement?.description,
+          completed: typeof characterHasAchivement !== 'undefined',
+        })    
       }
-      for(const req of q.completionRequirements){
-        req.completed = false
-        if(req.achievementId){
-          if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
-            const achievement = achievements.find(a => a.id === req.achievementId)
-            relatedAchievements.push(achievement as Achievement)
-          }
-        }
-        if(req.mobId){
-          if(!relatedMobs.find(rm => rm.id === req.mobId)){
-            const mob = mobs.find(m => m.id === req.mobId)
-            relatedMobs.push(mob as Mob)
-          }
-        }
-        if(req.itemId){
-          if(!relatedItems.find(ri => ri.id === req.itemId)){
-            const item = items.find(i => i.id === req.itemId)
-            relatedItems.push(item as Item)
-            for(const inventory of characterInventories){
-              for(const txn of inventory.transactions){
-                if(txn.itemId === req.itemId){
-                  const exists = relatedTxns.find(rt => rt.id === txn.id)
-                  if(!exists){
-                    relatedTxns.push(txn)
-                  }
-                }
-              }
-            }
-          }
-        }
-        if(req.achievementId){
-          if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
-            const achievement = achievements.find(a => a.id === req.achievementId)
-            relatedAchievements.push(achievement as Achievement)
-          }
+      //start requirement - item & amount needed
+      if(req.itemId && typeof req.itemAmount === 'number'){
+        const item = allItems.find(i => i.id === req.itemId)
+        if(item){
+          const characterInventoryItemAmount = characterServiceGetItemAmount(characterInvenentoryBags, item.id)
+          startRequirements.push({
+            ...req,
+            itemName: item.name,
+            itemDescription: item.description,
+            itemCharacterAmount: characterInventoryItemAmount,
+            completed: characterInventoryItemAmount >= req.itemAmount,
+          })
         }
       }
-
-      for(const req of q.completionRequirements){
-        req.completed = false
-        if(req.achievementId){
-          if(character.achievements.find(a => a.achievementId === req.achievementId)){
-            req.completed = true
-          } else {
-            canComplete = false
-          }
-          if(!relatedAchievements.find(ra => ra.id === req.achievementId)){
-            const achievement = achievements.find(a => a.id === req.achievementId)
-            relatedAchievements.push(achievement as Achievement)
-          }
-        }
-
-        if(req.mobId && typeof req.mobAmount === 'number'){
-          const characterQuestMobProgress = mobProgress.filter(mp => mp.characterId === character.id && mp.questProgressId === progress?.id && progress?.status === 'in-progress')
-          const progressAmount = characterQuestMobProgress.length
-          if(progressAmount >= req.mobAmount){
-            req.completed = true
-          } else {
-            canComplete = false
-          }
-        }
-
-        if(req.itemId && typeof req.itemAmount === 'number'){
-          let relatedAmount = 0
-          for(const inventory of characterInventories){
-            const relatedTxns = inventory.transactions.filter(t => t.itemId === req.itemId)
-            
-            for(const txn of relatedTxns){
-              relatedAmount += txn.quantity
-            }
-
-          }
-          
-          if(relatedAmount >= req.itemAmount){
-            req.completed = true
-          } else {
-            canComplete = false
-          }
-        }
-
-        if(req.timeMinutes){
-          if(progress?.startDate && progress?.status === 'in-progress'){
-            const startDate = DateTime.fromISO(progress.startDate as string)
-            const minutesElapsed = Math.abs(startDate.diffNow('minutes').minutes)
-            if(minutesElapsed >= req.timeMinutes){
-              req.completed = true
-            } else {
-              canComplete = false
-            }
-          } else {
-            canComplete = false
-          }
-        }
-      }  
-      
-      const group = questGroups.find(qg => qg.id === q.groupId)
-      
-      let canTake = anyQuestInProgress === false
-      for(const req of q.startRequirements){
-        req.completed = false
-        if(typeof req.guildRankLevel === 'number'){
-          const characterRankLevel = GuildRankLevelByRank[character.guildRank]
-          if(characterRankLevel >= req.guildRankLevel){
-            req.completed = true
-          }
-        }
-        if(req.achievementId){
-          if(character.achievements.find(a => a.achievementId === req.achievementId)){
-            req.completed = true
-          } else {
-            canTake = false
-          }
-        }
-        if(req.itemId && req.itemAmount){
-          for(const inventory of characterInventories){
-            const relatedTxns = inventory.transactions.filter(t => t.itemId === req.itemId)
-
-            let relatedAmount = 0
-            for(const txn of relatedTxns){
-              relatedAmount += txn.quantity
-            }
-
-            if(relatedAmount >= req.itemAmount){
-              req.completed = true
-            } else {
-              canTake = false
-            }
-          }
-        }
-        if(req.level){
-          if(character.level >= req.level){
-            req.completed = true
-          } else {
-            canTake = false
-          }
-        }
-        if(req.questId){
-          const relatedQuestProgress = characterQuestProgress.find(qp => qp.questId === req.questId && qp.status === 'complete')
-          if(relatedQuestProgress){
-            req.completed = true
-          } else {
-            canTake = false
-          }
-        }
-        if(req.stats){
-          for(const propertyName of Object.getOwnPropertyNames(req.stats)){
-            if(!propertyName) continue
-
-            //@ts-ignore
-            const characterStat: Stat = character.stats[propertyName]
-            //@ts-ignore
-            const questStat: Stat = req.stats[propertyName]
-            if(characterStat.value >= questStat.value){
-              req.completed = true
-            } else {
-              canTake = false
-            }
-          }
-        }
+      //start requirement - guild rank
+      if(typeof req.guildRankLevel === 'number'){
+        //@ts-ignore
+        const reqGuildRank = GuildRankByLevel[req.guildRankLevel]
+        const characterGuildRankLevel = GuildRankLevelByRank[character.guildRank]
+        startRequirements.push({
+          ...req,
+          guildRank: reqGuildRank,
+          completed: characterGuildRankLevel >= req.guildRankLevel
+        })
       }
-      
-      const rewardItems = []
-      for(const reward of q.rewards){
-        if(reward.itemId){
-          const relatedItem = relatedItems.find(ri => ri.id === reward.itemId)
-          if(!relatedItem){
-            const item = items.find(i => i.id === reward.itemId)
-            rewardItems.push(item as Item)
-          }
+      //start requirement - level
+      if(typeof req.level === 'number'){
+        startRequirements.push({
+          ...req,
+          completed: character.level >= req.level
+        })
+      }
+      //start requirement - quest completed
+      if(req.questId){
+        const reqQuest = allQuests.find(q => q.id === req.questId)
+        const characterCompletedQuest = allQuestProgress.some(
+          aqp => aqp.questId === reqQuest?.id &&
+            aqp.characterId === character.id &&
+            aqp.status === 'complete'
+        )
+        startRequirements.push({
+          ...req,
+          questTitle: reqQuest?.title,
+          questDescription: reqQuest?.description,
+          completed: characterCompletedQuest === true
+        })
+      }
+      //start requirement - stats required
+      if(req.stats){
+        const startReqStats: QuestStartRequirementStat[] = []
+        for(const propertyName of Object.getOwnPropertyNames(req.stats)){
+          //@ts-ignore
+          const reqStat: Stat = req.stats[propertyName]
+          //@ts-ignore
+          const charStat: Stat = character.stats[propertyName]
+          startReqStats.push({
+            statName: propertyName,
+            charAmount: charStat.value,
+            reqAmount: reqStat.value,
+            completed: charStat.value >= reqStat.value
+          })
         }
+        startRequirements.push({
+          ...req,
+          reqStats: startReqStats,
+          completed: startReqStats.every(srs => srs.completed === true)
+        })
       }
-      
-      const mergeItem: QuestWithQuestProgress = {
-        quest: q,
-        questGroup: group,
-        questProgress: progress,
-        canTakeQuest: canTake,
-        canCompleteQuest: canComplete,
-        questRequirementsQuests: relatedQuests,
-        questRequirementsAchievements: relatedAchievements,
-        questRequirementsItems: relatedItems,
-        questRequirementsInventoryTxns: relatedTxns,
-        questRewardItems: rewardItems,
-        questMobs: relatedMobs
-      }
-      questsWithProgress.push(mergeItem)
     }
 
-    return questsWithProgress
+    //completion requirements
+    for(const requirement of quest.completionRequirements){
+      const req = structuredClone(requirement)
+      req.completed = false
+
+      //completion requirement - achievement needed
+      if(req.achievementId){
+        const characterHasAchivement = character.achievements.find(a => a.achievementId === req.achievementId)
+        const achievement = allAchievements.find(a => a.id === req.achievementId)
+        completionRequirements.push({
+          ...req,
+          achievementTitle: achievement?.title,
+          achievementDescription: achievement?.description,
+          completed: typeof characterHasAchivement !== 'undefined',
+        })
+      }
+
+      //completion requirement - item & amount needed
+      if(req.itemId && typeof req.itemAmount === 'number'){
+        const item = allItems.find(i => i.id === req.itemId)
+        if(item){
+          const characterInventoryItemAmount = characterServiceGetItemAmount(characterInvenentoryBags, item.id)
+          completionRequirements.push({
+            ...req,
+            itemName: item.name,
+            itemDescription: item.description,
+            itemCharacterAmount: characterInventoryItemAmount,
+            itemProfessionType: item.profession?.type,
+            completed: characterInventoryItemAmount >= req.itemAmount,
+          })
+        }
+      }
+
+      //completion requirement - mob & amount
+      if(req.mobId && typeof req.mobAmount === 'number'){
+        const mob = allMobs.find(m => m.id === req.mobId)
+        //only count mob defeats where the character was in progress for the quest
+        const characterMobProgressItems = characterMobProgress.filter(
+          cmp => cmp.mobId === req.mobId && 
+          cmp.questProgressId === characterProgressItemInProgress?.id
+        )
+        completionRequirements.push({
+          ...req,
+          mobId: mob?.id,
+          mobName: mob?.name,
+          mobDescription: mob?.description,
+          mobLevel: mob?.level,
+          mobCharacterAmount: characterMobProgressItems.length,
+          mobLocationType: mob?.location,
+          completed: characterMobProgressItems.length >= req.mobAmount
+        })
+      }
+
+      //completion requirement - time based
+      if(typeof req.timeMinutes === 'number'){
+        const inProgressStartTime = DateTime.fromISO(characterProgressItemInProgress?.startDate as string)
+        if(!inProgressStartTime.isValid){
+          completionRequirements.push({
+            ...req
+          })
+        } else {
+          const timeLeft = this.formatTimeLeft(
+            req.timeMinutes,
+            inProgressStartTime
+          )
+
+          completionRequirements.push({
+            ...req,
+            completed: timeLeft.timeLeftSeconds <= 0,
+            timeHours: timeLeft.totalTimeHours,
+            timeSeconds: timeLeft.totalTimeSeconds,
+            timeLeftHours: timeLeft.timeLeftHours,
+            timeLeftMinutes: timeLeft.timeLeftMinutes,
+            timeLeftSeconds: timeLeft.timeLeftSeconds
+          })
+        }
+      }
+    }
+
+    //quest rewards
+    for(const reward of quest.rewards){
+      const rew = structuredClone(reward)
+      if(rew.achivementId){
+        const achievement = allAchievements.find(a => a.id === rew.achivementId)
+        rewards.push({
+          achivementId: rew.achivementId,
+          achievementTitle: achievement?.title
+        })
+      }
+      if(rew.itemId && typeof rew.itemAmount === 'number'){
+        const item = allItems.find(i => i.id === rew.itemId)
+        rewards.push({
+          itemId: rew.itemId,
+          itemName: item?.name,
+          itemAmount: rew.itemAmount
+        })
+      }
+      if(typeof rew.xp === 'number'){
+        rewards.push({
+          xp: rew.xp
+        })
+      }
+    }
+
+    if(quest.repeatable === false){
+      if(characterProgressItemComplete){
+        //not repeatable and complete cant take
+        canTakeQuest = false
+      } else {
+        //not repeatable and not complete can take
+        canTakeQuest = true
+      }
+    } else {
+      if(characterProgressItemComplete){
+        //repeatable and in progress cant take
+        canTakeQuest = false
+      } else {
+        //repeatable and not in progress can take
+        canTakeQuest = true
+      }
+    }
+
+    const anyInProgress = allQuestProgress.some(aqp => aqp.status === 'in-progress')
+    if(anyInProgress){
+      canTakeQuest = false
+    } else {
+      canTakeQuest = true
+    }
+
+    let questProgress = characterProgressItemInProgress
+    if(isNonRepeatableAndComplete === true){
+      questProgress = characterProgressItemComplete
+      canTakeQuest = false
+    }
+
+    if(completionRequirements.every(req => req.completed === true)){
+      canCompleteQuest = true
+    }
+
+    return {
+      quest: structuredClone(quest),
+      questGroup: questGroup,
+      questProgress,
+
+      canTakeQuest,
+      canCompleteQuest,
+
+      startRequirements,
+      completionRequirements,
+
+      questRewardItems: rewards
+    }
   }
 }

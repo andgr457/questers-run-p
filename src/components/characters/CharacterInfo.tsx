@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import './CharacterInfo.css'
 import { type Stat } from '../../interfaces/characters/Character.types'
-import CharacterInfoXP from './CharacterInfoXP'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import CharacterInfoMiniStatCard from './CharacterInfoMiniStatCard'
 
@@ -16,7 +15,6 @@ export default function CharacterInfo(props: CharacterInfoProps) {
     showExpander = true,
     characterGold
   } = props
-
   const [showAll, setShowAll] = useState(true)
 
   if (!character) {
@@ -40,14 +38,33 @@ export default function CharacterInfo(props: CharacterInfoProps) {
       <div className='character-section-title'>
         <div className='page-header-banner'>
           <div className='page-header-title'>
-            {character.name} Lv. {character.level} {characterClass?.name}
+            {character.name}
           </div>
         </div>
       </div>
 
       <div className={`character-stats-grid open`}>
-        <CharacterInfoXP character={character} />
         <div className='character-info-hero'>
+          <div className='character-stat-chip'>
+            <div style={{float: 'left'}}>
+              <span>Level</span>
+            </div>
+            <div style={{float: 'right'}}>
+              <span style={{color: 'gold'}}>
+                {character?.level}
+              </span>
+            </div>
+          </div>
+          <div className='character-stat-chip'>
+            <div style={{float: 'left'}}>
+              <span>Class</span>
+            </div>
+            <div style={{float: 'right'}}>
+              <span style={{color: 'gold'}}>
+                {characterClass?.name}
+              </span>
+            </div>
+          </div>
 
           <div className='character-stat-chip'>
             <div style={{float: 'left'}}>
@@ -72,6 +89,7 @@ export default function CharacterInfo(props: CharacterInfoProps) {
               </span>
             </div>
           </div>
+          <CharacterInfoMiniStatCard className='level-fill purple' statItem={{name: 'XP' as any, value: character.xp, max: character.levelNextXP, level: character.level, nextLevelXP: character.levelNextXP, xp: character.xp}} />
           <CharacterInfoMiniStatCard className='level-fill red' statItem={character.stats['hp'] as Stat} />
           <CharacterInfoMiniStatCard className='level-fill blue' statItem={character.stats['mp'] as Stat} />
           <CharacterInfoMiniStatCard className='level-fill green' statItem={character.stats['stamina'] as Stat} />

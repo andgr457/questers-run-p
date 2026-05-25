@@ -12,7 +12,6 @@ interface TavernItemsListProps extends AppProperties {
 export default function TavernItemsList(props: TavernItemsListProps){
   const {
     tavernItems,
-    handleTavernItemStart,
     handleTavernItemComplete
   } = props
   const [canDo, setCanDo] = useState(true)
@@ -22,7 +21,6 @@ export default function TavernItemsList(props: TavernItemsListProps){
 
   const handleTavernItemClicked = useCallback(async (title: string, goldCost: number, percentChange: number, timeSeconds: number) => {
     setCanDo(false)
-    await handleTavernItemStart?.(goldCost)
     setItemName(title ?? '')
     setTimeLeft(timeSeconds)
     for(let i = 0; i <= timeSeconds; i++){
@@ -31,9 +29,9 @@ export default function TavernItemsList(props: TavernItemsListProps){
       setTimeLeft(timeSeconds - i)
       await sleep(1000)
     }
-    await handleTavernItemComplete?.(percentChange)
     reset()
     setCanDo(true)
+    await handleTavernItemComplete?.(percentChange, goldCost)
   }, [])
 
   const reset = () => {

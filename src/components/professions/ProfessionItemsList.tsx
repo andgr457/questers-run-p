@@ -24,13 +24,13 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
   const [itemNumber, setItemNumber] = useState(1)
   const [collectAmount, setCollectAmount] = useState(1)
 
-  const handleProfessionItemClicked = useCallback(async (itemId: string, amount: number, timeSeconds: number) => {
+  const handleProfessionItemClicked = useCallback(async (item: Item, amount: number) => {
     setCanDo(false)
-    const item = professionItems.find(i => i.id === itemId)
-    setItemName(item?.name ?? '')
-    const secondsAmount = timeSeconds * amount
-    setTimeLeft(secondsAmount)
-    let totalSecondsLeft = secondsAmount
+    setItemName(item.name ?? '')
+    const timeSeconds = item.profession?.timeInSeconds ?? 2
+    const secondsWithAmount = timeSeconds * amount
+    setTimeLeft(secondsWithAmount)
+    let totalSecondsLeft = secondsWithAmount
     let currentSecond = 0
     let currentItemNumber = 1
     setItemNumber(currentItemNumber)
@@ -39,18 +39,18 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
       for(let i = 0; i < timeSeconds; i++){
         totalSecondsLeft -= 1
         currentSecond += 1
-        const progress = (currentSecond / secondsAmount ) * 100
+        const progress = (currentSecond / secondsWithAmount ) * 100
         setTimeProgress(progress)
         setTimeLeft(totalSecondsLeft)
         await sleep(1000)
       }
       currentItemNumber += 1
       setItemNumber(currentItemNumber)
-      await handleProfessionItemComplete?.(itemId, 1)
     }
     reset()
     setCanDo(true)
-  }, [handleProfessionItemComplete, professionItems])
+    handleProfessionItemComplete?.(item, amount)
+  }, [professionItems])
 
   const reset = () => {
     setTimeProgress(0)
@@ -59,17 +59,7 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
     setItemNumber(0)
   }
 
-  const profession = window.location.href.replace(window.location.origin, '').split('/').pop()
-
   return <div >
-    <div className='character-section-title'>
-      <div className='page-header-banner'>
-        <div className='page-header-title'>
-          {profession?.toUpperCase()}
-        </div>
-      </div>
-    </div>
-
     <SpinnerOverlay loading={!canDo} blur={true}>
       <div className='dark-centered-section'>
         {collectAmountSelections.map(amt => {
@@ -121,7 +111,13 @@ export default function ProfessionItemsList(props: ProfessionItemsListProps){
 
     <ScrollableShoppeList>
       {professionItems.map(i => {
-        return <ProfessionItem amount={collectAmount} {...props} professionItem={i} handleProfessionItemClicked={handleProfessionItemClicked} canDo={canDo} />
+        return <ProfessionItem 
+        {...props} 
+          amount={collectAmount} 
+          professionItem={i} 
+          handleProfessionItemClicked={handleProfessionItemClicked} 
+          canDo={canDo} 
+        />
       })}
     </ScrollableShoppeList>
   </div>

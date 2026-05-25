@@ -1,3 +1,4 @@
+import { GuildRankLevelByRank, GuildRanks } from '../../interfaces/characters/Character.types';
 import type { Quest, QuestGroup } from '../../interfaces/quests/Quests.types';
 import { ACHIEVEMENT_INTRO_IDS } from '../achievements/Achievements.Intro.data';
 import { ITEM_CURRENCY_IDS } from '../items/currency/Item.Currency.data';
@@ -34,6 +35,9 @@ export const QUEST_INTRO_ADVENTURERS_GUILD: Quest = {
     },
     {
       xp: 5
+    },
+    {
+      achivementId: ACHIEVEMENT_INTRO_IDS.ADVENTURERS_GUILD_COMPLETE_ID
     }
   ],
   startRequirements: [
@@ -68,8 +72,12 @@ export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
   ],
   startRequirements: [
     {
-      level: 2,
+      level: 1,
       completed: false,
+    },
+    {
+      guildRankLevel: GuildRankLevelByRank[GuildRanks.F],
+      completed: false
     },
     {
       stats: {
@@ -84,7 +92,7 @@ export const QUEST_INTRO_MERCHANT_FAVOR: Quest = {
   ],
   completionRequirements: [
     {
-      timeMinutes: 1,
+      timeMinutes: 0.5,
       completed: false
     }
   ]
@@ -111,6 +119,20 @@ export const QUEST_INTRO_SWEEP_STREETS: Quest = {
       level: 1,
       completed: false,
     },
+    {
+      guildRankLevel: GuildRankLevelByRank[GuildRanks.F],
+      completed: false
+    },
+    {
+      stats: {
+        stamina: {
+          name: 'STAM',
+          value: 5,
+          max: 0,
+        }
+      },
+      completed: false
+    }
   ],
   completionRequirements: [
     {

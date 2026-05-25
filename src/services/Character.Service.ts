@@ -108,45 +108,152 @@ export function characterServiceModifyProfessionStat(
   return {professionStat: newStat, staminaStat: staminaStat}
 }
 
+interface HandleXpGainProps {
+  character: Character
+  xp: number
+}
+export function characterServiceHandleXpGain(props: HandleXpGainProps){
+  const {
+    character,
+    xp
+  } = props
+  if(xp === 0) return character
+
+  let totalXp = character.xp + xp
+  let level = character.level
+  let levelNextXP = character.levelNextXP
+
+  let hpMax = character.stats.hp.max
+  let mpMax = character.stats.mp.max
+  let staminaMax = character.stats.stamina.max
+
+  // Handle multiple level ups
+  while (totalXp >= levelNextXP) {
+    totalXp -= levelNextXP
+
+    level += 1
+    levelNextXP += 10
+
+    hpMax += 10
+    mpMax += 10
+    staminaMax += 10
+  }
+
+  return {
+    ...character,
+
+    level,
+    xp: totalXp,
+    levelNextXP,
+
+    stats: {
+      ...character.stats,
+
+      hp: {
+        ...character.stats.hp,
+        max: hpMax,
+        value: level > character.level
+          ? hpMax
+          : character.stats.hp.value
+      },
+
+      mp: {
+        ...character.stats.mp,
+        max: mpMax,
+        value: level > character.level
+          ? mpMax
+          : character.stats.mp.value
+      },
+
+      stamina: {
+        ...character.stats.stamina,
+        max: staminaMax,
+        value: level > character.level
+          ? staminaMax
+          : character.stats.stamina.value
+      }
+    }
+  }
+}
+
 export function characterServiceModifyStats(
   character: Character,
   xp: number,
-  stamina: number
+  stamina: number,
+  currentCharHp: number
 ): Character {
-  const updatedCharacter: Character = {
+
+  let totalXp = character.xp + xp
+  let level = character.level
+  let levelNextXP = character.levelNextXP
+
+  let hpMax = character.stats.hp.max
+  let mpMax = character.stats.mp.max
+  let staminaMax = character.stats.stamina.max
+
+  // Handle multiple level ups
+  while (totalXp >= levelNextXP) {
+    totalXp -= levelNextXP
+
+    level += 1
+    levelNextXP += 10
+
+    hpMax += 10
+    mpMax += 10
+    staminaMax += 10
+  }
+
+  const staminaValue = Math.min(
+    staminaMax,
+    Math.max(
+      0,
+      character.stats.stamina.value + stamina
+    )
+  )
+
+  const hpValue = Math.min(
+    hpMax,
+    Math.max(
+      0,
+      currentCharHp
+    )
+  )
+
+  return {
     ...character,
+
+    level,
+    xp: totalXp,
+    levelNextXP,
+
     stats: {
       ...character.stats,
-      hp: { ...character.stats.hp },
-      mp: { ...character.stats.mp },
-      stamina: { ...character.stats.stamina }
+
+      hp: {
+        ...character.stats.hp,
+        max: hpMax,
+        value: level > character.level
+          ? hpMax
+          : hpValue
+      },
+
+      mp: {
+        ...character.stats.mp,
+        max: mpMax,
+        value: level > character.level
+          ? mpMax
+          : character.stats.mp.value
+      },
+
+      stamina: {
+        ...character.stats.stamina,
+        max: staminaMax,
+        value: level > character.level
+          ? staminaMax
+          : staminaValue
+      }
     }
   }
-
-  const totalXp = updatedCharacter.xp + xp
-
-  if (totalXp >= updatedCharacter.levelNextXP) {
-    const leftover = totalXp - updatedCharacter.levelNextXP
-
-    updatedCharacter.level += 1
-    updatedCharacter.xp = leftover
-    updatedCharacter.levelNextXP += 10
-
-    updatedCharacter.stats.hp.max += 10
-    updatedCharacter.stats.hp.value = updatedCharacter.stats.hp.max
-
-    updatedCharacter.stats.mp.max += 10
-    updatedCharacter.stats.mp.value = updatedCharacter.stats.mp.max
-
-    updatedCharacter.stats.stamina.max += 10
-    updatedCharacter.stats.stamina.value = updatedCharacter.stats.stamina.max
-
-    return updatedCharacter
-  }
-
-  updatedCharacter.xp = totalXp
-  updatedCharacter.stats.stamina.value += stamina
-  return updatedCharacter
 }
 
 export function characterServiceModifyHp(
