@@ -3,7 +3,9 @@ import React from 'react'
 export interface WindowData {
   id: string
   title: string
-  content: React.ReactNode
+
+  Component: React.ComponentType<any>
+  props?: any
 
   x: number
   y: number

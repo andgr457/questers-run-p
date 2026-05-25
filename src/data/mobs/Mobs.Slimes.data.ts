@@ -34,7 +34,7 @@ export const MOB_SLIME_GREEN_SMALL: Mob = {
   description: 'A tiny, unstable blob of green slime that oozes weakly across the ground.',
   level: 1,
   guildRankLevel: 1,
-  xp: 5,
+  xp: 10,
   location: 'forest',
   stats: {
     hp: {
@@ -85,7 +85,7 @@ export const MOB_SLIME_GREEN: Mob = {
   description: 'A common green slime that slowly bounces around damp caves and forests.',
   level: 1,
   guildRankLevel: 1,
-  xp: 10,
+  xp: 15,
   location: 'forest',
   stats: {
     hp: {
@@ -142,7 +142,7 @@ export const MOB_SLIME_BLUE: Mob = {
   description: 'A denser, watery slime that moves with more force and erratic bursts of speed.',
   level: 2,
   guildRankLevel: 2,
-  xp: 15,
+  xp: 20,
   location: 'forest',
   stats: {
     hp: {
@@ -199,7 +199,7 @@ export const MOB_SLIME_RED: Mob = {
   description: 'A heated, aggressive slime that pulses with unstable energy and strikes harder than its size suggests.',
   level: 2,
   guildRankLevel: 3,
-  xp: 20,
+  xp: 25,
   location: 'forest',
   stats: {
     hp: {
@@ -256,7 +256,7 @@ export const MOB_SLIME_ARCANE: Mob = {
   description: 'A rare magical slime infused with raw mana, shimmering as it shifts between forms.',
   level: 3,
   guildRankLevel: 5,
-  xp: 25,
+  xp: 30,
   location: 'forest',
   stats: {
     hp: {

@@ -9,7 +9,7 @@ export type Notification = {
 export function useFloatingNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const addNotification = useCallback((text: string, icon?: string, lifetime = 3000) => {
+  const addNotification = useCallback((text: string, icon?: string, lifetime = 7000) => {
     const id = (Date.now() + Math.random()).toString();
 
     setNotifications(prev => [...prev, { id, text, icon }]);

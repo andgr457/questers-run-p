@@ -29,31 +29,69 @@ export interface Quest {
   cooldownMinutes: number
 }
 
+export interface QuestStartRequirementStat {
+  statName: string
+  reqAmount: number
+  charAmount: number
+  completed: boolean
+}
+
 export interface QuestStartRequirement{
   itemId?: string
   itemAmount?: number
+  itemCharacterAmount?: number
+  itemName?: string
+  itemDescription?: string
   achievementId?: string
+  achivementTitle?: string
+  achivementDescription?: string
   questId?: string
+  questTitle?: string
+  questDescription?: string
   level?: number
   stats?: Partial<Stats>
+  reqStats?: QuestStartRequirementStat[]
   guildRankLevel?: number
+  guildRank?: number
   completed: boolean
 }
 
 export interface QuestCompletionRequirement{
   itemId?: string
   itemAmount?: number
+  itemCharacterAmount?: number
+  itemName?: string
+  itemDescription?: string
+  itemProfessionType?: string
   achievementId?: string
+  achievementTitle?: string
+  achievementDescription?: string
+  timeSeconds?: number
   timeMinutes?: number
+  timeHours?: number
+  timeLeftSeconds?: number
+  timeLeftMinutes?: number
+  timeLeftHours?: number
   mobId?: string
+  mobName?: string
+  mobDescription?: string
+  mobLevel?: number
   mobAmount?: number
+  mobCharacterAmount?: number
+  mobLocationType?: string
   completed: boolean
+}
+
+export interface QuestRewardProgressItem extends QuestReward {
+  itemName?: string
+  achievementTitle?: string
 }
 
 export interface QuestReward {
   xp?: number
   itemId?: string
   itemAmount?: number
+  achivementId?: string
 }
 
 export type QuestProgressStatus = 'in-progress' | 'complete'

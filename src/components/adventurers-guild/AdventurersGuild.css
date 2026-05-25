@@ -1,7 +1,9 @@
 .adv-g-clerk-layout {
   display: flex;
+  justify-content: center;
   gap: 5px;
   font-size: 12px;
+  color: var(--text);
   /* min-height: 450px; */
   /* width: min(900px, 95vw); */
 }
@@ -68,6 +70,7 @@
 
   padding: 7px;
   max-width: 450px;
+  text-align: center;
 }
 
 .adv-g-clerk-discussion-content {
@@ -76,7 +79,8 @@
   line-height: 1.5;
   text-align: left;
   font-size: 1.2em;
-
+  text-align: center;
+  letter-spacing: 1px;
   opacity: 0;
   overflow-y: auto;
   word-break: break-word;
@@ -94,7 +98,7 @@
   gap: 8px;
 
   padding-top: 8px;
-  border-top: 1px solid var(--blue-sd);
+  border-top: 1px solid var(--text);
 }
 
 .adv-g-clerk-discussion-actions button {

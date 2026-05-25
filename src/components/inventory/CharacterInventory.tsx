@@ -1,71 +1,125 @@
 import { ITEM_CURRENCY_IDS } from '../../data/items/currency/Item.Currency.data'
-import InventorySlot, { type InventorySlotProps } from './InventorySlot'
+import InventorySlot from './InventorySlot'
 import './Inventory.css'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
+import type { Item } from '../../interfaces/items/Item.types'
+import ItemInfo from '../items/ItemInfo'
 
-interface CharacterInventoryProps extends AppProperties {
+interface CharacterInventoryProps extends AppProperties {}
 
-}
-export default function CharacterInventory(props: CharacterInventoryProps){
+export default function CharacterInventory(props: CharacterInventoryProps) {
   const {
     character,
     characterInventories,
     items,
+    toggleWindow
   } = props
 
+  const itemMap = new Map(items?.map(i => [i.id, i]) ?? [])
+
   const currencyPouch = characterInventories?.find(i => i.title === 'Currency')
+
   let totalGold = 0
-  currencyPouch?.transactions?.map(txn => {
-    if(txn.itemId === ITEM_CURRENCY_IDS.GOLD){
+  for (const txn of currencyPouch?.transactions ?? []) {
+    if (txn.itemId === ITEM_CURRENCY_IDS.GOLD) {
       totalGold += txn.quantity
     }
-  })
+  }
 
-  if(!character?.name || !currencyPouch) return null
+  if (!character?.name || !currencyPouch) return null
 
-  return <div>
-    <div className='page-header-main'>
-      INVENTORY
-    </div>
-    {characterInventories?.map(inv => {
-      const mappedItems: InventorySlotProps[] = []
-      for(const txn of inv.transactions){
-        const found = mappedItems.find(iui => iui.itemId === txn.itemId)
-        if(!found){
-          const item = items?.find(i => i.id === txn.itemId)
-          mappedItems.push({itemId: txn.itemId, itemName: item?.name as string, amount: txn.quantity})
-        } else {
-          //@ts-ignore
-          found.amount += txn.quantity
-        }
-      }
-      //@ts-ignore
-      const bagFull = inv.title !== 'Currency' && mappedItems.length >= inv.max
-
-      //@ts-ignore
-      const emptySlotAmount = inv.max - mappedItems.length
-      const emptySlots = []
-      for(let i = 0; i < emptySlotAmount; i++){
-        emptySlots.push(<InventorySlot character={character} />)
-      }
-      return <div className='inventory-section' id={`${character?.id}__${inv.id}`}>
-        <div className='character-section-title'>
-          <div className='page-header-banner'>
-            <div className='page-header-title'>
-              {inv.title}
-            </div>
+  return (
+    <div>
+      {/* HEADER */}
+      <div className='character-section-title'>
+        <div className='page-header-banner'>
+          <div className='page-header-title'>
+            INVENTORY
           </div>
         </div>
-        <div className='inventory-slots'>
-          {mappedItems.map(mi => {
-            return <InventorySlot character={character}
-              item={items?.find(i => i.id === mi.itemId)} 
-              amount={mi.amount}
-            />
-          })}
-          {emptySlots}
-        </div>
       </div>
-    })}
-  </div>
+
+      {characterInventories?.map(inv => {
+        const mappedItems: {
+          item: Item
+          amount: number
+          
+        }[] = []
+        for (const txn of inv.transactions ?? []) {
+          const item = itemMap.get(txn.itemId)
+          if (!item) continue
+
+          const existing = mappedItems.find(i => i.item?.id === txn.itemId)
+
+          if (!existing) {
+            mappedItems.push({
+              item,
+              amount: txn.quantity,
+              
+            })
+          } else {
+            if(typeof existing.amount === 'number'){
+              existing.amount += txn.quantity
+            }
+          }
+        }
+
+        const maxSlots = inv.max ?? 0
+        const usedSlots = mappedItems.length
+        const emptySlotAmount = Math.max(0, maxSlots - usedSlots)
+
+        return (
+          <div
+            className='inventory-section'
+            id={`${character.id}__${inv.id}`}
+            key={inv.id}
+          >
+            {/* SECTION TITLE */}
+            <div className='character-section-title'>
+              <div className='page-header-banner'>
+                <div className='page-header-title'>
+                  {inv.title}
+                </div>
+              </div>
+            </div>
+
+            {/* SLOTS */}
+            <div className='inventory-slots'>
+              {mappedItems
+                .filter((mi): mi is { item: Item; amount: number } =>
+                  !!mi.item && typeof mi.amount === 'number' && mi.amount > 0
+                )
+                .sort((a, b) =>
+                  (a.item.type ?? '').localeCompare(b.item.type ?? '')
+                )
+                .map(mi => (
+                  <InventorySlot
+                    key={`${inv.id}-${mi.item.id}`}
+                    itemInfo={mi.item}
+                    amount={mi.amount}
+                    onItemClick={() => {
+                        toggleWindow?.(
+                          `item-${mi.item.id}`,
+                          mi.item.name,
+                          ItemInfo,
+                          { item: mi.item, amount: mi.amount }
+                        )
+                      
+                    }}
+                  />
+                ))}
+
+              {/* EMPTY SLOTS (safe placeholders, NOT InventorySlot) */}
+              {Array.from({ length: emptySlotAmount }).map((_, i) => (
+                <div
+                  key={`empty-${inv.id}-${i}`}
+                  className='inventory-slot empty'
+                />
+              ))}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
 }

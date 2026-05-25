@@ -13,7 +13,7 @@ export default function HuntingForestPage(props: ProfessionGatheringPageProps){
   } = props
 
   useEffect(() => {
-    setLocation?.('Gathering')
+    setLocation?.('Hunting Forest')
   },[])
 
   const relatedMobs = mobs?.filter(m => m.location === 'forest') ?? []

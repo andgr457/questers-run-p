@@ -1,12 +1,9 @@
-import type { Quest, QuestGroup, QuestProgress } from '../../interfaces/quests/Quests.types'
+import type { Quest, QuestCompletionRequirement, QuestGroup, QuestProgress, QuestRewardProgressItem, QuestStartRequirement } from '../../interfaces/quests/Quests.types'
 import './CharacterQuests.css'
 import CharacterQuest from './CharacterQuest'
-import { useCallback, useState } from 'react'
 import type { Achievement } from '../../interfaces/achievements/Achievement.types'
 import type { Item } from '../../interfaces/items/Item.types'
 import type { InventoryTransaction } from '../../interfaces/inventories/Inventory.types'
-import CustomContainer from '../CustomContainer'
-import CharacterQuestPopup from './CharacterQuestPopup'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
 import useScrollReveal from '../../hooks/useScrollReveal'
 import ScrollableShoppeList from '../shoppe/ShoppeListScrollable'
@@ -17,18 +14,38 @@ interface CharacterQuestsProps extends AppProperties {
   showIneligibleQuests: boolean
 }
 
+
 export interface QuestWithQuestProgress {
   quest: Quest
   questGroup: QuestGroup | undefined
   questProgress: QuestProgress | undefined
+
   canTakeQuest: boolean
   canCompleteQuest: boolean
+
+  startRequirements: QuestStartRequirement[]
+  completionRequirements: QuestCompletionRequirement[]
+
   questRequirementsAchievements: Achievement[]
   questRequirementsItems: Item[]
   questRequirementsInventoryTxns: InventoryTransaction[]
-  questRequirementsQuests: Quest[]
+
   questRewardItems: Item[]
   questMobs: Mob[]
+}
+
+export interface QuestWithQuestProgressItem {
+  quest: Quest
+  questGroup: QuestGroup | undefined
+  questProgress: QuestProgress | undefined
+
+  canTakeQuest: boolean
+  canCompleteQuest: boolean
+
+  startRequirements: QuestStartRequirement[]
+  completionRequirements: QuestCompletionRequirement[]
+
+  questRewardItems: QuestRewardProgressItem[]
 }
 
 export default function CharacterQuests(props: CharacterQuestsProps){
@@ -36,66 +53,21 @@ export default function CharacterQuests(props: CharacterQuestsProps){
     character,
     questGroups,
     quests,
-    allQuestsWithProgress,
   } = props
   useScrollReveal()
-  const [showPopupQuest, setShowPopupQuest] = useState(false)
-  const [popupQuestContent, setPopupQuestContent] = useState<React.ReactNode>(undefined)
-  const [popupTitle, setPopupTitle] = useState('')
-
-  const handleShowPopup = useCallback((popupType: 'quest' | 'quest-group', relatedId: string) => {
-
-    if(popupType === 'quest'){
-      const foundQuestWithProgress = allQuestsWithProgress?.find(qwp => qwp.quest?.id === relatedId) as QuestWithQuestProgress
-      setPopupQuestContent(
-        <CharacterQuest showActions={false} handleShowPopup={() => {}} {...props} quest={foundQuestWithProgress.quest} />
-      )
-      setPopupTitle(foundQuestWithProgress.quest?.title)
-    } else if(popupType === 'quest-group'){
-      const relatedQuests = allQuestsWithProgress?.filter(qwp => qwp.questGroup?.id === relatedId)
-      if(relatedQuests && relatedQuests.length > 0){
-        const completedAmount = relatedQuests.filter(rq => rq.questProgress?.status === 'complete')
-        const content = <CustomContainer
-          expandable={false}
-          isChildCustomContainer={false}
-          title={relatedQuests[0].questGroup?.title}
-          description={relatedQuests[0].questGroup?.description}
-          headerLeft={<>{completedAmount.length} / {relatedQuests.length}</>}
-        >
-          {relatedQuests.map(rq => {
-            return <CharacterQuest handleShowPopup={() => {}} {...props} quest={rq.quest} />
-          })}
-        </CustomContainer>
-        setPopupQuestContent(content)
-        setPopupTitle(relatedQuests[0].questGroup?.title as string)
-      }
-    }
-    setShowPopupQuest(true)
-  }, [allQuestsWithProgress])
 
   if(!character || !questGroups || !quests){
     return null
   }
+  
   return <div className='quest-page'>
-    <CharacterQuestPopup
-      backdropHides={true}
-      isOpen={showPopupQuest}
-      onClose={() => {
-        setShowPopupQuest(false)
-        setPopupQuestContent(undefined)
-      }}
-      closeButton={true}
-      rightTitle={popupTitle}
-    >
-      {popupQuestContent}
-    </CharacterQuestPopup>
 
     <div className='quest-groups'>
       {questGroups.map(qg => {
-        const relatedQuests = allQuestsWithProgress?.filter(qwp => qwp?.questGroup?.id === qg.id)
+        const relatedQuests = quests?.filter(q => q?.groupId === qg.id)
         relatedQuests?.sort((a, b) => {
-          const aLevel = a.quest.startRequirements.find(sr => sr.level)?.level
-          const bLevel = b.quest.startRequirements.find(sr => sr.level)?.level
+          const aLevel = a.startRequirements.find(sr => sr.level)?.level
+          const bLevel = b.startRequirements.find(sr => sr.level)?.level
 
           const aNoReq = aLevel == null
           const bNoReq = bLevel == null
@@ -121,13 +93,14 @@ export default function CharacterQuests(props: CharacterQuestsProps){
               <div className=''>
                 <ScrollableShoppeList>
                   {relatedQuests?.map(q => {
+                    
                     return <CharacterQuest
-                      {...props}
-                      key={q.quest.id}
-                      handleShowPopup={handleShowPopup}
-                      quest={q.quest}
-                      showActions={true}
-                    />
+                        {...props}
+                        key={q.id}
+                        quest={q}
+                        showActions={true}
+
+                      />
                   })}
                 </ScrollableShoppeList>
               </div>

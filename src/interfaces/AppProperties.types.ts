@@ -1,6 +1,7 @@
-import type { QuestWithQuestProgress } from '../components/quests/CharacterQuests';
+import type { QuestWithQuestProgressItem } from '../components/quests/CharacterQuests';
 import type { ShoppeCartItem } from '../components/shoppe/ShoppeCart';
 import type { Notification } from '../hooks/useFloatingNotify';
+import type { ShowConfirmProps } from '../providers/ConfirmProvider';
 import type { Achievement } from './achievements/Achievement.types';
 import type { Character, CharacterClass } from './characters/Character.types';
 import type { Inventory } from './inventories/Inventory.types';
@@ -17,9 +18,9 @@ export interface AppProperties extends AppFunctions {
   characterClass?: CharacterClass
   characterInventories?: Inventory[]
   characterMobProgress?: MobProgress[]
-  characterQuestProgress?: QuestWithQuestProgress
   allQuestProgress?: QuestProgress[]
-  allQuestsWithProgress?: QuestWithQuestProgress[]
+  allInventories?: Inventory[]
+  allMobProgress?: MobProgress[]
   quests?: Quest[]
   questGroups?: QuestGroup[]
   items?: Item[]
@@ -28,21 +29,25 @@ export interface AppProperties extends AppFunctions {
 }
 
 export interface AppFunctions {
+  toggleWindow?: (id: string,
+    title: string,
+    Component: React.ComponentType<any>,
+    props?: any) => void
+  closeWindow?: (id: string) => void
+  showConfirm: (props: ShowConfirmProps) => Promise<boolean>
   addNotification?: (text: string, icon?: string, lifetime?: number) => void
   setLocation?: (location: string) => void
   useConsumable?: (item: Item, characterId: string) => void
   handleSetCharacter?: (character: Character) => void
   handleResetEverything?: () => void
   handleResetProfession?: (professionType: ProfessionType) => void
-  handleHuntingMobTick?: (mobDamage: number) => void
-  handleHuntingMobComplete?: (mobId: string, xpGained: number, characterId: string, loot: Loot[]) => void
-  handleProfessionItemComplete?: (professionItemId: string, amount: number) => void
-  handleTavernItemStart?: (goldCost: number) => void
-  handleTavernItemComplete?: (percentChange: number) => void
+  handleHuntingMobComplete?: (mob: Mob, characterId: string, loot: Loot[], mobDamage: number, passedOut: boolean) => Promise<void>
+  handleProfessionItemComplete?: (professionItem: Item, amount: number) => Promise<void>
+  handleTavernItemComplete?: (percentChange: number, goldCost: number) => Promise<void>
   handleAddInventory?: (inventory: Inventory[]) => void
   handleAddQuest?: (quest: Quest, characterId: string) => void
   handleAbandonQuest?: (questProgressId: string) => void
-  handleCompleteQuest?: (questProgress: QuestWithQuestProgress) => Promise<void>
+  handleCompleteQuest?: (questProgress: QuestWithQuestProgressItem) => Promise<void>
   handleSetRequestedWindowId?: (id: string) => void
   handleShoppeConfirmation?: (cartItems: ShoppeCartItem[]) => Promise<void>
 }

@@ -6,10 +6,9 @@ import { sleep } from '../../services/CommonServices'
 import ScrollableShoppeList from '../shoppe/ShoppeListScrollable'
 import type { Loot, Mob } from '../../interfaces/mobs/Mob.types'
 import HuntingMob from './HuntingMob'
-import { useNavigate } from 'react-router-dom'
-import { useConfirm } from '../../providers/ConfirmProvider'
 import { ITEM_TYPES, type Item } from '../../interfaces/items/Item.types'
 import SpinnerOverlay from '../spinner/SpinnerOverlay'
+import type { Character } from '../../interfaces/characters/Character.types'
 
 interface HuntingMobsListProps extends AppProperties {
   huntingMobs: Mob[]
@@ -27,14 +26,11 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
     huntingMobs,
     character,
     characterInventories,
-    handleHuntingMobTick,
     handleHuntingMobComplete,
     items,
     useConsumable,
   } = props
   const SLEEP = 850
-  const navigate = useNavigate()
-  const {showConfirm} = useConfirm()
   const [canDo, setCanDo] = useState(true)
   const [selectedConsumableId, setSelectedConsumableId] = useState<string | null>(null)
 
@@ -44,22 +40,20 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
 
   const [charHp, setCharHp] = useState(character?.stats.hp?.value ?? 0)
 
+  useEffect(() => {
+    if(canDo){
+      setCharHp(character?.stats.hp?.value)
+    }
+  }, [character?.stats.hp?.value, canDo])
+
   const [huntingEvents, setHuntingEvents] = useState<React.ReactNode[]>([])
   
-  const huntingLocation = window.location.href
-    .replace(window.location.origin, '')
-    .split('/')
-    .pop()
-
   const addEvent = (msg: React.ReactNode) => {
     setHuntingEvents(prev => [msg, ...prev])
   }
 
-  const handleHuntMobClicked = useCallback(async (mobId: string) => {
-    const mob = huntingMobs.find(i => i.id === mobId)
+  const handleHuntMobClicked = useCallback(async (mob: Mob, char: Character) => {
     if (!mob?.stats?.hp?.value) return
-
-    const char = character
     if (!char?.stats?.hp?.value) return
 
     setCanDo(false)
@@ -72,7 +66,7 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
     setHuntingEvents([])
     await sleep(350)
 
-    addEvent(<span><span style={{color: 'gold'}}>{char.name}</span> engages <span style={{color: 'gold'}}>{mob.name}</span> [Lv. {mob.level}].</span>)
+    addEvent(<span><span style={{color: 'gold'}}>{char.name}</span> engaged a Lv. {mob.level} <span style={{color: 'gold'}}>{mob.name}</span>.</span>)
     await sleep(SLEEP)
 
     setMobName(mob.name)
@@ -116,8 +110,6 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
 
       setCharHp(currentCharHp)
 
-      await handleHuntingMobTick?.(mobDamage)
-
       await sleep(SLEEP)
 
       if (currentCharHp <= 0) {
@@ -131,17 +123,9 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
     // ======================
     if (characterPassedOut) {
       addEvent(<span><span style={{color: 'gold'}}>{char.name}</span> collapsed.</span>)
-
-      if(await showConfirm({
-        isYesNo: true,
-        title: `${char.name} Collapsed`,
-        message: `Hunters find you collapsed in the ${huntingLocation} and are asking if you need assistance back to town. Will you join them?`
-      })){
-        reset()
-        navigate('/tavern')
-        return
-      } 
-        return
+      await handleHuntingMobComplete?.(mob, char.id, [], currentCharHp, characterPassedOut)
+      setCanDo(true)
+      return
     }
 
     if (currentMobHp <= 0) {
@@ -158,7 +142,17 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
 
         const didDrop = roll <= chance
 
-        if (!didDrop) continue
+        if (!didDrop){
+          addEvent(
+            <span style={{ color: 'gray' }}>
+              {lootItem.itemAmount} {item.name} didn't drop. {(roll * 100).toFixed(1)} / {chance * 100}%
+            </span>
+          )
+          continue
+        }
+
+        lootItem.characterRoll = roll
+        lootItem.item = item
 
         addEvent(
           <span>
@@ -166,16 +160,25 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
             <span style={{ color: 'gold' }}>
               {lootItem.itemAmount} {item.name}
             </span>!
+            <span> Rolled <span style={{color: 'gold'}}>{(roll * 100).toFixed(1)}</span> / <span style={{color: 'gold'}}>{chance * 100}%</span></span>
           </span>
         )
 
         lootDrops.push(lootItem)
       }
-      await handleHuntingMobComplete?.(mob.id, mob.xp, char.id, lootDrops)
+      addEvent(
+        <span>
+          <span style={{ color: 'gold' }}>{char.name}</span> gained{" "}
+          <span style={{ color: 'gold' }}>
+            {mob.xp} XP
+          </span>!
+        </span>
+      )
+      await handleHuntingMobComplete?.(mob, char.id, lootDrops, currentCharHp, characterPassedOut)
     }
 
     reset()
-  }, [character, huntingMobs, items])
+  }, [items])
 
   const reset = () => {
     setCanDo(true)
@@ -244,7 +247,7 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
             {c.itemName} x{c.amount} {Object.getOwnPropertyNames(c.item.stats).map(propertyName => {
               //@ts-ignore
               const stat = c.item.stats[propertyName]
-              return <span>+{stat.value} {stat.name}</span>
+              return <>+{stat.value} {stat.name}</>
             })}
           </option>
         ))}
@@ -267,18 +270,11 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
 
   return (
     <div>
-      <div className="character-section-title">
-        <div className="page-header-banner">
-          <div className="page-header-title">
-            {huntingLocation?.toUpperCase()}
-          </div>
-        </div>
-      </div>
 
       {/* ======================
           VS COMBAT UI
       ====================== */}
-      <div className="combat-vs">
+      <div className="combat-vs shoppe-cart-sticky">
         <div className="combat-side">
           <div className="combat-name">{character?.name}</div>
 

@@ -1,62 +1,134 @@
-import { useCallback } from 'react'
-import { ITEM_TYPES, type Item } from '../../interfaces/items/Item.types'
-import { useConfirm } from '../../providers/ConfirmProvider'
-import type { Character } from '../../interfaces/characters/Character.types'
+import { type Item } from '../../interfaces/items/Item.types'
+import { itemServiceGetItemTypeIcon } from '../../services/Item.Service'
 
 export interface InventorySlotProps {
-  character?: Character
-  item?: Item
-  itemId?: string
-  itemName?: string
-  amount?: number
+  itemInfo: Item
+  amount: number
   onConsume?: () => void
+  onItemClick?: () => void
 }
 
 export default function InventorySlot(props: InventorySlotProps){
   const {
-    item,
+    itemInfo,
     amount,
-    character
+    onItemClick,
   } = props
 
-  const {showConfirm} = useConfirm()
+  const buildItemDescription = (item?: Item) => {
+    if (!item) return 'Empty Slot'
 
-  const onClick = useCallback(() => {
-    if(!item) return
+    const lines: string[] = []
 
-    if(item?.type === ITEM_TYPES.ARMOR || item?.type === ITEM_TYPES.WEAPONS){
-      
-    } else if(item?.type === ITEM_TYPES.CONSUMABLE){
-      const itemHp = item?.stats?.hp?.value
-      if(itemHp && itemHp > 0){
-        //health pot
-        if(character){
-          if(character.stats.hp?.value === character.stats.hp?.max){
-            if(!showConfirm({
-              isYesNo: true,
-              title: `Warning! Health Already Max`,
-              message: `Your health is already at the max. Are you sure you want to waste the ${item.name}?`
-            })) return
+    // Header
+    lines.push(`${item.name}`)
+    lines.push(`${item.rarity.toUpperCase()} ${item.type.toUpperCase()}`)
+    lines.push('')
 
-            //otherwise consume
-          }
-        }
-      }
+    // Description
+    if (item.description) {
+      lines.push(item.description)
+      lines.push('')
     }
-    
 
-  }, [item])
+    // Stats
+    const statEntries = Object.entries(item?.stats ?? {})
+      .filter(([_, value]) => value?.value)
 
-  let itemDescription = `${item?.description}\r\n`
-  itemDescription += `${item?.rarity} ${item?.type}`.toUpperCase()
+    if (statEntries.length > 0) {
+      lines.push('=== STATS ===')
 
+      statEntries.forEach(([key, value]) => {
+        const maxText = value?.max
+          ? ` / ${value.max}`
+          : ''
 
-  return <div onClick={onClick} title={itemDescription} className={`inventory-slot ${!item?.type && 'empty'}`}>
-    <div className='inventory-slot-quantity'>
-      {amount}
+        lines.push(
+          `${key.toUpperCase()}: +${value?.value}${maxText}`
+        )
+      })
+
+      lines.push('')
+    }
+
+    // Gold
+    if (item.gold) {
+      lines.push('=== VALUE ===')
+      lines.push(`BUY: ${item.gold.buy} Gold`)
+      lines.push(`SELL: ${item.gold.sell} Gold`)
+      lines.push('')
+    }
+
+    // Profession
+    if (item.profession) {
+      lines.push('=== PROFESSION ===')
+      lines.push(`TYPE: ${item.profession.type}`)
+      lines.push(`LEVEL REQUIRED: ${item.profession.levelRequired}`)
+      lines.push(`XP GAIN: ${item.profession.xp}`)
+      lines.push(`STAMINA COST: ${item.profession.stamina}`)
+      lines.push(`TIME: ${item.profession.timeInSeconds}s`)
+
+      if (item.profession.recipeId) {
+        lines.push(`RECIPE: ${item.profession.recipeId}`)
+      }
+
+      lines.push('')
+    }
+
+    return lines.join('\n')
+  }
+
+  return (
+    <div
+      onClick={onItemClick}
+      title={itemInfo?.description && buildItemDescription(itemInfo)}
+      className={`
+        inventory-slot
+        ${!itemInfo?.type ? 'empty' : ''}
+        ${itemInfo?.rarity ? `rarity-${itemInfo.rarity.toLowerCase()}` : ''}
+        ${itemInfo?.type ? `type-${itemInfo.type.toLowerCase()}` : ''}
+      `}
+    >
+      {!!amount && amount >= 1 && (
+        <div className='inventory-slot-quantity'>
+          {amount}
+        </div>
+      )}
+
+      <div className='inventory-slot-top'>
+        <div className='inventory-slot-type'>
+          {itemInfo?.type?.slice(0, 4)}
+        </div>
+      </div>
+
+      <div className='inventory-slot-center'>
+        <div className='inventory-slot-icon'>
+          {itemServiceGetItemTypeIcon(itemInfo?.type)}
+        </div>
+      </div>
+
+      <div className='inventory-slot-bottom'>
+        <div className='inventory-slot-title'>
+          {itemInfo?.name}
+        </div>
+
+        {!!itemInfo?.stats && (
+          <div className='inventory-slot-stats'>
+            {Object.entries(itemInfo.stats).map(([key, value]) => {
+              if (!value?.value) return null
+
+              return (
+                <div
+                  key={key}
+                  className='inventory-slot-stat'
+                >
+                  +{value.value} {key}
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
     </div>
-    <div className='inventory-slot-title'>
-      {item?.name}
-    </div>
-  </div>
+  )
 }

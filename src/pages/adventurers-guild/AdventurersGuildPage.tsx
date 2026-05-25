@@ -1,182 +1,154 @@
 import { useCallback, useEffect, useState } from 'react'
 import { GuildRanks, type Character } from '../../interfaces/characters/Character.types'
-import { TutorialOverlay, type TutorialStep } from '../../components/tutorial/TutorialOverlay'
-import { useConfirm } from '../../providers/ConfirmProvider'
-import { ACHIEVEMENT_INTRO_ADVENTURERS_GUILD } from '../../data/achievements/Achievements.Intro.data'
 import { DateTime } from 'luxon'
 import PageHeader from '../../components/PageHeader'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
-import { useWindows } from '../../components/windows/WindowProvider'
 import CharacterQuests from '../../components/quests/CharacterQuests'
-import { sleep } from '../../services/CommonServices'
 import AdventurersGuildClerk from '../../components/adventurers-guild/AdventurersGuildClerk'
 
-interface AdventurersGuildPageProps extends AppProperties {
+import { ACHIEVEMENT_INTRO_ADVENTURERS_GUILD } from '../../data/achievements/Achievements.Intro.data'
+import { sleep } from '../../services/CommonServices'
 
-}
+interface AdventurersGuildPageProps extends AppProperties {}
 
 export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
   const {
     character,
     setLocation,
     handleSetCharacter,
+    showConfirm,
+    addNotification
   } = props
-  
-  const tutorialJoin: TutorialStep[] = [
-    {
-      selector: '#tutorial-join-guild',
-      content: 'Click here to speak with the clerk to join the Adventurer\'s Guild and for information about different guild activities.',
-      action: () => {showClerk()}
-    },
-  ]
-
-  const tutorialQuestComplete: TutorialStep[] = [
-    {
-      selector: '#tutorial-quest-complete',
-      content: 'At the quest board, you can take, abandon, and complete quests. Complete your first quest to continue the tutorial.',
-    },
-  ]
-  
-  const [showTutorial, setShowTutorial] = useState(false)
-  const [tutorialSteps, setTutorialSteps] = useState<TutorialStep[] | undefined>(undefined)
-  const [showModule, setShowModule] = useState<'' | 'quest-board'>('')
-  const [showOneTimeCompletedQuests, setShowOneTimeCompletedQuests] = useState(false)
-  const [showIneligibleQuests, setShowIneligibleQuests] = useState(true)
-  
-  const {showConfirm} = useConfirm()
 
   useEffect(() => {
-    setLocation?.('Adventurer\'s Guild')
-    setShowModule(!character?.guildRank ? '' : 'quest-board')
-    setTutorialSteps(!character?.guildRank ? tutorialJoin : tutorialQuestComplete)
-    if(!character?.guildRank){
-      setShowTutorial(true)
-    }
-  },[character?.guildRank])
+    setLocation?.("Adventurer's Guild")
+  }, [])
 
-  const {
-    windows,
-    openWindow,
-    closeWindow
-  } = useWindows()
+  // -----------------------------
+  // MODULE STATE (UNIFIED)
+  // -----------------------------
+  const [showModule, setShowModule] = useState<'' | 'quest-board' | 'clerk'>(character?.guildRank ? 'quest-board' : 'clerk')
 
-  const isWindowOpen = (
-    id: string
-  ) => {
-    return windows.some(w => w.id === id)
-  }
+  const [showOneTimeCompletedQuests, setShowOneTimeCompletedQuests] = useState(false)
+  const [showIneligibleQuests, setShowIneligibleQuests] = useState(true)
 
-  const showClerk = useCallback(() => {
-    if (isWindowOpen('clerk')) {
-      closeWindow('clerk')
-    }
+  // -----------------------------
+  // TUTORIAL (AGAIN FULLY GENERIC)
+  // -----------------------------
 
-    openWindow(
-      'clerk',
-      `Adventurer's Guild Clerk`,
-      <AdventurersGuildClerk       
-        {...props}
-        onJoin={handleJoinClicked} 
-      />
-    )
-  }, [openWindow])
+  const characterJoined = character?.guildRank !== GuildRanks.None
 
+  // -----------------------------
+  // JOIN LOGIC
+  // -----------------------------
   const handleJoinClicked = useCallback(async () => {
-    //Set character guild rank F
-    const newCharacter: Character = {...character as Character}
+    const newCharacter: Character = { ...character } as Character
+
     newCharacter.guildRank = GuildRanks.F
 
-    if(!newCharacter.achievements){
-      newCharacter.achievements = []
-    }
-
-    newCharacter.achievements.push({
-      achievementId: ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.id,
-      achievementDate: DateTime.utc().toISO()
-    })
+    newCharacter.achievements = [
+      ...(newCharacter.achievements ?? []),
+      {
+        achievementId: ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.id,
+        achievementDate: DateTime.utc().toISO()
+      }
+    ]
+    handleSetCharacter?.({ ...newCharacter })
 
     await showConfirm({
       isYesNo: false,
-      title: 'Achievement Earned!',
-      message: `${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.title} achieved! "${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.description}"` 
+      title: 'Welcome to the Guild!',
+      message: `You are now officially a member of the Adventurer's Guild. Feel free to check out the quest board to get started!"`
     })
 
-    await handleSetCharacter?.({...newCharacter} as Character)
+    await sleep(3000)
+    addNotification?.(`Achievement Earned: ${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.title}`)
+    setShowModule('quest-board')
+  }, [character, handleSetCharacter])
 
-    await sleep(100)
-    closeWindow('clerk')
-    await sleep(500)
-    setTutorialSteps(tutorialQuestComplete)
-    setShowTutorial(true)
-  }, [character])
 
-  const characterJoined = character?.guildRank !== GuildRanks.None
-  if(!character){
-    return null
-  }
-  return <div>
-    {showTutorial === true && tutorialSteps && <TutorialOverlay 
-      steps={tutorialSteps as TutorialStep[]} 
-      onCancel={() => {setShowTutorial(false)}} 
-      onComplete={() => {
-        //todo
-        setShowTutorial(false)
-      }}
-    />}
-    <div className='page-main'>
-      <div className='character-section-title'>
-        <div className='page-header-banner'>
-          <div className='page-header-title'>
-            ADVENTURER'S GUILD
-          </div>
-        </div>
-      </div>
-      <PageHeader showActions={true}>
-        
-        <button id='tutorial-join-guild' className='yellow'
-          onClick={() => {
-            showClerk()
-          }}
-        >
-          Guild Clerk
-        </button>
-        {characterJoined && <button className={`yellow${showModule === 'quest-board' ? '-blink' : ''}`}
-          onClick={async () => {
-            setShowModule('quest-board')
-          }}
-        >
-          Quests
-        </button>}
-        
-        {characterJoined && <button className={`basic`}
-          onClick={async () => {
-            setShowOneTimeCompletedQuests(!showOneTimeCompletedQuests)
-          }}
-        >
-          {showOneTimeCompletedQuests === true ? 'Hide' : 'Show'} 1-Time Completed Quests
-        </button>}
+  // -----------------------------
+  // TUTORIAL OVERLAY
+  // -----------------------------
+  return (
+    <div>
 
-        {characterJoined && <button className={`basic`}
-          onClick={async () => {
-            setShowIneligibleQuests(!showIneligibleQuests)
-          }}
-        >
-          {showIneligibleQuests === true ? 'Hide' : 'Show'} Ineligible Quests
-        </button>}
-      </PageHeader>
-      <div>
-        {showModule === 'quest-board' && <div >
-          <div className='character-section-title'>
-            <div className='page-header-banner'>
-              <div className='page-header-title'>
-                QUEST BOARD
+      <div className="page-main">
+        <PageHeader showActions={true}>
+          
+          {/* CLERK */}
+          <button
+            className={`yellow${showModule === 'clerk' ? '-blink' : ''}`}
+            onClick={() => setShowModule('clerk')}
+          >
+            Guild Clerk
+          </button>
+
+          {/* QUEST BOARD */}
+          {characterJoined && (
+            <button
+              className={`yellow${showModule === 'quest-board' ? '-blink' : ''}`}
+              onClick={() => setShowModule('quest-board')}
+            >
+              Quests
+            </button>
+          )}
+
+          {/* TOGGLES */}
+          {characterJoined && (
+            <button
+              className="basic"
+              onClick={() =>
+                setShowOneTimeCompletedQuests(v => !v)
+              }
+            >
+              {showOneTimeCompletedQuests ? 'Hide' : 'Show'} 1-Time Completed Quests
+            </button>
+          )}
+
+          {characterJoined && (
+            <button
+              className="basic"
+              onClick={() =>
+                setShowIneligibleQuests(v => !v)
+              }
+            >
+              {showIneligibleQuests ? 'Hide' : 'Show'} Ineligible Quests
+            </button>
+          )}
+        </PageHeader>
+
+        {/* -----------------------------
+            CLERK MODULE
+        ----------------------------- */}
+        {showModule === 'clerk' && (
+          <AdventurersGuildClerk
+            {...props}
+            onJoin={handleJoinClicked}
+          />
+        )}
+
+        {/* -----------------------------
+            QUEST BOARD
+        ----------------------------- */}
+        {showModule === 'quest-board' && (
+          <div>
+            <div className="character-section-title">
+              <div className="page-header-banner">
+                <div className="page-header-title">
+                  QUEST BOARD
+                </div>
               </div>
             </div>
+
+            <CharacterQuests
+              {...props}
+              showOneTimeCompletedQuests={showOneTimeCompletedQuests}
+              showIneligibleQuests={showIneligibleQuests}
+            />
           </div>
-          
-          <CharacterQuests {...props} showOneTimeCompletedQuests={showOneTimeCompletedQuests} showIneligibleQuests={showIneligibleQuests} />
-        </div>}
+        )}
       </div>
     </div>
-  </div>
+  )
 }

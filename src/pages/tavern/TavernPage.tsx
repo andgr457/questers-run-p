@@ -56,17 +56,8 @@ export default function TavernPage(props: TavernPageProps) {
     
   ]
 
-  return <div>
-    <div className='character-section-title'>
-      <div className='page-header-banner'>
-        <div className='page-header-title'>
-          TAVERN
-        </div>
-      </div>
-    </div>
-    <TavernItemsList 
-      {...props}
-      tavernItems={tavernItems}
-    />
-  </div>
+  return <TavernItemsList 
+    {...props}
+    tavernItems={tavernItems}
+  />
 }

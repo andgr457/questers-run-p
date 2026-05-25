@@ -11,7 +11,8 @@ export default function PageLayout(props: PageLayoutProps) {
   const {
     character,
     characterGold,
-    notifications
+    notifications,
+    location
   } = props
 
   const levelProgress = useMemo(() => {
@@ -60,6 +61,13 @@ export default function PageLayout(props: PageLayoutProps) {
         </div>
 
         <div className="app-screen right">
+          <div className='character-section-title'>
+            <div className='page-header-banner'>
+              <div className='page-header-title'>
+                {location}
+              </div>
+            </div>
+          </div>
           {character?.name && !window.location.href.includes('/shoppe') && <div className='shoppe-cart-sticky'>
             <div className='character-mini-items' style={{alignItems: 'center'}}>
               <div className='character-mini-item'>
@@ -125,6 +133,7 @@ export default function PageLayout(props: PageLayoutProps) {
             </div>
 
           </div>}
+
           <NotificationList notifications={notifications ?? []} />
           {props.rightChildren}
         </div>

@@ -3,12 +3,11 @@ import './App.css'
 import OverviewPage from './pages/overview/OverviewPage'
 import { useConfirm } from './providers/ConfirmProvider';
 import AdventurersGuildPage from './pages/adventurers-guild/AdventurersGuildPage';
-import TownPage from './pages/TownPage';
-import { WindowProvider } from './components/windows/WindowProvider';
+import { useWindows } from './components/windows/WindowProvider';
 import { ScrollToHash } from './components/ScrollToHash';
 import NavMenu from './components/nav/NavMenu';
 import WindowLayer from './components/windows/WindowLayer';
-import type { Character, CharacterClass, Stat } from './interfaces/characters/Character.types';
+import type { Character, CharacterAchievements, CharacterClass } from './interfaces/characters/Character.types';
 import { LOCAL_STORAGE_KEYS } from './common/constants/LocalStorageKeys';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useCallback, useEffect, useState } from 'react';
@@ -22,8 +21,7 @@ import { QuestGroupRepository } from './repository/quests/QuestGroupRepository';
 import { DateTime } from 'luxon';
 import { ITEM_CURRENCY_IDS } from './data/items/currency/Item.Currency.data';
 import type { AppProperties } from './interfaces/AppProperties.types';
-import type { QuestWithQuestProgress } from './components/quests/CharacterQuests';
-import { QuestService } from './services/quests/QuestService';
+import type { QuestWithQuestProgressItem } from './components/quests/CharacterQuests';
 import './form-controls.css'
 import { AchievementRepository } from './repository/achievements/AchievementRepository';
 import type { Achievement } from './interfaces/achievements/Achievement.types';
@@ -41,10 +39,9 @@ import CharacterInfo from './components/characters/CharacterInfo';
 import PageLayout from './pages/PageLayout';
 import type { ShoppeCartItem } from './components/shoppe/ShoppeCart';
 import CharacterInventory from './components/inventory/CharacterInventory';
-import CharacterQuestCurrent from './components/quests/CharacterQuestCurrent';
 import { shoppeServiceConfirmCart } from './services/Shoppe.Service';
 import { tavernServiceItemComplete, tavernServiceItemStart } from './services/Tavern.Services';
-import { characterServiceGetItemAmount, characterServiceModifyStats } from './services/Character.Service';
+import { characterServiceGetItemAmount, characterServiceHandleXpGain, characterServiceModifyStats } from './services/Character.Service';
 import { professionServiceItemComplete } from './services/Profession.Services';
 import { type Loot, type Mob, type MobProgress } from './interfaces/mobs/Mob.types';
 import { MobRepository } from './repository/mobs/MobsRepository';
@@ -52,6 +49,16 @@ import HuntingForestPage from './pages/hunting/HuntingForestPage';
 import { GAME_VERSION } from './services/AppService';
 import { useFloatingNotifications } from './hooks/useFloatingNotify';
 import NotificationList from './components/notifications/NotificationList';
+import SettingsPage from './pages/settings/SettingsPage';
+import AchievementsList from './components/achievements/AchievementsList';
+import { ACHIEVEMENT_GATHERING_IDS } from './data/achievements/Achievements.Gathering.data';
+import { ITEM_GATHERING_ITEM_IDS } from './data/items/gathering/Item.Gathering.data';
+import { QUEST_PROFESSION_IDS } from './data/quests/Quests.Gathering.data';
+import { QUEST_HUNTING_IDS } from './data/quests/Quests.Hunting.data';
+import { ACHIEVEMENT_HUNTING_IDS } from './data/achievements/Achievements.Hunting.data';
+import { MOB_SLIME_IDS } from './data/mobs/Mobs.Slimes.data';
+import { inventoryServiceGetQuestCompletionTransactions, inventoryServiceHandleQuestRewardTransactions } from './services/Inventory.Service';
+import { sleep } from './services/CommonServices';
 
 function App() {
   const {showConfirm} = useConfirm()
@@ -62,7 +69,7 @@ function App() {
   )
 
   useEffect(() => {
-    if (!character) return
+    if (!character?.gameVersion) return
 
     if (character.gameVersion === GAME_VERSION) return
 
@@ -79,73 +86,23 @@ function App() {
     }
 
     run()
-  }, [character])
+  }, [character?.gameVersion])
 
   const [inventories, setInventories] = useLocalStorage<Inventory[]>(LOCAL_STORAGE_KEYS.INVENTORIES, [])
   const [allQuestProgress, setAllQuestProgress] = useLocalStorage<QuestProgress[]>(LOCAL_STORAGE_KEYS.QUEST_PROGRESS, [])
-  const [allQuestsWithQuestProgress, setAllQuestsWithQuestProgress] = useState<QuestWithQuestProgress[]>([])
-  const [characterQuestProgress, setCharacterQuestProgress] = useState<QuestWithQuestProgress[]>([])
   
   const [allMobProgress, setAllMobProgress] = useLocalStorage<MobProgress[]>(LOCAL_STORAGE_KEYS.MOB_PROGRESS, [])
-  const [characterMobProgress, setCharacterMobProgress] = useState<MobProgress[]>([])
-
+  
   const [characterClass, setCharacterClass] = useState<CharacterClass | undefined>(undefined)
-  const [characterInventories, setCharacterInventories] = useState<Inventory[]>([])
   const [location, setLocation] = useState('Overview')
   
   const [quests, setQuests] = useState<Quest[]>([])
   const [questGroups, setQuestGroups] = useState<QuestGroup[]>([])
   const [achievements, setAchievements] = useState<Achievement[]>([])
-
+  
   const [items, setItems] = useState<Item[]>([])
   const [mobs, setMobs] = useState<Mob[]>([])
   const [requestedWindowId, setRequestedWindowId] = useState<string | undefined>(undefined)
-  
-  
-  useEffect(() => {
-    if (!character) return
-    if (!quests.length || !questGroups.length) return
-    if (!items.length || !mobs.length || !achievements.length || !mobs.length) return
-
-    const run = async () => {
-      const questService = new QuestService()
-
-      const progress = await questService.getQuestsWithQuestProgress(
-        character,
-        quests,
-        questGroups,
-        allQuestProgress ?? [],
-        inventories ?? [],
-        achievements,
-        items,
-        mobs,
-        allMobProgress ?? []
-      )
-
-      setAllQuestsWithQuestProgress(progress)
-      setCharacterQuestProgress(
-        progress.filter(p => p.questProgress?.characterId === character.id)
-      )
-      setCharacterInventories(
-        inventories?.filter(i => i.characterId === character.id) ?? []
-      )
-      setCharacterMobProgress(
-        allMobProgress?.filter(mp => mp.characterId === character.id) ?? []
-      )
-    }
-
-    run()
-  }, [
-    character,
-    quests,
-    questGroups,
-    allQuestProgress,
-    inventories,
-    achievements,
-    items,
-    mobs,
-    allMobProgress
-  ])
 
   useEffect(() => {
     const load = async () => { 
@@ -241,7 +198,7 @@ function App() {
       txnMessages
     } = shoppeServiceConfirmCart(
       cartItems,
-      characterInventories ?? [],
+      inventories?.filter(i => i.characterId === character?.id) ?? [],
       character as Character
     )
 
@@ -274,15 +231,15 @@ function App() {
       </div>
     })
     addNotification(`Shoppe Transaction Complete`)
-  }, [inventories, characterInventories, character])
+  }, [inventories, character])
 
   //TAVERN HANDLERS
-  const handleTavernItemStart = useCallback(async (goldCost: number) =>{
+  const handleTavernItemComplete = useCallback(async (percentChange: number, goldCost: number) => {
     const {
       currency
     } = tavernServiceItemStart(
       goldCost,
-      characterInventories ?? [],
+      inventories?.filter(i => i.characterId === character?.id) ?? [],
       character as Character
     )
 
@@ -297,9 +254,7 @@ function App() {
       }
     }
     setInventories(newInv)
-  }, [inventories, characterInventories, character])
-
-  const handleTavernItemComplete = useCallback(async (percentChange: number) => {
+    
     const {
       newCharacter
     } = tavernServiceItemComplete(
@@ -310,8 +265,7 @@ function App() {
     setCharacter({...newCharacter as Character})
   }, [character])
 
-  const handleProfessionItemComplete = useCallback(async (professionItemId: string, amount: number) => {
-    const professionItem = items.find(i => i.id === professionItemId)
+  const handleProfessionItemComplete = useCallback(async (professionItem: Item, amount: number) => {
     if(!professionItem) return
 
     const {
@@ -319,7 +273,7 @@ function App() {
       professionStat,
       staminaStat
     } = professionServiceItemComplete(
-      characterInventories ?? [],
+      inventories?.filter(i => i.characterId === character?.id) ?? [],
       character as Character,
       professionItem as Item,
       amount
@@ -338,14 +292,22 @@ function App() {
     }
     setInventories(newAllInventories)
     const newCharacter = {...character as Character}
+    if(professionItem.id === ITEM_GATHERING_ITEM_IDS.STICK && professionItem.profession?.type === 'gathering'){
+      if(!newCharacter.achievements.some(a => a.achievementId === ACHIEVEMENT_GATHERING_IDS.STICK_1)){
+        newCharacter.achievements.push({
+          achievementId: ACHIEVEMENT_GATHERING_IDS.STICK_1,
+          achievementDate: DateTime.utc().toISO()
+        })
+      }
+    }
     //@ts-ignore
     newCharacter.professions[professionItem.profession?.type] = professionStat
     newCharacter.stats.stamina = staminaStat
     setCharacter({...newCharacter})
-  }, [items, characterInventories, inventories, character])
+  }, [items, inventories, character])
 
   const handleAbandonQuest = useCallback(async (questProgressId: string) => {
-    const foundProgress = characterQuestProgress?.find(p => p.questProgress?.id === questProgressId)
+    const foundProgress = allQuestProgress?.find(p => p?.id === questProgressId)
     if(!foundProgress){
       //do nothing
       return
@@ -363,266 +325,373 @@ function App() {
       }
       setAllQuestProgress(newProgress as QuestProgress[])
     }
-  }, [characterQuestProgress])
+  }, [allQuestProgress])
 
   const handleAddQuest = useCallback(async (quest: Quest, characterId: string) => {
-    const newCharacter = {...character}
-    for(const req of quest?.startRequirements ?? []){
-      if(req.stats){
-        for(const propertyName of Object.getOwnPropertyNames(req.stats)){
-          //@ts-ignore
-          const stat = req.stats[propertyName] as Stat
-          //@ts-ignore
-          const characterStat = newCharacter.stats[propertyName] as Stat
-          const baseValue = characterStat.value - stat.value 
-          const newValue = baseValue < 0 ? 0 : baseValue
-          //@ts-ignore
-          newCharacter.stats[propertyName].value = newValue
-        }
-        setCharacter({...newCharacter as Character})
+    if (!quest) return
+
+    setAllQuestProgress(prev => {
+      if(!prev) return prev
+      const questProgress: QuestProgress = {
+        id: `qprogress_${characterId}_${quest.id}_${DateTime.utc().toMillis()}`,
+        characterId,
+        questId: quest.id,
+        startDate: DateTime.utc().toISO(),
+        status: 'in-progress'
       }
-    }
-
-    const questProgress: QuestProgress = {
-      id: `qprogress_${characterId}_${quest.id}_${DateTime.utc().toMillis()}`,
-      characterId: characterId as string,
-      questId: quest.id,
-      startDate: DateTime.utc().toISO(),
-      status: 'in-progress'
-    }
-    const newProgress = []
-    newProgress.push(questProgress)
-    for(const p of allQuestProgress ?? []){
-      newProgress.push(p)
-    }
-    setAllQuestProgress(newProgress as QuestProgress[])
-  }, [quests, characterQuestProgress, character, allQuestProgress])
-
-  const handleCompleteQuest = useCallback(async (questProgress: QuestWithQuestProgress) => {
-    if(!questProgress || !characterInventories || questProgress.canCompleteQuest === false) return
-
-    const progress = questProgress.questProgress
-    const rewards = questProgress.quest.rewards
-    const completionRequirements = questProgress.quest.completionRequirements
-
-    const currency = characterInventories.find(ci => ci.title === 'Currency')
-    const backpack = characterInventories.find(ci => ci.title === 'Backpack')
-
-    if(backpack && !backpack?.transactions){
-      backpack.transactions = []
-    }
-    if(currency && !currency?.transactions){
-      currency.transactions = []
-    }
-    if(!backpack || !currency){
-      console.error('Did not find character currency or backpack inventories.')
-      return
-    }
-    const questRewardMessages: string[] = []
-    let totalXp = 0
-    for(const r of rewards){
-      if(r.itemId){
-        if(r.itemId === ITEM_CURRENCY_IDS.GOLD){
-          currency.transactions.push({
-            id: `invtxn__${r.itemId}__${questProgress?.questProgress?.characterId}__${DateTime.utc().toMillis()}`,
-            date: DateTime.utc().toISO(),
-            itemId: r.itemId,
-            quantity: r.itemAmount as number
-          })
-          questRewardMessages.push(`Quest Reward: ${r.itemAmount?.toLocaleString()} gold received!`)
-        } else {
-          backpack.transactions.push({
-            id: `invtxn__${r.itemId}__${questProgress?.questProgress?.characterId}__${DateTime.utc().toMillis()}`,
-            date: DateTime.utc().toISO(),
-            itemId: r.itemId as string,
-            quantity: r.itemAmount as number
-          })
-          const item = items.find(i => i.id === r.itemId)
-          questRewardMessages.push(`Quest Reward: ${r.itemAmount?.toLocaleString()} ${item?.name} received!`)
-        }
-      } else if(typeof r.xp === 'number'){
-        totalXp += r.xp
-      }
-    }
-    //remove any quest completion required items
-    for(const req of completionRequirements ?? []){
-      if(typeof req.itemAmount === 'number'){
-        const item = items.find(i => i.id === req.itemId)
-        if(item){
-          backpack.transactions.push({
-            id: `invtxn__${req.itemId}__${questProgress?.questProgress?.characterId}__${DateTime.utc().toMillis()}`,
-            date: DateTime.utc().toISO(),
-            itemId: req.itemId as string,
-            quantity: (req.itemAmount * -1) as number
-          })
-        }
-      }
-    }
-
-    //all inv
-    const allInv = []
-    for(const inv of inventories ?? []){
-      if(inv.id === currency.id){
-        allInv.push(currency)
-      } else if(inv.id === backpack.id){
-        allInv.push(backpack)
-      } else {
-        allInv.push(inv)
-      }
-    }
-    setInventories(allInv)
-    if(totalXp > 0){
-      const newCharacter = characterServiceModifyStats({...character as Character}, totalXp, 0)
-      
-      setCharacter({...newCharacter} as Character)
-      questRewardMessages.push(`Quest Reward: ${totalXp?.toLocaleString()} XP received!`)
-    }
-
-    const newQuestProgress: QuestProgress = {
-      ...progress as QuestProgress,
-      status: 'complete',
-      endDate: DateTime.utc().toISO()
-    }
-
-    const newProgress = []
-    for(const p of allQuestProgress ?? []){
-      if(p.id === progress?.id){
-        newProgress.push(newQuestProgress)
-      } else {
-        newProgress.push(p)
-      }
-    }
-    setAllQuestProgress(newProgress)
-    questRewardMessages.push(`Quest Completed: ${questProgress.quest.title}!`)
-
-    await showConfirm({
-      title: `Quest Completed!`,
-      message: `Congratulations on completing a quest! You've received the following rewards.`,
-      isYesNo: false,
-      content: <div style={{textAlign: 'center', width: '100%'}}>
-        {questRewardMessages.map(m => {
-          return <div>
-            {m}
-          </div>
-        })}
-      </div>
+      return [...prev, questProgress]
     })
-    
 
-  }, [characterQuestProgress, allQuestProgress, character, items, characterInventories, history, inventories])
-
-  const handleHuntingMobTick = useCallback((mobDamage: number) => {
     setCharacter(prev => {
-      if (!prev) return prev
-
-      const hp = Math.max(
-        0,
-        (prev.stats.hp?.value ?? 0) - mobDamage
-      )
-
+      if(!prev) return prev
+      let questStamina = 0
+      quest.startRequirements.forEach(req => {
+        if(req.stats?.stamina){
+          questStamina += req.stats.stamina?.value ?? 0
+        }
+      })
+      const newAchievements: CharacterAchievements[] = []
+      if(quest.id === QUEST_PROFESSION_IDS.STICKS_N_STONES){
+        if(!prev.achievements.find(a => a.achievementId === ACHIEVEMENT_GATHERING_IDS.QUEST_TAKE_STICK)){
+          newAchievements.push({
+            achievementId: ACHIEVEMENT_GATHERING_IDS.QUEST_TAKE_STICK,
+            achievementDate: DateTime.utc().toISO()
+          })
+        }
+      }
+      if(quest.id === QUEST_HUNTING_IDS.SLIMES_GREEN){
+        if(!prev.achievements.find(a => a.achievementId === ACHIEVEMENT_HUNTING_IDS.TAKE_QUEST_SLIME_GREEN_SMALL)){
+          newAchievements.push({
+            achievementId: ACHIEVEMENT_HUNTING_IDS.TAKE_QUEST_SLIME_GREEN_SMALL,
+            achievementDate: DateTime.utc().toISO()
+          })
+        }
+      }
       return {
         ...prev,
         stats: {
           ...prev.stats,
-          hp: {
-            ...prev.stats.hp,
-            value: hp
+          stamina: {
+            ...prev.stats.stamina,
+            value: prev.stats.stamina.value - questStamina
+          }
+        },
+        //quest taking achievements
+        achievements: [
+          ...prev.achievements,
+          ...newAchievements
+        ]
+      }
+    })
+  }, [
+    setAllQuestProgress, 
+    setCharacter
+  ])
+
+  const handleCompleteQuest = useCallback(async (progressItem: QuestWithQuestProgressItem) => {
+    if(!progressItem || progressItem.canCompleteQuest === false) return
+    
+    //add quest reward gold and items
+    setInventories(prev => {
+      if(!prev) return prev
+
+      return prev.map(inv => {
+        const charId = progressItem.questProgress?.characterId
+        if(!charId) return inv
+
+        if(inv.characterId !== charId){
+          return inv
+        }        
+
+        if(inv.title === 'Currency'){
+          return {
+            ...inv,
+            transactions: [
+              ...inventoryServiceHandleQuestRewardTransactions(
+                charId,
+                progressItem.questRewardItems,
+                'Currency'
+              ),
+              ...inv.transactions
+            ]
+          }
+        }
+        if(inv.title === 'Backpack'){
+          return {
+            ...inv,
+            transactions: [
+              ...inventoryServiceGetQuestCompletionTransactions(
+                charId,
+                progressItem.completionRequirements
+              ),
+              ...inventoryServiceHandleQuestRewardTransactions(
+                charId,
+                progressItem.questRewardItems,
+                'Backpack'
+              ),
+              ...inv.transactions
+            ]
+          }
+        }
+
+        return inv
+      })
+    })
+
+    //update quest progress to complete
+    setAllQuestProgress(prev => {
+      if(!prev) return prev
+
+      return prev.map(aqp => {
+        if(aqp.id === progressItem.questProgress?.id){
+          return {
+            ...aqp,
+            endDate: DateTime.utc().toISO(),
+            status: 'complete'
+          }
+        }
+        return aqp
+      })
+    })
+
+    //Add any quest complete achievements and XP to character
+    setCharacter(prev => {
+      if(!prev) return prev
+
+      if(!progressItem || 
+        !progressItem.questRewardItems || 
+        progressItem.questRewardItems.length === 0
+      ) return prev
+
+      let xp = 0
+      const newAchievements: CharacterAchievements[] = []
+      progressItem.questRewardItems.forEach(reward => {
+        if(reward.achivementId){
+          newAchievements.push({
+            achievementId: reward.achivementId,
+            achievementDate: DateTime.utc().toISO()
+          })
+        }
+        if(typeof reward.xp === 'number'){
+          xp += reward.xp
+        }
+      })
+
+      const updatedCharacter = characterServiceHandleXpGain({
+        character: prev,
+        xp,
+      })
+      return {
+        ...updatedCharacter,
+        
+        achievements: [
+          ...updatedCharacter.achievements,
+          ...newAchievements
+        ]
+      }
+    })
+
+    await showConfirm({
+      title: `Quest Completed!`,
+      message: `Congratulations! Quest ${progressItem.quest.title} complete.`,
+      isYesNo: false,
+    })
+  
+    for(const req of progressItem.completionRequirements){
+      if(req.itemId){
+        addNotification(`-${req.itemAmount} ${req.itemName}`)
+        await sleep(500)
+      }
+    }
+    for(const reward of progressItem.questRewardItems){
+      if(reward.itemId){
+        addNotification(`+${reward.itemAmount} ${reward.itemName}`)
+        await sleep(500)
+      }
+      if(reward.achivementId){
+        addNotification(`Achivement Earned: ${reward.achievementTitle}`)
+        await sleep(500)
+      }
+      if(reward.xp){
+        addNotification(`+${reward.xp} XP`)
+        await sleep(500)
+      }
+    }
+
+  }, [
+    setInventories,
+    setAllQuestProgress,
+    setCharacter,
+  ])
+
+  //Working
+  const handleHuntingMobComplete = useCallback(async (
+    mob: Mob,
+    characterId: string,
+    loot: Loot[],
+    currentCharHp: number,
+    characterPassedOut: boolean
+  ) => {
+    if(characterPassedOut){
+      setCharacter(prev => {
+        if(!prev) return
+
+        return {
+          ...prev,
+          stats: {
+            ...prev.stats,
+            hp: {
+              ...prev.stats.hp,
+              value: 0
+            },
+            stamina: {
+              ...prev.stats.stamina,
+              value: 0
+            }
+          }
+        }
+      })
+      addNotification(`${character?.name} was defeated by a Lv. ${mob?.level} ${mob?.name}!`)
+      return
+    }
+
+    for(const lootItem of loot){
+      addNotification(`+${lootItem.itemAmount} ${lootItem.item?.name}`)
+      await sleep(500)
+    }
+    const mobStaminaDrain = mob.level * -1
+    addNotification(`${mobStaminaDrain} Stamina`)
+    await sleep(500)
+    addNotification(`+${mob.xp} XP`)
+
+    setCharacter(prev => {
+      if (!prev) return prev
+
+      const mobStaminaDrain = mob.level * -1
+
+      let updatedCharacter = characterServiceModifyStats(
+        prev,
+        mob.xp,
+        mobStaminaDrain,
+        currentCharHp
+      )
+
+
+      if (
+        mob.id === MOB_SLIME_IDS.GREEN_SMALL &&
+        !updatedCharacter.achievements?.some(
+          a => a.achievementId === ACHIEVEMENT_HUNTING_IDS.SLIME_GREEN_SMALL_1
+        )
+      ) {
+        updatedCharacter = {
+          ...updatedCharacter,
+          achievements: [
+            ...(updatedCharacter.achievements ?? []),
+            {
+              achievementId: ACHIEVEMENT_HUNTING_IDS.SLIME_GREEN_SMALL_1,
+              achievementDate: DateTime.utc().toISO()
+            }
+          ]
+        }
+      }
+
+      return updatedCharacter
+    })
+
+    setInventories(prev => {
+      if (!prev) return prev
+
+      return prev.map(inv => {
+        if (inv.characterId !== characterId) {
+          return inv
+        }
+
+        if (inv.title !== 'Backpack' && inv.title !== 'Currency') {
+          return inv
+        }
+
+        const now = DateTime.utc()
+        const timeId = now.toMillis()
+
+        const isCurrency = inv.title === 'Currency'
+
+        const newTransactions = loot
+          .filter(lootItem =>
+            isCurrency
+              ? lootItem.itemId === ITEM_CURRENCY_IDS.GOLD
+              : lootItem.itemId !== ITEM_CURRENCY_IDS.GOLD
+          )
+          .map(lootItem => ({
+            id: `invtxn__${lootItem.itemId}__${mob.id}__${timeId}`,
+            date: now.toISO(),
+            itemId: lootItem.itemId,
+            quantity: lootItem.itemAmount
+          }))
+
+        return {
+          ...inv,
+          transactions: [
+            ...inv.transactions,
+            ...newTransactions
+          ]
+        }
+      })
+    })
+
+    setAllMobProgress(prev => {
+      if (!prev) return prev
+
+      const characterQuestInProgress = allQuestProgress?.find(
+        cqp =>
+          cqp.status === 'in-progress' &&
+          cqp.characterId === characterId
+      )
+
+      let mobQuestProgressId: string | undefined = undefined
+
+      if (characterQuestInProgress) {
+        const relatedQuest = quests.find(
+          q => q.id === characterQuestInProgress.questId
+        )
+
+        for (const req of relatedQuest?.completionRequirements ?? []) {
+          if (req.mobId !== mob.id || typeof req.mobAmount !== 'number') {
+            continue
+          }
+
+          const thisQuestMobsProgressAmount =
+            prev.filter(
+              mp =>
+                mp.characterId === characterId &&
+                mp.questProgressId === characterQuestInProgress.id
+            ).length
+
+          if (thisQuestMobsProgressAmount < req.mobAmount) {
+            mobQuestProgressId = characterQuestInProgress.id
+            break
           }
         }
       }
-    })
-  }, [setCharacter])
 
-  const handleHuntingMobComplete = useCallback(async (mobId: string, xpGained: number, characterId: string, loot: Loot[]) => {
-    if(!inventories) return
-    const mobStaminaDrain = -5
-    setCharacter(prev => {
-      if (!prev) return prev
-      return characterServiceModifyStats(prev, xpGained, mobStaminaDrain)
-    })
-
-    const mob = mobs.find(m => m.id === mobId)
-    if (!mob) return
-
-    const now = DateTime.utc()
-    const timeId = now.toMillis()
-
-    const updatedInventories = inventories.map(inv => {
-      if(inv.characterId !== characterId){
-        return inv
-      }
-      
-      if (inv.title !== 'Backpack' && inv.title !== 'Currency') {
-        return inv
+      const newMobProgress: MobProgress = {
+        id: `mobprog__${mob.id}__${characterId}__${DateTime.utc().toISO()}`,
+        characterId,
+        defeatedDate: DateTime.utc().toISO(),
+        mobId: mob.id,
+        questProgressId: mobQuestProgressId
       }
 
-      const isCurrency = inv.title === 'Currency'
-      const updatedTransactions = [...inv.transactions]
-
-      for (const lootItem of loot) {
-        if (isCurrency && lootItem.itemId === ITEM_CURRENCY_IDS.GOLD) {
-          updatedTransactions.push({
-            id: `invtxn__${lootItem.itemId}__${mobId}__${timeId}`,
-            date: now.toISO(),
-            itemId: lootItem.itemId,
-            quantity: lootItem.itemAmount
-          })
-        }
-
-        if (!isCurrency && lootItem.itemId !== ITEM_CURRENCY_IDS.GOLD) {
-          updatedTransactions.push({
-            id: `invtxn__${lootItem.itemId}__${mobId}__${timeId}`,
-            date: now.toISO(),
-            itemId: lootItem.itemId,
-            quantity: lootItem.itemAmount
-          })
-        }
-      }
-
-      return {
-        ...inv,
-        transactions: updatedTransactions
-      }
+      return [...prev, newMobProgress]
     })
 
-    setInventories(updatedInventories)
 
-    const characterQuestInProgress = allQuestsWithQuestProgress?.find(
-      cqp => cqp.questProgress?.status === 'in-progress'
-    )
-
-    let mobQuestProgressId: string | undefined = undefined
-
-    const quest = characterQuestInProgress?.quest
-    const progress = characterQuestInProgress?.questProgress
-
-    if (quest && progress) {
-      for (const req of quest.completionRequirements ?? []) {
-        if (req.mobId !== mobId || typeof req.mobAmount !== 'number') continue
-        const thisQuestMobsProgressAmount = allMobProgress?.filter(mp => mp.characterId === characterId && mp.questProgressId === progress.id)?.length ?? 0
-
-        if (thisQuestMobsProgressAmount < req.mobAmount) {
-          mobQuestProgressId = progress.id
-          break
-        }
-      }
-    }
-
-    const newMobProgress: MobProgress = {
-      id: `mobprog__${mobId}__${characterId}__${DateTime.utc().toISO()}`,
-      characterId,
-      defeatedDate: DateTime.utc().toISO(),
-      mobId,
-      questProgressId: mobQuestProgressId
-    }
-
-    const newProgress = []
-    newProgress.push(newMobProgress)
-    for(const p of allMobProgress ?? []){
-      newProgress.push(p)
-    }
-    setAllMobProgress(newProgress)
-  }, [setCharacter, mobs, items, inventories, allMobProgress, allQuestsWithQuestProgress])
+  }, [
+    setAllMobProgress,
+    setInventories,
+    setCharacter,
+    allQuestProgress,
+    quests,
+  ])
 
   const applyConsumableStats = (prev: Character, item: Item): Character => {
     const stats = item.stats
@@ -636,6 +705,7 @@ function App() {
           (newStats.hp?.value ?? 0) + stats.hp.value
         )
       }
+      addNotification(`+${stats.hp.value} HP`)
     }
 
     if (stats.mp?.value) {
@@ -646,6 +716,8 @@ function App() {
           (newStats.mp?.value ?? 0) + stats.mp.value
         )
       }
+      addNotification(`+${stats.mp.value} MP`)
+
     }
 
     if (stats.stamina?.value) {
@@ -656,6 +728,8 @@ function App() {
           (newStats.stamina?.value ?? 0) + stats.stamina.value
         )
       }
+      addNotification(`+${stats.stamina.value} STAM`)
+
     }
 
     return {
@@ -725,7 +799,6 @@ function App() {
         transactions: updatedTransactions
       }
     })
-
     setInventories(updatedInventories)
   }
 
@@ -736,28 +809,55 @@ function App() {
       totalGold += txn.quantity
     }
   })
+
+  const {
+    windows,
+    openWindow,
+    closeWindow
+  } = useWindows()
+
+  const isWindowOpen = (id: string) => {
+    return windows.some(w => w.id === id)
+  }
+
+  function toggleWindow(
+    id: string,
+    title: string,
+    Component: React.ComponentType<any>,
+    props?: any
+  ) {
+    if (isWindowOpen(id)) {
+      closeWindow(id)
+      return
+    }
+    openWindow(id, title, Component, {...props})
+  }
+  const characterInventories = inventories?.filter(i => i.characterId === character?.id) ?? []
+  const characterMobProgress = allMobProgress?.filter(amp => amp.characterId === character?.id)
   const appProps: AppProperties = {
     achievements,
     location,
     character: character as Character,
     characterClass: characterClass as CharacterClass,
-    characterGold: characterServiceGetItemAmount(characterInventories ?? [], ITEM_CURRENCY_IDS.GOLD),
+    characterGold: characterServiceGetItemAmount(characterInventories, ITEM_CURRENCY_IDS.GOLD),
     characterInventories: inventories,
-    characterQuestProgress: characterQuestProgress?.find(cqp => cqp.questProgress?.status === 'in-progress'),
     items,
     questGroups,
     quests,
     allQuestProgress,
-    allQuestsWithProgress: allQuestsWithQuestProgress,
     mobs,
     characterMobProgress,
+    allInventories: inventories,
+    allMobProgress,
+    closeWindow,
+    toggleWindow,
+    showConfirm,
     addNotification,
     useConsumable,
     handleResetEverything,
     handleResetProfession,
     handleAddInventory,
     handleProfessionItemComplete,
-    handleTavernItemStart,
     handleTavernItemComplete,
     handleAddQuest,
     handleAbandonQuest,
@@ -766,52 +866,51 @@ function App() {
     handleSetCharacter: setCharacter,
     setLocation,
     handleShoppeConfirmation,
-    handleHuntingMobTick,
     handleHuntingMobComplete
   }
 
   const appOnSideBar = requestedWindowId === 'character' ? <CharacterInfo {...appProps} showExpander={true} /> :
     requestedWindowId === 'inventory' ? <CharacterInventory {...appProps} /> : 
-    requestedWindowId === 'quest' ? <CharacterQuestCurrent {...appProps} /> : <CharacterInfo {...appProps} showExpander={true} />
-  return (
-    <WindowProvider>
-      <BrowserRouter>
-        <ScrollToHash />
-        <div>
-          <div >
-            <NavMenu 
-              {...appProps}
-              windowRequestId={requestedWindowId}
-            />
-          </div>
-          
-          <PageLayout 
-            {...appProps}
-            leftChildren={character?.name && appOnSideBar}
-            rightChildren={<Routes>
-              <Route path="/" element={<OverviewPage {...appProps} />} />
-              {character?.name}{
-                <>
-                  <Route path='/town' element={<TownPage />} />
-                  <Route path='/tavern' element={<TavernPage {...appProps} />} />
-                  <Route path='/shoppe' element={<ShoppePage {...appProps} />} />
-                  <Route path='/adventurers-guild' element={<AdventurersGuildPage {...appProps} />} />
-                  <Route path='/profession/gathering' element={<ProfessionGatheringPage {...appProps} />} />
-                  <Route path='/profession/mining' element={<ProfessionMiningPage {...appProps} />} />
-                  <Route path='/profession/fishing' element={<ProfessionFishingPage {...appProps} />} />
-                  <Route path='/hunting/forest' element={<HuntingForestPage {...appProps} />} />
+    requestedWindowId === 'achievements' ? <AchievementsList {...appProps} /> : 
+    requestedWindowId === 'settings' ? <SettingsPage {...appProps}/> : <CharacterInfo {...appProps} showExpander={true} />
 
-                </>
-              }
-              
-              <Route path="*" element={<OverviewPage  {...appProps}  />} />
-            </Routes>}
-          />
-          <NotificationList notifications={notifications} />
-          <WindowLayer />
-        </div>
-      </BrowserRouter>
-    </WindowProvider>
+
+  return (<BrowserRouter>
+
+    <ScrollToHash />
+    <div>
+      <div >
+        <NavMenu 
+          {...appProps}
+          windowRequestId={requestedWindowId}
+        />
+      </div>
+      
+      <PageLayout 
+        {...appProps}
+        leftChildren={character?.name && appOnSideBar}
+        rightChildren={<Routes>
+          <Route path="/" element={<OverviewPage {...appProps} />} />
+          {character?.name}{
+            <>
+              <Route path='/town/tavern' element={<TavernPage {...appProps} />} />
+              <Route path='/town/shoppe' element={<ShoppePage {...appProps} />} />
+              <Route path='/town/adventurers-guild' element={<AdventurersGuildPage {...appProps} />} />
+              <Route path='/profession/gathering' element={<ProfessionGatheringPage {...appProps} />} />
+              <Route path='/profession/mining' element={<ProfessionMiningPage {...appProps} />} />
+              <Route path='/profession/fishing' element={<ProfessionFishingPage {...appProps} />} />
+              <Route path='/hunting/forest' element={<HuntingForestPage {...appProps} />} />
+
+            </>
+          }
+          
+          <Route path="*" element={<OverviewPage  {...appProps}  />} />
+        </Routes>}
+      />
+      <NotificationList notifications={notifications} />
+      <WindowLayer {...appProps}  />
+    </div>
+  </BrowserRouter>
   );
 }
 
