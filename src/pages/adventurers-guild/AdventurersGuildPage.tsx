@@ -24,23 +24,13 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     setLocation?.("Adventurer's Guild")
   }, [])
 
-  // -----------------------------
-  // MODULE STATE (UNIFIED)
-  // -----------------------------
   const [showModule, setShowModule] = useState<'' | 'quest-board' | 'clerk'>(character?.guildRank ? 'quest-board' : 'clerk')
 
   const [showOneTimeCompletedQuests, setShowOneTimeCompletedQuests] = useState(false)
   const [showIneligibleQuests, setShowIneligibleQuests] = useState(true)
 
-  // -----------------------------
-  // TUTORIAL (AGAIN FULLY GENERIC)
-  // -----------------------------
-
   const characterJoined = character?.guildRank !== GuildRanks.None
 
-  // -----------------------------
-  // JOIN LOGIC
-  // -----------------------------
   const handleJoinClicked = useCallback(async () => {
     const newCharacter: Character = { ...character } as Character
 
@@ -66,10 +56,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
     setShowModule('quest-board')
   }, [character, handleSetCharacter])
 
-
-  // -----------------------------
-  // TUTORIAL OVERLAY
-  // -----------------------------
   return (
     <div>
 

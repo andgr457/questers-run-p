@@ -12,7 +12,7 @@ import { LOCAL_STORAGE_KEYS } from './common/constants/LocalStorageKeys';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useCallback, useEffect, useState } from 'react';
 import type { Inventory } from './interfaces/inventories/Inventory.types';
-import type { Quest, QuestGroup, QuestProgress } from './interfaces/quests/Quests.types';
+import type { Quest, QuestCompletionRequirement, QuestGroup, QuestProgress, QuestRewardUI } from './interfaces/quests/Quests.types';
 import type { Item } from './interfaces/items/Item.types';
 import { CharacterClassRepository } from './repository/characters/CharacterClassRepository';
 import { ItemRepository } from './repository/items/ItemRepository';
@@ -21,7 +21,6 @@ import { QuestGroupRepository } from './repository/quests/QuestGroupRepository';
 import { DateTime } from 'luxon';
 import { ITEM_CURRENCY_IDS } from './data/items/currency/Item.Currency.data';
 import type { AppProperties } from './interfaces/AppProperties.types';
-import type { QuestWithQuestProgressItem } from './components/quests/CharacterQuests';
 import './form-controls.css'
 import { AchievementRepository } from './repository/achievements/AchievementRepository';
 import type { Achievement } from './interfaces/achievements/Achievement.types';
@@ -59,8 +58,10 @@ import { ACHIEVEMENT_HUNTING_IDS } from './data/achievements/Achievements.Huntin
 import { MOB_SLIME_IDS } from './data/mobs/Mobs.Slimes.data';
 import { inventoryServiceGetQuestCompletionTransactions, inventoryServiceHandleQuestRewardTransactions } from './services/Inventory.Service';
 import { sleep } from './services/CommonServices';
+import { useGameClock } from './hooks/useGameClock';
 
 function App() {
+  const now = useGameClock()
   const {showConfirm} = useConfirm()
   const { notifications, addNotification } = useFloatingNotifications()
   const [character, setCharacter] = useLocalStorage<Character | undefined>(
@@ -306,223 +307,485 @@ function App() {
     setCharacter({...newCharacter})
   }, [items, inventories, character])
 
-  const handleAbandonQuest = useCallback(async (questProgressId: string) => {
-    const foundProgress = allQuestProgress?.find(p => p?.id === questProgressId)
-    if(!foundProgress){
-      //do nothing
-      return
-    }
-    if(await showConfirm({
-      isYesNo: true,
-      title: 'Abandon Quest?',
-      message: 'This will abandon the quest, allowing you to take another one. Are you sure you wish to continue?'
-    })){
-      const newProgress = []
-      for(const p of allQuestProgress ?? []){
-        if(p.id !== questProgressId){
-          newProgress.push(p)
+  // const handleAbandonQuest = useCallback(async (questProgressId: string) => {
+  //   const foundProgress = allQuestProgress?.find(p => p?.id === questProgressId)
+  //   if(!foundProgress){
+  //     //do nothing
+  //     return
+  //   }
+  //   if(await showConfirm({
+  //     isYesNo: true,
+  //     title: 'Abandon Quest?',
+  //     message: 'This will abandon the quest, allowing you to take another one. Are you sure you wish to continue?'
+  //   })){
+  //     const newProgress = []
+  //     for(const p of allQuestProgress ?? []){
+  //       if(p.id !== questProgressId){
+  //         newProgress.push(p)
+  //       }
+  //     }
+  //     setAllQuestProgress(newProgress as QuestProgress[])
+  //   }
+  // }, [allQuestProgress])
+
+  const handleAbandonQuest = useCallback(
+    async (questProgressId: string) => {
+      const found = allQuestProgress?.find(
+        p => p?.id === questProgressId,
+      )
+
+      if (!found) return
+
+      const confirmed = await showConfirm({
+        isYesNo: true,
+        title: 'Abandon Quest?',
+        message:
+          'This will abandon the quest, allowing you to take another one. Are you sure you wish to continue?',
+      })
+
+      if (!confirmed) return
+
+      setAllQuestProgress(prev =>
+        (prev ?? []).filter(p => p.id !== questProgressId),
+      )
+    },
+    [allQuestProgress],
+  )
+
+  // const handleAddQuest = useCallback(async (quest: Quest, characterId: string) => {
+  //   if (!quest) return
+
+  //   setAllQuestProgress(prev => {
+  //     if(!prev) return prev
+  //     const questProgress: QuestProgress = {
+  //       id: `qprogress_${characterId}_${quest.id}_${DateTime.utc().toMillis()}`,
+  //       characterId,
+  //       questId: quest.id,
+  //       startDate: DateTime.utc().toISO(),
+  //       status: 'in-progress'
+  //     }
+  //     return [...prev, questProgress]
+  //   })
+
+  //   setCharacter(prev => {
+  //     if(!prev) return prev
+  //     let questStamina = 0
+  //     quest.startRequirements.forEach(req => {
+  //       if(req.stats?.stamina){
+  //         questStamina += req.stats.stamina?.value ?? 0
+  //       }
+  //     })
+  //     const newAchievements: CharacterAchievements[] = []
+  //     if(quest.id === QUEST_PROFESSION_IDS.STICKS_N_STONES){
+  //       if(!prev.achievements.find(a => a.achievementId === ACHIEVEMENT_GATHERING_IDS.QUEST_TAKE_STICK)){
+  //         newAchievements.push({
+  //           achievementId: ACHIEVEMENT_GATHERING_IDS.QUEST_TAKE_STICK,
+  //           achievementDate: DateTime.utc().toISO()
+  //         })
+  //       }
+  //     }
+  //     if(quest.id === QUEST_HUNTING_IDS.SLIMES_GREEN){
+  //       if(!prev.achievements.find(a => a.achievementId === ACHIEVEMENT_HUNTING_IDS.TAKE_QUEST_SLIME_GREEN_SMALL)){
+  //         newAchievements.push({
+  //           achievementId: ACHIEVEMENT_HUNTING_IDS.TAKE_QUEST_SLIME_GREEN_SMALL,
+  //           achievementDate: DateTime.utc().toISO()
+  //         })
+  //       }
+  //     }
+  //     return {
+  //       ...prev,
+  //       stats: {
+  //         ...prev.stats,
+  //         stamina: {
+  //           ...prev.stats.stamina,
+  //           value: prev.stats.stamina.value - questStamina
+  //         }
+  //       },
+  //       //quest taking achievements
+  //       achievements: [
+  //         ...prev.achievements,
+  //         ...newAchievements
+  //       ]
+  //     }
+  //   })
+  // }, [
+  //   setAllQuestProgress, 
+  //   setCharacter
+  // ])
+
+  const handleAddQuest = useCallback(
+    async (quest: Quest, characterId: string) => {
+      if (!quest) return
+
+      const startTime = DateTime.fromMillis(now).toISO()
+
+      setAllQuestProgress(prev => {
+        if (!prev) return prev
+
+        const questProgress: QuestProgress = {
+          id: `qprogress_${characterId}_${quest.id}_${now}`,
+          characterId,
+          questId: quest.id,
+          startDate: startTime as string,
+          status: 'in-progress',
         }
-      }
-      setAllQuestProgress(newProgress as QuestProgress[])
-    }
-  }, [allQuestProgress])
 
-  const handleAddQuest = useCallback(async (quest: Quest, characterId: string) => {
-    if (!quest) return
+        return [...prev, questProgress]
+      })
 
-    setAllQuestProgress(prev => {
-      if(!prev) return prev
-      const questProgress: QuestProgress = {
-        id: `qprogress_${characterId}_${quest.id}_${DateTime.utc().toMillis()}`,
-        characterId,
-        questId: quest.id,
-        startDate: DateTime.utc().toISO(),
-        status: 'in-progress'
-      }
-      return [...prev, questProgress]
-    })
+      setCharacter(prev => {
+        if (!prev) return prev
 
-    setCharacter(prev => {
-      if(!prev) return prev
-      let questStamina = 0
-      quest.startRequirements.forEach(req => {
-        if(req.stats?.stamina){
-          questStamina += req.stats.stamina?.value ?? 0
+        let questStamina = 0
+
+        for (const req of quest.startRequirements) {
+          if (req.stats?.stamina) {
+            questStamina += req.stats.stamina.value ?? 0
+          }
+        }
+
+        const newAchievements: CharacterAchievements[] = []
+
+        if (
+          quest.id === QUEST_PROFESSION_IDS.STICKS_N_STONES &&
+          !prev.achievements.find(
+            a =>
+              a.achievementId ===
+              ACHIEVEMENT_GATHERING_IDS.QUEST_TAKE_STICK,
+          )
+        ) {
+          newAchievements.push({
+            achievementId:
+              ACHIEVEMENT_GATHERING_IDS.QUEST_TAKE_STICK,
+            achievementDate: DateTime.fromMillis(now).toISO() as string,
+          })
+        }
+
+        if (
+          quest.id === QUEST_HUNTING_IDS.SLIMES_GREEN &&
+          !prev.achievements.find(
+            a =>
+              a.achievementId ===
+              ACHIEVEMENT_HUNTING_IDS.TAKE_QUEST_SLIME_GREEN_SMALL,
+          )
+        ) {
+          newAchievements.push({
+            achievementId:
+              ACHIEVEMENT_HUNTING_IDS.TAKE_QUEST_SLIME_GREEN_SMALL,
+            achievementDate: DateTime.fromMillis(now).toISO() as string,
+          })
+        }
+
+        return {
+          ...prev,
+          stats: {
+            ...prev.stats,
+            stamina: {
+              ...prev.stats.stamina,
+              value: prev.stats.stamina.value - questStamina,
+            },
+          },
+          achievements: [
+            ...prev.achievements,
+            ...newAchievements,
+          ],
         }
       })
-      const newAchievements: CharacterAchievements[] = []
-      if(quest.id === QUEST_PROFESSION_IDS.STICKS_N_STONES){
-        if(!prev.achievements.find(a => a.achievementId === ACHIEVEMENT_GATHERING_IDS.QUEST_TAKE_STICK)){
-          newAchievements.push({
-            achievementId: ACHIEVEMENT_GATHERING_IDS.QUEST_TAKE_STICK,
-            achievementDate: DateTime.utc().toISO()
-          })
-        }
-      }
-      if(quest.id === QUEST_HUNTING_IDS.SLIMES_GREEN){
-        if(!prev.achievements.find(a => a.achievementId === ACHIEVEMENT_HUNTING_IDS.TAKE_QUEST_SLIME_GREEN_SMALL)){
-          newAchievements.push({
-            achievementId: ACHIEVEMENT_HUNTING_IDS.TAKE_QUEST_SLIME_GREEN_SMALL,
-            achievementDate: DateTime.utc().toISO()
-          })
-        }
-      }
-      return {
-        ...prev,
-        stats: {
-          ...prev.stats,
-          stamina: {
-            ...prev.stats.stamina,
-            value: prev.stats.stamina.value - questStamina
-          }
-        },
-        //quest taking achievements
-        achievements: [
-          ...prev.achievements,
-          ...newAchievements
-        ]
-      }
-    })
-  }, [
-    setAllQuestProgress, 
-    setCharacter
-  ])
+    },
+    [setAllQuestProgress, setCharacter, now],
+  )
 
-  const handleCompleteQuest = useCallback(async (progressItem: QuestWithQuestProgressItem) => {
-    if(!progressItem || progressItem.canCompleteQuest === false) return
+  // const handleCompleteQuest = useCallback(async (progressItem: QuestWithQuestProgressItem) => {
+  //   if(!progressItem || progressItem.canCompleteQuest === false) return
     
-    //add quest reward gold and items
-    setInventories(prev => {
-      if(!prev) return prev
+  //   //add quest reward gold and items
+  //   setInventories(prev => {
+  //     if(!prev) return prev
 
-      return prev.map(inv => {
-        const charId = progressItem.questProgress?.characterId
-        if(!charId) return inv
+  //     return prev.map(inv => {
+  //       const charId = progressItem.questProgress?.characterId
+  //       if(!charId) return inv
 
-        if(inv.characterId !== charId){
+  //       if(inv.characterId !== charId){
+  //         return inv
+  //       }        
+
+  //       if(inv.title === 'Currency'){
+  //         return {
+  //           ...inv,
+  //           transactions: [
+  //             ...inventoryServiceHandleQuestRewardTransactions(
+  //               charId,
+  //               progressItem.questRewardItems,
+  //               'Currency'
+  //             ),
+  //             ...inv.transactions
+  //           ]
+  //         }
+  //       }
+  //       if(inv.title === 'Backpack'){
+  //         return {
+  //           ...inv,
+  //           transactions: [
+  //             ...inventoryServiceGetQuestCompletionTransactions(
+  //               charId,
+  //               progressItem.completionRequirements
+  //             ),
+  //             ...inventoryServiceHandleQuestRewardTransactions(
+  //               charId,
+  //               progressItem.questRewardItems,
+  //               'Backpack'
+  //             ),
+  //             ...inv.transactions
+  //           ]
+  //         }
+  //       }
+
+  //       return inv
+  //     })
+  //   })
+
+  //   //update quest progress to complete
+  //   setAllQuestProgress(prev => {
+  //     if(!prev) return prev
+
+  //     return prev.map(aqp => {
+  //       if(aqp.id === progressItem.questProgress?.id){
+  //         return {
+  //           ...aqp,
+  //           endDate: DateTime.utc().toISO(),
+  //           status: 'complete'
+  //         }
+  //       }
+  //       return aqp
+  //     })
+  //   })
+
+  //   //Add any quest complete achievements and XP to character
+  //   setCharacter(prev => {
+  //     if(!prev) return prev
+
+  //     if(!progressItem || 
+  //       !progressItem.questRewardItems || 
+  //       progressItem.questRewardItems.length === 0
+  //     ) return prev
+
+  //     let xp = 0
+  //     const newAchievements: CharacterAchievements[] = []
+  //     progressItem.questRewardItems.forEach(reward => {
+  //       if(reward.achivementId){
+  //         newAchievements.push({
+  //           achievementId: reward.achivementId,
+  //           achievementDate: DateTime.utc().toISO()
+  //         })
+  //       }
+  //       if(typeof reward.xp === 'number'){
+  //         xp += reward.xp
+  //       }
+  //     })
+
+  //     const updatedCharacter = characterServiceHandleXpGain({
+  //       character: prev,
+  //       xp,
+  //     })
+  //     return {
+  //       ...updatedCharacter,
+        
+  //       achievements: [
+  //         ...updatedCharacter.achievements,
+  //         ...newAchievements
+  //       ]
+  //     }
+  //   })
+
+  //   await showConfirm({
+  //     title: `Quest Completed!`,
+  //     message: `Congratulations! Quest ${progressItem.quest.title} complete.`,
+  //     isYesNo: false,
+  //   })
+  
+  //   for(const req of progressItem.completionRequirements){
+  //     if(req.itemId){
+  //       addNotification(`-${req.itemAmount} ${req.itemName}`)
+  //       await sleep(500)
+  //     }
+  //   }
+  //   for(const reward of progressItem.questRewardItems){
+  //     if(reward.itemId){
+  //       addNotification(`+${reward.itemAmount} ${reward.itemName}`)
+  //       await sleep(500)
+  //     }
+  //     if(reward.achivementId){
+  //       addNotification(`Achivement Earned: ${reward.achievementTitle}`)
+  //       await sleep(500)
+  //     }
+  //     if(reward.xp){
+  //       addNotification(`+${reward.xp} XP`)
+  //       await sleep(500)
+  //     }
+  //   }
+
+  // }, [
+  //   setInventories,
+  //   setAllQuestProgress,
+  //   setCharacter,
+  // ])
+
+  const handleCompleteQuest = useCallback(
+    async (
+      questProgress: QuestProgress, 
+      rewards: QuestRewardUI[],
+      completionRequirements: QuestCompletionRequirement[],
+      questTitle: string
+    ) => {
+      if (!questProgress) return
+
+      const completedAt = DateTime.fromMillis(now).toISO()
+
+      // 1. INVENTORIES
+      setInventories(prev => {
+        if (!prev) return prev
+
+        const charId =
+          questProgress?.characterId
+        if (!charId) return prev
+
+        return prev.map(inv => {
+          if (inv.characterId !== charId) return inv
+
+          if (inv.title === 'Currency') {
+            return {
+              ...inv,
+              transactions: [
+                ...inventoryServiceHandleQuestRewardTransactions(
+                  charId,
+                  rewards,
+                  'Currency',
+                ),
+                ...inv.transactions,
+              ],
+            }
+          }
+
+          if (inv.title === 'Backpack') {
+            return {
+              ...inv,
+              transactions: [
+                ...inventoryServiceGetQuestCompletionTransactions(
+                  charId,
+                  completionRequirements,
+                ),
+                ...inventoryServiceHandleQuestRewardTransactions(
+                  charId,
+                  rewards,
+                  'Backpack',
+                ),
+                ...inv.transactions,
+              ],
+            }
+          }
+
           return inv
-        }        
-
-        if(inv.title === 'Currency'){
-          return {
-            ...inv,
-            transactions: [
-              ...inventoryServiceHandleQuestRewardTransactions(
-                charId,
-                progressItem.questRewardItems,
-                'Currency'
-              ),
-              ...inv.transactions
-            ]
-          }
-        }
-        if(inv.title === 'Backpack'){
-          return {
-            ...inv,
-            transactions: [
-              ...inventoryServiceGetQuestCompletionTransactions(
-                charId,
-                progressItem.completionRequirements
-              ),
-              ...inventoryServiceHandleQuestRewardTransactions(
-                charId,
-                progressItem.questRewardItems,
-                'Backpack'
-              ),
-              ...inv.transactions
-            ]
-          }
-        }
-
-        return inv
+        })
       })
-    })
 
-    //update quest progress to complete
-    setAllQuestProgress(prev => {
-      if(!prev) return prev
+      // 2. QUEST PROGRESS
+      setAllQuestProgress(prev => {
+        if(!prev) return prev
 
-      return prev.map(aqp => {
-        if(aqp.id === progressItem.questProgress?.id){
+        return prev.map(aqp => {
+          if(aqp.id !== questProgress?.id){
+            return aqp
+          }
+
           return {
             ...aqp,
-            endDate: DateTime.utc().toISO(),
+            endDate: completedAt as string,
             status: 'complete'
           }
-        }
-        return aqp
+        })
       })
-    })
 
-    //Add any quest complete achievements and XP to character
-    setCharacter(prev => {
-      if(!prev) return prev
+      // 3. CHARACTER UPDATES
+      setCharacter(prev => {
+        if (!prev) return prev
 
-      if(!progressItem || 
-        !progressItem.questRewardItems || 
-        progressItem.questRewardItems.length === 0
-      ) return prev
+        let xp = 0
+        const newAchievements: CharacterAchievements[] = []
 
-      let xp = 0
-      const newAchievements: CharacterAchievements[] = []
-      progressItem.questRewardItems.forEach(reward => {
-        if(reward.achivementId){
-          newAchievements.push({
-            achievementId: reward.achivementId,
-            achievementDate: DateTime.utc().toISO()
+        for (const reward of rewards) {
+          if (reward.achievementId) {
+            newAchievements.push({
+              achievementId: reward.achievementId,
+              achievementDate: completedAt as string,
+            })
+          }
+
+          if (typeof reward.xp === 'number') {
+            xp += reward.xp
+          }
+        }
+
+        const updated =
+          characterServiceHandleXpGain({
+            character: prev,
+            xp,
           })
-        }
-        if(typeof reward.xp === 'number'){
-          xp += reward.xp
+
+        return {
+          ...updated,
+          achievements: [
+            ...updated.achievements,
+            ...newAchievements,
+          ],
         }
       })
 
-      const updatedCharacter = characterServiceHandleXpGain({
-        character: prev,
-        xp,
+      // 4. UX CONFIRMATION
+      await showConfirm({
+        title: 'Quest Completed!',
+        message: `Congratulations! Quest ${questTitle} complete.`,
+        isYesNo: false,
       })
-      return {
-        ...updatedCharacter,
-        
-        achievements: [
-          ...updatedCharacter.achievements,
-          ...newAchievements
-        ]
-      }
-    })
 
-    await showConfirm({
-      title: `Quest Completed!`,
-      message: `Congratulations! Quest ${progressItem.quest.title} complete.`,
-      isYesNo: false,
-    })
-  
-    for(const req of progressItem.completionRequirements){
-      if(req.itemId){
-        addNotification(`-${req.itemAmount} ${req.itemName}`)
-        await sleep(500)
+      // 5. NOTIFICATIONS (unchanged but cleaner loop style)
+      for (const req of completionRequirements) {
+        if (req.itemId) {
+          addNotification(
+            `-${req.itemAmount} ${req.itemName}`,
+          )
+          await sleep(500)
+        }
       }
-    }
-    for(const reward of progressItem.questRewardItems){
-      if(reward.itemId){
-        addNotification(`+${reward.itemAmount} ${reward.itemName}`)
-        await sleep(500)
-      }
-      if(reward.achivementId){
-        addNotification(`Achivement Earned: ${reward.achievementTitle}`)
-        await sleep(500)
-      }
-      if(reward.xp){
-        addNotification(`+${reward.xp} XP`)
-        await sleep(500)
-      }
-    }
 
-  }, [
-    setInventories,
-    setAllQuestProgress,
-    setCharacter,
-  ])
+      for (const reward of rewards) {
+        if (reward.itemId) {
+          addNotification(
+            `+${reward.itemAmount} ${reward.itemName}`,
+          )
+          await sleep(500)
+        }
+
+        if (reward.achievementId) {
+          addNotification(
+            `Achievement Earned: ${reward.achievementTitle}`,
+          )
+          await sleep(500)
+        }
+
+        if (reward.xp) {
+          addNotification(`+${reward.xp} XP`)
+          await sleep(500)
+        }
+      }
+    },
+    [
+      setInventories,
+      setAllQuestProgress,
+      setCharacter,
+      now,
+    ],
+  )
 
   //Working
   const handleHuntingMobComplete = useCallback(async (

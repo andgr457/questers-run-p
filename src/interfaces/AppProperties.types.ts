@@ -1,4 +1,4 @@
-import type { QuestWithQuestProgressItem } from '../components/quests/CharacterQuests';
+
 import type { ShoppeCartItem } from '../components/shoppe/ShoppeCart';
 import type { Notification } from '../hooks/useFloatingNotify';
 import type { ShowConfirmProps } from '../providers/ConfirmProvider';
@@ -8,7 +8,7 @@ import type { Inventory } from './inventories/Inventory.types';
 import type { Item } from './items/Item.types';
 import type { Loot, Mob, MobProgress } from './mobs/Mob.types';
 import type { ProfessionType } from './professsions/Profession.types';
-import type { Quest, QuestGroup, QuestProgress } from './quests/Quests.types';
+import type { Quest, QuestCompletionRequirement, QuestGroup, QuestProgress, QuestRewardUI } from './quests/Quests.types';
 
 export interface AppProperties extends AppFunctions {
   achievements?: Achievement[]
@@ -47,7 +47,12 @@ export interface AppFunctions {
   handleAddInventory?: (inventory: Inventory[]) => void
   handleAddQuest?: (quest: Quest, characterId: string) => void
   handleAbandonQuest?: (questProgressId: string) => void
-  handleCompleteQuest?: (questProgress: QuestWithQuestProgressItem) => Promise<void>
+  handleCompleteQuest?: (
+    questProgress: QuestProgress, 
+    rewards: QuestRewardUI[],
+    completionRequirements: QuestCompletionRequirement[],
+    questTitle: string
+  ) => Promise<void>
   handleSetRequestedWindowId?: (id: string) => void
   handleShoppeConfirmation?: (cartItems: ShoppeCartItem[]) => Promise<void>
 }
