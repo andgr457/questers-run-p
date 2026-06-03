@@ -69,9 +69,6 @@ export interface QuestCompletionRequirement{
   timeSeconds?: number
   timeMinutes?: number
   timeHours?: number
-  timeLeftSeconds?: number
-  timeLeftMinutes?: number
-  timeLeftHours?: number
   mobId?: string
   mobName?: string
   mobDescription?: string
@@ -103,4 +100,15 @@ export interface QuestProgress {
   status: QuestProgressStatus
   startDate: string
   endDate?: string
+}
+
+export interface QuestRewardUI {
+  xp?: number
+
+  itemId?: string
+  itemName?: string
+  itemAmount?: number
+
+  achievementId?: string
+  achievementTitle?: string
 }
