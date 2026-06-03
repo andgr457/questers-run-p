@@ -232,9 +232,6 @@ export class QuestService {
             completed: timeLeft.timeLeftSeconds <= 0,
             timeHours: timeLeft.totalTimeHours,
             timeSeconds: timeLeft.totalTimeSeconds,
-            timeLeftHours: timeLeft.timeLeftHours,
-            timeLeftMinutes: timeLeft.timeLeftMinutes,
-            timeLeftSeconds: timeLeft.timeLeftSeconds
           })
         }
       }

@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { ITEM_CURRENCY_IDS } from '../data/items/currency/Item.Currency.data';
 import type { InventoryTransaction } from '../interfaces/inventories/Inventory.types';
-import type { QuestCompletionRequirement, QuestRewardProgressItem } from '../interfaces/quests/Quests.types';
+import type { QuestCompletionRequirement, QuestRewardUI } from '../interfaces/quests/Quests.types';
 
 function getTransactionId(itemId: string, charId: string): string {
   return `invtxn_${itemId}_${charId}_${DateTime.utc().toMillis()}`
@@ -28,7 +28,7 @@ export function inventoryServiceGetQuestCompletionTransactions(
 
 export function inventoryServiceHandleQuestRewardTransactions(
   characterId: string,
-  rewards: QuestRewardProgressItem[],
+  rewards: QuestRewardUI[],
   backpackType: 'Currency' | 'Backpack'
 ): InventoryTransaction[] {
   if(!characterId){
