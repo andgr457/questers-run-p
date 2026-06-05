@@ -86,10 +86,17 @@ class WorldStateStore {
     key: keyof WorldState['flags'],
     value: boolean
   ) {
-    const state = this.state[characterId]
-    if (!state) return
+    const current = this.state[characterId]
+    if (!current) return
 
-    state.flags[key] = value
+    this.state[characterId] = {
+      ...current,
+      flags: {
+        ...current.flags,
+        [key]: value,
+      },
+    }
+
     this.emit()
   }
 
@@ -108,7 +115,12 @@ class WorldStateStore {
       this.initCharacter(characterId)
     }
 
-    this.state[characterId].location = location
+    const current = this.state[characterId]
+
+    this.state[characterId] = {
+      ...current,
+      location,
+    }
 
     this.emit()
 

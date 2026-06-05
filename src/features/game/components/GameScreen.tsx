@@ -3,7 +3,7 @@ import styles from './GameScreen.module.css'
 import { useGameClock } from '../../../game/engine/clock/useGameClock'
 import { activityRuntimeService } from '../../activity/activityRuntimeService'
 import ActivityCard from '../../activity/components/ActivityCard'
-
+import ActivityPanel from '../../activity/components/ActivityPanel'
 type Props = {
   characterId: string
 }
@@ -25,6 +25,7 @@ export default function GameScreen({ characterId }: Props) {
 
   return (
     <div className={styles.shell}>
+      
       <header className={styles.header}>
         <h2>Quester's Run</h2>
 
@@ -34,6 +35,8 @@ export default function GameScreen({ characterId }: Props) {
 
         <div>Active: {active.length}</div>
       </header>
+      
+      <ActivityPanel characterId={characterId} />
 
       <main className={styles.main}>
         <div className={styles.panel}>

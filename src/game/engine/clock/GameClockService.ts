@@ -44,7 +44,7 @@ class GameClockService {
     if (!this.stepMode) return
 
     // simulate a single tick manually
-    this.tick(250)
+    this.tick()
   }
 
   // ======================
@@ -55,7 +55,7 @@ class GameClockService {
     if (this.intervalId) return
 
     this.intervalId = window.setInterval(() => {
-      this.tick(tickRate)
+      this.tick()
     }, tickRate)
   }
 
@@ -70,7 +70,7 @@ class GameClockService {
   // CORE ENGINE TICK
   // ======================
 
-  private tick(realDelta: number) {
+  private tick() {
     // if paused AND not stepping → do nothing
     if (this.paused && !this.stepMode) return
 
