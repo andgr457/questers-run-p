@@ -48,15 +48,20 @@ export default function QuestCard(props: QuestCardProps) {
   } = props
 
   /**
-   * 🧠 SINGLE SOURCE OF QUEST LOGIC
+   * 🧠 SINGLE SOURCE OF RULES
+   * Now QUEST ENGINE is PURE validation,
+   * runtime lock is handled internally via ActivityRuntimeService
    */
   const rules = useMemo(() => {
     return QuestRulesEngine.evaluate({
       quest,
       character,
+
+      // still needed for completion logic
       allQuestProgress: allQuestProgress ?? [],
       allInventories: allInventories ?? [],
       allMobProgress: allMobProgress ?? [],
+
       items: items ?? [],
       achievements: achievements ?? [],
       now,
@@ -73,7 +78,7 @@ export default function QuestCard(props: QuestCardProps) {
   ])
 
   /**
-   * FILTER RULES (unchanged behavior, now derived)
+   * FILTER RULES
    */
   if (
     quest.repeatable === false &&
@@ -92,13 +97,16 @@ export default function QuestCard(props: QuestCardProps) {
 
   const showButtons = showActions === true
 
+  /**
+   * STATUS = derived ONLY from runtime quest progress
+   */
   const statusContent =
     rules.questProgress?.status === 'in-progress'
       ? 'inprogress'
       : quest.repeatable === false &&
-          rules.questProgress?.status === 'complete'
-        ? 'completed'
-        : ''
+        rules.questProgress?.status === 'complete'
+      ? 'completed'
+      : ''
 
   const rewards = useMemo(() => {
     return buildQuestRewardsUI({
@@ -117,7 +125,7 @@ export default function QuestCard(props: QuestCardProps) {
       quests ?? []
     )
   }, [quest, achievements, mobs, items, quests])
-  
+
   return (
     <div id={quest.id}>
       <div
@@ -136,17 +144,17 @@ export default function QuestCard(props: QuestCardProps) {
             onTake={async () => {
               await handleAddQuest?.(
                 quest,
-                character?.id as string,
+                character?.id as string
               )
             }}
             onAbandon={async () => {
               await handleAbandonQuest?.(
-                rules.questProgress?.id as string,
+                rules.questProgress?.id as string
               )
             }}
             onComplete={async () => {
               await handleCompleteQuest?.(
-                rules.questProgress as QuestProgress, 
+                rules.questProgress as QuestProgress,
                 rewards,
                 rules.completionRequirements,
                 quest.title
@@ -178,14 +186,12 @@ export default function QuestCard(props: QuestCardProps) {
 
         {/* SECTIONS */}
         <div className="quest-sections">
-          {/* START REQUIREMENTS */}
           <QuestStartRequirements
             requirements={rules.startRequirements}
             questId={quest.id}
             requirementData={requirementData}
           />
 
-          {/* COMPLETION REQUIREMENTS */}
           <QuestCompletionRequirements
             requirements={rules.completionRequirements}
             questId={quest.id}
@@ -194,18 +200,14 @@ export default function QuestCard(props: QuestCardProps) {
             requirementData={requirementData}
           />
 
-          {/* REWARDS */}
-          <QuestRewardsSection
-            rewards={rewards ?? []}
-          />
+          <QuestRewardsSection rewards={rewards ?? []} />
 
-          {/* STATS */}
           <div className="quest-item-date">
             {allQuestProgress?.filter(
               aqp =>
                 aqp.characterId === character.id &&
                 aqp.questId === quest.id &&
-                aqp.status === 'complete',
+                aqp.status === 'complete'
             ).length ?? 0}{' '}
             completed.
           </div>

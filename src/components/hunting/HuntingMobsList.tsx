@@ -2,13 +2,16 @@ import './Hunting.css'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { AppProperties } from '../../interfaces/AppProperties.types'
-import { sleep } from '../../services/CommonServices'
 import ScrollableShoppeList from '../shoppe/ShoppeListScrollable'
-import type { Loot, Mob } from '../../interfaces/mobs/Mob.types'
+import type { Mob } from '../../interfaces/mobs/Mob.types'
 import HuntingMob from './HuntingMob'
 import { ITEM_TYPES, type Item } from '../../interfaces/items/Item.types'
 import SpinnerOverlay from '../spinner/SpinnerOverlay'
 import type { Character } from '../../interfaces/characters/Character.types'
+import { runHuntingEncounter } from '../../features/runtime/engines/runHuntingEncounter'
+import { playHuntingEncounter } from '../../features/runtime/playback/playHuntingEncounter'
+import { encounterRuntimeStore } from '../../features/runtime/store/encounterRuntimeStore'
+import { activityRuntimeService } from '../../features/runtime/activity/activityRunetimeService'
 
 interface HuntingMobsListProps extends AppProperties {
   huntingMobs: Mob[]
@@ -52,133 +55,67 @@ export default function HuntingMobsList(props: HuntingMobsListProps) {
     setHuntingEvents(prev => [msg, ...prev])
   }
 
-  const handleHuntMobClicked = useCallback(async (mob: Mob, char: Character) => {
-    if (!mob?.stats?.hp?.value) return
-    if (!char?.stats?.hp?.value) return
+  const handleHuntMobClicked = useCallback(
+    async (mob: Mob, char: Character) => {
+      if (!mob?.stats?.hp?.value) return
+      if (!char?.stats?.hp?.value) return
 
-    setCanDo(false)
-
-    // ======================
-    // INIT STATE
-    // ======================
-    let currentMobHp = mob.stats.hp.value
-    let currentCharHp = char.stats.hp.value
-    setHuntingEvents([])
-    await sleep(350)
-
-    addEvent(<span><span style={{color: 'gold'}}>{char.name}</span> engaged a Lv. {mob.level} <span style={{color: 'gold'}}>{mob.name}</span>.</span>)
-    await sleep(SLEEP)
-
-    setMobName(mob.name)
-
-    setMobHp(currentMobHp)
-    setMobHpMax(mob.stats.hp.value)
-    await sleep(SLEEP)
-
-    let characterPassedOut = false
-
-    // ======================
-    // COMBAT LOOP
-    // ======================
-    while (currentMobHp > 0 && currentCharHp > 0) {
-      // PLAYER TURN
-      const characterDamage =
-        char.level +
-        (char.stats.strength?.value ?? 0) +
-        (char.stats.agility?.value ?? 0) +
-        (char.stats.intelligence?.value ?? 0)
-
-      currentMobHp = Math.max(0, currentMobHp - characterDamage)
-
-      addEvent(<span><span style={{color: 'gold'}}>{char.name}</span> hit <span style={{color: 'gold'}}>{mob.name}</span> for <span style={{color: 'gold'}}>{characterDamage}</span>.</span>)
-      setMobHp(currentMobHp)
-
-      await sleep(SLEEP)
-
-      if (currentMobHp <= 0) break
-
-      // MOB TURN
-      const mobDamage =
-        mob.level +
-        (mob.stats.strength?.value ?? 0) +
-        (mob.stats.agility?.value ?? 0) +
-        (mob.stats.intelligence?.value ?? 0)
-
-      currentCharHp = Math.max(0, currentCharHp - mobDamage)
-
-      addEvent(<span><span style={{color: 'gold'}}>{mob.name}</span> hit <span style={{color: 'gold'}}>{char.name}</span> for <span style={{color: 'gold'}}>{mobDamage}</span>.</span>)
-
-      setCharHp(currentCharHp)
-
-      await sleep(SLEEP)
-
-      if (currentCharHp <= 0) {
-        characterPassedOut = true
-        break
+      // 🚨 THIS is the missing piece
+      if (!encounterRuntimeStore.canStartEncounter(char.id)) {
+        return
       }
-    }
 
-    // ======================
-    // END RESULT
-    // ======================
-    if (characterPassedOut) {
-      addEvent(<span><span style={{color: 'gold'}}>{char.name}</span> collapsed.</span>)
-      await handleHuntingMobComplete?.(mob, char.id, [], currentCharHp, characterPassedOut)
-      setCanDo(true)
-      return
-    }
+      const activityId = crypto.randomUUID()
 
-    if (currentMobHp <= 0) {
-      addEvent(<span><span style={{color: 'gold'}}>{char.name}</span> defeated the <span style={{color: 'gold'}}>{mob.name}</span>!</span>)
-      const lootDrops: Loot[] = []
-      for(const lootItem of mob.loot ?? []){
-        if (!lootItem.itemId || typeof lootItem.itemAmount !== 'number') continue
+      activityRuntimeService.start({
+        id: activityId,
+        type: 'hunting',
+        characterId: char.id,
+        startedAt: Date.now(),
+        status: 'active',
+        blocking: true,
+        meta: {
+          mobId: mob.id,
+        },
+      })
 
-        const item = items?.find(i => i.id === lootItem.itemId)
-        if (!item) continue
+      setCanDo(false)
+      setHuntingEvents([])
 
-        const chance = typeof lootItem.chance === 'number' ? lootItem.chance : 1
-        const roll = Math.random()
+      const result = runHuntingEncounter({
+        mob,
+        character: char,
+        items: items ?? [],
+      })
 
-        const didDrop = roll <= chance
+      await playHuntingEncounter({
+        mob,
+        character: char,
+        result,
+        sleepMs: SLEEP,
+        handlers: {
+          setMobName,
+          setMobHp,
+          setMobHpMax,
+          setCharHp,
+          addEvent,
+        },
+      })
 
-        if (!didDrop){
-          addEvent(
-            <span style={{ color: 'gray' }}>
-              {lootItem.itemAmount} {item.name} didn't drop. {(roll * 100).toFixed(1)} / {chance * 100}%
-            </span>
-          )
-          continue
-        }
-
-        lootItem.characterRoll = roll
-        lootItem.item = item
-
-        addEvent(
-          <span>
-            <span style={{ color: 'gold' }}>{char.name}</span> looted{" "}
-            <span style={{ color: 'gold' }}>
-              {lootItem.itemAmount} {item.name}
-            </span>!
-            <span> Rolled <span style={{color: 'gold'}}>{(roll * 100).toFixed(1)}</span> / <span style={{color: 'gold'}}>{chance * 100}%</span></span>
-          </span>
-        )
-
-        lootDrops.push(lootItem)
-      }
-      addEvent(
-        <span>
-          <span style={{ color: 'gold' }}>{char.name}</span> gained{" "}
-          <span style={{ color: 'gold' }}>
-            {mob.xp} XP
-          </span>!
-        </span>
+      await handleHuntingMobComplete?.(
+        mob,
+        char.id,
+        result.loot,
+        result.finalCharacterHp,
+        result.characterPassedOut
       )
-      await handleHuntingMobComplete?.(mob, char.id, lootDrops, currentCharHp, characterPassedOut)
-    }
 
-    reset()
-  }, [items])
+      activityRuntimeService.complete(activityId)
+
+      reset()
+    },
+    [items]
+  )
 
   const reset = () => {
     setCanDo(true)

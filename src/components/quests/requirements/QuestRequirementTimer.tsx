@@ -16,7 +16,6 @@ export default function QuestRequirementTimer({
 
   const {
     progressPercent,
-    leftMinutes,
     leftSeconds,
     isActive,
   } = useQuestTimer({
@@ -40,14 +39,14 @@ export default function QuestRequirementTimer({
           {req.timeMinutes}
         </strong>
 
-        {' '}minute(s) Long
+        {' '}min
 
         {isActive && (
           <>
             {' '}|
             {' '}
-            {leftMinutes.toFixed(1)}
-            min
+            {progressPercent.toFixed(1)}
+            %
             {' '}
             {leftSeconds.toFixed(1)}
             sec remaining...

@@ -276,7 +276,7 @@
   padding: 8px;
 
   background: var(--bg-dark);
-  border-bottom: 1px solid var(--text);
+  /* border-bottom: 1px solid var(--text); */
 }
 
 .shoppe-cart-sticky-info {
