@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 
 import CharacterCreationScreen from '../features/character/components/CharacterCreationScreen'
 import GameScreen from '../features/game/components/GameScreen'
-import WorldWrapper from './components/WorldWrapper'
+import WorldWrapper from './components/world/WorldWrapper'
 
 import { worldStateStore, type WorldLocation } from '../game/world/worldState'
-import TravelPanel from './components/TravelPanel'
+import TravelPanel from './components/travel/TravelPanel'
 import { gameEventBus } from '../game/engine/events/GameEventBus'
 import { travelTo } from '../game/actions/travelAction'
 

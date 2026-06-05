@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { activityRuntimeService } from '../../features/activity/activityRuntimeService'
-import { gameClockService } from '../../game/engine/clock/GameClockService'
-import { travel } from '../../game/world/travel'
-import { worldStateStore } from '../../game/world/worldState'
+import { activityRuntimeService } from '../../../features/activity/activityRuntimeService'
+import { gameClockService } from '../../../game/engine/clock/GameClockService'
+import { travel } from '../../../game/world/travel'
+import { worldStateStore } from '../../../game/world/worldState'
 
 export default function DebugScreen() {
   const [characterId] = useState('debug-char')

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './TravelPanel.module.css'
-import { useTravelActivity } from '../../features/activity/hooks/useTravelActivity'
-import type { RouteResult } from '../../game/world/worldRouting'
+import { useTravelActivity } from '../../../features/activity/hooks/useTravelActivity'
+import type { RouteResult } from '../../../game/world/worldRouting'
 
 type Props = {
   characterId: string | null
@@ -25,7 +25,7 @@ export default function TravelPanel({ characterId }: Props) {
   const elapsed = travel?.elapsedMs ?? 0
 
   // ======================
-  // ENTER
+  // START OF TRAVEL
   // ======================
   useEffect(() => {
     if (!travel) {
@@ -53,7 +53,7 @@ export default function TravelPanel({ characterId }: Props) {
   }, [travel?.activity?.id])
 
   // ======================
-  // ARRIVAL DETECTION (FIXED)
+  // END OF TRAVEL
   // ======================
 
   useEffect(() => {
