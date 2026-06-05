@@ -1,0 +1,171 @@
+
+/* =========================
+   BASE WORLD BACKGROUND
+========================= */
+
+.world-bg {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+
+  transition: background 0.8s ease, color 0.3s ease;
+
+  /* default text color (safe light) */
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* 🔥 CRITICAL: enforce inheritance safety */
+.world-bg * {
+  color: inherit;
+}
+
+/* =========================
+   GLOBAL ATMOSPHERIC LAYER
+========================= */
+
+.world-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.8s ease;
+}
+
+/* UI LAYER (must exist in React wrapper) */
+.world-content {
+  position: relative;
+  z-index: 1;
+
+  color: inherit;
+}
+
+/* =========================
+   DEFAULT: PLAINS
+========================= */
+
+.bg-plains {
+  background: linear-gradient(
+    to top,
+    #2f6b3c 0%,
+    #4fa85a 35%,
+    #6ec6ff 100%
+  );
+}
+
+/* soft readability */
+.bg-plains::before {
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.10),
+    rgba(0, 0, 0, 0.25)
+  );
+}
+
+/* =========================
+   TOWN
+========================= */
+
+.bg-town {
+  background: linear-gradient(
+    to top,
+    #3a3a3a 0%,
+    #6b6b6b 40%,
+    #d8b07a 100%
+  );
+}
+
+.bg-town::before {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.35),
+    rgba(0, 0, 0, 0.05)
+  );
+}
+
+/* =========================
+   GUILD
+========================= */
+
+.bg-guild {
+  background: linear-gradient(
+    to top,
+    #3d4a2f 0%,
+    #6b7a4a 40%,
+    #c2a46a 100%
+  );
+}
+
+.bg-guild::before {
+  background: radial-gradient(
+    circle at top,
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.45)
+  );
+}
+
+/* =========================
+   WOODS
+========================= */
+
+.bg-woods {
+  background: linear-gradient(
+    to top,
+    #0f2e1a 0%,
+    #1f5c33 45%,
+    #4aa36b 100%
+  );
+}
+
+.bg-woods::before {
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.35),
+    rgba(0, 0, 0, 0.60)
+  );
+}
+
+/* =========================
+   CAVE (FIXED READABILITY)
+========================= */
+
+.bg-cave {
+  background: linear-gradient(
+    to top,
+    #0b0b10 0%,
+    #1c1c25 60%,
+    #3a3a4a 100%
+  );
+
+  /* 🔥 force readable text in dark environments */
+  color: #f2f6ff;
+}
+
+.bg-cave::before {
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.03),
+    rgba(0, 0, 0, 0.70)
+  );
+}
+
+/* =========================
+   DUNGEON
+========================= */
+
+.bg-dungeon {
+  background: linear-gradient(
+    to top,
+    #050509 0%,
+    #1a1025 50%,
+    #2a1b3d 100%
+  );
+}
+
+.bg-dungeon::before {
+  background: radial-gradient(
+    circle at top,
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0.85)
+  );
+}

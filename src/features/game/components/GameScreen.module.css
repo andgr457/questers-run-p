@@ -1,0 +1,25 @@
+.gameScreen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* background: #111; */
+  /* color: white; */
+}
+
+.gameHeader {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+}
+
+.gameMain {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  flex: 1;
+}
+
+.panel {
+  padding: 12px;
+  border-right: 1px solid #222;
+}
