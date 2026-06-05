@@ -21,10 +21,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './app/App'
+import './app/styles/global.css'
 import { gameClockService } from './game/engine/clock/GameClockService'
 import { activityRuntimeService } from './features/activity/activityRuntimeService'
 import { activityRewardSystem } from './game/engine/systems/ActivityRewardSystem'
-import './app/styles/global.css'
 import { worldStateStore } from './game/world/worldState'
 import { transitionService } from './game/engine/transitions/TransitionService'
 // start engine systems

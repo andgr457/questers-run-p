@@ -1,3 +1,4 @@
+import type { RouteResult } from '../../game/world/worldRouting'
 import type { WorldLocation } from '../../game/world/worldState'
 
 export type ActivityType =
@@ -14,6 +15,13 @@ export type ActivityStatus =
   | 'active'
   | 'completed'
   | 'cancelled'
+
+export type TravelPhase =
+  | 'enter'
+  | 'travel'
+  | 'arrive'
+  | 'exit'
+  | 'complete'
 
 export interface ActivityEntry {
   id: string
@@ -50,6 +58,9 @@ export type ActivityMeta = {
   }
 
   travel?: {
+    from: WorldLocation
     to: WorldLocation
+    route: RouteResult
+    phase?: TravelPhase
   }
 }

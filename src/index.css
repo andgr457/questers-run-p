@@ -377,10 +377,6 @@ input[type='text']::placeholder {
   letter-spacing: 3px;
 }
 
-.page-main {
-  
-}
-
 /* .page-modules {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(450px, max-content));

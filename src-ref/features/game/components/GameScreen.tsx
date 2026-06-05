@@ -58,7 +58,7 @@ export default function GameScreen({ characterId }: Props) {
 
           {activities.map(a => (
             <div key={a.id}>
-              {a.type} ({a.status})
+              {a.type} ({a.status}) - {JSON.stringify(a.meta)}
             </div>
           ))}
         </div>

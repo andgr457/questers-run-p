@@ -1,83 +1,125 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import CharacterCreationScreen from '../features/character/components/CharacterCreationScreen'
 import GameScreen from '../features/game/components/GameScreen'
-import DebugScreen from './DebugScreen/DebugScreen'
-import GuildIntroModal from '../features/tutorial/components/GuildIntroModal'
+
 import WorldWrapper from './components/WorldWrapper'
 
-import { worldStateStore } from '../game/world/worldState'
+import { worldStateStore, type WorldLocation } from '../game/world/worldState'
+import { gameClockService } from '../game/engine/clock/GameClockService'
+import TravelPanel from './components/TravelPanel'
 
-import { activityRuntimeService } from '../features/activity/activityRuntimeService'
-import { useWorldState } from '../game/world/useWorldState'
+type AppMode = 'boot' 
+  | 'character_create' 
+  | 'world' 
+  | 'travel'
+  | 'town'
 
-activityRuntimeService.setWorldStateStore(worldStateStore)
+type AppState = {
+  mode: AppMode
+  characterId: string | null
+  location: WorldLocation
+
+  travel?: {
+    to: WorldLocation
+    duration: number
+    startedAt: number
+  }
+}
 
 export default function App() {
-  const [characterId, setCharacterId] = useState<string | null>(null)
+  const [state, setState] = useState<AppState>({
+    mode: 'boot',
+    characterId: null,
+    location: 'cave',
+  })
 
   // ======================
-  // REACTIVE WORLD STATE
+  // INIT BOOT
   // ======================
-  const world = useWorldState(characterId)
-  
-  const mode = 'game'
+  useEffect(() => {
+    setState(s => ({
+      ...s,
+      mode: 'character_create',
+    }))
+  }, [])
 
   // ======================
-  // DEBUG
+  // START GAME
   // ======================
-  //@ts-ignore
-  if (mode === 'debug') {
-    return (
-      <WorldWrapper location="plains">
-        <DebugScreen />
-      </WorldWrapper>
-    )
+  const handleCharacterCreated = (id: string) => {
+    worldStateStore.initCharacter(id)
+
+    travelTo('town')
+    // setState({
+    //   mode: 'world',
+    //   characterId: id,
+    //   location: 'plains',
+    // })
   }
 
   // ======================
-  // CHARACTER CREATION
+  // TRAVEL REQUEST
   // ======================
-  if (!characterId) {
-    return (
-      <WorldWrapper location="plains">
-        <CharacterCreationScreen
-          onCreated={(id) => {
-            worldStateStore.initCharacter(id)
-            setCharacterId(id)
-          }}
-        />
-      </WorldWrapper>
-    )
+  const travelTo = (to: WorldLocation, duration = 0) => {
+    setState(s => {
+      if (!s.characterId) return s
+
+      return {
+        ...s,
+        mode: 'travel',
+        travel: {
+          to,
+          duration,
+          startedAt: gameClockService.getNow(),
+        },
+      }
+    })
   }
 
-
-  const location = world?.location ?? 'plains'
-  const introSeen = world?.flags?.introSeen ?? false
-
   // ======================
-  // GAME
+  // TRAVEL COMPLETE
   // ======================
+  const handleArrive = () => {
+    setState(s => {
+      if (!s.characterId || !s.travel) return s
+
+      const newLocation = s.travel.to
+
+      worldStateStore.setLocation(s.characterId, newLocation)
+
+      return {
+        ...s,
+        mode: 'town',
+        location: newLocation,
+        travel: undefined,
+      }
+    })
+  }
+
   return (
-    <WorldWrapper location={location}>
-      <GameScreen characterId={characterId} />
+    <WorldWrapper location={state.location}>
+      <div className={
+        `screen-character-create ${state.mode === 'character_create' ? 'show' : ''}`
+      }>
+        <CharacterCreationScreen onCreated={handleCharacterCreated} />
+      </div>
 
-      {!introSeen && (
-        <GuildIntroModal
-          onClose={() => {
-            worldStateStore.setFlag(
-              characterId,
-              'introSeen',
-              true
-            )
-
-            worldStateStore.setLocation(
-              characterId,
-              'guild'
-            )
-          }}
+      <div className={
+        `screen-travel-panel ${state.mode === 'travel' ? 'show' : ''}`
+      }>
+        <TravelPanel
+          characterId={state.characterId}
+          onArrive={handleArrive}
         />
-      )}
+      </div>
+
+      <div className={
+        `screen-game ${state.mode !== 'travel' ? 'show' : ''}`
+      }>
+
+        <GameScreen characterId={state?.characterId} />
+      </div>
     </WorldWrapper>
   )
 }

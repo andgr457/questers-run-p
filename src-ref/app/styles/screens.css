@@ -1,0 +1,39 @@
+.screen-character-create {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-out;
+}
+
+.screen-character-create.show {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.8s ease-in;
+}
+
+/* ====================== */
+
+.screen-travel-panel {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease-out;
+}
+
+.screen-travel-panel.show {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.4s ease-in;
+}
+
+/* ====================== */
+
+/* .screen-game {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease-out;
+} */
+
+.screen-game.show {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.4s ease-in;
+}
