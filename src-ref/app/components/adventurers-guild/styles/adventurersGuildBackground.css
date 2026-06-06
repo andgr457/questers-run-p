@@ -1,0 +1,124 @@
+.guild-background {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+/* =========================
+   WALL
+========================= */
+
+.guild-background-wall {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 72%;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #5a4333,
+      #3c2b20
+    );
+}
+
+/* =========================
+   FLOOR
+========================= */
+
+.guild-background-floor {
+  position: absolute;
+
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: 28%;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #2c1c14,
+      #1a110d
+    );
+
+  border-top:
+    4px solid rgba(0, 0, 0, 0.35);
+}
+
+/* =========================
+   LIGHTING
+========================= */
+
+.guild-background-lighting {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  transition:
+    background 1s ease,
+    opacity 1s ease;
+}
+
+/* =========================
+   MORNING
+========================= */
+
+.guild-background.morning
+.guild-background-lighting {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255, 210, 140, 0.15),
+      transparent 45%
+    );
+}
+
+/* =========================
+   AFTERNOON
+========================= */
+
+.guild-background.afternoon
+.guild-background-lighting {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255, 240, 180, 0.12),
+      transparent 50%
+    );
+}
+
+/* =========================
+   EVENING
+========================= */
+
+.guild-background.evening
+.guild-background-lighting {
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255, 160, 90, 0.12),
+      transparent 55%
+    );
+}
+
+/* =========================
+   NIGHT
+========================= */
+
+.guild-background.night
+.guild-background-lighting {
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255, 170, 70, 0.08),
+      rgba(0, 0, 0, 0.45)
+    );
+}

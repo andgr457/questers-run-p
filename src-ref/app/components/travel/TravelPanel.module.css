@@ -150,7 +150,12 @@
 
   background: linear-gradient(to right, #d7b36a, #a67c36);
 
-  transition: width 0.15s linear;
+  will-change: width;
+
+  /* IMPORTANT CHANGE */
+  transition: width 0.35s linear;
+
+  transform: translateZ(0); /* forces GPU layer */
 }
 
 /* label overlay */

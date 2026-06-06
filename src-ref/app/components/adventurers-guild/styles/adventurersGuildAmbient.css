@@ -1,0 +1,114 @@
+.guild-ambient {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+}
+
+/* =========================
+   CANDLES
+========================= */
+
+.guild-candle {
+  position: absolute;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 210, 100, 0.95),
+      rgba(255, 140, 40, 0.4),
+      transparent
+    );
+
+  animation:
+    candle-flicker 3s infinite ease-in-out;
+}
+
+.candle-left {
+  top: 120px;
+  left: 140px;
+}
+
+.candle-right {
+  top: 120px;
+  right: 140px;
+}
+
+@keyframes candle-flicker {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+}
+
+/* =========================
+   SMOKE
+========================= */
+
+.guild-smoke {
+  position: absolute;
+
+  width: 180px;
+  height: 180px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.04),
+      transparent 70%
+    );
+
+  filter: blur(12px);
+
+  animation:
+    smoke-drift 18s infinite linear;
+}
+
+.smoke-1 {
+  left: 20%;
+  top: 25%;
+}
+
+.smoke-2 {
+  right: 18%;
+  top: 30%;
+
+  animation-delay: 8s;
+}
+
+@keyframes smoke-drift {
+  0% {
+    transform:
+      translateY(0)
+      translateX(0);
+  }
+
+  50% {
+    transform:
+      translateY(-18px)
+      translateX(12px);
+  }
+
+  100% {
+    transform:
+      translateY(0)
+      translateX(0);
+  }
+}

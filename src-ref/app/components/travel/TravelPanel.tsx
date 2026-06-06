@@ -3,6 +3,9 @@ import { createPortal } from 'react-dom'
 import styles from './TravelPanel.module.css'
 import { useTravelActivity } from '../../../features/activity/hooks/useTravelActivity'
 import type { RouteResult } from '../../../game/world/worldRouting'
+import { useWorldTravelMap } from '../worldMap/hooks/useWorldTravelMap'
+import WorldTravelMap from '../worldMap/WorldTravelMap'
+import type { WorldLocation } from '../../../game/world/worldState'
 
 type Props = {
   characterId: string | null
@@ -14,7 +17,6 @@ export default function TravelPanel({ characterId }: Props) {
   const travel = useTravelActivity(characterId)
 
   const [phase, setPhase] = useState<Phase>('hidden')
-  const [arrivalLock, setArrivalLock] = useState(false)
 
   const route: RouteResult = travel?.route ?? {
     steps: [],
@@ -24,74 +26,47 @@ export default function TravelPanel({ characterId }: Props) {
   const progress = travel?.progress ?? 0
   const elapsed = travel?.elapsedMs ?? 0
 
-  // ======================
-  // START OF TRAVEL
-  // ======================
   useEffect(() => {
-    if (!travel) {
-      setPhase('hidden')
-      setArrivalLock(false)
-      return
-    }
+      if (!travel) {
+        setPhase('hidden')
+        return
+      }
 
-    setArrivalLock(false)
-    setPhase('hidden')
+      setPhase('enter')
 
-    const raf = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setPhase('enter')
+      const t = setTimeout(() => setPhase('hold'), 250)
 
-        const holdTimer = setTimeout(() => {
-          setPhase('hold')
-        }, 350)
-
-        return () => clearTimeout(holdTimer)
-      })
-    })
-
-    return () => cancelAnimationFrame(raf)
-  }, [travel?.activity?.id])
-
-  // ======================
-  // END OF TRAVEL
-  // ======================
-
-  useEffect(() => {
-    if (!travel) return
-    if (phase !== 'hold') return
-    if (arrivalLock) return
-
-    setArrivalLock(true)
-
-    // IMPORTANT: this is your "standing on destination, UI still fading"
-    const t = setTimeout(() => {
-      setPhase('exit')
-    }, 2800) // <- shorter but feels better when paired with CSS exit slide
-
-    return () => clearTimeout(t)
-  }, [phase, arrivalLock, travel])
+      return () => clearTimeout(t)
+    }, [travel?.activity?.id])
+  const map = useWorldTravelMap(characterId)
 
   return createPortal(
     <div className={`${styles.panel} ${styles[phase]}`}>
       <div className={styles.backdrop} />
 
       <div className={styles.content}>
+        {map && <div>
+          <WorldTravelMap 
+            currentLocation={map.currentLocation as WorldLocation}
+            progress={map.progress}
+            route={map.route}
+          />
+        </div>}
+
         <div className={styles.route}>
           <div className={styles.routeTrack} />
 
           {route.steps.map((step, index) => {
-            const start = route.steps
-              .slice(0, index)
-              .reduce((sum, s) => sum + s.travelMs, 0)
+            const seg = travel?.segments?.[index]
 
-            const end = start + step.travelMs
+            if(!seg) return null
 
             const segmentProgress =
-              elapsed < start
+              elapsed < seg.start
                 ? 0
-                : elapsed > end
+                : elapsed > seg.end
                   ? 1
-                  : (elapsed - start) / step.travelMs
+                  : (elapsed - seg.start) / step.travelMs
 
             const completed = segmentProgress >= 1
             const active = segmentProgress > 0 && segmentProgress < 1
@@ -128,6 +103,7 @@ export default function TravelPanel({ characterId }: Props) {
             }}
           />
         </div>
+
       </div>
     </div>,
     document.body

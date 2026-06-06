@@ -25,13 +25,11 @@ import './app/styles/global.css'
 import { gameClockService } from './game/engine/clock/GameClockService'
 import { activityRuntimeService } from './features/activity/activityRuntimeService'
 import { activityRewardSystem } from './game/engine/systems/ActivityRewardSystem'
-import { worldStateStore } from './game/world/worldState'
 import { transitionService } from './game/engine/transitions/TransitionService'
 // start engine systems
 gameClockService.start()
 activityRuntimeService.init?.() 
 activityRewardSystem.init()
-activityRuntimeService.setWorldStateStore(worldStateStore)
 transitionService.boot()
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

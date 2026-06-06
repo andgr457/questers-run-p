@@ -1,0 +1,12 @@
+.segmentFill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, #7cf, #4af);
+
+  transition: width 80ms linear;
+  will-change: width;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+}

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { WorldLocation } from '../../../game/world/worldState'
-import './WorldWrapper.module.css'
+import './worldWrapper.css'
 
 type Props = {
   location: WorldLocation
@@ -11,7 +11,6 @@ export default function WorldWrapper({
   location,
   children,
 }: Props) {
-  location = 'cave'
   return (
     <div className={`world-bg bg-${location}`}>
       {/* atmospheric overlays */}

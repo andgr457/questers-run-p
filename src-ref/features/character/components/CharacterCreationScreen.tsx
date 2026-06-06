@@ -33,10 +33,8 @@ export default function CharacterCreationScreen({
           className="button"
           onClick={() => {
             if (!name.trim()) return
+            onCreated(crypto.randomUUID())
 
-            setTimeout(() => {
-              onCreated(crypto.randomUUID())
-            }, 700)
           }}
         >
           Begin Adventure

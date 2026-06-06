@@ -1,7 +1,6 @@
 import type { ActivityEntry, ActivityType } from './types'
 import { gameClockService } from '../../game/engine/clock/GameClockService'
 import { gameEventBus } from '../../game/engine/events/GameEventBus'
-import type { WorldLocation } from '../../game/world/worldState'
 type CharacterActivityCache = {
   all: ActivityEntry[]
   active: ActivityEntry[]
@@ -15,14 +14,9 @@ type Subscriber<T> = {
   lastValue: T
 }
 
-type WorldStateAPI = {
-  setLocation: (characterId: string, location: WorldLocation) => void
-}
-
 class ActivityRuntimeService {
   private activities = new Map<string, Map<string, ActivityEntry>>()
   private cache = new Map<string, CharacterActivityCache>()
-  private worldStateStore?: WorldStateAPI
   private subscriptions = new Set<Subscriber<any>>()
 
   // ======================
@@ -34,10 +28,6 @@ class ActivityRuntimeService {
     })
   }
 
-  setWorldStateStore(store: WorldStateAPI) {
-    this.worldStateStore = store
-  }
-
   // ======================
   // TICK SYSTEM
   // ======================
@@ -45,7 +35,7 @@ class ActivityRuntimeService {
     const dirtyCharacters = new Set<string>()
     let changed = false
 
-    const ARRIVAL_BUFFER_MS = 15000 // 👈 UI “settle / arrive” time
+    const ARRIVAL_BUFFER_MS = 8500 // 👈 UI “settle / arrive” time
 
     for (const [characterId, bucket] of this.activities.entries()) {
       for (const activity of bucket.values()) {
@@ -72,20 +62,23 @@ class ActivityRuntimeService {
         // ======================
         // FIRST COMPLETION HIT
         // ======================
-        if (activity.status === 'active' && elapsed >= activity.duration) {
+        const COMPLETION_FUDGE_MS = 2000 // adjust 200–600 depending on feel
+
+        if (
+          activity.status === 'active' &&
+          elapsed >= activity.duration + COMPLETION_FUDGE_MS
+        ) {
           activity.status = 'completed'
           activity.completedAt = now
           changed = true
           dirtyCharacters.add(characterId)
-
-          // WORLD UPDATE STILL HAPPENS IMMEDIATELY
-          if (activity.type === 'travel') {
-            const to = activity.meta?.travel?.to
-
-            if (to && this.worldStateStore) {
-              this.worldStateStore.setLocation(activity.characterId, to)
-            }
-          }
+          gameEventBus.emit({
+            type: 'activity:complete',
+            characterId,
+            activityId: activity.id,
+            activityType: activity.type,
+            meta: activity.meta,
+          })
         }
 
         // ======================
@@ -263,7 +256,7 @@ class ActivityRuntimeService {
       type: 'activity:complete',
       characterId,
       activityId: id,
-      activityType: existing.type,
+      activityType: existing.type
     })
   }
 

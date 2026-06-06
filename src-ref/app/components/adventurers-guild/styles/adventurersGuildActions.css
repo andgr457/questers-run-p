@@ -1,0 +1,55 @@
+.guild-actions {
+  margin-top: auto;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+
+  padding-top: 24px;
+}
+
+.guild-action-button {
+  height: 54px;
+
+  border:
+    2px solid #3b2619;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #6e4b35,
+      #4a3122
+    );
+
+  color: #f3e2c2;
+
+  font-size: 16px;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.guild-action-button:hover {
+  transform: translateY(-2px);
+
+  background:
+    linear-gradient(
+      to bottom,
+      #876045,
+      #5c3c29
+    );
+
+  border-color: #b68a63;
+}
+
+.guild-action-button:active {
+  transform: translateY(1px);
+}

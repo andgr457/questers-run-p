@@ -2,7 +2,7 @@ import { worldStateStore } from '../../../game/world/worldState'
 import {
   findRoute,
 } from '../../../game/world/worldRouting'
-import { travel } from '../../../game/world/travel'
+import { travelTo } from '../../../game/actions/travelAction'
 
 type Props = {
   characterId: string
@@ -37,11 +37,10 @@ export default function QuestTracker({
 
   const startTravel = () => {
     for (const step of route.steps) {
-      travel({
+      travelTo({
         characterId,
+        from: step.from,
         to: step.to,
-        duration: step.travelMs,
-        blocking: false,
       })
     }
   }

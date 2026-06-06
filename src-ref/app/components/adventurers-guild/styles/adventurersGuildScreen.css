@@ -1,0 +1,119 @@
+.adventurers-guild-screen {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition:
+    background-color 1s ease,
+    filter 1s ease;
+}
+
+/* =========================
+   TIME OF DAY STATES
+========================= */
+
+.adventurers-guild-screen.morning {
+  background:
+    linear-gradient(
+      to bottom,
+      #746247,
+      #3f3125
+    );
+}
+
+.adventurers-guild-screen.afternoon {
+  background:
+    linear-gradient(
+      to bottom,
+      #8b6b45,
+      #4a3828
+    );
+}
+
+.adventurers-guild-screen.evening {
+  background:
+    linear-gradient(
+      to bottom,
+      #4f3b2d,
+      #241a14
+    );
+}
+
+.adventurers-guild-screen.night {
+  background:
+    linear-gradient(
+      to bottom,
+      #1b1b26,
+      #09090d
+    );
+
+  filter: brightness(0.75);
+}
+
+/* =========================
+   ROOM
+========================= */
+
+.guild-room {
+  position: relative;
+
+  width: 1000px;
+  height: 650px;
+
+  border: 3px solid #2a1d14;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(70, 45, 30, 0.95),
+      rgba(35, 20, 15, 0.98)
+    );
+
+  box-shadow:
+    0 0 40px rgba(0, 0, 0, 0.6);
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 24px;
+}
+
+.guild-title {
+  font-size: 32px;
+  letter-spacing: 2px;
+
+  color: #e7d7b7;
+
+  margin-bottom: 20px;
+
+  text-shadow:
+    0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+/* =========================
+   LIGHTING OVERLAY
+========================= */
+
+.guild-room-lighting {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+}
+
+.adventurers-guild-screen.night
+.guild-room-lighting {
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255, 180, 80, 0.08),
+      rgba(0, 0, 0, 0.55)
+    );
+}

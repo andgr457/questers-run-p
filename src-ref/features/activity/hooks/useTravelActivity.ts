@@ -30,6 +30,8 @@ export function useTravelActivity(characterId: string | null) {
     }
   }, [characterId])
 
+  
+
   const progress = useMemo(() => {
     if (!activity || !characterId) return 0
 
@@ -50,6 +52,24 @@ export function useTravelActivity(characterId: string | null) {
 
     return findRoute(from, to)
   }, [activity])
+
+  const segments = useMemo(() => {
+    if (!route) return []
+
+    let acc = 0
+
+    return route.steps.map(step => {
+      const start = acc
+      const end = acc + step.travelMs
+      acc = end
+
+      return {
+        ...step,
+        start,
+        end,
+      }
+    })
+  }, [route])
 
   const elapsedMs = activity
     ? Math.min(now - activity.startedAt, activity.duration)
@@ -82,10 +102,11 @@ export function useTravelActivity(characterId: string | null) {
     progress,
     route,
     current,
-    from: activity.meta?.travel?.from ?? null,
-    to: activity.meta?.travel?.to ?? null,
-    duration: activity.duration,
+    from: activity?.meta?.travel?.from ?? null,
+    to: activity?.meta?.travel?.to ?? null,
+    duration: activity?.duration,
     elapsedMs,
     remainingMs,
+    segments,
   }
 }

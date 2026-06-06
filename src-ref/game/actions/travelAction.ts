@@ -1,52 +1,34 @@
-import type { AppMode } from '../../app/App'
 import { activityRuntimeService } from '../../features/activity/activityRuntimeService'
-import { gameClockService } from '../engine/clock/GameClockService'
-import { findRoute } from '../world/worldRouting'
+import { findRoute, type RouteResult } from '../world/worldRouting'
 import type { WorldLocation } from '../world/worldState'
 
-type TravelParams = {
-  characterId: string
-  from: WorldLocation
-  to: WorldLocation
-  setState: (updater: any) => void
-  afterMode?: AppMode
-}
-
 export function travelTo({
-  characterId,
   from,
   to,
-  setState,
-}: TravelParams) {
+  characterId,
+}: {
+  from: WorldLocation
+  to: WorldLocation
+  characterId: string
+}) {
   const route = findRoute(from, to)
-  if (!route) return
 
-  // 1. switch UI immediately into travel mode
-  setState((prev: any) => ({
-    ...prev,
-    mode: 'travel',
-    characterId,
-    location: from,
-  }))
+  const activityId = crypto.randomUUID()
 
-  // 2. start engine activity
   activityRuntimeService.start({
-    id: crypto.randomUUID(),
+    id: activityId,
     characterId,
     type: 'travel',
-    startedAt: gameClockService.getNow(),
-    duration: route.totalMs,
+    startedAt: Date.now(),
+    duration: route?.totalMs ?? 2000,
     status: 'active',
     blocking: true,
     meta: {
       travel: {
         from,
         to,
-        route,
+        route: route as RouteResult,
       },
     },
   })
-
-  // 3. optional: return route for chaining logic
-  return route
 }

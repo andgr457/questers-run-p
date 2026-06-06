@@ -1,0 +1,39 @@
+.guild-dialogue {
+  margin-top: 24px;
+
+  border:
+    2px solid rgba(0, 0, 0, 0.45);
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(45, 30, 22, 0.96),
+      rgba(28, 18, 14, 0.98)
+    );
+
+  padding: 18px;
+
+  box-shadow:
+    inset 0 0 18px rgba(0, 0, 0, 0.35);
+}
+
+.guild-dialogue-label {
+  color: #d6b98d;
+
+  font-size: 13px;
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+
+  margin-bottom: 10px;
+}
+
+.guild-dialogue-text {
+  color: #f3e6cf;
+
+  font-size: 18px;
+  line-height: 1.5;
+
+  text-shadow:
+    0 0 6px rgba(0, 0, 0, 0.5);
+}

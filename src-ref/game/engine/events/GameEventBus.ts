@@ -1,3 +1,5 @@
+import type { ActivityMeta } from '../../../features/activity/types'
+
 export type GameEvent =
   | {
       type: 'activity:start'
@@ -10,6 +12,7 @@ export type GameEvent =
       characterId: string
       activityId: string
       activityType: string
+      meta?: ActivityMeta | undefined
     }
   | {
       type: 'activity:cancel'
