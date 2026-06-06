@@ -377,15 +377,6 @@ input[type='text']::placeholder {
   letter-spacing: 3px;
 }
 
-.page-main {
-  
-}
-
-/* .page-modules {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, max-content));
-} */
-
 .page-modules {
   margin: 4px;
   display: flex;
@@ -559,9 +550,6 @@ ul li {
   width: 100%;
   min-width: 0;
 
-  overflow-x: auto;
-  overflow-y: hidden;
-
   scrollbar-width: none;
 }
 
@@ -619,4 +607,25 @@ ul li {
   .character-mini-bar-section {
     display: block;
   }
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-dark-2) var(--bg-dark);
+}
+
+/* Chrome / Edge / Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--bg-dark-2);
+  border-radius: 10px;
 }
