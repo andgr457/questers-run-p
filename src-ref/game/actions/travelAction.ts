@@ -1,4 +1,4 @@
-import { activityRuntimeService } from '../../features/activity/activityRuntimeService'
+import { activityRuntimeService } from '../engine/activity/activityRuntimeService'
 import { findRoute, type RouteResult } from '../world/worldRouting'
 import type { WorldLocation } from '../world/worldState'
 

@@ -1,4 +1,4 @@
-import type { ActivityMeta } from '../../../features/activity/types'
+import type { ActivityMeta } from '../../activity/types'
 
 export type GameEvent =
   | {
