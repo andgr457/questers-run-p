@@ -40,23 +40,13 @@ export default function App() {
   const [drawerType, setDrawerType] = useState<Drawer>(
     null
   )
-  const [radialOpen, setRadialOpen] = useState(false)  
-  const [radialExpanded, setRadialExpanded] = useState(false)
-  const DRAWER_RADIAL_ITEMS: RadialItem[] = [
-    {
-      id: 'map',
-      label: 'map',
-      onTravel: () => {setDrawerType('world_map')},
-    },  
-  ]
 
   const radialItems = useMemo(() => {
     return [
-      ...DRAWER_RADIAL_ITEMS,
       ...buildWorldRadialItems(
-          state?.location,
-          state?.characterId as string
-        )
+        state?.location,
+        state?.characterId as string
+      )
     ]
   }, [state?.location, state?.characterId])
   
@@ -171,22 +161,32 @@ export default function App() {
         )}
       </SideDrawer>
 
-      <RadialMenu
-        open={radialOpen}
-        centerLabel={state?.location}
-        items={radialItems}
+      {state?.location && <RadialMenu
+        currentLocation={state?.location}
         appMode={state?.mode}
-        expanded={radialExpanded}
-        onClose={() => {
-          setRadialOpen(false)
-          setRadialExpanded(false)
-        }}
-        onOpen={() => {
-          setRadialOpen(true)
-          setRadialExpanded(false)
-        }}
-
-      />
+        topItems={[
+          {
+            id: 'map_radial',
+            label: 'MAP',
+            component: <WorldTravelMap
+              route={map?.route}
+              progress={map?.progress}
+              currentLocation={map?.currentLocation as WorldLocation}
+              isTraveling={false}
+            />
+          },
+          {
+            id: 'travel_radial',
+            label: 'TRAVEL',
+            childItems: radialItems
+          },
+          {
+            id: 'settings_radial',
+            label: 'SETTINGS',
+            component: <div>Settings Placeholder</div>
+          }
+        ]}
+      />}
     </WorldWrapper>
   )
 }

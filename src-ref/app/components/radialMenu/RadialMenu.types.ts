@@ -1,6 +1,9 @@
+import type { WorldLocation } from '../../../game/world/worldState'
+
 export type RadialItem = {
-  id: string
+  id: string | WorldLocation
   label: string
   onTravel?: () => void
-  children?: RadialItem[]
+  childItems?: RadialItem[]
+  component?: React.ReactNode
 }

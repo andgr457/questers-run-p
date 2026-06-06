@@ -29,16 +29,18 @@ export default function CharacterCreationScreen({
           }
         />
 
-        <button
-          className="button"
-          onClick={() => {
-            if (!name.trim()) return
-            onCreated(crypto.randomUUID())
+        <div className={styles.actions}>
+          <button
+            className="button"
+            onClick={() => {
+              if (!name.trim()) return
+              onCreated(crypto.randomUUID())
 
-          }}
-        >
-          Begin Adventure
-        </button>
+            }}
+          >
+            Begin Adventure
+          </button>
+        </div>
       </div>
 
     </div>

@@ -1,29 +1,29 @@
-import { useState } from 'react'
 import type { RadialItem } from './RadialMenu.types'
-import { getRadialPosition } from './utils/radialGeometry'
+import { getRadialPosition, getRadialPositionVertical } from './utils/radialGeometry'
 
 type Props = {
   items: RadialItem[]
   radius: number
   level: number
-  onFirstInteract?: () => void
+  setShowChildItems?: (id: string) => void
+  showChildItems: boolean
 }
 
 export function RadialLayer({
   items,
   radius,
   level,
-  onFirstInteract,
+  showChildItems,
+  setShowChildItems,
 }: Props) {
-  const [expanded, setExpanded] = useState<string | null>(null)
-
+  if(showChildItems){
+    return null
+  }
   return (
     <>
       {items.map((item, i) => {
-        const { x, y } = getRadialPosition(i, items.length, radius)
-
-        const isExpanded = expanded === item.id
-
+        // const { x, y } = getRadialPosition(i, items.length, radius)
+        const { x, y } = getRadialPositionVertical(i, 80, 80, 15)
         return (
           <div
             key={item.id}
@@ -31,44 +31,13 @@ export function RadialLayer({
             style={{
               transform: `translate(${x}px, ${y}px)`,
             }}
+            onClick={() => {setShowChildItems?.(item?.id)}}
           >
             <div className={`radial-card level-${level}`}>
               <div className='radial-label'>
                 {item.label} 
               </div>
-
-              <div className='radial-actions'>
-                
-                {item.children?.length ? (
-                  <button
-                    className='expand-btn'
-                    onClick={() =>
-                      setExpanded(prev =>
-                        prev === item.id ? null : item.id
-                      )
-                    }
-                  >
-                    {isExpanded ? '−' : '+'}
-                  </button>
-                ) : null}
-
-                <button
-                  className='travel-btn'
-                  onClick={item.onTravel}
-                >
-                  GO
-                </button>
-              </div>
             </div>
-
-            {isExpanded && item.children?.length ? (
-              <RadialLayer
-                items={item.children}
-                radius={radius * 0.75}
-                level={level + 1}
-                onFirstInteract={onFirstInteract}
-              />
-            ) : null}
           </div>
         )
       })}

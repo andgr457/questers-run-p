@@ -43,11 +43,11 @@
 }
 
 .right.enter {
-  transform: translateX(0%);
+  transform: translateX(0%) 1s;
 }
 
 .right.exit {
-  transform: translateX(100%);
+  transform: translateX(100%) 1s;
 }
 
 /* =========================
@@ -100,10 +100,13 @@
   height: 320px;
 
   transform: translateY(100%);
+  transition: transform 1s;
 }
 
 .bottom.enter {
   transform: translateY(0%);
+  transition: transform 1s;
+
 }
 
 .bottom.exit {
