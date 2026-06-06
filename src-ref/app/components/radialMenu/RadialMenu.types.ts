@@ -1,6 +1,6 @@
 export type RadialItem = {
   id: string
   label: string
-  onClick?: () => void
+  onTravel?: () => void
   children?: RadialItem[]
 }

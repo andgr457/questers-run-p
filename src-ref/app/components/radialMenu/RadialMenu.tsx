@@ -1,5 +1,6 @@
 import type { AppMode } from '../../App'
 import { RadialLayer } from './RadialLayer'
+
 import './styles/radialMenu.css'
 import type { RadialItem } from './RadialMenu.types'
 
@@ -9,16 +10,18 @@ type Props = {
   items: RadialItem[]
   appMode: AppMode
   onClose: () => void
-  onClick: () => void
+  onOpen: () => void
+  expanded: boolean
 }
 
 export function RadialMenu({
   open,
-  centerLabel = 'Menu',
+  centerLabel = 'WORLD',
   items,
-  onClose,
-  onClick,
   appMode,
+  onClose,
+  onOpen,
+  expanded,
 }: Props) {
   if (appMode !== 'world') {
     return null
@@ -27,10 +30,7 @@ export function RadialMenu({
   if (!open) {
     return (
       <div className='radial-container'>
-        <button
-          className='radial-center'
-          onClick={onClick}
-        >
+        <button className='radial-center' onClick={onOpen}>
           {centerLabel}
         </button>
       </div>
@@ -38,17 +38,18 @@ export function RadialMenu({
   }
 
   return (
-    <div className='radial-container'>
-      <button
-        className='radial-center'
-        onClick={onClose}
-      >
+    <div
+      className={`radial-container ${
+        expanded ? 'is-expanded' : ''
+      }`}
+    >
+      <button className='radial-center' onClick={onClose}>
         ✕
       </button>
 
       <RadialLayer
         items={items}
-        radius={100}
+        radius={expanded ? 140 : 100}
         level={1}
       />
     </div>

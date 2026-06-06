@@ -1,0 +1,27 @@
+export function getRadialPosition(
+  i: number,
+  total: number,
+  radius: number
+) {
+  const safeTotal = Math.max(total, 1)
+
+  const spread = Math.min(
+    Math.PI * 1.2,
+    Math.PI * 0.35 * safeTotal
+  )
+
+  const start = -spread / 2
+
+  const angle =
+    safeTotal === 1
+      ? 0
+      : start + (i / (safeTotal - 1)) * spread
+  // return {
+  //   x: Math.cos(angle) * radius,
+  //   y: Math.sin(angle) * radius,
+  // }
+  return {
+    x: -100,
+    y: (Math.sin(angle) * radius) - 50,
+  }
+}

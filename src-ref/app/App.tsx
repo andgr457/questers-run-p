@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import CharacterCreationScreen from '../features/character/components/CharacterCreationScreen'
 import GameScreen from '../features/game/components/GameScreen'
@@ -41,21 +41,25 @@ export default function App() {
     null
   )
   const [radialOpen, setRadialOpen] = useState(false)  
-
+  const [radialExpanded, setRadialExpanded] = useState(false)
   const DRAWER_RADIAL_ITEMS: RadialItem[] = [
     {
       id: 'map',
       label: 'map',
-      onClick: () => {setDrawerType('world_map')},
+      onTravel: () => {setDrawerType('world_map')},
     },  
   ]
 
-  const navItems = buildWorldRadialItems(
-    state?.location,
-    state?.characterId as string
-  )
-  navItems.push(...DRAWER_RADIAL_ITEMS)
-
+  const radialItems = useMemo(() => {
+    return [
+      ...DRAWER_RADIAL_ITEMS,
+      ...buildWorldRadialItems(
+          state?.location,
+          state?.characterId as string
+        )
+    ]
+  }, [state?.location, state?.characterId])
+  
   // ======================
   // BOOT → CHARACTER CREATE
   // ======================
@@ -136,14 +140,7 @@ export default function App() {
   
   return (
     <WorldWrapper location={state.location}>
-      <RadialMenu
-        open={radialOpen}
-        centerLabel="Travel"
-        items={navItems}
-        appMode={state?.mode}
-        onClose={() => {setRadialOpen(false)}}
-        onClick={() => {setRadialOpen(true)}}
-      />
+
 
       {/* CHARACTER CREATE */}
       {state.mode === 'character_create' && (
@@ -173,6 +170,23 @@ export default function App() {
           />
         )}
       </SideDrawer>
+
+      <RadialMenu
+        open={radialOpen}
+        centerLabel={state?.location}
+        items={radialItems}
+        appMode={state?.mode}
+        expanded={radialExpanded}
+        onClose={() => {
+          setRadialOpen(false)
+          setRadialExpanded(false)
+        }}
+        onOpen={() => {
+          setRadialOpen(true)
+          setRadialExpanded(false)
+        }}
+
+      />
     </WorldWrapper>
   )
 }
