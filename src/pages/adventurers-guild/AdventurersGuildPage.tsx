@@ -26,9 +26,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
 
   const [showModule, setShowModule] = useState<'' | 'quest-board' | 'clerk'>(character?.guildRank ? 'quest-board' : 'clerk')
 
-  const [showOneTimeCompletedQuests, setShowOneTimeCompletedQuests] = useState(false)
-  const [showIneligibleQuests, setShowIneligibleQuests] = useState(true)
-
   const characterJoined = character?.guildRank !== GuildRanks.None
 
   const handleJoinClicked = useCallback(async () => {
@@ -106,8 +103,8 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
 
             <CharacterQuests
               {...props}
-              showOneTimeCompletedQuests={showOneTimeCompletedQuests}
-              showIneligibleQuests={showIneligibleQuests}
+              showOneTimeCompletedQuests={false}
+              showIneligibleQuests={true}
             />
           </div>
         )}
