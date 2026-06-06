@@ -56,12 +56,10 @@ import { ACHIEVEMENT_HUNTING_IDS } from './data/achievements/Achievements.Huntin
 import { MOB_SLIME_IDS } from './data/mobs/Mobs.Slimes.data';
 import { inventoryServiceGetQuestCompletionTransactions, inventoryServiceHandleQuestRewardTransactions } from './services/Inventory.Service';
 import { sleep } from './services/CommonServices';
-import { useGameClock } from './hooks/useGameClock';
 import { activityRuntimeService } from './features/runtime/activity/activityRunetimeService';
 import { resolveQuestStart } from './features/runtime/quests/questStart.resolver';
 
 function App() {
-  const now = useGameClock()
   const {showConfirm} = useConfirm()
   const { notifications, addNotification } = useFloatingNotifications()
   const [character, setCharacter] = useLocalStorage<Character | undefined>(
