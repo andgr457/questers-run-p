@@ -1,6 +1,6 @@
 import type { ActivityEntry } from '../types'
 import { useActivityProgress } from '../hooks/useActivityProgress'
-import ProgressBar from '../../../ui/progress-bar/ProgressBar'
+import ProgressBar from '../../../app/components/progress-bar/ProgressBar'
 
 type Props = {
   activity: ActivityEntry

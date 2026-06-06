@@ -8,11 +8,12 @@ import { worldStateStore, type WorldLocation } from '../game/world/worldState'
 import TravelPanel from './components/travel/TravelPanel'
 import { gameEventBus } from '../game/engine/events/GameEventBus'
 import { travelTo } from '../game/actions/travelAction'
-import { WORLD_GRAPH } from '../game/world/worldGraph'
-import { RadialMenu, type RadialItem } from './components/radial/RadialMenu'
+import { RadialMenu } from './components/radialMenu/RadialMenu'
 import SideDrawer from './components/sideDrawer/SideDrawer'
 import { useWorldTravelMap } from './components/worldMap/hooks/useWorldTravelMap'
 import WorldTravelMap from './components/worldMap/WorldTravelMap'
+import { buildWorldRadialItems } from './components/radialMenu/utils/radialMenu.utils'
+import type { RadialItem } from './components/radialMenu/RadialMenu.types'
 
 export type AppMode =
   | 'boot'
@@ -39,7 +40,21 @@ export default function App() {
   const [drawerType, setDrawerType] = useState<Drawer>(
     null
   )
-  const [radialOpen, setRadialOpen] = useState(false)
+  const [radialOpen, setRadialOpen] = useState(false)  
+
+  const DRAWER_RADIAL_ITEMS: RadialItem[] = [
+    {
+      id: 'map',
+      label: 'map',
+      onClick: () => {setDrawerType('world_map')},
+    },  
+  ]
+
+  const navItems = buildWorldRadialItems(
+    state?.location,
+    state?.characterId as string
+  )
+  navItems.push(...DRAWER_RADIAL_ITEMS)
 
   // ======================
   // BOOT → CHARACTER CREATE
@@ -117,33 +132,6 @@ export default function App() {
     })
   }
 
-
-  const navItems: RadialItem[] =
-    WORLD_GRAPH[state?.location].map(conn => ({
-      id: conn.to,
-      label: conn.to,
-      onClick: () => {
-        setState(prev => {
-          return {
-            ...prev,
-            mode: 'travel',
-            characterId: state?.characterId,
-            location: state?.location
-          }
-        })
-        travelTo({
-          characterId: state.characterId!,
-          from: state.location,
-          to: conn.to,
-        })
-      }
-    }))
-  navItems.push({
-    id: 'map',
-    label: 'map',
-    onClick: () => {setDrawerType('world_map')}
-  })
-
   const map = useWorldTravelMap(state?.characterId)
   
   return (
@@ -152,20 +140,11 @@ export default function App() {
         open={radialOpen}
         centerLabel="Travel"
         items={navItems}
+        appMode={state?.mode}
         onClose={() => {setRadialOpen(false)}}
-        onExpand={() => {setRadialOpen(true)}}
+        onClick={() => {setRadialOpen(true)}}
       />
-      <SideDrawer position='left' open={drawerType === 'world_map'} onClose={() => {
-          setDrawerType(null)
-      }}>
-        {map && (
-          <WorldTravelMap
-            route={map.route}
-            progress={map.progress}
-            currentLocation={map.currentLocation as WorldLocation}
-          />
-        )}
-      </SideDrawer>
+
       {/* CHARACTER CREATE */}
       {state.mode === 'character_create' && (
         <CharacterCreationScreen onCreated={handleCharacterCreated} />
@@ -182,6 +161,18 @@ export default function App() {
       <TravelPanel 
         characterId={state.characterId} 
       />
+
+      <SideDrawer position='left' open={drawerType === 'world_map'} onClose={() => {
+          setDrawerType(null)
+      }}>
+        {map && (
+          <WorldTravelMap
+            route={map.route}
+            progress={map.progress}
+            currentLocation={map.currentLocation as WorldLocation}
+          />
+        )}
+      </SideDrawer>
     </WorldWrapper>
   )
 }

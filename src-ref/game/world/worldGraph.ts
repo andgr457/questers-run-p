@@ -5,10 +5,12 @@ export type WorldConnection = {
   travelMs: number
 }
 
-export const WORLD_GRAPH: Record<
+export type WorldGraphRecord = Record<
   WorldLocation,
   WorldConnection[]
-> = {
+>
+
+export const WORLD_GRAPH: WorldGraphRecord = {
   plains: [
     { to: 'town', travelMs: 2000 },
     { to: 'woods', travelMs: 1500 },
@@ -16,11 +18,11 @@ export const WORLD_GRAPH: Record<
 
   town: [
     { to: 'plains', travelMs: 2000 },
-    { to: 'guild', travelMs: 850 },
+    { to: 'guild', travelMs: 1000 },
   ],
 
   guild: [
-    { to: 'town', travelMs: 850 },
+    { to: 'town', travelMs: 1000 },
   ],
 
   woods: [
