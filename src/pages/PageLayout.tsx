@@ -57,7 +57,9 @@ export default function PageLayout(props: PageLayoutProps) {
       
       <div className="app-screen-layout">
         <div className="app-screen left">
-          {props.leftChildren}
+          <div className='shoppe-cart-sticky' style={{overflowY: 'unset'}}>
+            {props.leftChildren}
+          </div>
         </div>
 
         <div className="app-screen right">

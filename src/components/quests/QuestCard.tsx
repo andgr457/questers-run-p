@@ -72,24 +72,6 @@ export default function QuestCard(props: QuestCardProps) {
     now,
   ])
 
-  /**
-   * FILTER RULES (unchanged behavior, now derived)
-   */
-  if (
-    quest.repeatable === false &&
-    rules.questProgress?.status === 'complete' &&
-    !showOneTimeCompletedQuests
-  ) {
-    return null
-  }
-
-  if (
-    !showIneligibleQuests &&
-    !rules.startRequirements.every(r => r.completed)
-  ) {
-    return null
-  }
-
   const showButtons = showActions === true
 
   const statusContent =
@@ -118,6 +100,24 @@ export default function QuestCard(props: QuestCardProps) {
     )
   }, [quest, achievements, mobs, items, quests])
   
+  /**
+   * FILTER RULES (unchanged behavior, now derived)
+   */
+  if (
+    quest.repeatable === false &&
+    rules.questProgress?.status === 'complete' &&
+    !showOneTimeCompletedQuests
+  ) {
+    return null
+  }
+
+  if (
+    !showIneligibleQuests &&
+    !rules.startRequirements.every(r => r.completed)
+  ) {
+    return null
+  }
+
   return (
     <div id={quest.id}>
       <div
