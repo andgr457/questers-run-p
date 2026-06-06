@@ -77,6 +77,7 @@ export default function QuestCard(props: QuestCardProps) {
     now,
   ])
 
+<<<<<<< HEAD
   /**
    * FILTER RULES
    */
@@ -95,6 +96,8 @@ export default function QuestCard(props: QuestCardProps) {
     return null
   }
 
+=======
+>>>>>>> dev
   const showButtons = showActions === true
 
   /**
@@ -125,6 +128,27 @@ export default function QuestCard(props: QuestCardProps) {
       quests ?? []
     )
   }, [quest, achievements, mobs, items, quests])
+<<<<<<< HEAD
+=======
+  
+  /**
+   * FILTER RULES (unchanged behavior, now derived)
+   */
+  if (
+    quest.repeatable === false &&
+    rules.questProgress?.status === 'complete' &&
+    !showOneTimeCompletedQuests
+  ) {
+    return null
+  }
+
+  if (
+    !showIneligibleQuests &&
+    !rules.startRequirements.every(r => r.completed)
+  ) {
+    return null
+  }
+>>>>>>> dev
 
   return (
     <div id={quest.id}>

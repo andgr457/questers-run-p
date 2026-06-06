@@ -461,7 +461,7 @@ function App() {
     ) => {
       if (!questProgress) return
 
-      const completedAt = DateTime.fromMillis(now).toISO()
+      const completedAt = DateTime.utc().toISO()
 
       // 1. INVENTORIES
       setInventories(prev => {
@@ -581,15 +581,17 @@ function App() {
 
       for (const reward of rewards) {
         if (reward.itemId) {
+          const item = items.find(i => i.id === reward.itemId)
           addNotification(
-            `+${reward.itemAmount} ${reward.itemName}`,
+            `+${reward.itemAmount} ${item?.name}`,
           )
           await sleep(500)
         }
 
         if (reward.achievementId) {
+          const achievement = achievements.find(a => a.id === reward.achievementId)
           addNotification(
-            `Achievement Earned: ${reward.achievementTitle}`,
+            `Achievement Earned: ${achievement?.title}`,
           )
           await sleep(500)
         }
@@ -604,7 +606,8 @@ function App() {
       setInventories,
       setAllQuestProgress,
       setCharacter,
-      now,
+      items,
+      achievements,
     ],
   )
 

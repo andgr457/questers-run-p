@@ -26,9 +26,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
 
   const [showModule, setShowModule] = useState<'' | 'quest-board' | 'clerk'>(character?.guildRank ? 'quest-board' : 'clerk')
 
-  const [showOneTimeCompletedQuests, setShowOneTimeCompletedQuests] = useState(false)
-  const [showIneligibleQuests, setShowIneligibleQuests] = useState(true)
-
   const characterJoined = character?.guildRank !== GuildRanks.None
 
   const handleJoinClicked = useCallback(async () => {
@@ -51,7 +48,7 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
       message: `You are now officially a member of the Adventurer's Guild. Feel free to check out the quest board to get started!"`
     })
 
-    await sleep(3000)
+    await sleep(1000)
     addNotification?.(`Achievement Earned: ${ACHIEVEMENT_INTRO_ADVENTURERS_GUILD.title}`)
     setShowModule('quest-board')
   }, [character, handleSetCharacter])
@@ -77,29 +74,6 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
               onClick={() => setShowModule('quest-board')}
             >
               Quests
-            </button>
-          )}
-
-          {/* TOGGLES */}
-          {characterJoined && (
-            <button
-              className="basic"
-              onClick={() =>
-                setShowOneTimeCompletedQuests(v => !v)
-              }
-            >
-              {showOneTimeCompletedQuests ? 'Hide' : 'Show'} 1-Time Completed Quests
-            </button>
-          )}
-
-          {characterJoined && (
-            <button
-              className="basic"
-              onClick={() =>
-                setShowIneligibleQuests(v => !v)
-              }
-            >
-              {showIneligibleQuests ? 'Hide' : 'Show'} Ineligible Quests
             </button>
           )}
         </PageHeader>
@@ -129,8 +103,8 @@ export default function AdventurersGuildPage(props: AdventurersGuildPageProps) {
 
             <CharacterQuests
               {...props}
-              showOneTimeCompletedQuests={showOneTimeCompletedQuests}
-              showIneligibleQuests={showIneligibleQuests}
+              showOneTimeCompletedQuests={false}
+              showIneligibleQuests={true}
             />
           </div>
         )}
