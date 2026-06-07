@@ -1,5 +1,5 @@
 import { activityRuntimeService } from '../engine/activity/activityRuntimeService'
-import { findRoute, type RouteResult } from '../world/worldRouting'
+import { findRoute, type RouteResult } from '../world/utils/worldRouting'
 import type { WorldLocation } from '../world/worldState'
 
 export function travelTo({

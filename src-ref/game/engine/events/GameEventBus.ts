@@ -1,4 +1,5 @@
 import type { ActivityMeta } from '../../activity/types'
+import type { WorldLocation } from '../../world/types/WorldLocation.types'
 
 export type GameEvent =
   | {
@@ -30,7 +31,7 @@ export type GameEvent =
   | {
       type: 'world:location_changed'
       characterId: string
-      location: string
+      worldLocation: WorldLocation
     }
 
 type Listener = (event: GameEvent) => void
@@ -42,12 +43,13 @@ type ActivityState = {
   status: 'active' | 'completed' | 'cancelled'
 }
 
+
 class GameEventBus {
   private listeners = new Set<Listener>()
 
-  // 🧠 MEMORY STORE (NEW)
-  private activityState = new Map<string, ActivityState>() 
   // key = `${characterId}:${activityType}`
+  private activityState = new Map<string, ActivityState>() 
+  private characterWorldLocations = new Map<string, WorldLocation>()
 
   emit(event: GameEvent) {
     // ---- update memory ----

@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useState } from 'react'
 
-
-import { worldStateStore, type WorldLocation } from './game/world/worldState'
 import TravelPanel from './game/travel/TravelPanel'
 import { gameEventBus } from './game/engine/events/GameEventBus'
-import { travelTo } from './game/actions/travelAction'
 import { RadialMenu } from './game/radialMenu/RadialMenu'
 import SideDrawer from './game/sideDrawer/SideDrawer'
 import { useWorldTravelMap } from './game/worldMap/hooks/useWorldTravelMap'
 import WorldTravelMap from './game/worldMap/WorldTravelMap'
 import { buildWorldRadialItems } from './game/radialMenu/utils/radialMenu.utils'
-import CharacterCreationScreen from './game/character/components/CharacterCreationScreen'
+import NewCharacter from './game/character/components/NewCharacter'
 import GameScreen from './game/game-screen/GameScreen'
-import WorldWrapper from './game/world/WorldWrapper'
+import WorldWrapper from './game/world/components/WorldWrapper'
+import NewAccount from './game/account/components/NewAccount'
+import type { WorldLocation } from './game/world/types/WorldLocation.types'
 
 export type AppMode =
   | 'boot'
+  | 'account_create'
   | 'character_create'
   | 'travel'
   | 'world'
@@ -36,8 +36,9 @@ export default function App() {
     characterId: null,
     accountId: null,
     mode: 'boot',
-    location: 'cave',
+    location: ,
   })
+  
   const [drawerType, setDrawerType] = useState<Drawer>(
     null
   )
@@ -52,14 +53,16 @@ export default function App() {
   }, [state?.location, state?.characterId])
   
   // ======================
-  // BOOT → CHARACTER CREATE
+  // BOOT → ACCOUNT CREATE
+  // NO CHARACTER → CHARACTER CREATE
   // ======================
   useEffect(() => {
     setState(s => ({
       ...s,
-      mode: 'character_create',
+      mode: 'account_create',
     }))
   }, [])
+
 
   // ======================
   // WORLD EVENT LISTENER 
@@ -76,7 +79,7 @@ export default function App() {
 
           return {
             ...prev,
-            location: event.location as WorldLocation,
+            location: event.worldLocation as WorldLocation,
           }
         }
 
@@ -108,23 +111,26 @@ export default function App() {
     return unsub
   }, [])
 
-  // ======================
-  // CHARACTER CREATE → START TRAVEL
-  // ======================
-  const handleCharacterCreated = (characterId: string, accountId: string) => {
-    worldStateStore.initCharacter(characterId)
+  const handleAccountCreated = (accountId: string, accountName) => {
     setState(prev => {
       return {
         ...prev,
-        mode: 'travel',
-        characterId,
-        accountId
+        mode: 'character_create',
+        accountId,
       }
     })
-    travelTo({
-      from: state?.location ?? 'cave',
-      to: 'guild',
-      characterId: characterId,
+  }
+
+  // ======================
+  // CHARACTER CREATE → NO TRAVEL
+  // ======================
+  const handleCharacterCreated = (characterId: string, characterName: string) => {
+    setState(prev => {
+      return {
+        ...prev,
+        mode: 'world',
+        characterId,
+      }
     })
   }
 
@@ -135,8 +141,11 @@ export default function App() {
 
 
       {/* CHARACTER CREATE */}
+      {state.mode === 'account_create' && (
+        <NewAccount onCreated={handleAccountCreated} />
+      )}
       {state.mode === 'character_create' && (
-        <CharacterCreationScreen onCreated={handleCharacterCreated} />
+        <NewCharacter onCreated={handleCharacterCreated} />
       )}
       {/* GAME WORLD */}
       {state.mode === 'world' && state.characterId && (

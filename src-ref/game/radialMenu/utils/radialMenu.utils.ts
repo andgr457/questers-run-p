@@ -1,5 +1,5 @@
 import { travelTo } from '../../actions/travelAction'
-import { WORLD_GRAPH } from '../../world/worldGraph'
+import { WORLD_GRAPH } from '../../world/utils/WorldLocation.utils'
 import type { WorldLocation } from '../../world/worldState'
 import type { RadialItem } from '../RadialMenu.types'
 

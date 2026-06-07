@@ -1,20 +1,5 @@
 import { gameEventBus } from '../engine/events/GameEventBus'
-
-export type WorldLocation =
-  | 'plains'
-  | 'town'
-  | 'guild'
-  | 'woods'
-  | 'cave'
-  | 'dungeon'
-
-type WorldState = {
-  characterId: string
-  location: WorldLocation
-  flags: {
-    introSeen?: boolean
-  }
-}
+import type { WorldLocation } from './types/WorldLocation.types'
 
 type Listener<T> = {
   selector: () => T
@@ -23,9 +8,8 @@ type Listener<T> = {
 }
 
 class WorldStateStore {
-  private state: Record<string, WorldState> = {}
-
   private subscriptions = new Set<Listener<any>>()
+  private characterWorldLocations: Record<string, WorldLocation> = {}
 
   // =========================
   // SUBSCRIBE (REACTIVE)
@@ -57,69 +41,22 @@ class WorldStateStore {
     }
   }
 
-  // =========================
-  // INIT
-  // =========================
-  initCharacter(characterId: string) {
-    this.state[characterId] = {
-      characterId,
-      location: 'plains',
-      flags: {
-        introSeen: false,
-      },
-    }
-
-    this.emit()
-
-    gameEventBus.emit({
-      type: 'world:location_changed',
-      characterId,
-      location: 'plains',
-    })
-  }
-
-  // =========================
-  // FLAGS
-  // =========================
-  setFlag(
-    characterId: string,
-    key: keyof WorldState['flags'],
-    value: boolean
-  ) {
-    const current = this.state[characterId]
-    if (!current) return
-
-    this.state[characterId] = {
-      ...current,
-      flags: {
-        ...current.flags,
-        [key]: value,
-      },
-    }
-
-    this.emit()
-  }
-
-  // =========================
-  // READ
-  // =========================
-  get(characterId: string) {
-    return this.state[characterId]
+  getWorldLocation(characterId: string): WorldLocation {
+    return this.characterWorldLocations[characterId]
   }
 
   // =========================
   // LOCATION (ENGINE DRIVER)
   // =========================
-  setLocation(characterId: string, location: WorldLocation) {
-    if (!this.state[characterId]) {
-      this.initCharacter(characterId)
-    }
-
-    const current = this.state[characterId]
-
-    this.state[characterId] = {
-      ...current,
-      location,
+  setWorldLocation(characterId: string, worldLocation: WorldLocation) {
+    if(!this.characterWorldLocations?.[characterId]){
+      this.characterWorldLocations[characterId] = {
+        ...worldLocation
+      }
+    } else {
+      this.characterWorldLocations[characterId] = {
+        ...worldLocation
+      }
     }
 
     this.emit()
@@ -127,7 +64,7 @@ class WorldStateStore {
     gameEventBus.emit({
       type: 'world:location_changed',
       characterId,
-      location,
+      worldLocation,
     })
   }
 }

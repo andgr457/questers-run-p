@@ -4,7 +4,7 @@ import { gameClockService } from '../../clock/GameClockService'
 import { activityRuntimeService } from '../activityRuntimeService'
 
 import type { WorldLocation } from '../../../world/worldState'
-import { findRoute, type RouteResult } from '../../../world/worldRouting'
+import { findRoute, type RouteResult } from '../../../world/utils/worldRouting'
 import type { ActivityEntry } from '../../../activity/types'
 
 export function useTravelActivity(characterId: string | null) {

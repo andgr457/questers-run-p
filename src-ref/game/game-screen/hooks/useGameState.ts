@@ -31,7 +31,7 @@ export function useGameState(characterId: string | null) {
       if (event.type !== 'world:location_changed') return
       if (event.characterId !== characterId) return
 
-      setLocation(event.location as WorldLocation)
+      setLocation(event.worldLocation as WorldLocation)
     })
 
     return () => {

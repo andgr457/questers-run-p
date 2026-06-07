@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './TravelPanel.module.css'
 import { useTravelActivity } from '../engine/activity/hooks/useTravelActivity'
-import type { RouteResult } from '../world/worldRouting'
+import type { RouteResult } from '../world/utils/worldRouting'
 
 type Props = {
   characterId: string | null

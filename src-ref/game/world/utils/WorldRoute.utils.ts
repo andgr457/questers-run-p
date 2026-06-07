@@ -1,15 +1,8 @@
-import type { WorldLocation } from './worldState'
-import { WORLD_GRAPH } from './worldGraph'
+import type { WorldLocation } from '../types/WorldLocation.types'
+import type { RouteResult, RouteStep } from '../types/WorldRoute.types'
 
-export type RouteStep = {
-  from: WorldLocation
-  to: WorldLocation
-  travelMs: number
-}
-
-export type RouteResult = {
-  steps: RouteStep[]
-  totalMs: number
+export const WORLD_GRAPH = {
+  WORLD_LOCATION_ID
 }
 
 export function findRoute(

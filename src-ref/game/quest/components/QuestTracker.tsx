@@ -1,7 +1,7 @@
 import { worldStateStore } from '../../../game/world/worldState'
 import {
   findRoute,
-} from '../../../game/world/worldRouting'
+} from '../../world/utils/worldRouting'
 import { travelTo } from '../../../game/actions/travelAction'
 
 type Props = {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { worldStateStore } from './worldState'
+import { worldStateStore } from '../worldState'
 
 export function useWorldState(characterId: string | null) {
   const [worldState, setWorldState] = useState(
     characterId
-      ? worldStateStore.get(characterId)
+      ? worldStateStore.getWorldLocation(characterId)
       : undefined
   )
 
@@ -12,7 +12,7 @@ export function useWorldState(characterId: string | null) {
     if (!characterId) return
 
     const unsub = worldStateStore.subscribe(
-      () => worldStateStore.get(characterId),
+      () => worldStateStore.getWorldLocation(characterId),
       (next) => {
         setWorldState(next)
       }
@@ -20,6 +20,7 @@ export function useWorldState(characterId: string | null) {
 
     return unsub
   }, [characterId])
+
 
   return worldState
 }

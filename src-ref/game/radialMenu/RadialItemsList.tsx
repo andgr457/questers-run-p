@@ -1,4 +1,4 @@
-import { findRoute } from '../world/worldRouting'
+import { findRoute } from '../world/utils/worldRouting'
 import type { WorldLocation } from '../world/worldState'
 import type { RadialItem } from './RadialMenu.types'
 

@@ -1,4 +1,4 @@
-import type { RouteResult } from '../world/worldRouting'
+import type { RouteResult } from '../world/utils/worldRouting'
 import type { WorldLocation } from '../world/worldState'
 
 export type ActivityType =
