@@ -1,0 +1,6 @@
+export const LOCATION_DISTANCES = {
+  SHORT: 2500,
+  MED: 5000,
+  LONG: 7500,
+  VERY_LONG: 10000,
+}
