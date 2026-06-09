@@ -1,0 +1,60 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 100vh;
+
+  padding: 24px;
+}
+
+.card {
+  width: 420px;
+
+  backdrop-filter: blur(10px);
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(20,20,24,0.72),
+      rgba(10,10,14,0.84)
+    );
+
+  border:
+    1px solid rgba(255,255,255,0.12);
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 0 30px rgba(0,0,0,0.45),
+    0 0 80px rgba(0,0,0,0.35);
+
+  padding: 28px;
+
+  color: rgba(255,255,255,0.94);
+}
+
+.title {
+  margin-top: 0;
+
+  font-size: 32px;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  opacity: 0.75;
+  margin-bottom: 24px;
+}
+
+.label {
+  opacity: 0.75;
+  margin-bottom: 8px;
+}
+
+.actions {
+  text-align: center;
+}
+
+.actions button {
+  width: 100%;
+}
