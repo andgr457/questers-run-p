@@ -1,6 +1,8 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
+// import App from './App.tsx'
+import App from './game/App.tsx'
+
 import React from 'react'
 import './index.css'
 import { ConfirmProvider } from './providers/ConfirmProvider.tsx'

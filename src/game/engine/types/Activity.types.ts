@@ -1,6 +1,6 @@
 
 export type ActivityType =
-  | 'hunting'
+  | 'hunt'
   | 'quest'
   | 'profession'
   | 'crafting'
@@ -19,6 +19,7 @@ export interface ActivityEntry {
   startedAt: number
   status: ActivityStatus
   blocking?: boolean
+  blockingAll?: boolean
   duration: number
   completedAt?: number
 
@@ -26,5 +27,39 @@ export interface ActivityEntry {
 }
 
 export type ActivityMeta = {
-  
+
+  // generic naming
+  name?: string
+
+  // questing
+  questId?: string
+  questName?: string
+
+  // hunting
+  mobId?: string
+  mobName?: string
+  zoneId?: string
+  zoneName?: string
+
+  // professions
+  professionId?: string
+  professionName?: string
+
+  // crafting
+  recipeId?: string
+  recipeName?: string
+  itemId?: string
+  itemName?: string
+
+  // dungeon / raid
+  dungeonId?: string
+  dungeonName?: string
+  raidId?: string
+  raidName?: string
+
+  // generic runtime values
+  xpReward?: number
+  goldReward?: number
+
+  [key: string]: unknown
 }
