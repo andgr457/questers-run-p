@@ -25,6 +25,7 @@ import {
 import type {
   ActivityEntry,
 } from '../engine/types/Activity.types'
+import type { PlayerEntity } from '../entities/player/types/PlayerEntity.types'
 
 export type GameMode =
   | 'boot'
@@ -32,10 +33,34 @@ export type GameMode =
   | 'world'
 
 export default function GameScreen() {
+  const [saving, setSaving] = useState('')
 
   const [mode, setMode] =
     useState<GameMode>('boot')
 
+  const [players, setPlayers] = 
+    useLocalStorage<
+    PlayerEntity[] | undefined
+  >(
+    GAME_STORAGE_KEYS.PLAYER_GAME,
+    []
+  )
+  // =====================================
+  // RUNTIME PLAYER
+  // =====================================
+
+  const runtimePlayersRef = useRef<
+    Record<string, PlayerEntity>
+  >({})
+
+  // =====================================
+  // DIRTY PLAYER
+  // =====================================
+
+  const dirtyPlayersRef = useRef(
+    new Set<string>()
+  )
+  
   const [characters, setCharacters] =
     useLocalStorage<
       CharacterEntity[] | undefined
@@ -53,20 +78,20 @@ export default function GameScreen() {
   >({})
 
   // =====================================
-  // RUNTIME ACTIVITIES
-  // =====================================
-
-  const runtimeActivitiesRef = useRef<
-    Record<string, ActivityEntry>
-  >({})
-
-  // =====================================
   // DIRTY CHARACTERS
   // =====================================
 
   const dirtyCharactersRef = useRef(
     new Set<string>()
   )
+
+  // =====================================
+  // RUNTIME ACTIVITIES
+  // =====================================
+
+  const runtimeActivitiesRef = useRef<
+    Record<string, ActivityEntry>
+  >({})
 
   // =====================================
   // INITIALIZE
@@ -76,16 +101,27 @@ export default function GameScreen() {
 
     gameClockService.start()
 
-    const map: Record<
+    const characterMap: Record<
       string,
       CharacterEntity
     > = {}
 
     for (const character of characters ?? []) {
-      map[character.id] = character
+      characterMap[character.id] = character
     }
 
-    runtimeCharactersRef.current = map
+    runtimeCharactersRef.current = characterMap
+
+    const playerMap: Record<
+      string,
+      PlayerEntity
+    > = {}
+
+    for(const player of players ?? []){
+      playerMap[player.id] = player
+    }
+
+    runtimePlayersRef.current = playerMap
 
     if (
       !characters
@@ -120,10 +156,49 @@ export default function GameScreen() {
   // SAVE SYSTEM
   // =====================================
 
+  const flushPlayerSave = (
+    playerId: string
+  ) => {
+    const runtimePlayer =
+      runtimePlayersRef.current[
+        playerId
+      ]
+
+    if (!runtimePlayer) return
+
+    setPlayers(prev => {
+
+      const all = prev ?? []
+
+      const existingIndex =
+        all.findIndex(
+          c => c.id === playerId
+        )
+
+      // add
+      if (existingIndex === -1) {
+        return [
+          ...all,
+          runtimePlayer,
+        ]
+      }
+
+      // update
+      return all.map(c =>
+        c.id === playerId
+          ? runtimePlayer
+          : c
+      )
+    })
+
+    dirtyPlayersRef.current.delete(
+      playerId
+    )
+  }
+
   const flushCharacterSave = (
     characterId: string
   ) => {
-
     const runtimeCharacter =
       runtimeCharactersRef.current[
         characterId
@@ -169,7 +244,32 @@ export default function GameScreen() {
 
     const unsub =
       gameEventBus.subscribe(event => {
+        if (
+          event.type
+          === 'player:dirty'
+        ) {
 
+          dirtyPlayersRef.current.add(
+            event.playerId
+          )
+
+          return
+        }
+        if (
+          event.type
+          === 'player:save'
+        ) {
+
+          dirtyPlayersRef.current.add(
+            event.playerId
+          )
+
+          flushPlayerSave(
+            event.playerId
+          )
+
+          return
+        }
         // =============================
         // CHARACTER SAVE
         // =============================
@@ -368,7 +468,14 @@ export default function GameScreen() {
 
     const interval =
       setInterval(() => {
-
+        setSaving('Player')
+        for(const playerId of dirtyPlayersRef.current){
+          flushPlayerSave(
+            playerId
+          )
+        }
+        
+        setSaving('Character')
         for (
           const characterId
           of dirtyCharactersRef.current
@@ -379,6 +486,7 @@ export default function GameScreen() {
           )
         }
 
+        setSaving('')
       }, 5000)
 
     return () =>
@@ -391,8 +499,20 @@ export default function GameScreen() {
   // =====================================
 
   const handleCreatedCharacter = (
-    character: CharacterEntity
+    character: CharacterEntity,
+    player?: PlayerEntity
   ) => {
+
+    if(player){
+      runtimePlayersRef.current[
+        player.id
+      ] = player
+
+      gameEventBus.emit({
+        type: 'player:save',
+        playerId: player.id
+      })
+    }
 
     runtimeCharactersRef.current[
       character.id
@@ -406,6 +526,12 @@ export default function GameScreen() {
     setMode('world')
   }
 
+  const handleResetEverything = () => {
+    setCharacters([])
+    setPlayers([])
+    window.location.reload()
+  }
+
   // =====================================
   // RENDER
   // =====================================
@@ -415,13 +541,23 @@ export default function GameScreen() {
       runtimeCharactersRef.current
     )
 
+  const runtimePlayers =
+    runtimePlayersRef.current
+    
   return (
     <div>
-
+      <button className='button-basic dark'
+        onClick={handleResetEverything}
+      >
+        RESET
+      </button>
+      {saving && <span>Saving {saving} data...</span>}
       {mode ===
         'character_create'
         && (
         <CharacterEntityCreate
+          playerId={runtimePlayers?.[0]?.id}
+          onCancelled={() => setMode('world')}
           onCreated={
             handleCreatedCharacter
           }
@@ -433,6 +569,9 @@ export default function GameScreen() {
           characters={
             runtimeCharacters
           }
+          onCreateCharacter={() => {
+            setMode('character_create')
+          }}
         />
       )}
 

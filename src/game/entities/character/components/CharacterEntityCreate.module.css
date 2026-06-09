@@ -1,4 +1,4 @@
-.wrapper {
+/* .wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,11 +50,16 @@
   opacity: 0.75;
   margin-bottom: 8px;
 }
-
+*/
 .actions {
   text-align: center;
 }
 
-.actions button {
-  width: 100%;
+.subtitle {
+  opacity: 0.75;
+  text-align: center;
+}
+
+.card {
+  padding: 5px;
 }

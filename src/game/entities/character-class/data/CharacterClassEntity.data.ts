@@ -1,4 +1,4 @@
-import type { CharacterClassEntity } from '../types/CharacterClassEntity.types';
+import type { CharacterClassEntity, CharacterClassId } from '../types/CharacterClassEntity.types';
 
 export const CLASS_WARRIOR: CharacterClassEntity = {
   id: 'cc_warrior',
@@ -43,6 +43,14 @@ export const CLASS_PRIEST: CharacterClassEntity = {
   agility: 0,
   intellect: 2,
   strength: 0,
+}
+
+export const GAME_CHARACTER_CLASSES: Record<CharacterClassId, CharacterClassEntity> = {
+  cc_warrior: CLASS_WARRIOR,
+  cc_hunter: CLASS_HUNTER,
+  cc_mage: CLASS_MAGE,
+  cc_priest: CLASS_PRIEST,
+  cc_rogue: CLASS_ROGUE
 }
 
 export const GAME_CLASSES: CharacterClassEntity[] = [

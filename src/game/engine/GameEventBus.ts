@@ -37,9 +37,16 @@ export type GameEvent =
     }
 
   // =========================
-  // CHARACTER EVENTS
+  // ENTITY EVENTS
   // =========================
-
+  | {
+      type: 'player:dirty'
+      playerId: string
+    }
+  | {
+      type: 'player:save'
+      playerId: string
+    }
   | {
       type: 'character:dirty'
       characterId: string

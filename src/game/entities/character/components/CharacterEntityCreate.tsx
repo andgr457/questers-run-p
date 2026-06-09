@@ -5,15 +5,22 @@ import styles from './CharacterEntityCreate.module.css'
 import { GAME_CLASSES } from '../../character-class/data/CharacterClassEntity.data'
 
 import type { CharacterEntity } from '../types/Character.types'
+import GameModal from '../../../components/modals/GameModal'
+import type { PlayerEntity } from '../../player/types/PlayerEntity.types'
 
 type Props = {
+  playerId: string
   onCreated: (
-    character: CharacterEntity
+    character: CharacterEntity,
+    player?: PlayerEntity
   ) => void
+  onCancelled: () => void
 }
 
-export default function CharacterEntityCreateComp({
+export default function CharacterEntityCreate({
   onCreated,
+  onCancelled,
+  playerId
 }: Props) {
   const [characterName, setCharacterName] =
     useState('')
@@ -34,8 +41,21 @@ export default function CharacterEntityCreateComp({
 
     if (!characterClass) return
 
+    let player: PlayerEntity | undefined = undefined
+    if(!playerId){
+      player = {
+        id: crypto.randomUUID(),
+        characterTokens: 0,
+        gold: 0,
+        level: 1,
+        xp: 0,
+        xpNextLevel: 100
+      }
+    }
+
     const character: CharacterEntity = {
       id: crypto.randomUUID(),
+      playerId: playerId ?? player?.id,
 
       name: characterName.trim(),
 
@@ -54,21 +74,27 @@ export default function CharacterEntityCreateComp({
       stamina: 100,
       staminaMax: 100,
 
-      strength: characterClass.strength,
-      intellect: characterClass.intellect,
-      agility: characterClass.agility,
+      strength: 1 + characterClass.strength,
+      intellect: 1 + characterClass.intellect,
+      agility: 1 + characterClass.agility,
     }
 
-    onCreated(character)
+    onCreated(character, player)
   }
-
+  const canClose = typeof playerId !== 'undefined'
   return (
-    <div className={styles.wrapper}>
+    <GameModal
+      backdropHides={canClose}
+      isOpen={true}
+      onClose={onCancelled}
+      title='New Character'
+      closeButton={canClose}
+    >
       <div className={styles.card}>
-        <h1 className={styles.title}>
+        {/* <h1 className={styles.title}>
           New Character
-        </h1>
-
+        </h1> */}
+        <span>{playerId}</span>
         <p className={styles.subtitle}>
           It is time that a new adventurer
           joins the fray... Who will it be?
@@ -88,13 +114,9 @@ export default function CharacterEntityCreateComp({
           />
         </div>
 
-        <div style={{ textAlign: 'center' }}>
+        <div>
           <select
             className="select"
-            style={{
-              width: '90%',
-              margin: '5px',
-            }}
             value={characterClassId}
             onChange={e =>
               setCharacterClassId(
@@ -135,7 +157,7 @@ export default function CharacterEntityCreateComp({
 
         <div className={styles.actions}>
           <button
-            className="button"
+            className="button-basic"
             onClick={
               handleCreateCharacter
             }
@@ -144,6 +166,6 @@ export default function CharacterEntityCreateComp({
           </button>
         </div>
       </div>
-    </div>
+    </GameModal>
   )
 }

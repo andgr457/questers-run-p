@@ -1,21 +1,29 @@
 import type { CharacterEntity } from '../types/Character.types'
-import CharacterEntityComp from './CharacterEntity'
+import CharacterEntityListRecord from './CharacterEntityListRecord'
+import styles from './CharacterEntityList.module.css'
 
 type Props = {
   characters: CharacterEntity[]
+  onCreateCharacter: () => void
 }
 
-export default function CharacterEntityListComp({
+export default function CharacterEntityList({
   characters,
+  onCreateCharacter
 }: Props) {
 
   return (
-    <div>
-
+    <div className={styles.list}>
+      <div>
+        <button className='button-basic' onClick={onCreateCharacter}>
+          Create Character
+        </button>
+      </div>
       {characters.map(character => (
-        <CharacterEntityComp
+        <CharacterEntityListRecord
           key={character.id}
           character={character}
+          
         />
       ))}
 
