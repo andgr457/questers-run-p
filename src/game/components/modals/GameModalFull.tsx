@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./GameModal.module.css";
+import styles from "./GameModalFull.module.css";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -10,7 +10,7 @@ export interface ModalProps {
   children: React.ReactNode;
 }
 
-const GameModal: React.FC<ModalProps> = ({ 
+const GameModalFull: React.FC<ModalProps> = ({ 
   isOpen, 
   onClose, 
   children, 
@@ -54,4 +54,4 @@ const GameModal: React.FC<ModalProps> = ({
   )
 };
 
-export default GameModal;
+export default GameModalFull;

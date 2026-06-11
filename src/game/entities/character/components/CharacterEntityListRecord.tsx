@@ -2,6 +2,8 @@ import type { CharacterEntity } from '../types/Character.types'
 import { gameEventBus } from '../../../engine/GameEventBus'
 import styles from './CharacterEntityListRecord.module.css'
 import ProgressBar from '../../../components/ui/ProgressBar'
+import { GAME_CHARACTER_CLASSES } from '../../character-class/data/CharacterClassEntity.data'
+import type { CharacterClassId } from '../../character-class/types/CharacterClassEntity.types'
 
 type Props = {
   character: CharacterEntity
@@ -48,7 +50,7 @@ export default function CharacterEntityListRecord({ character }: Props) {
       <div className={styles.left}>
         <div className={styles.name}>{character.name}</div>
         <div className={styles.meta}>
-          Lv {character.level} · {isBusy ? activityType : 'Idle'}
+          Lv {character.level} {GAME_CHARACTER_CLASSES[character.classId as CharacterClassId].name}
         </div>
       </div>
 
@@ -83,8 +85,8 @@ export default function CharacterEntityListRecord({ character }: Props) {
         />
       </div>
       <div>
-        <div>
-          {isBusy ? activity?.activityType : 'Idle'}
+        <div className={styles.meta}>
+          Status: <span style={{color: 'gold', textTransform: 'uppercase'}}>{isBusy ? activity?.activityType : 'Idle'}</span>
         </div>
         <div className={styles.progress}>
           <progress value={isBusy ? progress : 0} max={1} />

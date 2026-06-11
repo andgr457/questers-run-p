@@ -1,3 +1,4 @@
+import type { PlayerEntity } from '../entities/player/types/PlayerEntity.types'
 import type {
   ActivityMeta,
   ActivityType,
@@ -35,17 +36,13 @@ export type GameEvent =
       progress: number
       meta?: ActivityMeta | undefined
     }
-
-  // =========================
-  // ENTITY EVENTS
-  // =========================
   | {
       type: 'player:dirty'
-      playerId: string
+      player: PlayerEntity
     }
   | {
       type: 'player:save'
-      playerId: string
+      player: PlayerEntity
     }
   | {
       type: 'character:dirty'

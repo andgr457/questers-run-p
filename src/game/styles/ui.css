@@ -1,24 +1,21 @@
-/* =========================
-   INPUT
-========================= */
-
 .input {
   width: 100%;
   box-sizing: border-box; /* prevents overflow */
 
-  padding: 14px;
+  padding: 8px;
 
   border-radius: 8px;
 
   border: 1px solid rgba(255,255,255,0.16);
 
-  background: rgba(255,255,255,0.08);
+  background: var(--bg-dark-2);
 
   color: rgba(255,255,255,0.92);
 
   outline: none;
 
   font-size: 16px;
+  letter-spacing: 1px;
 
   transition:
     background 0.2s ease,
@@ -27,16 +24,12 @@
 }
 
 .input:focus {
-  border-color: rgba(255,255,255,0.35);
+  border-color: rgba(255,255,255,0.65);
 
   background: rgba(255,255,255,0.12);
 
   box-shadow: 0 0 0 2px rgba(255,255,255,0.06);
 }
-
-/* =========================
-   TEXTAREA
-========================= */
 
 .textarea {
   width: 100%;
@@ -66,13 +59,9 @@
   background: rgba(255,255,255,0.12);
 }
 
-/* =========================
-   SELECT
-========================= */
-
 .select {
   width: 100%;
-  box-sizing: border-box;
+  box-sizing: border-box; /* prevents overflow */
 
   padding: 14px;
 
@@ -80,21 +69,35 @@
 
   border: 1px solid rgba(255,255,255,0.16);
 
-  background: rgba(0,0,0,0.35);
+  background: rgba(255,255,255,0.08);
 
   color: rgba(255,255,255,0.92);
 
-  font-size: 16px;
-
   outline: none;
 
+  font-size: 16px;
+
   cursor: pointer;
+  letter-spacing: 2px;
+
+  transition:
+    background 0.2s ease,
+    border 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.select:focus {
+  border-color: rgba(255,255,255,0.35);
+
+  background: rgba(255,255,255,0.12);
+
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.06);
 }
 
 .button-basic {
   all: unset;
   text-align: center;
-  padding: 6px;
+  padding: 8px;
   font-weight: 500;
   cursor: pointer;
   font-size: 12px;

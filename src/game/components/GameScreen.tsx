@@ -4,6 +4,7 @@ import {
   useState,
 } from 'react'
 
+
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 
 import { GAME_STORAGE_KEYS } from '../data/GameStorageKeys.data'
@@ -27,6 +28,8 @@ import type {
 } from '../engine/types/Activity.types'
 import type { PlayerEntity } from '../entities/player/types/PlayerEntity.types'
 
+import styles from './GameScreen.module.css';
+
 export type GameMode =
   | 'boot'
   | 'character_create'
@@ -38,29 +41,29 @@ export default function GameScreen() {
   const [mode, setMode] =
     useState<GameMode>('boot')
 
-  const [players, setPlayers] = 
+  const [player, setPlayer] =
     useLocalStorage<
-    PlayerEntity[] | undefined
-  >(
-    GAME_STORAGE_KEYS.PLAYER_GAME,
-    []
-  )
+      PlayerEntity | undefined
+    >(
+      GAME_STORAGE_KEYS.PLAYER_GAME,
+      undefined
+    )
   // =====================================
   // RUNTIME PLAYER
   // =====================================
 
-  const runtimePlayersRef = useRef<
-    Record<string, PlayerEntity>
-  >({})
+  const runtimePlayerRef = useRef<
+    PlayerEntity | undefined
+  >(undefined)
 
   // =====================================
   // DIRTY PLAYER
   // =====================================
 
-  const dirtyPlayersRef = useRef(
-    new Set<string>()
+  const dirtyPlayerRef = useRef<PlayerEntity | undefined>(
+    undefined
   )
-  
+
   const [characters, setCharacters] =
     useLocalStorage<
       CharacterEntity[] | undefined
@@ -98,9 +101,6 @@ export default function GameScreen() {
   // =====================================
 
   useEffect(() => {
-
-    gameClockService.start()
-
     const characterMap: Record<
       string,
       CharacterEntity
@@ -112,16 +112,7 @@ export default function GameScreen() {
 
     runtimeCharactersRef.current = characterMap
 
-    const playerMap: Record<
-      string,
-      PlayerEntity
-    > = {}
-
-    for(const player of players ?? []){
-      playerMap[player.id] = player
-    }
-
-    runtimePlayersRef.current = playerMap
+    runtimePlayerRef.current = player
 
     if (
       !characters
@@ -156,44 +147,17 @@ export default function GameScreen() {
   // SAVE SYSTEM
   // =====================================
 
-  const flushPlayerSave = (
-    playerId: string
-  ) => {
+  const flushPlayerSave = () => {
     const runtimePlayer =
-      runtimePlayersRef.current[
-        playerId
-      ]
+      runtimePlayerRef.current
 
     if (!runtimePlayer) return
 
-    setPlayers(prev => {
-
-      const all = prev ?? []
-
-      const existingIndex =
-        all.findIndex(
-          c => c.id === playerId
-        )
-
-      // add
-      if (existingIndex === -1) {
-        return [
-          ...all,
-          runtimePlayer,
-        ]
-      }
-
-      // update
-      return all.map(c =>
-        c.id === playerId
-          ? runtimePlayer
-          : c
-      )
+    setPlayer({
+      ...runtimePlayer
     })
 
-    dirtyPlayersRef.current.delete(
-      playerId
-    )
+    dirtyPlayerRef.current = undefined
   }
 
   const flushCharacterSave = (
@@ -201,7 +165,7 @@ export default function GameScreen() {
   ) => {
     const runtimeCharacter =
       runtimeCharactersRef.current[
-        characterId
+      characterId
       ]
 
     if (!runtimeCharacter) return
@@ -249,9 +213,7 @@ export default function GameScreen() {
           === 'player:dirty'
         ) {
 
-          dirtyPlayersRef.current.add(
-            event.playerId
-          )
+          dirtyPlayerRef.current = event.player
 
           return
         }
@@ -260,13 +222,9 @@ export default function GameScreen() {
           === 'player:save'
         ) {
 
-          dirtyPlayersRef.current.add(
-            event.playerId
-          )
+          dirtyPlayerRef.current = event.player
 
-          flushPlayerSave(
-            event.playerId
-          )
+          flushPlayerSave()
 
           return
         }
@@ -350,7 +308,7 @@ export default function GameScreen() {
 
           const existing =
             runtimeActivitiesRef.current[
-              event.activityId
+            event.activityId
             ]
 
           if (!existing) return
@@ -373,7 +331,7 @@ export default function GameScreen() {
 
           const existing =
             runtimeActivitiesRef.current[
-              event.activityId
+            event.activityId
             ]
 
           if (!existing) return
@@ -469,12 +427,8 @@ export default function GameScreen() {
     const interval =
       setInterval(() => {
         setSaving('Player')
-        for(const playerId of dirtyPlayersRef.current){
-          flushPlayerSave(
-            playerId
-          )
-        }
-        
+        flushPlayerSave()
+
         setSaving('Character')
         for (
           const characterId
@@ -503,14 +457,13 @@ export default function GameScreen() {
     player?: PlayerEntity
   ) => {
 
-    if(player){
-      runtimePlayersRef.current[
-        player.id
-      ] = player
+    if (player) {
+      console.log('player create', player)
+      runtimePlayerRef.current = player
 
       gameEventBus.emit({
         type: 'player:save',
-        playerId: player.id
+        player: player
       })
     }
 
@@ -528,7 +481,7 @@ export default function GameScreen() {
 
   const handleResetEverything = () => {
     setCharacters([])
-    setPlayers([])
+    setPlayer(undefined)
     window.location.reload()
   }
 
@@ -541,39 +494,48 @@ export default function GameScreen() {
       runtimeCharactersRef.current
     )
 
-  const runtimePlayers =
-    runtimePlayersRef.current
-    
+  const runtimePlayer =
+    runtimePlayerRef.current
+
+
   return (
-    <div>
-      <button className='button-basic dark'
-        onClick={handleResetEverything}
-      >
-        RESET
-      </button>
+    <div className={styles.screen}>
+      {mode === 'world' && <div className={styles.menu}>
+        <button className='button-basic dark'
+          onClick={handleResetEverything}
+        >
+          RESET
+        </button>
+        <button className='button-basic' onClick={() => setMode('character_create')}>
+          Create Character
+        </button>
+      </div>}
       {saving && <span>Saving {saving} data...</span>}
+
+      {/* MODALS */}
       {mode ===
         'character_create'
         && (
-        <CharacterEntityCreate
-          playerId={runtimePlayers?.[0]?.id}
-          onCancelled={() => setMode('world')}
-          onCreated={
-            handleCreatedCharacter
-          }
-        />
-      )}
+          <CharacterEntityCreate
+            player={runtimePlayer as PlayerEntity}
+            playerCharacters={runtimeCharacters}
+            onCancelled={() => setMode('world')}
+            onCreated={
+              handleCreatedCharacter
+            }
+          />
+        )}
 
-      {mode === 'world' && (
-        <CharacterEntityList
-          characters={
-            runtimeCharacters
-          }
-          onCreateCharacter={() => {
-            setMode('character_create')
-          }}
-        />
-      )}
+      {/* MODE VIEWS */}
+      <div className={styles.screenView}>
+        {mode === 'world' && (
+          <CharacterEntityList
+            characters={
+              runtimeCharacters
+            }
+          />
+        )}
+      </div>
 
     </div>
   )

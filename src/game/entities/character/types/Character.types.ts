@@ -2,6 +2,8 @@
 export interface CharacterEntity {
   id: string
   playerId: string
+  partyId?: string
+  
   name: string
   classId: string
   xp: number

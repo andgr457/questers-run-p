@@ -1,0 +1,47 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.card {
+  border: outset 1px var(--bg-dark-2);
+  background: var(--bg-dark-3-opaque);
+  
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.cardSelected {
+  border: inset 1px gold;
+  background: var(--bg-dark-3);
+
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.title {
+  text-align: center;
+}
+
+.attributes {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.attribute {
+  display: flex;
+  justify-content: space-between;
+
+}
+/* style={{fontSize: '0.75em',maxWidth: '350px'}} */
+.classDescription {
+  font-size: 0.75em;
+  margin-top: 5px;
+}
