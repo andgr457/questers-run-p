@@ -110,14 +110,14 @@ class ActivityRuntimeService {
   // ======================
   // PROGRESS API (NEW)
   // ======================
-  getProgress(characterId: string, activityId: string, now: number) {
+  getProgress(characterId: string, activityId: string) {
     const bucket = this.getBucket(characterId)
     const activity = bucket.get(activityId)
 
     if (!activity) return 0
     if (!activity.duration) return 0
 
-    const elapsed = now - activity.startedAt
+    const elapsed = gameClockService.getNow() - activity.startedAt
     return Math.min(elapsed / activity.duration, 1)
   }
 
@@ -190,6 +190,7 @@ class ActivityRuntimeService {
   // ======================
   // READ (FAST CACHE)
   // ======================
+
   getAll(characterId: string) {
     return this.cache.get(characterId)?.all ?? []
   }

@@ -23,12 +23,10 @@ import {
   gameClockService,
 } from '../engine/GameClockService'
 
-import type {
-  ActivityEntry,
-} from '../engine/types/Activity.types'
 import type { PlayerEntity } from '../entities/player/types/PlayerEntity.types'
 
 import styles from './GameScreen.module.css';
+import { activityRuntimeService } from '../engine/ActivityRuntimeService'
 
 export type GameMode =
   | 'boot'
@@ -87,14 +85,6 @@ export default function GameScreen() {
   const dirtyCharactersRef = useRef(
     new Set<string>()
   )
-
-  // =====================================
-  // RUNTIME ACTIVITIES
-  // =====================================
-
-  const runtimeActivitiesRef = useRef<
-    Record<string, ActivityEntry>
-  >({})
 
   // =====================================
   // INITIALIZE
@@ -259,159 +249,6 @@ export default function GameScreen() {
 
           return
         }
-
-        // =============================
-        // ACTIVITY START
-        // =============================
-
-        if (
-          event.type
-          === 'activity:start'
-        ) {
-
-          const activity: ActivityEntry = {
-            id: event.activityId,
-
-            characterId:
-              event.characterId,
-
-            type:
-              event.activityType,
-
-            startedAt:
-              gameClockService.getNow(),
-
-            status: 'active',
-
-            duration:
-              event.duration
-              ?? 10000,
-
-            blocking: true,
-
-            meta: event.meta,
-          }
-
-          runtimeActivitiesRef.current[
-            activity.id
-          ] = activity
-        }
-
-        // =============================
-        // ACTIVITY COMPLETE
-        // =============================
-
-        if (
-          event.type
-          === 'activity:complete'
-        ) {
-
-          const existing =
-            runtimeActivitiesRef.current[
-            event.activityId
-            ]
-
-          if (!existing) return
-
-          existing.status =
-            'completed'
-
-          existing.completedAt =
-            gameClockService.getNow()
-        }
-
-        // =============================
-        // ACTIVITY CANCEL
-        // =============================
-
-        if (
-          event.type
-          === 'activity:cancel'
-        ) {
-
-          const existing =
-            runtimeActivitiesRef.current[
-            event.activityId
-            ]
-
-          if (!existing) return
-
-          existing.status =
-            'cancelled'
-        }
-
-      })
-
-    return unsub
-
-  }, [])
-
-  // =====================================
-  // ACTIVITY RUNTIME LOOP
-  // =====================================
-
-  useEffect(() => {
-
-    const unsub =
-      gameClockService.subscribe(now => {
-
-        for (
-          const activity
-          of Object.values(
-            runtimeActivitiesRef.current
-          )
-        ) {
-
-          if (
-            activity.status
-            !== 'active'
-          ) {
-            continue
-          }
-
-          const elapsed =
-            now - activity.startedAt
-
-          const progress =
-            Math.min(
-              elapsed / activity.duration,
-              1
-            )
-
-          gameEventBus.emit({
-            type: 'activity:progress',
-
-            characterId:
-              activity.characterId,
-
-            activityId:
-              activity.id,
-
-            activityType:
-              activity.type,
-
-            progress,
-          })
-
-          if (progress >= 1) {
-
-            gameEventBus.emit({
-              type: 'activity:complete',
-
-              characterId:
-                activity.characterId,
-
-              activityId:
-                activity.id,
-
-              activityType:
-                activity.type,
-
-              meta: activity.meta,
-            })
-          }
-        }
-
       })
 
     return unsub
@@ -536,6 +373,20 @@ export default function GameScreen() {
           />
         )}
       </div>
+
+      {characters?.map(c => {
+        const active = activityRuntimeService.getActive(c.id)
+        return active.map(a => {
+          const progress = activityRuntimeService.getProgress(c.id, a.id)
+          return <div>
+            <div>{c.name}</div>
+            <div>{a.id}</div>
+            <div>{a.type}</div>
+            <div>{a.status}</div>
+            <div>{progress}</div>
+            </div>
+          })
+      })}
 
     </div>
   )

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { gameClockService } from '../../clock/GameClockService'
-import { activityRuntimeService } from '../activityRuntimeService'
+import { gameClockService } from '../GameClockService'
+import { activityRuntimeService } from '../ActivityRuntimeService'
 
 type ProgressState = {
   progress: number

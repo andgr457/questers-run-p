@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { activityRuntimeService } from '../activityRuntimeService'
-import type { ActivityEntry } from '../../../activity/types'
+import type { ActivityEntry } from '../types/Activity.types'
+import { activityRuntimeService } from '../ActivityRuntimeService'
 
 export function useActiveActivities(characterId: string) {
   const [active, setActive] = useState<ActivityEntry[]>([])
