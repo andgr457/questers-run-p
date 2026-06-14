@@ -173,7 +173,7 @@ class ActivityRuntimeService {
 
   getActiveQuests(characterId: string) {
     return this.getActive(characterId)
-      .filter(a => a.type === 'quest')
+      .filter(a => a.type === 'questing')
   }
 
   getByType(characterId: string, type: ActivityType) {

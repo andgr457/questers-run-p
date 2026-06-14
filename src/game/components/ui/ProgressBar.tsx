@@ -6,6 +6,7 @@ type Props = {
   color: string
   label?: string
   showLabel?: boolean
+  showValues?: boolean
   invert?: boolean   // ONLY meaning-based flag now
 }
 
@@ -15,6 +16,7 @@ export default function ProgressBar({
   color,
   label,
   showLabel = true,
+  showValues = true,
   invert = false,
 }: Props) {
 
@@ -52,9 +54,9 @@ export default function ProgressBar({
 
       </div>
 
-      <span className={styles.value}>
+      {showValues && <span className={styles.value}>
         {safeValue.toFixed(0)}/{safeMax}
-      </span>
+      </span>}
 
     </div>
   )

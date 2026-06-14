@@ -5,44 +5,39 @@ import { GAME_CHARACTER_CLASSES } from '../../character-class/data/CharacterClas
 import type { CharacterClassId } from '../../character-class/types/CharacterClassEntity.types'
 import { activityRuntimeService } from '../../../engine/ActivityRuntimeService'
 import { gameClockService } from '../../../engine/GameClockService'
+import { useState } from 'react'
+import CharacterEntityActionsModal from './CharacterEntityActionsModal'
 
 type Props = {
   character: CharacterEntity
 }
 
 export default function CharacterEntityListRecord({ character }: Props) {
-  const characterId = character?.id
-  const active =
-    activityRuntimeService
-      .getActive(characterId)
+  if (!character) return null
+  const characterId = character.id
+  
+  const [showCharacterActions, setShowCharacterActions] = useState(false)
 
-  const activity =
-    active[0]
+  const active = activityRuntimeService.getActive(characterId)
+  const activity = active[0]
+  const isBusy = !!activity
 
-  const isBusy =
-    !!activity
+  const progress = activity
+    ? activityRuntimeService.getProgress(characterId, activity.id)
+    : 0
 
-  const progress =
-    activity
-      ? activityRuntimeService
-          .getProgress(
-            characterId,
-            activity.id
-          )
-      : 0
-  console.log(progress)
   const handleStartQuest = () => {
     if (isBusy) return
 
     activityRuntimeService.start({
       id: crypto.randomUUID(),
-      characterId: characterId,
+      characterId,
       duration: 5000,
       startedAt: gameClockService.getNow(),
       blocking: true,
       blockingAll: false,
       status: 'active',
-      type: 'quest',
+      type: 'questing',
     })
   }
 
@@ -51,71 +46,63 @@ export default function CharacterEntityListRecord({ character }: Props) {
 
     activityRuntimeService.start({
       id: crypto.randomUUID(),
-      characterId: characterId,
+      characterId,
       duration: 10000,
       startedAt: gameClockService.getNow(),
       blocking: true,
       blockingAll: false,
       status: 'active',
-      type: 'quest',
+      type: 'hunting',
     })
   }
 
-  if(!character) return null
+  const className =
+    GAME_CHARACTER_CLASSES[character.classId as CharacterClassId]?.name ?? 'Unknown'
+  const characterStatus = activity ? activity.type.toUpperCase() : 'IDLE'
 
-  return (
-    <div className={styles.record}>
-
-      <div>
-        <div className={styles.name}>{character.name}</div>
-        <div className={styles.meta}>
-          Lv {character.level} {GAME_CHARACTER_CLASSES[character.classId as CharacterClassId].name}
+  return <>
+    <CharacterEntityActionsModal 
+      character={character}
+      onClose={() => setShowCharacterActions(false)}
+      open={showCharacterActions}
+    />
+    <div className={styles.record}
+      onClick={() => {setShowCharacterActions(true)}}
+    >
+      {/* HEADER */}
+      <div className={styles.header}>
+        <div>
+          <div className={styles.name}>{character.name}</div>
+          <div className={styles.meta}>
+            Lv {character.level} {className}
+          </div>
+        </div>
+        <div style={{paddingLeft: '15px'}}>
+          <ProgressBar
+            value={progress * 100}
+            max={100}
+            color="gold"
+            showValues={false}
+            showLabel={false}
+          />
         </div>
       </div>
 
+      {/* STATS */}
       <div className={styles.stats}>
-        <ProgressBar
-          label="HP"
-          value={character.hp}
-          max={character.hpMax}
-          color="#ef4444"
-        />
-
-        <ProgressBar
-          label="MP"
-          value={character.mana}
-          max={character.manaMax}
-          color="#3b82f6"
-        />
-
-        <ProgressBar
-          label="STA"
-          value={character.stamina}
-          max={character.staminaMax}
-          color="#22c55e"
-        />
-
+        <ProgressBar label="HP" value={character.hp} max={character.hpMax} color="#ef4444" />
+        <ProgressBar label="MP" value={character.mana} max={character.manaMax} color="#3b82f6" />
+        <ProgressBar label="STA" value={character.stamina} max={character.staminaMax} color="#22c55e" />
+        <ProgressBar label="XP" value={character.xp} max={character.xpNextLevel} color="#a855f7" />
       </div>
-      <div className={styles.stats}>
-        <ProgressBar
-          label="XP"
-          value={character.xp}
-          max={character.xpNextLevel}
-          color="#a855f7"
-        />
-        <ProgressBar
-          label={
-            activity
-              ? activity.type.toUpperCase()
-              : 'IDLE'
-          }
-          value={progress * 100}
-          max={100}
-          color="gold"
-        />
+
+      <div className={styles.meta} style={{textAlign: 'center'}}>
+        {characterStatus}
       </div>
+
+      {/* ACTIONS */}
       <div className={styles.buttons}>
-        <button
+        {/* <button
           className="button-basic dark"
           onClick={handleStartQuest}
           disabled={isBusy}
@@ -129,8 +116,8 @@ export default function CharacterEntityListRecord({ character }: Props) {
           disabled={isBusy}
         >
           Hunt
-        </button>
+        </button> */}
       </div>
     </div>
-  )
+  </>
 }

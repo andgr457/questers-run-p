@@ -1,8 +1,10 @@
 
 export type ActivityType =
-  | 'hunt'
-  | 'quest'
-  | 'profession'
+  | 'hunting'
+  | 'questing'
+  | 'gathering'
+  | 'mining'
+  | 'cooking'
   | 'crafting'
   | 'dungeon'
   | 'raid'
