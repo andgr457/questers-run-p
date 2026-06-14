@@ -26,7 +26,9 @@ import App from './game/App.tsx'
 import React from 'react'
 // import './index.css'
 import { gameClockService } from './core/time/GameClockService'
+import { activityRuntimeService } from './game/engine/ActivityRuntimeService.ts'
 gameClockService.start()
+activityRuntimeService.init()
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

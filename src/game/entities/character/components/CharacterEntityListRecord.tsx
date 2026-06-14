@@ -5,26 +5,38 @@ import ProgressBar from '../../../components/ui/ProgressBar'
 import { GAME_CHARACTER_CLASSES } from '../../character-class/data/CharacterClassEntity.data'
 import type { CharacterClassId } from '../../character-class/types/CharacterClassEntity.types'
 import { activityRuntimeService } from '../../../engine/ActivityRuntimeService'
-import { DateTime } from 'luxon'
-import { useActivityProgress } from '../../../engine/hooks/useActivityProgress'
-import { useActiveActivities } from '../../../engine/hooks/useActiveActivities'
 import { gameClockService } from '../../../engine/GameClockService'
+import { useEffect } from 'react'
+import { useActivityProgress } from '../../../engine/hooks/useActivityProgress'
 
 type Props = {
   character: CharacterEntity
 }
 
 export default function CharacterEntityListRecord({ character }: Props) {
-  const activities = useActiveActivities(character.id)
-  const activityProgress = useActivityProgress(character.id, activities?.[0]?.id)
-  const isBusy = activities?.length > 0
+  const characterId = character?.id
+  useEffect(() => {
+    if(!character) return
+
+    const unsub = activityRuntimeService.subscribe(
+      () => activityRuntimeService.getActive(characterId),
+      () => {}
+    )
+
+    return unsub
+  }, [character])
+
+  const activities = activityRuntimeService.getAll(characterId) ?? []
+  const active = activityRuntimeService.getActive(characterId) ?? []
+
+  const isBusy = active?.length > 0
 
   const handleStartQuest = () => {
     if (isBusy) return
 
     activityRuntimeService.start({
       id: crypto.randomUUID(),
-      characterId: character.id,
+      characterId: characterId,
       duration: 5000,
       startedAt: gameClockService.getNow(),
       blocking: true,
@@ -32,27 +44,32 @@ export default function CharacterEntityListRecord({ character }: Props) {
       status: 'active',
       type: 'quest',
     })
-
-    // gameEventBus.emit({
-    //   type: 'activity:start',
-    //   characterId: character.id,
-    //   activityId: crypto.randomUUID(),
-    //   activityType: 'quest',
-    //   duration: 10000
-    // })
   }
 
   const handleStartHunt = () => {
     if (isBusy) return
 
-    gameEventBus.emit({
-      type: 'activity:start',
-      characterId: character.id,
-      activityId: crypto.randomUUID(),
-      activityType: 'hunt',
+    activityRuntimeService.start({
+      id: crypto.randomUUID(),
+      characterId: characterId,
+      duration: 10000,
+      startedAt: gameClockService.getNow(),
+      blocking: true,
+      blockingAll: false,
+      status: 'active',
+      type: 'quest',
     })
   }
 
+  const progress =
+  isBusy
+    ? activityRuntimeService.getProgress(
+        characterId,
+        active[0].id
+      )
+    : 0
+
+  if(!character) return null
 
   return (
     <div className={styles.record}>
@@ -95,8 +112,8 @@ export default function CharacterEntityListRecord({ character }: Props) {
           color="#a855f7"
         />
         <ProgressBar
-          label={isBusy ? activities?.[0]?.type?.toUpperCase() : 'IDLE'}
-          value={isBusy ? activityProgress?.progress : 0}
+          label={isBusy ? active?.[0]?.type?.toUpperCase() : 'IDLE'}
+          value={isBusy ? progress * 100 : 0}
           max={100}
           color="gold"
         />
