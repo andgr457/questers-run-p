@@ -1,13 +1,10 @@
 import type { CharacterEntity } from '../types/Character.types'
-import { gameEventBus } from '../../../engine/GameEventBus'
 import styles from './CharacterEntityListRecord.module.css'
 import ProgressBar from '../../../components/ui/ProgressBar'
 import { GAME_CHARACTER_CLASSES } from '../../character-class/data/CharacterClassEntity.data'
 import type { CharacterClassId } from '../../character-class/types/CharacterClassEntity.types'
 import { activityRuntimeService } from '../../../engine/ActivityRuntimeService'
 import { gameClockService } from '../../../engine/GameClockService'
-import { useEffect } from 'react'
-import { useActivityProgress } from '../../../engine/hooks/useActivityProgress'
 
 type Props = {
   character: CharacterEntity
@@ -15,22 +12,25 @@ type Props = {
 
 export default function CharacterEntityListRecord({ character }: Props) {
   const characterId = character?.id
-  useEffect(() => {
-    if(!character) return
+  const active =
+    activityRuntimeService
+      .getActive(characterId)
 
-    const unsub = activityRuntimeService.subscribe(
-      () => activityRuntimeService.getActive(characterId),
-      () => {}
-    )
+  const activity =
+    active[0]
 
-    return unsub
-  }, [character])
+  const isBusy =
+    !!activity
 
-  const activities = activityRuntimeService.getAll(characterId) ?? []
-  const active = activityRuntimeService.getActive(characterId) ?? []
-
-  const isBusy = active?.length > 0
-
+  const progress =
+    activity
+      ? activityRuntimeService
+          .getProgress(
+            characterId,
+            activity.id
+          )
+      : 0
+  console.log(progress)
   const handleStartQuest = () => {
     if (isBusy) return
 
@@ -60,14 +60,6 @@ export default function CharacterEntityListRecord({ character }: Props) {
       type: 'quest',
     })
   }
-
-  const progress =
-  isBusy
-    ? activityRuntimeService.getProgress(
-        characterId,
-        active[0].id
-      )
-    : 0
 
   if(!character) return null
 
@@ -112,8 +104,12 @@ export default function CharacterEntityListRecord({ character }: Props) {
           color="#a855f7"
         />
         <ProgressBar
-          label={isBusy ? active?.[0]?.type?.toUpperCase() : 'IDLE'}
-          value={isBusy ? progress * 100 : 0}
+          label={
+            activity
+              ? activity.type.toUpperCase()
+              : 'IDLE'
+          }
+          value={progress * 100}
           max={100}
           color="gold"
         />

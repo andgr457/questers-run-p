@@ -9,61 +9,63 @@ type CharacterActivityCache = {
   locked: boolean
 }
 
-type Subscriber<T> = {
-  selector: () => T
-  listener: (value: T) => void
-  lastValue: T
-}
+type Listener = () => void
 
 class ActivityRuntimeService {
   private activities = new Map<string, Map<string, ActivityEntry>>()
   private cache = new Map<string, CharacterActivityCache>()
-  private subscriptions = new Set<Subscriber<any>>()
-  
-  // ======================
-  // INIT ENGINE LOOP
-  // ======================
+  private listeners = new Set<Listener>()
+
   init() {
-    gameClockService.subscribe((now) => {
+    gameClockService.subscribe(now => {
       this.onTick(now)
     })
   }
 
-  // ======================
-  // TICK SYSTEM
-  // ======================
-  private onTick(now: number) {
-    const dirtyCharacters = new Set<string>()
-    let changed = false
+  subscribe(listener: Listener) {
+    this.listeners.add(listener)
 
-    const ARRIVAL_BUFFER_MS = 8500 // 👈 UI “settle / arrive” time
+    return () => {
+      this.listeners.delete(listener)
+    }
+  }
+
+  private notify() {
+    for (const listener of this.listeners) {
+      listener()
+    }
+  }
+
+  private onTick(now: number) {
+    const ARRIVAL_BUFFER_MS = 8500
+    const COMPLETION_FUDGE_MS = 2000
+
+    let notify = false
 
     for (const [characterId, bucket] of this.activities.entries()) {
-      for (const activity of bucket.values()) {
-        const isRunning =
-          activity.status === 'active' || activity.status === 'completed'
+      let dirty = false
 
-        if (!isRunning) continue
-        if (!activity.duration) continue
+      for (const activity of bucket.values()) {
+        if (
+          activity.status !== 'active' &&
+          activity.status !== 'completed'
+        ) {
+          continue
+        }
 
         const elapsed = now - activity.startedAt
         const progress = Math.min(elapsed / activity.duration, 1)
 
-        // ======================
-        // PROGRESS EVENT
-        // ======================
         gameEventBus.emit({
           type: 'activity:progress',
           characterId,
           activityId: activity.id,
           activityType: activity.type,
           progress,
+          meta: activity.meta,
         })
 
-        // ======================
-        // FIRST COMPLETION HIT
-        // ======================
-        const COMPLETION_FUDGE_MS = 2000 // adjust 200–600 depending on feel
+        notify = true
 
         if (
           activity.status === 'active' &&
@@ -71,8 +73,9 @@ class ActivityRuntimeService {
         ) {
           activity.status = 'completed'
           activity.completedAt = now
-          changed = true
-          dirtyCharacters.add(characterId)
+
+          dirty = true
+
           gameEventBus.emit({
             type: 'activity:complete',
             characterId,
@@ -82,102 +85,49 @@ class ActivityRuntimeService {
           })
         }
 
-        // ======================
-        // FINALIZATION WINDOW
-        // ======================
         if (
           activity.status === 'completed' &&
           activity.completedAt &&
           now - activity.completedAt >= ARRIVAL_BUFFER_MS
         ) {
           bucket.delete(activity.id)
-
-          changed = true
-          dirtyCharacters.add(characterId)
+          dirty = true
         }
       }
 
-      if (changed && dirtyCharacters.has(characterId)) {
+      if (dirty) {
         this.recompute(characterId)
       }
     }
 
-    if (!changed) return
-
-    this.emit()
-  }
-
-  // ======================
-  // PROGRESS API (NEW)
-  // ======================
-  getProgress(characterId: string, activityId: string) {
-    const bucket = this.getBucket(characterId)
-    const activity = bucket.get(activityId)
-
-    if (!activity) return 0
-    if (!activity.duration) return 0
-
-    const elapsed = gameClockService.getNow() - activity.startedAt
-    return Math.min(elapsed / activity.duration, 1)
-  }
-
-  // ======================
-  // SUBSCRIBE
-  // ======================
-  subscribe<T>(selector: () => T, listener: (value: T) => void) {
-    const sub: Subscriber<T> = {
-      selector,
-      listener,
-      lastValue: selector(),
-    }
-
-    this.subscriptions.add(sub)
-
-    listener(sub.lastValue)
-
-    return () => {
-      this.subscriptions.delete(sub)
+    if (notify) {
+      this.notify()
     }
   }
 
-  private emit() {
-    for (const sub of this.subscriptions) {
-      const next = sub.selector()
-
-      if (!Object.is(sub.lastValue, next)) {
-        sub.lastValue = next
-        sub.listener(next)
-      }
-    }
-  }
-
-  // ======================
-  // INTERNAL HELPERS
-  // ======================
   private getBucket(characterId: string) {
     if (!this.activities.has(characterId)) {
       this.activities.set(characterId, new Map())
     }
+
     return this.activities.get(characterId)!
   }
 
-  // ======================
-  // CACHE ENGINE
-  // ======================
   private recompute(characterId: string) {
     const bucket = this.getBucket(characterId)
-    const all = Array.from(bucket.values())
 
+    const all = Array.from(bucket.values())
     const active = all.filter(a => a.status === 'active')
 
     const byType = new Map<ActivityType, ActivityEntry>()
-    for (const a of active) {
-      if (!byType.has(a.type)) {
-        byType.set(a.type, a)
+
+    for (const activity of active) {
+      if (!byType.has(activity.type)) {
+        byType.set(activity.type, activity)
       }
     }
 
-    const locked = active.some(a => a.blocking === true)
+    const locked = active.some(a => a.blocking)
 
     this.cache.set(characterId, {
       all,
@@ -187,109 +137,134 @@ class ActivityRuntimeService {
     })
   }
 
-  // ======================
-  // READ (FAST CACHE)
-  // ======================
+  getProgress(characterId: string, activityId: string) {
+    const bucket = this.activities.get(characterId)
+    const activity = bucket?.get(activityId)
+
+    if (!activity) return 0
+
+    const elapsed = gameClockService.getNow() - activity.startedAt
+
+    return Math.min(elapsed / activity.duration, 1)
+  }
+
+  getActivity(characterId: string, activityId: string) {
+    return this.activities
+      .get(characterId)
+      ?.get(activityId)
+  }
 
   getAll(characterId: string) {
     return this.cache.get(characterId)?.all ?? []
+  }
+
+  getAllActivities() {
+    return Array.from(this.activities.values())
+      .flatMap(bucket => Array.from(bucket.values()))
   }
 
   getActive(characterId: string) {
     return this.cache.get(characterId)?.active ?? []
   }
 
+  getActivitiesForCharacter(characterId: string) {
+    return this.cache.get(characterId)?.all ?? []
+  }
+
   getActiveQuests(characterId: string) {
-    return this.getActive(characterId).filter(a => a.type === 'quest')
+    return this.getActive(characterId)
+      .filter(a => a.type === 'quest')
+  }
+
+  getByType(characterId: string, type: ActivityType) {
+    return this.cache
+      .get(characterId)
+      ?.byType
+      .get(type)
   }
 
   isLocked(characterId: string) {
     return this.cache.get(characterId)?.locked ?? false
   }
 
-  getByType(characterId: string, type: ActivityType) {
-    return this.cache.get(characterId)?.byType.get(type)
-  }
-
   canStart(characterId: string) {
     return !this.isLocked(characterId)
   }
 
-  // ======================
-  // WRITE
-  // ======================
   start(entry: ActivityEntry) {
     const bucket = this.getBucket(entry.characterId)
 
-    const normalized: ActivityEntry = {
+    bucket.set(entry.id, {
       ...structuredClone(entry),
       status: 'active',
-      startedAt: entry.startedAt ?? Date.now(),
-    }
-
-    bucket.set(entry.id, normalized)
+      startedAt: entry.startedAt ?? gameClockService.getNow(),
+    })
 
     this.recompute(entry.characterId)
-    this.emit()
 
     gameEventBus.emit({
       type: 'activity:start',
       characterId: entry.characterId,
       activityId: entry.id,
       activityType: entry.type,
+      duration: entry.duration,
+      meta: entry.meta,
     })
+
+    this.notify()
   }
 
-  complete(characterId: string, id: string) {
+  complete(characterId: string, activityId: string) {
     const bucket = this.getBucket(characterId)
-    const existing = bucket.get(id)
-    if (!existing) return
-    if (existing.status === 'completed') return
+    const activity = bucket.get(activityId)
 
-    bucket.set(id, {
-      ...existing,
-      status: 'completed',
-    })
+    if (!activity) return
+    if (activity.status === 'completed') return
+
+    activity.status = 'completed'
+    activity.completedAt = gameClockService.getNow()
 
     this.recompute(characterId)
-    this.emit()
 
     gameEventBus.emit({
       type: 'activity:complete',
       characterId,
-      activityId: id,
-      activityType: existing.type
+      activityId,
+      activityType: activity.type,
+      meta: activity.meta,
     })
+
+    this.notify()
   }
 
-  cancel(characterId: string, id: string) {
+  cancel(characterId: string, activityId: string) {
     const bucket = this.getBucket(characterId)
-    const existing = bucket.get(id)
-    if (!existing) return
+    const activity = bucket.get(activityId)
 
-    bucket.set(id, {
-      ...existing,
-      status: 'cancelled',
-    })
+    if (!activity) return
+
+    activity.status = 'cancelled'
 
     this.recompute(characterId)
-    this.emit()
 
     gameEventBus.emit({
       type: 'activity:cancel',
       characterId,
-      activityId: id,
-      activityType: existing.type,
+      activityId,
+      activityType: activity.type,
+      meta: activity.meta,
     })
+
+    this.notify()
   }
 
-  remove(characterId: string, id: string) {
+  remove(characterId: string, activityId: string) {
     const bucket = this.getBucket(characterId)
 
-    bucket.delete(id)
+    bucket.delete(activityId)
 
     this.recompute(characterId)
-    this.emit()
+    this.notify()
   }
 }
 

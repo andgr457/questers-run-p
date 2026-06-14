@@ -25,8 +25,8 @@ import App from './game/App.tsx'
 
 import React from 'react'
 // import './index.css'
-import { gameClockService } from './core/time/GameClockService'
 import { activityRuntimeService } from './game/engine/ActivityRuntimeService.ts'
+import { gameClockService } from './game/engine/GameClockService.ts'
 gameClockService.start()
 activityRuntimeService.init()
 
