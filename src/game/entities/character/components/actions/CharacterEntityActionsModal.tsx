@@ -1,10 +1,12 @@
 import styles from './CharacterEntityActionsModal.module.css'
 
-import type { CharacterEntity } from '../types/Character.types'
-import GameModalFull from '../../../components/modals/GameModalFull'
+import type { CharacterEntity } from '../../types/Character.types'
+import GameModalFull from '../../../../components/modals/GameModalFull'
 import { useCallback, useState } from 'react'
-import { activityRuntimeService } from '../../../engine/ActivityRuntimeService'
-import { gameClockService } from '../../../engine/GameClockService'
+import { activityRuntimeService } from '../../../../engine/ActivityRuntimeService'
+import { gameClockService } from '../../../../engine/GameClockService'
+import QuestEntityList from '../../../quest/components/list/QuestEntityList'
+import type { QuestEntity } from '../../../quest/types/QuestEntity.types'
 
 interface Props {
   open: boolean
@@ -19,18 +21,20 @@ export default function CharacterEntityActionsModal(props: Props){
     open
   } = props
 
-  const [selectedQuest, setSelectedQuest] = useState('')
+  const [selectedQuest, setSelectedQuest] = useState<QuestEntity | undefined>(undefined)
   const [showQuestsModal, setShowQuestsModal] = useState(false)
 
-  const handleQuestClicked = useCallback(() => {
-    if(!selectedQuest){
-      setShowQuestsModal(true)
-      return
-    }
+  const handleQuestSelected = useCallback((quest: QuestEntity) => {
+    setSelectedQuest(quest)
+    setShowQuestsModal(false)
+  }, [])
+
+  const handleQuestStartClicked = useCallback(() => {
+    const duractionReq = selectedQuest?.requirements.complete.find(r => r.timeMillis)
 
     activityRuntimeService.start({
       characterId: character.id,
-      duration: 15000,
+      duration: duractionReq?.timeMillis ?? 2000,
       id: crypto.randomUUID(),
       startedAt: gameClockService.getNow(),
       status: 'active',
@@ -53,15 +57,10 @@ export default function CharacterEntityActionsModal(props: Props){
       title={`Available Quests`}
     >
       <div>
-        <button 
-          className='button-basic dark'
-          onClick={() => {
-            setSelectedQuest('1')
-            setShowQuestsModal(false)
-          }}
-        >
-          SELECT QUEST 1
-        </button>
+        <QuestEntityList 
+          onQuestClick={handleQuestSelected}
+        />
+        
       </div>
     </GameModalFull>
   }
@@ -74,12 +73,19 @@ export default function CharacterEntityActionsModal(props: Props){
       closeButton={true}
       title={`${character.name} Actions`}
     >
+      {/* quest section */}
       <div>
+        {selectedQuest && <button 
+          className='button-basic dark'
+          onClick={handleQuestStartClicked}
+        >
+          START QUEST
+        </button>}
         <button 
           className='button-basic dark'
-          onClick={handleQuestClicked}
+          onClick={() => {setShowQuestsModal(true)}}
         >
-          QUEST
+          SELECT QUEST
         </button>
       </div>
     </GameModalFull>

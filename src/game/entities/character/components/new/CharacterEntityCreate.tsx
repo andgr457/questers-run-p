@@ -2,16 +2,16 @@ import { useMemo, useState } from 'react'
 
 import styles from './CharacterEntityCreate.module.css'
 
-import { GAME_CHARACTER_CLASSES, GAME_CLASSES } from '../../character-class/data/CharacterClassEntity.data'
+import { GAME_CHARACTER_CLASSES, GAME_CLASSES } from '../../../character-class/data/CharacterClassEntity.data'
 
-import type { CharacterEntity } from '../types/Character.types'
-import GameModal from '../../../components/modals/GameModal'
-import type { PlayerEntity } from '../../player/types/PlayerEntity.types'
-import CharacterClassEntityMiniList from '../../character-class/components/CharacterClassEntityMiniList'
-import AlertMessage from '../../../components/ui/AlertMessage'
-import type { CharacterClassId } from '../../character-class/types/CharacterClassEntity.types'
-import GameModalFull from '../../../components/modals/GameModalFull'
-import { getCharacterClassCharactersAmountByPlayerLevel } from '../../character-class/utils/CharacterClassEntity.utils'
+import type { CharacterEntity } from '../../types/Character.types'
+import GameModal from '../../../../components/modals/GameModal'
+import type { PlayerEntity } from '../../../player/types/PlayerEntity.types'
+import CharacterClassEntityMiniList from '../../../character-class/components/CharacterClassEntityMiniList'
+import AlertMessage from '../../../../components/ui/AlertMessage'
+import type { CharacterClassId } from '../../../character-class/types/CharacterClassEntity.types'
+import GameModalFull from '../../../../components/modals/GameModalFull'
+import { getCharacterClassCharactersAmountByPlayerLevel } from '../../../character-class/utils/CharacterClassEntity.utils'
 
 type Props = {
   player: PlayerEntity

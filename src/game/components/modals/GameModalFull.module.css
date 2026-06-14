@@ -59,7 +59,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--bg-dark);
+  background: var(--cool-bg);
   text-transform: uppercase;
   color: var(--text);
   border-radius: 3px 3px 0 0;
@@ -87,7 +87,8 @@
   color: var(--text);
   font-size: 1.1em;
 
-  background-color: var(--bg-dark);
+  /* background-color: var(--bg-dark); */
+  background: var(--cool-bg);
   border: solid var(--text);
   border-width: 1px;
   border-radius: 0 0 3px 3px;

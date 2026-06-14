@@ -1,4 +1,4 @@
-import type { CharacterEntity } from '../types/Character.types'
+import type { CharacterEntity } from '../../types/Character.types'
 import CharacterEntityListRecord from './CharacterEntityListRecord'
 import styles from './CharacterEntityList.module.css'
 

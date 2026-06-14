@@ -1,12 +1,12 @@
-import type { CharacterEntity } from '../types/Character.types'
+import type { CharacterEntity } from '../../types/Character.types'
 import styles from './CharacterEntityListRecord.module.css'
-import ProgressBar from '../../../components/ui/ProgressBar'
-import { GAME_CHARACTER_CLASSES } from '../../character-class/data/CharacterClassEntity.data'
-import type { CharacterClassId } from '../../character-class/types/CharacterClassEntity.types'
-import { activityRuntimeService } from '../../../engine/ActivityRuntimeService'
-import { gameClockService } from '../../../engine/GameClockService'
+import ProgressBar from '../../../../components/ui/ProgressBar'
+import { GAME_CHARACTER_CLASSES } from '../../../character-class/data/CharacterClassEntity.data'
+import type { CharacterClassId } from '../../../character-class/types/CharacterClassEntity.types'
+import { activityRuntimeService } from '../../../../engine/ActivityRuntimeService'
+import { gameClockService } from '../../../../engine/GameClockService'
 import { useState } from 'react'
-import CharacterEntityActionsModal from './CharacterEntityActionsModal'
+import CharacterEntityActionsModal from '../actions/CharacterEntityActionsModal'
 
 type Props = {
   character: CharacterEntity
