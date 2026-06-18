@@ -60,11 +60,13 @@ export default function CharacterEntityActionsModal(props: Props) {
     setSelectedViewQuestGroup(questGroup)
     setShowQuestsModal(false)
     setShowQuestModal(true)
-  }, [showQuestsModal])
+  }, [])
 
   const handleCancelActivity = useCallback(() => {
     if (!activity) return
 
+    setContinuous(false)
+    
     activityRuntimeService.cancel(character.id, activity.id)
 
     gameEventBus.emit({

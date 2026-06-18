@@ -20,6 +20,7 @@ export interface QuestEntityRequirementStart {
   questDescription?: string
   level?: number
   stamina?: number
+  hp?: number
   guildRankLevel?: number
   guildRank?: number
 }

@@ -5,6 +5,7 @@ import { GAME_CHARACTER_CLASSES } from '../../../character-class/data/CharacterC
 import type { CharacterClassId } from '../../../character-class/types/CharacterClassEntity.types'
 import { activityRuntimeService } from '../../../../engine/activity/ActivityRuntimeService'
 import { useEffect, useState } from 'react'
+import { useActivityTime } from '../../../../engine/activity/hooks/useActivityTime'
 
 type Props = {
   character: CharacterEntity
@@ -31,6 +32,9 @@ export default function CharacterEntityListRecord({
   const progress = activity
     ? activityRuntimeService.getProgress(characterId, activity.id)
     : 0
+
+
+  const activityTime = useActivityTime(character?.id, activity?.id)
 
   const className =
     GAME_CHARACTER_CLASSES[character.classId as CharacterClassId]?.name ?? 'Unknown'
@@ -73,7 +77,7 @@ export default function CharacterEntityListRecord({
         </div>
 
         <div className={styles.meta} style={{ textAlign: 'center' }}>
-          {characterStatus}
+          {characterStatus} {activity?.status === 'active' && activityTime?.label}
         </div>
       </div>
     </>

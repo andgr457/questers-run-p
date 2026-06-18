@@ -141,11 +141,25 @@ class ActivityRuntimeService {
     const bucket = this.activities.get(characterId)
     const activity = bucket?.get(activityId)
 
-    if (!activity) return 0
+    if (!activity?.id) return 0
 
     const elapsed = gameClockService.getNow() - activity.startedAt
 
     return Math.min(elapsed / activity.duration, 1)
+  }
+
+  getTimeRemaining(characterId: string, activityId: string) {
+    const bucket = this.activities.get(characterId)
+    const activity = bucket?.get(activityId)
+
+    if (!activity) return 0
+
+    const now = gameClockService.getNow()
+    const elapsed = now - activity.startedAt
+
+    const remaining = activity.duration - elapsed
+
+    return Math.max(remaining, 0)
   }
 
   getActivity(characterId: string, activityId: string) {

@@ -57,11 +57,24 @@ class QuestRuntimeService {
     // 1. APPLY START REQUIREMENTS
     // -----------------------------------
     const staminaCost = quest.requirements.start?.find(r => r.stamina)?.stamina ?? 0
+    const hpCost = quest.requirements.start?.find(req => req.hp)?.hp ?? 0
+    if(character.hp < hpCost){
+      notificationService.notify({
+        lifetime: 5000,
+        text: `${character.name} doesn't have enough health to start this quest.`,
+        type: 'error'
+      })
+      gameEventBus.emit({
+        type: 'quest:cancel',
+        characterId,
+      })
+      return
+    }
     if(character.stamina < staminaCost){
       notificationService.notify({
         lifetime: 5000,
         text: `${character.name} doesn't have enough stamina to start this quest.`,
-        type: 'info'
+        type: 'error'
       })
       gameEventBus.emit({
         type: 'quest:cancel',
@@ -70,6 +83,7 @@ class QuestRuntimeService {
       return
     }
     character.stamina = Math.max(0, character.stamina - staminaCost)
+    character.hp = Math.max(0, character.hp - hpCost)
 
     // mark dirty via runtime
     gameEventBus.emit({
@@ -93,9 +107,18 @@ class QuestRuntimeService {
         text: `${character.name} started the quest "${quest.titleString}"`,
         type: 'info'
       })
+    }
+    if(staminaCost > 0){
       notificationService.notify({
         lifetime: 5000,
         text: `${character.name} used ${staminaCost} stamina.`,
+        type: 'warning'
+      })
+    }
+    if(hpCost > 0){
+      notificationService.notify({
+        lifetime: 5000,
+        text: `${character.name} took ${hpCost} HP damage.`,
         type: 'warning'
       })
     }
@@ -126,11 +149,13 @@ class QuestRuntimeService {
     const character = characterRuntimeService.getCharacter(characterId)
     if (!character) return
 
-    notificationService.notify({
-      lifetime: 5000,
-      text: `${character.name} completed the quest "${quest.titleString}"`,
-      type: 'success'
-    })
+    if(!continuous){
+      notificationService.notify({
+        lifetime: 5000,
+        text: `${character.name} completed the quest "${quest.titleString}"`,
+        type: 'success'
+      })
+    }
     // -----------------------------------
     // 1. APPLY REWARDS
     // -----------------------------------
@@ -146,19 +171,12 @@ class QuestRuntimeService {
       }
     }
 
-    
-
     character.xp += totalXp
-    notificationService.notify({
-      lifetime: 5000,
-      text: `${character.name} gained ${totalXp} XP!`,
-      type: 'success'
-    })
-
     character.gold += totalGold
+
     notificationService.notify({
       lifetime: 5000,
-      text: `${character.name} gained ${totalGold} gold!`,
+      text: `${character.name} gained ${totalXp} XP and ${totalGold} gold!`,
       type: 'success'
     })
 
