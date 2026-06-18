@@ -1,4 +1,3 @@
-import type { PlayerEntity } from '../../../entities/player/types/PlayerEntity.types'
 import type { ActivityMeta, ActivityType } from '../../activity/types/Activity.types'
 
 export interface GameEventSession {

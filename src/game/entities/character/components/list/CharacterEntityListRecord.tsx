@@ -5,21 +5,19 @@ import { GAME_CHARACTER_CLASSES } from '../../../character-class/data/CharacterC
 import type { CharacterClassId } from '../../../character-class/types/CharacterClassEntity.types'
 import { activityRuntimeService } from '../../../../engine/activity/ActivityRuntimeService'
 import { useEffect, useState } from 'react'
-import CharacterEntityActionsModal from '../actions/CharacterEntityActionsModal'
 
 type Props = {
   character: CharacterEntity
-  canShowActions: boolean
+  onClick: (character: CharacterEntity) => void
 }
 
 export default function CharacterEntityListRecord({
   character,
-  canShowActions,
+  onClick,
 }: Props) {
   if (!character) return null
 
   const characterId = character.id
-  const [showCharacterActions, setShowCharacterActions] = useState(false)
   const [, setTick] = useState(0)
 
   useEffect(() => {
@@ -41,15 +39,9 @@ export default function CharacterEntityListRecord({
 
   return (
     <>
-      <CharacterEntityActionsModal
-        character={character}
-        onClose={() => setShowCharacterActions(false)}
-        open={showCharacterActions}
-      />
-
       <div
         className={styles.record}
-        onClick={() => setShowCharacterActions(!!canShowActions)}
+        onClick={() => {onClick(character)}}
       >
         <div className={styles.header}>
           <div>

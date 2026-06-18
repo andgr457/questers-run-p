@@ -12,24 +12,39 @@ import CharacterEntityListRecord from '../list/CharacterEntityListRecord'
 import QuestEntityCard from '../../../quest/components/QuestEntityCard'
 import type { QuestGroupEntity } from '../../../quest/types/QuestGroupEntity.types'
 import CharacterActionsTavern from './action-sections/CharacterActionsTavern'
+import CharacterInventoryList from '../../../character-inventory/components/list/CharacterInventoryList'
+import type { CharacterInventoryEntity } from '../../../character-inventory/types/CharacterInventoryEntity.types'
+import type { InventoryItemEntity } from '../../../inventory-item/types/InventoryItemEntity.types'
+import CharacterInventoryDetail from '../../../character-inventory/components/detail/CharacterInventoryDetail'
 
 interface Props {
   open: boolean
   onClose: () => void
   character: CharacterEntity
+
+  characterInventories: CharacterInventoryEntity[]
+  inventoryItems: InventoryItemEntity[]
 }
 
 export default function CharacterEntityActionsModal(props: Props) {
-  const { character, onClose, open } = props
+  const { 
+    character, 
+    onClose, 
+    open,
+    characterInventories,
+    inventoryItems,
+  } = props
 
   const [selectedQuest, setSelectedQuest] = useState<QuestEntity | undefined>(undefined)
   const [selectedQuestGroup, setSelectedQuestGroup] = useState<QuestGroupEntity | undefined>(undefined)
   const [selectedViewQuest, setSelectedViewQuest] = useState<QuestEntity | undefined>(undefined)
   const [selectedViewQuestGroup, setSelectedViewQuestGroup] = useState<QuestGroupEntity | undefined>(undefined)
+  const [selectedInventoryId, setSelectedInventoryId] = useState<string | null>(null)
 
   const [showQuestsModal, setShowQuestsModal] = useState(false)
   const [showQuestModal, setShowQuestModal] = useState(false)
-
+  const [showInventoriesModal, setShowInventoriesModal] = useState(false)
+  
   const activity = activityRuntimeService.getActive(character.id)?.[0]
   
   const [continuous, setContinuous] = useState(activity?.continuous ?? false)
@@ -64,6 +79,7 @@ export default function CharacterEntityActionsModal(props: Props) {
   const isActive = activity?.status === 'active'
   return (
   <>
+    
     <GameModalFull
       isOpen={open}
       backdropHides={true}
@@ -72,8 +88,8 @@ export default function CharacterEntityActionsModal(props: Props) {
       title={`${character.name} Actions`}
     >
       <CharacterEntityListRecord 
-        canShowActions={false}
         character={character}
+        onClick={() => {}}
       />
       
       <div className={styles.section}>
@@ -83,6 +99,9 @@ export default function CharacterEntityActionsModal(props: Props) {
         {!activity?.status && <button className='button-basic dark'>
           NO ACTIVITY
         </button>}
+        <button className='button-basic dark' onClick={() => setShowInventoriesModal(true)}>
+          Inventory
+        </button>
       </div>
       <div className={`${isActive ? styles.sectionsLocked : styles.sections}`}>
         <button className='button-basic dark'
@@ -142,14 +161,60 @@ export default function CharacterEntityActionsModal(props: Props) {
     >
       <div className={styles.section}>
         <CharacterEntityListRecord 
-          canShowActions={false}
           character={character}
+          onClick={() => {}}
         />
         <QuestEntityList onQuestChosen={handleQuestChosen} onQuestView={handleShowQuestModal} />
       </div>
     </GameModalFull>
 
-    
+    <GameModalFull
+      isOpen={showInventoriesModal}
+      backdropHides={false}
+      onClose={() => {
+        setShowInventoriesModal(false)
+      }}
+      closeButton={true}
+      title="Inventory"
+    >
+      <div className={styles.section}>
+        <CharacterEntityListRecord 
+          character={character}
+          onClick={() => {}}
+        />
+        <CharacterInventoryList 
+          characterInventories={characterInventories}
+          inventoryItems={inventoryItems}
+          onSelectInventory={(characterInventoryId: string) => {
+            setSelectedInventoryId(characterInventoryId)
+          }}
+        />
+      </div>
+    </GameModalFull>
+
+    <GameModalFull
+      isOpen={selectedInventoryId ? true : false}
+      backdropHides={false}
+      onClose={() => {
+        setSelectedInventoryId('')
+      }}
+      closeButton={true}
+      title="Inventory"
+    >
+      <div className={styles.section}>
+        <CharacterEntityListRecord 
+          character={character}
+          onClick={() => {}}
+        />
+        <CharacterInventoryDetail 
+          characterInventory={characterInventories.find(i => i.id === selectedInventoryId) as CharacterInventoryEntity}
+          inventoryItems={inventoryItems}
+          onSelectItem={() => {
+            console.log('todo: item detail')
+          }}
+        />
+      </div>
+    </GameModalFull>
 
   </>
   )

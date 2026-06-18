@@ -16,8 +16,15 @@ import { activityRuntimeService } from '../engine/activity/ActivityRuntimeServic
 import { characterRuntimeService } from '../engine/character/CharacterRuntimeService'
 
 import { notificationService } from '../engine/notifications/NotificationService'
+import type { CharacterInventoryEntity } from '../entities/character-inventory/types/CharacterInventoryEntity.types'
+import type { InventoryItemEntity } from '../entities/inventory-item/types/InventoryItemEntity.types'
+import { createStarterInventory } from '../entities/character-inventory/utils/createStarterInventory'
+import CharacterEntityActionsModal from '../entities/character/components/actions/CharacterEntityActionsModal'
 
-export type GameMode = 'boot' | 'character_create' | 'world'
+export type GameMode = 'boot' 
+  | 'character_create' 
+  | 'world'
+  | 'character_actions'
 
 export default function GameScreen() {
   // =========================
@@ -29,12 +36,25 @@ export default function GameScreen() {
   // =========================
   // PERSISTED STATE
   // =========================
+  const [characterActions, setCharacterActions] = useState<CharacterEntity | undefined>(undefined)
+
   const [player, setPlayer] =
     useLocalStorage<PlayerEntity | undefined>(GAME_STORAGE_KEYS.PLAYER_GAME, undefined)
 
   const [characters, setCharacters] =
     useLocalStorage<CharacterEntity[] | undefined>(GAME_STORAGE_KEYS.CHARACTERS_GAME, [])
 
+  const [characterInventories, setCharacterInventories] =
+    useLocalStorage<CharacterInventoryEntity[] | undefined>(
+      GAME_STORAGE_KEYS.CHARACTER_INVENTORIES_GAME,
+      []
+  )
+
+  const [inventoryItems, setInventoryItems] =
+    useLocalStorage<InventoryItemEntity[] | undefined>(
+      GAME_STORAGE_KEYS.INVENTORY_ITEMS_GAME,
+      []
+  )
   // =========================
   // RUNTIME REFS (SOURCE OF TRUTH)
   // =========================
@@ -171,7 +191,10 @@ export default function GameScreen() {
   // =========================
   // CHARACTER CREATED FLOW
   // =========================
-  const handleCreatedCharacter = (character: CharacterEntity, newPlayer?: PlayerEntity) => {
+  const handleCreatedCharacter = (
+    character: CharacterEntity, 
+    newPlayer?: PlayerEntity
+  ) => {
 
     const activePlayer = newPlayer ?? runtimePlayerRef.current
 
@@ -184,6 +207,22 @@ export default function GameScreen() {
 
     // register runtime character
     characterRuntimeService.setCharacter(character)
+
+    // generate starting inventory
+    const {
+      characterInventory,
+      inventoryItems: starterItems
+    } = createStarterInventory(character.id)
+
+    setCharacterInventories(prev => [
+      ...(prev ?? []),
+      characterInventory
+    ])
+
+    setInventoryItems(prev => [
+      ...(prev ?? []),
+      ...starterItems
+    ])
 
     // persist character + player once
     gameEventBus.emit({ 
@@ -211,6 +250,8 @@ export default function GameScreen() {
   const handleResetEverything = () => {
     setCharacters([])
     setPlayer(undefined)
+    setInventoryItems([])
+    setCharacterInventories([])
     window.location.reload()
   }
 
@@ -252,10 +293,30 @@ export default function GameScreen() {
       {/* WORLD */}
       <div className={styles.screenView}>
         {mode === 'world' && (
-          <CharacterEntityList characters={runtimeCharacters} />
+          <CharacterEntityList 
+            characters={runtimeCharacters} 
+            onCharacterClicked={(character: CharacterEntity) => {
+              setCharacterActions(character)
+              setMode('character_actions')
+            }}
+          />
+        )}
+        {mode === 'character_actions' && characterActions && (
+          <CharacterEntityActionsModal 
+            characterInventories={characterInventories?.filter(
+              ci => ci.characterId === characterActions.id
+            ) as CharacterInventoryEntity[]}
+            inventoryItems={inventoryItems as InventoryItemEntity[]}
+            character={characterActions}
+            onClose={() => {
+              setCharacterActions(undefined)
+              setMode('world')
+            }}
+            open={true}
+          />
         )}
       </div>
-
+    
     </div>
   )
 }
