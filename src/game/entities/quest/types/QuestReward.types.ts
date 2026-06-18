@@ -4,4 +4,5 @@ export interface QuestEntityReward {
   itemId?: string
   itemAmount?: number
   achivementId?: string
+  gold?: number
 }

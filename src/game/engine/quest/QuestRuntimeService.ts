@@ -14,7 +14,7 @@ class QuestRuntimeService {
       // QUEST START
       // =========================
       if (event.type === 'quest:start') {
-        this.startQuest(event.characterId, event.questId, event.continuous ?? false)
+        this.startQuest(event.characterId, event.meta?.questId as string, event.continuous ?? false)
       }
 
       // =========================
@@ -37,7 +37,6 @@ class QuestRuntimeService {
         gameEventBus.emit({
           type: 'quest:cancel',
           characterId: event.characterId,
-          questId
         })
       }
     })
@@ -67,7 +66,6 @@ class QuestRuntimeService {
       gameEventBus.emit({
         type: 'quest:cancel',
         characterId,
-        questId
       })
       return
     }
@@ -128,18 +126,41 @@ class QuestRuntimeService {
     const character = characterRuntimeService.getCharacter(characterId)
     if (!character) return
 
+    notificationService.notify({
+      lifetime: 5000,
+      text: `${character.name} completed the quest "${quest.titleString}"`,
+      type: 'success'
+    })
     // -----------------------------------
     // 1. APPLY REWARDS
     // -----------------------------------
     let totalXp = 0
+    let totalGold = 0
 
     for (const reward of quest.rewards) {
       if (reward.xp) {
         totalXp += reward.xp
       }
+      if(reward.gold){
+        totalGold += reward.gold
+      }
     }
 
+    
+
     character.xp += totalXp
+    notificationService.notify({
+      lifetime: 5000,
+      text: `${character.name} gained ${totalXp} XP!`,
+      type: 'success'
+    })
+
+    character.gold += totalGold
+    notificationService.notify({
+      lifetime: 5000,
+      text: `${character.name} gained ${totalGold} gold!`,
+      type: 'success'
+    })
 
     // player XP (if needed)
     // const player = (character as any).playerRef // optional future improvement
@@ -151,18 +172,13 @@ class QuestRuntimeService {
       character.level += 1
       character.xp -= character.xpNextLevel
       character.xpNextLevel = Math.floor(character.xpNextLevel * 1.2)
+      notificationService.notify({
+        lifetime: 5000,
+        text: `${character.name} leveled up to Lv. ${character.level}!`,
+        type: 'success'
+      })
     }
     
-    notificationService.notify({
-      lifetime: 5000,
-      text: `${character.name} completed the quest "${quest.titleString}"`,
-      type: 'success'
-    })
-    notificationService.notify({
-      lifetime: 5000,
-      text: `${character.name} gained ${totalXp} XP.`,
-      type: 'success'
-    })
     // -----------------------------------
     // 3. MARK DIRTY + SAVE
     // -----------------------------------
@@ -182,8 +198,10 @@ class QuestRuntimeService {
     gameEventBus.emit({
       type: 'quest:complete',
       characterId,
-      questId,
-      continuous
+      continuous,
+      meta: {
+        questId
+      }
     })
 
     // -----------------------------------
@@ -194,8 +212,10 @@ class QuestRuntimeService {
         gameEventBus.emit({
           type: 'quest:start',
           characterId,
-          questId,
-          continuous
+          continuous,
+          meta: {
+            questId
+          }
         })
       }, 1500)
     }

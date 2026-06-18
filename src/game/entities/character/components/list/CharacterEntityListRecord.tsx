@@ -68,6 +68,9 @@ export default function CharacterEntityListRecord({
               showLabel={false}
             />
           </div>
+          <div className={styles.meta} style={{color: 'gold'}}>
+            {character.gold}g
+          </div>
         </div>
 
         <div className={styles.stats}>

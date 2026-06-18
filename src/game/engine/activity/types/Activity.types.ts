@@ -9,6 +9,7 @@ export type ActivityType =
   | 'crafting'
   | 'dungeon'
   | 'raid'
+  | 'resting'
 
 export type ActivityStatus =
   | 'active'
@@ -38,6 +39,9 @@ export type ActivityMeta = {
   // questing
   questId?: string
   questName?: string
+
+  // resting
+  tavernActionId?: string
 
   // hunting
   mobId?: string

@@ -27,9 +27,11 @@ import React from 'react'
 import { activityRuntimeService } from './game/engine/activity/ActivityRuntimeService.ts'
 import { gameClockService } from './game/engine/clock/GameClockService.ts'
 import { questRuntimeService } from './game/engine/quest/QuestRuntimeService.ts'
+import { tavernRuntimeService } from './game/engine/tavern/TavernRuntimeService.ts'
 gameClockService.start()
 activityRuntimeService.init()
 questRuntimeService.init()
+tavernRuntimeService.init()
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

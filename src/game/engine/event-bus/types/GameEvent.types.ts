@@ -24,6 +24,14 @@ export type GameEventType = 'activity:start'
   | 'character:xp:add'
   | 'character:stamina:add'
   | 'character:stamina:remove'
+  | 'character:hp:add'
+  | 'character:hp:remove'
+  | 'character:mp:add'
+  | 'character:mp:remove'
+
+  | 'tavern:start'
+  | 'tavern:cancel'
+  | 'tavern:complete'
 
 export interface GameEvent {
   type: GameEventType
@@ -56,34 +64,43 @@ export interface GameEvent_ActivityCancel extends ActivityGameEvent {
 }
 
 export interface GameEvent_PlayerDirty extends GameEvent {
-  type: 'player:dirty',
+  type: 'player:dirty'
 }
 
 export interface GameEvent_PlayerSave extends GameEvent {
-  type: 'player:save',
+  type: 'player:save'
 }
 
 export interface GameEvent_CharacterDirty extends GameEvent {
-  type: 'character:dirty',
+  type: 'character:dirty'
 }
 
 export interface GameEvent_CharacterSave extends GameEvent {
-  type: 'character:save',
+  type: 'character:save'
 }
 
 export interface GameEvent_QuestStart extends GameEvent {
-  type: 'quest:start',
-  questId: string
+  type: 'quest:start'
 }
 
 export interface GameEvent_QuestCancel extends GameEvent {
-  type: 'quest:cancel',
-  questId: string
+  type: 'quest:cancel'
 }
 
 export interface GameEvent_QuestComplete extends GameEvent {
-  type: 'quest:complete',
-  questId: string
+  type: 'quest:complete'
+}
+
+export interface GameEvent_TavernStart extends GameEvent {
+  type: 'tavern:start'
+}
+
+export interface GameEvent_TavernCancel extends GameEvent {
+  type: 'tavern:cancel'
+}
+
+export interface GameEvent_TavernComplete extends GameEvent {
+  type: 'tavern:complete'
 }
 
 export type GameEvents = GameEvent_ActivityStart
@@ -100,7 +117,11 @@ export type GameEvents = GameEvent_ActivityStart
   | GameEvent_QuestStart 
   | GameEvent_QuestCancel 
   | GameEvent_QuestComplete
-  
+
+  | GameEvent_TavernStart
+  | GameEvent_TavernCancel
+  | GameEvent_TavernComplete
+
   | {
       type: 'character:xp:add'
       characterId: string

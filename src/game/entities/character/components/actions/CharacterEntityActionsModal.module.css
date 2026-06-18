@@ -1,3 +1,17 @@
+.sections {
+  padding: 5px;
+  pointer-events: all;
+  opacity: 1;
+  transition: opactity 0.5s;
+}
+
+.sectionsLocked {
+  padding: 5px;
+  pointer-events: none;
+  opacity: .5;
+  transition: opactity 0.5s;
+}
+
 .section {
   padding: 5px;
 }

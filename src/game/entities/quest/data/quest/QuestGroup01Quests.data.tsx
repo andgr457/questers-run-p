@@ -17,6 +17,10 @@ export const QUEST_GQ_01_TIMER: QuestEntity = {
     {
       title: 'XP',
       xp: 1,
+    },
+    {
+      title: 'Gold',
+      gold: 2
     }
   ],
   requirements: {

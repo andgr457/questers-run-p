@@ -101,11 +101,6 @@ export default function GameScreen() {
       if (event.type === 'player:save') {
         runtimePlayerRef.current = event.meta?.player
         flushPlayerSave()
-        notificationService.notify({
-          text: "Player Saved",
-          type: "info",
-          lifetime: 2000
-        });
         return
       }
 
@@ -118,11 +113,6 @@ export default function GameScreen() {
       if (event.type === 'character:save') {
         dirtyCharactersRef.current.add(event.characterId)
         flushCharacterSave(event.characterId)
-        notificationService.notify({
-          text: "Character Saved",
-          type: "info",
-          lifetime: 2000
-        });
       }
     })
 

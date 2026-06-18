@@ -7,8 +7,8 @@
   padding: 10px;
   border-radius: 3px;
 
-  background: var(--bg-dark-2);
-  border: 1px solid var(--bg-dark-3);
+  background: var(--bg-dark);
+  border: 1px solid var(--bg-dark-2);
 
   cursor: pointer;
   transition: transform 0.12s ease, background 0.15s ease, border 0.15s ease;
@@ -26,9 +26,7 @@
 }
 
 .record:hover {
-  background: var(--bg-dark);
-  transform: translateY(-2px);
-  border-color: var(--bg-dark);
+  filter: brightness(1.2);
 }
 
 .title {

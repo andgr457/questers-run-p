@@ -6,7 +6,7 @@ import type { QuestGroupEntity } from '../../types/QuestGroupEntity.types'
 interface Props {
   quest: QuestEntity
   questGroup: QuestGroupEntity
-  onSelect: (quest: QuestEntity) => void
+  onSelect: (quest: QuestEntity, questGroup: QuestGroupEntity) => void
   onView: (quest: QuestEntity, questGroup: QuestGroupEntity) => void
 }
 
@@ -103,7 +103,7 @@ export default function QuestEntityListRecord(props: Props){
     </div>
 
     <div className={styles.buttons}>
-      <button className='button-basic dark' onClick={() => {onSelect(quest)}}>
+      <button className='button-basic dark' onClick={() => {onSelect(quest, questGroup)}}>
         CHOOSE
       </button>
       <button className='button-basic dark' onClick={() => {onView(quest, questGroup)}}>
