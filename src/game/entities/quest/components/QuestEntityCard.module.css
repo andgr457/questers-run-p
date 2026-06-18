@@ -1,0 +1,20 @@
+.items {
+  display: grid;
+  grid-template-rows: repeat(auto-fit, max-content);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+  padding: 5px;
+  align-items: center;
+}
+
+.itemName {
+  text-align: right;
+  padding: 5px;
+}
+
+.itemValue {
+  padding: 5px;
+}

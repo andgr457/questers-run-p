@@ -1,3 +1,4 @@
+import type { PlayerEntity } from '../../../entities/player/types/PlayerEntity.types'
 
 export type ActivityType =
   | 'hunting'
@@ -63,5 +64,7 @@ export type ActivityMeta = {
   // generic runtime values
   xpReward?: number
   goldReward?: number
+
+  player?: PlayerEntity
 
 }

@@ -9,10 +9,11 @@ export const QUEST_GROUP_IDS = {
 export const QUEST_GROUP_01_INTRO: QuestGroupEntity = {
   id: QUEST_GROUP_IDS.QuestGroup01IntroId,
   title: <>
-    Introduction
+    <span style={{color: 'gold'}}>G1.</span> Introduction
   </>,
+  titleString: 'G1. Introduction',
   description: <>
-    Starter quests to familiarize yourself with the different completion requirements.
+    <strong>Starter</strong> quests to familiarize yourself with the different completion requirements.
   </>
 }
 

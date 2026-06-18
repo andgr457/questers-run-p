@@ -1,9 +1,10 @@
 import styles from './AlertMessage.module.css'
 
+export type AlertMessageType = 'info' | 'error' | 'warn'
 interface Props {
   closeButton: boolean
   onClose: () => void
-  type: 'info' | 'error' | 'warn'
+  type: AlertMessageType
   title: string
   message: React.ReactNode
 }

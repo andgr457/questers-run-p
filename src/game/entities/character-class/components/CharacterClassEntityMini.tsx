@@ -1,5 +1,4 @@
 import type { CharacterClassEntity } from '../types/CharacterClassEntity.types'
-import { getCharacterClassCharactersAmountByPlayerLevel } from '../utils/CharacterClassEntity.utils'
 import styles from './CharacterClassEntityMini.module.css'
 
 interface Props {
@@ -17,15 +16,10 @@ export default function CharacterClassEntityMini(props: Props) {
     setCharacterClassId,
     numberOfCharactersWithClass,
     numberOfCharactersCreatable,
-    numberOfCharacterTokens
   } = props
 
   const selected = currentCharacterClassId === characterClass.id
   const cardStyle = selected ? styles.cardSelected : styles.card
-
-  const classAvailableColor = 
-    numberOfCharacterTokens <= 0 || numberOfCharactersWithClass >= numberOfCharactersCreatable ? 'red' :
-    'green'
 
   if(!characterClass){
     return null
@@ -33,14 +27,20 @@ export default function CharacterClassEntityMini(props: Props) {
   return <div 
     className={cardStyle} 
     title={characterClass.description}
-    onClick={() => {setCharacterClassId(characterClass.id)}}
-    >
+    onClick={() => {
+      if(selected){
+        setCharacterClassId('')
+      } else {
+        setCharacterClassId(characterClass.id)}
+      }
+    }
+  >
     <div className={styles.attributes}>
       <div className={styles.attribute}>
         {characterClass.name}
       </div>
 
-      <div className={styles.attribute} style={{color: classAvailableColor}}>
+      <div className={styles.attribute}>
         {numberOfCharactersWithClass ?? 0}/{numberOfCharactersCreatable} MAX
       </div>
 
@@ -82,7 +82,7 @@ export default function CharacterClassEntityMini(props: Props) {
 
     </div>
     <div className={styles.classDescription} >
-        {characterClass.description}
-      </div>
+      {characterClass.description}
+    </div>
   </div>
 }

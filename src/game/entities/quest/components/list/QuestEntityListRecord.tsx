@@ -1,54 +1,49 @@
 import styles from './QuestEntityListRecord.module.css'
 
 import type { QuestEntity } from '../../types/QuestEntity.types'
+import type { QuestGroupEntity } from '../../types/QuestGroupEntity.types'
 
 interface Props {
   quest: QuestEntity
-  onClick: (quest: QuestEntity) => void
+  questGroup: QuestGroupEntity
+  onSelect: (quest: QuestEntity) => void
+  onView: (quest: QuestEntity, questGroup: QuestGroupEntity) => void
 }
 
 export default function QuestEntityListRecord(props: Props){
   const {
-    onClick,
-    quest
+    onSelect,
+    quest,
+    questGroup,
+    onView,
   } = props
-  return <div className={styles.record} onClick={() => {onClick(quest)}}>
-    <div className={styles.header}>
+
+  return <div className={styles.record}>
+    <div className={styles.title}>
       {quest.title}
     </div>
-    <div>
+    <div className={styles.description}>
       {quest.description}
     </div>
     <div>
-      {quest.repeatable ? 'REPEATABLE' : 'ONE-TIME'}
-    </div>
-    
-    <div>
       <div>
-        START REQUIREMENTS
+        Requirements
       </div>
       {quest.requirements.start.map(req => {
         const reqDivs = []
         for(const propName of Object.getOwnPropertyNames(req)){
           if(propName === 'title') continue
-          const name = propName.toUpperCase()
           //@ts-ignore
           let value = req[propName]
           
           reqDivs.push(<div>
-            {name}: {`${value}`}
+            <span className={styles.reqName}>{req.title}</span>: {`${value}`}
           </div>)
         }
         return <div>
           {reqDivs}
         </div>
       })}
-    </div>
-
-    <div>
-      <div>
-        COMPLETE REQUIREMENTS
-      </div>
       {quest.requirements.complete.map(req => {
         const reqDivs = []
         for(const propName of Object.getOwnPropertyNames(req)){
@@ -80,6 +75,40 @@ export default function QuestEntityListRecord(props: Props){
           {reqDivs}
         </div>
       })}
+    </div>
+
+    <div>
+      <div>
+        Rewards
+      </div>
+      <div>
+        {quest.rewards.map(rew => {
+          const rewDivs = []
+          for(const propName of Object.getOwnPropertyNames(rew)){
+            if(propName === 'title') continue
+            //@ts-ignore
+            let value = rew[propName]
+            if(typeof value === 'number'){
+              value = value.toFixed(0)
+            }
+            rewDivs.push(<div>
+              {rew.title}: {`${value}`}
+            </div>)
+          }
+          return <div>
+            {rewDivs}
+          </div>
+        })}
+      </div>
+    </div>
+
+    <div className={styles.buttons}>
+      <button className='button-basic dark' onClick={() => {onSelect(quest)}}>
+        CHOOSE
+      </button>
+      <button className='button-basic dark' onClick={() => {onView(quest, questGroup)}}>
+        VIEW
+      </button>
     </div>
   </div>
 }

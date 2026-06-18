@@ -5,6 +5,7 @@ export interface QuestEntity {
   id: string
   questGroupId: string
   title: React.ReactNode
+  titleString: string
   description: React.ReactNode
   repeatable: boolean
   rewards: QuestEntityReward[]

@@ -1,112 +1,115 @@
 import { useEffect, useRef, useState } from 'react'
+
+import styles from './GameScreen.module.css'
+
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { GAME_STORAGE_KEYS } from '../data/GameStorageKeys.data'
+
+import type { PlayerEntity } from '../entities/player/types/PlayerEntity.types'
 import type { CharacterEntity } from '../entities/character/types/Character.types'
+
 import CharacterEntityCreate from '../entities/character/components/new/CharacterEntityCreate'
 import CharacterEntityList from '../entities/character/components/list/CharacterEntityList'
+
 import { gameEventBus } from '../engine/event-bus/GameEventBus'
 import { activityRuntimeService } from '../engine/activity/ActivityRuntimeService'
-import type { PlayerEntity } from '../entities/player/types/PlayerEntity.types'
-import styles from './GameScreen.module.css'
 import { characterRuntimeService } from '../engine/character/CharacterRuntimeService'
-import { useFloatingNotifications } from './ui/notifications/hooks/useFloatingNotify'
-import NotificationList from './ui/notifications/NotificationList'
-import { GAME_QUESTS } from '../entities/quest/data/quest/Quests.data'
-import type { ActivityType } from '../engine/activity/types/Activity.types'
+
+import { notificationService } from '../engine/notifications/NotificationService'
 
 export type GameMode = 'boot' | 'character_create' | 'world'
 
 export default function GameScreen() {
-  const {
-    notifications,
-    addNotification
-  } = useFloatingNotifications()
-
-  const [saving, setSaving] = useState('')
+  // =========================
+  // UI STATE
+  // =========================
   const [mode, setMode] = useState<GameMode>('boot')
+  const [saving, setSaving] = useState('')
 
-  const [, refreshActivity] = useState(0)
-  const [, refreshCharacters] = useState(0)
+  // =========================
+  // PERSISTED STATE
+  // =========================
+  const [player, setPlayer] =
+    useLocalStorage<PlayerEntity | undefined>(GAME_STORAGE_KEYS.PLAYER_GAME, undefined)
 
-  const [player, setPlayer] = useLocalStorage<PlayerEntity | undefined>(
-    GAME_STORAGE_KEYS.PLAYER_GAME,
-    undefined
-  )
+  const [characters, setCharacters] =
+    useLocalStorage<CharacterEntity[] | undefined>(GAME_STORAGE_KEYS.CHARACTERS_GAME, [])
 
+  // =========================
+  // RUNTIME REFS (SOURCE OF TRUTH)
+  // =========================
   const runtimePlayerRef = useRef<PlayerEntity | undefined>(undefined)
-  const dirtyPlayerRef = useRef<PlayerEntity | undefined>(undefined)
-
-  const [characters, setCharacters] = useLocalStorage<CharacterEntity[] | undefined>(
-    GAME_STORAGE_KEYS.CHARACTERS_GAME,
-    []
-  )
-
   const runtimeCharactersRef = useRef<Record<string, CharacterEntity>>({})
+
   const dirtyCharactersRef = useRef(new Set<string>())
 
+  // =========================
+  // INIT GAME STATE
+  // =========================
   useEffect(() => {
     const map: Record<string, CharacterEntity> = {}
-    for (const c of characters ?? []) map[c.id] = c
+
+    for (const c of characters ?? []) {
+      map[c.id] = c
+    }
+
     runtimeCharactersRef.current = map
     runtimePlayerRef.current = player
 
-    characterRuntimeService.init(
-      characters ?? []
-    )
-
+    characterRuntimeService.init(characters ?? [])
     characterRuntimeService.start()
 
     setMode(!characters || characters.length === 0 ? 'character_create' : 'world')
   }, [])
 
+  // =========================
+  // CHARACTER SYNC
+  // =========================
   useEffect(() => {
-    const unsub =
-      characterRuntimeService.subscribe(() => {
-        refreshCharacters(v => v + 1)
+    return characterRuntimeService.subscribe(() => {
+      const map: Record<string, CharacterEntity> = {}
 
-        const runtimeMap: Record<
-          string,
-          CharacterEntity
-        > = {}
+      for (const c of characterRuntimeService.getAll()) {
+        map[c.id] = c
+      }
 
-        for (
-          const character
-          of characterRuntimeService.getAll()
-        ) {
-          runtimeMap[character.id] = character
-        }
-
-        runtimeCharactersRef.current = runtimeMap
-      })
-
-    return unsub
-  }, [])
-
-  useEffect(() => {
-    const unsub = activityRuntimeService.subscribe(() => {
-      refreshActivity(v => v + 1)
+      runtimeCharactersRef.current = map
     })
-    return unsub
   }, [])
 
+  // =========================
+  // ACTIVITY TICK
+  // =========================
+  useEffect(() => {
+    return activityRuntimeService.subscribe(() => {
+      // reserved for future UI updates
+    })
+  }, [])
+
+  // =========================
+  // SAVE SYSTEM
+  // =========================
   useEffect(() => {
     const unsub = gameEventBus.subscribe(event => {
+
+      // ---------- PLAYER ----------
       if (event.type === 'player:dirty') {
-        dirtyPlayerRef.current = event.player
+        runtimePlayerRef.current = event.meta?.player
         return
       }
 
       if (event.type === 'player:save') {
-        dirtyPlayerRef.current = event.player
+        runtimePlayerRef.current = event.meta?.player
         flushPlayerSave()
-        addNotification(
-          'Player Saved',
-          undefined,
-          5000
-        )
+        notificationService.notify({
+          text: "Player Saved",
+          type: "info",
+          lifetime: 2000
+        });
         return
       }
 
+      // ---------- CHARACTER ----------
       if (event.type === 'character:dirty') {
         dirtyCharactersRef.current.add(event.characterId)
         return
@@ -115,25 +118,30 @@ export default function GameScreen() {
       if (event.type === 'character:save') {
         dirtyCharactersRef.current.add(event.characterId)
         flushCharacterSave(event.characterId)
-        addNotification(
-          'Character Saved',
-          undefined,
-          5000
-        )
-        return
+        notificationService.notify({
+          text: "Character Saved",
+          type: "info",
+          lifetime: 2000
+        });
       }
     })
 
     return unsub
   }, [])
 
+  // =========================
+  // AUTO SAVE LOOP
+  // =========================
   useEffect(() => {
     const interval = setInterval(() => {
+
       setSaving('Player')
       flushPlayerSave()
 
-      setSaving('Character')
-      for (const id of dirtyCharactersRef.current) flushCharacterSave(id)
+      setSaving('Characters')
+      for (const id of dirtyCharactersRef.current) {
+        flushCharacterSave(id)
+      }
 
       setSaving('')
     }, 5000)
@@ -141,106 +149,107 @@ export default function GameScreen() {
     return () => clearInterval(interval)
   }, [])
 
-  useEffect(() => {
-    const unsub = gameEventBus.subscribe(event => {
-      if(!['quest:start', 'quest:cancel', 'quest:complete'].includes(event.type)){
-        return
-      }
-
-      const character = characterRuntimeService.getCharacter(event.characterId as string)
-      const characterName = character?.name ? `${character.name} ` : 'Someone '
-      if (event.type === 'quest:start') {
-        const quest = GAME_QUESTS.find(q => q.id === event?.questId as string)
-        console.log(quest)
-        addNotification(
-          <>{characterName}started the quest "{quest?.title}".</>,
-          undefined,
-          5000
-        )
-      }
-
-      if (event.type === 'quest:complete') {
-        const quest = GAME_QUESTS.find(q => q.id === event?.questId as string)
-        addNotification(
-          <>{characterName}completed the quest "{quest?.title}"!</>,
-          undefined,
-          5000
-        )
-      }
-
-      if (event.type === 'quest:cancel') {
-        const quest = GAME_QUESTS.find(q => q.id === event?.questId as string)
-        addNotification(
-          <>{characterName}cancelled the quest "{quest?.title}".</>,
-          undefined,
-          5000
-        )
-      }
-    })
-
-    return unsub
-  }, [])
-
+  // =========================
+  // FLUSH SAVE: PLAYER
+  // =========================
   const flushPlayerSave = () => {
     const runtime = runtimePlayerRef.current
     if (!runtime) return
+
     setPlayer({ ...runtime })
-    dirtyPlayerRef.current = undefined
   }
 
-  const flushCharacterSave = (characterId: string) => {
-    const runtime = runtimeCharactersRef.current[characterId]
+  // =========================
+  // FLUSH SAVE: CHARACTER
+  // =========================
+  const flushCharacterSave = (id: string) => {
+    const runtime = runtimeCharactersRef.current[id]
     if (!runtime) return
 
     setCharacters(prev => {
-      const all = prev ?? []
-      const exists = all.findIndex(c => c.id === characterId)
-      if (exists === -1) return [...all, runtime]
-      return all.map(c => (c.id === characterId ? runtime : c))
+      const list = prev ?? []
+      const index = list.findIndex(c => c.id === id)
+
+      if (index === -1) return [...list, runtime]
+
+      return list.map(c => (c.id === id ? runtime : c))
     })
 
-    dirtyCharactersRef.current.delete(characterId)
+    dirtyCharactersRef.current.delete(id)
   }
 
-  const handleCreatedCharacter = (character: CharacterEntity, player?: PlayerEntity) => {
-    if (player) {
-      runtimePlayerRef.current = player
-      gameEventBus.emit({ type: 'player:save', player })
+  // =========================
+  // CHARACTER CREATED FLOW
+  // =========================
+  const handleCreatedCharacter = (character: CharacterEntity, newPlayer?: PlayerEntity) => {
+
+    const activePlayer = newPlayer ?? runtimePlayerRef.current
+
+    // IMPORTANT FIX: ensure runtime + persistence sync
+    if (activePlayer) {
+      activePlayer.characterTokens -= 1
+      runtimePlayerRef.current = activePlayer
+      setPlayer({ ...activePlayer })
     }
 
-    characterRuntimeService.setCharacter(
-      character
-    )
-    gameEventBus.emit({ type: 'character:save', characterId: character.id })
+    // register runtime character
+    characterRuntimeService.setCharacter(character)
+
+    // persist character + player once
+    gameEventBus.emit({ 
+      type: 'character:save', 
+      characterId: character.id 
+    })
+    gameEventBus.emit({ 
+      type: 'player:save', 
+      characterId: character.id,
+      continuous: false,
+      meta: {player: activePlayer!} 
+    })
+
+    notificationService.notify({
+      text: <><strong>{character.name}</strong> created.</>,
+      type: "info",
+      lifetime: 2000
+    });
     setMode('world')
-    addNotification(
-      `${character.name} Created!`,
-      undefined,
-      5000
-    )
   }
 
+  // =========================
+  // RESET
+  // =========================
   const handleResetEverything = () => {
     setCharacters([])
     setPlayer(undefined)
-
     window.location.reload()
   }
 
+  // =========================
+  // DERIVED STATE
+  // =========================
   const runtimeCharacters = characterRuntimeService.getAll()
   const runtimePlayer = runtimePlayerRef.current
 
   return (
     <div className={styles.screen}>
+
+      {/* MENU */}
       {mode === 'world' && (
         <div className={styles.menu}>
-          <button className="button-basic dark" onClick={handleResetEverything}>RESET</button>
-          <button className="button-basic" onClick={() => setMode('character_create')}>Create Character</button>
+          <button className="button-basic dark" onClick={handleResetEverything}>
+            RESET
+          </button>
+
+          <button className="button-basic" onClick={() => setMode('character_create')}>
+            Create Character
+          </button>
         </div>
       )}
 
-      {saving && <span>Saving {saving} data...</span>}
+      {/* SAVE STATUS */}
+      {saving && <span>Saving {saving}...</span>}
 
+      {/* CHARACTER CREATION */}
       {mode === 'character_create' && (
         <CharacterEntityCreate
           player={runtimePlayer as PlayerEntity}
@@ -250,12 +259,12 @@ export default function GameScreen() {
         />
       )}
 
+      {/* WORLD */}
       <div className={styles.screenView}>
-        {mode === 'world' && <CharacterEntityList 
-          characters={runtimeCharacters} 
-        />}
+        {mode === 'world' && (
+          <CharacterEntityList characters={runtimeCharacters} />
+        )}
       </div>
-      <NotificationList notifications={notifications} />
 
     </div>
   )

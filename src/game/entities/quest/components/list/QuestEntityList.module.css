@@ -1,14 +1,19 @@
 .groupList {
-
+  padding: 5px;
 }
 
 .groupListHeader {
-  background: var(--cool-bg);
-  /* padding: 15px; */
-  text-align: center;
-  color: var(--bg-dark);
-  font-size: 1.3em;
-  /* text-shadow: var(--gold-outline); */
+  color: var(--text);
+  font-size: 1.2em;
+  font-weight: 500;
+  letter-spacing: 3px;
+  justify-content: center;
+  align-content: center;
+}
+
+.sectionLabel {
+  font-size: 0.9em;
+  padding: 5px;
 }
 
 .questList {

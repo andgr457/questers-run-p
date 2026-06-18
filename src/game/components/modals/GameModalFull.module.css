@@ -59,18 +59,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--cool-bg);
+  background: var(--bg-dark);
   text-transform: uppercase;
-  color: var(--bg-dark);
+  color: var(--text);
   font-weight: 700;
-  text-shadow:
-  0 0 1px var(--text)
-  ,0 0 1px var(--text)
-  ,0 0 2px var(--text)
-  ,0 0 2px var(--text)
-  ,0 0 2px var(--text)
-  ,0 0 1px var(--text)
-  ,0 0 1px var(--text);
+
   border-radius: 3px 3px 0 0;
   border: solid var(--text);
   border-width: 1px 1px 0 1px;

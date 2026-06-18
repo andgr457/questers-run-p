@@ -9,6 +9,7 @@ import type { QuestEntity } from '../../../quest/types/QuestEntity.types'
 import { getQuestGroupById } from '../../../quest/utils/QuestEntity.utils'
 import CharacterEntityActionsCharacter from './CharacterEntityActionsCharacter'
 import { gameEventBus } from '../../../../engine/event-bus/GameEventBus'
+import CharacterActionsQuest from './quest-actions/CharacterActionsQuest'
 
 interface Props {
   open: boolean
@@ -30,18 +31,6 @@ export default function CharacterEntityActionsModal(props: Props) {
     setSelectedQuest(quest)
     setShowQuestsModal(false)
   }, [])
-
-  const handleQuestStartClicked = useCallback(() => {
-    if (!selectedQuest) return
-
-    gameEventBus.emit({
-      type: 'quest:start',
-      characterId: character.id,
-      questId: selectedQuest.id,
-      continuous
-    })
-
-  }, [selectedQuest, character.id, onClose, continuous])
 
   const handleCancelActivity = useCallback(() => {
     if (!activity) return
@@ -94,17 +83,26 @@ export default function CharacterEntityActionsModal(props: Props) {
         </button>}
       </div>
       <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          QUESTS
+        </div>
+        <div className={styles.sectionContent}>
+          <CharacterActionsQuest 
+            characterId={character.id}
+            continuous={continuous}
+            selectedQuest={selectedQuest}
+            selectedQuestGroup={selectedQuestGroup}
+            setShowQuestsModal={setShowQuestsModal}
+          />
 
+          <div>
+            
+          </div>
+        </div>
 
-        <button className="button-basic dark" onClick={() => setShowQuestsModal(true)}>
-          CHOOSE
-        </button>
+        
 
-        {selectedQuest && (
-          <button className="button-basic dark" onClick={handleQuestStartClicked}>
-            START
-          </button>
-        )}
+        
 
         {selectedQuest && activity?.status === 'active' && <button className="button-basic dark" onClick={handleCancelActivity}>
           STOP
@@ -116,11 +114,7 @@ export default function CharacterEntityActionsModal(props: Props) {
           </div>
         )}
 
-        {selectedQuest && (
-          <div>
-            QUEST: {selectedQuestGroup?.title} - {selectedQuest.title}
-          </div>
-        )}
+        
       </div>
     </GameModalFull>
   )

@@ -62,7 +62,7 @@ class ActivityRuntimeService {
           activityId: activity.id,
           activityType: activity.type,
           progress,
-          meta: activity.meta,
+          continuous: activity.continuous
         })
 
         notify = true
@@ -208,8 +208,7 @@ class ActivityRuntimeService {
       activityId: entry.id,
       activityType: entry.type,
       duration: entry.duration,
-      meta: entry.meta,
-      continuous: entry.continuous ?? false
+      continuous: entry.continuous
     })
 
     this.notify()
@@ -255,6 +254,7 @@ class ActivityRuntimeService {
       activityId,
       activityType: activity.type,
       meta: activity.meta,
+      continuous: activity.continuous,
     })
 
     this.notify()

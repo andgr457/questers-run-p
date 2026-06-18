@@ -5,8 +5,9 @@ import { QUEST_GROUP_IDS } from '../quest-groups/QuestGroups.data';
 export const QUEST_GQ_01_TIMER: QuestEntity = {
   id: 'q_qg_1_timer',
   title: <>
-   Explore the Surroundings
+   Explore your Surroundings
   </>,
+  titleString: 'Explore your Surroundings',
   description: <>
     Explore the town and areas around it.
   </>,
@@ -20,6 +21,10 @@ export const QUEST_GQ_01_TIMER: QuestEntity = {
   ],
   requirements: {
     start: [
+      {
+        title: 'Level',
+        level: 1
+      },
       {
         title: 'Stamina',
         stamina: 10
