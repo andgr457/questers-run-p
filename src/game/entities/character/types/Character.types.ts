@@ -5,6 +5,7 @@ export interface CharacterEntity {
   partyId?: string
   
   name: string
+  gold: number
   classId: string
   xp: number
   xpNextLevel: number

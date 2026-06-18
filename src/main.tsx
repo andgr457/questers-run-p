@@ -24,11 +24,12 @@ import { createRoot } from 'react-dom/client'
 import App from './game/App.tsx'
 
 import React from 'react'
-// import './index.css'
-import { activityRuntimeService } from './game/engine/ActivityRuntimeService.ts'
-import { gameClockService } from './game/engine/GameClockService.ts'
+import { activityRuntimeService } from './game/engine/activity/ActivityRuntimeService.ts'
+import { gameClockService } from './game/engine/clock/GameClockService.ts'
+import { questRuntimeService } from './game/engine/quest/QuestRuntimeService.ts'
 gameClockService.start()
 activityRuntimeService.init()
+questRuntimeService.init()
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

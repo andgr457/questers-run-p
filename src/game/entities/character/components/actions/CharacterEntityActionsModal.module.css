@@ -1,0 +1,14 @@
+.section {
+  padding: 5px;
+  border-top: solid 1px var(--text);
+  background-color: var(--bg-dark-2);
+}
+
+.sectionHeader {
+  text-shadow: var(--dark-outline);
+  color: var(--bg-dark);
+  font-size: 1.2em;
+  font-weight: 700;
+  margin-bottom: 5px;
+  letter-spacing: 3px;
+}

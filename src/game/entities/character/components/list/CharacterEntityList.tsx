@@ -3,7 +3,7 @@ import CharacterEntityListRecord from './CharacterEntityListRecord'
 import styles from './CharacterEntityList.module.css'
 
 type Props = {
-  characters: CharacterEntity[]
+  characters: CharacterEntity[],
 }
 
 export default function CharacterEntityList({
@@ -16,7 +16,7 @@ export default function CharacterEntityList({
         <CharacterEntityListRecord
           key={character.id}
           character={character}
-          
+          canShowActions={true}
         />
       ))}
 

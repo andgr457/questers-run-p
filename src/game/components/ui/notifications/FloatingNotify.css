@@ -1,0 +1,65 @@
+/* FloatingNotify.css */
+
+.floating-notify {
+  opacity: 0;
+  transform: translateY(10px);
+  min-width: 180px;
+  max-width: 240px;
+  text-align: center;
+  padding: 6px 12px;
+  color: var(--text);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  background-color: var(--bg-dark);
+  border: solid 1px gold;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+  word-wrap: break-word;
+  white-space: normal;
+  backdrop-filter: blur(3px);
+}
+
+.floating-notify.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.floating-notify img {
+  width: 12px;
+  height: 12px;
+}
+
+.notification-list {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  gap: 8px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .notification-list {
+    left: 50%;
+    bottom: 70px;
+    transform: translateX(-50%);
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .notification-list {
+    top: 48px;
+    right: 12px;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}

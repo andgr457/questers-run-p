@@ -23,6 +23,7 @@ export interface ActivityEntry {
   blocking?: boolean
   blockingAll?: boolean
   duration: number
+  continuous: boolean
   completedAt?: number
 
   meta?: ActivityMeta
@@ -63,5 +64,4 @@ export type ActivityMeta = {
   xpReward?: number
   goldReward?: number
 
-  [key: string]: unknown
 }

@@ -1,5 +1,5 @@
 import type { CharacterEntity } from '../../types/Character.types'
-import styles from './CharacterEntityListRecord.module.css'
+import styles from './CharacterEntityActionsCharacter.module.css'
 import ProgressBar from '../../../../components/ui/ProgressBar'
 import { GAME_CHARACTER_CLASSES } from '../../../character-class/data/CharacterClassEntity.data'
 import type { CharacterClassId } from '../../../character-class/types/CharacterClassEntity.types'
@@ -12,9 +12,9 @@ type Props = {
   canShowActions: boolean
 }
 
-export default function CharacterEntityListRecord({
+export default function CharacterEntityActionsCharacter({
   character,
-  canShowActions,
+  canShowActions
 }: Props) {
   if (!character) return null
 
@@ -37,8 +37,6 @@ export default function CharacterEntityListRecord({
   const className =
     GAME_CHARACTER_CLASSES[character.classId as CharacterClassId]?.name ?? 'Unknown'
 
-  const characterStatus = activity ? activity.type.toUpperCase() : 'IDLE'
-
   return (
     <>
       <CharacterEntityActionsModal
@@ -52,14 +50,19 @@ export default function CharacterEntityListRecord({
         onClick={() => setShowCharacterActions(!!canShowActions)}
       >
         <div className={styles.header}>
-          <div>
-            <div className={styles.name}>{character.name}</div>
-            <div className={styles.meta}>
-              Lv {character.level} {className}
-            </div>
+          <div className={styles.name}>{character.name}</div>
+          <div className={styles.meta}>Lv {character.level} {className}</div>
+          <div className={styles.meta} style={{ color: 'gold' }}>
+            {character.gold}g
           </div>
+        </div>
+      </div>
 
-          <div style={{ width: '35%' }}>
+      <div className={styles.record}>
+        <div className={styles.stretch}>
+          <div style={{textAlign: 'center'}}>{activity?.type?.toUpperCase() ?? 'IDLE'}</div>
+
+          <div className={styles.stats}>
             <ProgressBar
               value={progress * 100}
               max={100}
@@ -69,17 +72,13 @@ export default function CharacterEntityListRecord({
             />
           </div>
         </div>
+      </div>
 
-        <div className={styles.stats}>
-          <ProgressBar label="HP" value={character.hp} max={character.hpMax} color="#ef4444" />
-          <ProgressBar label="MP" value={character.mana} max={character.manaMax} color="#3b82f6" />
-          <ProgressBar label="STA" value={character.stamina} max={character.staminaMax} color="#22c55e" />
-          <ProgressBar label="XP" value={character.xp} max={character.xpNextLevel} color="#a855f7" />
-        </div>
-
-        <div className={styles.meta} style={{ textAlign: 'center' }}>
-          {characterStatus}
-        </div>
+      <div className={styles.record}>
+        <ProgressBar label="HP" value={character.hp} max={character.hpMax} color="#ef4444" />
+        <ProgressBar label="MP" value={character.mana} max={character.manaMax} color="#3b82f6" />
+        <ProgressBar label="STA" value={character.stamina} max={character.staminaMax} color="#22c55e" />
+        <ProgressBar label="XP" value={character.xp} max={character.xpNextLevel} color="#a855f7" />
       </div>
     </>
   )

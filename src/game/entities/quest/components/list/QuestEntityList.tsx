@@ -15,14 +15,14 @@ export default function QuestEntityList(props: Props){
   return <div>
     {GAME_QUEST_GROUPS.map(group => {
       const quests = getQuestsByGroupId(group.id)
-      return <div>
-        <div>
+      return <div className={styles.groupList}>
+        <div className={styles.groupListHeader}>
           {group.title}
         </div>
-        <div>
+        <div className={styles.groupListMeta}>
           {group.description}
         </div>
-        <div>
+        <div className={styles.questList}>
           {quests.map(quest => {
             
             return <QuestEntityListRecord 

@@ -1,5 +1,5 @@
-import { gameClockService } from './GameClockService'
-import { gameEventBus } from './GameEventBus'
+import { gameClockService } from '../clock/GameClockService'
+import { gameEventBus } from '../event-bus/GameEventBus'
 import type { ActivityEntry, ActivityType } from './types/Activity.types'
 
 type CharacterActivityCache = {
@@ -37,8 +37,8 @@ class ActivityRuntimeService {
   }
 
   private onTick(now: number) {
-    const ARRIVAL_BUFFER_MS = 8500
-    const COMPLETION_FUDGE_MS = 2000
+    const ARRIVAL_BUFFER_MS = 1000
+    const COMPLETION_FUDGE_MS = 1500
 
     let notify = false
 
@@ -73,7 +73,6 @@ class ActivityRuntimeService {
         ) {
           activity.status = 'completed'
           activity.completedAt = now
-
           dirty = true
 
           gameEventBus.emit({
@@ -82,6 +81,7 @@ class ActivityRuntimeService {
             activityId: activity.id,
             activityType: activity.type,
             meta: activity.meta,
+            continuous: activity.continuous,
           })
         }
 
@@ -209,6 +209,7 @@ class ActivityRuntimeService {
       activityType: entry.type,
       duration: entry.duration,
       meta: entry.meta,
+      continuous: entry.continuous ?? false
     })
 
     this.notify()
@@ -232,6 +233,7 @@ class ActivityRuntimeService {
       activityId,
       activityType: activity.type,
       meta: activity.meta,
+      continuous: activity?.continuous ?? false,
     })
 
     this.notify()

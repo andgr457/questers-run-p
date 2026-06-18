@@ -20,7 +20,6 @@
 .bar {
   position: relative;
   flex: 1;
-  max-width: 200px;
   min-width: 80px;
   height: 14px;
 

@@ -110,6 +110,8 @@ export default function CharacterEntityCreate({
       stamina: 100,
       staminaMax: 100,
 
+      gold: 0,
+
       strength: 1 + characterClass.strength,
       intellect: 1 + characterClass.intellect,
       agility: 1 + characterClass.agility,
@@ -134,7 +136,7 @@ export default function CharacterEntityCreate({
     >
       <div className={styles.card}>
         <div className={styles.subtitle}>
-          {playerTokens} token(s) available.
+          {playerTokens} character token(s) available.
         </div>
         <br/>
         <div className={styles.subtitle}>

@@ -43,7 +43,26 @@
       transparent 40%
     ),
     linear-gradient(135deg, #3b82f6, #1e3a8a);
- 
+  --dark-text-shadow: 
+  0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text);
+  --bright-text-shadow: 
+  0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text);
+  --gold-text-shadow: 
+  0 0 1px gold
+  ,0 0 1px gold
+  ,0 0 2px gold
+  ,0 0 2px gold
+  ,0 0 2px gold
+  ,0 0 1px gold
+  ,0 0 1px gold;
 }
 
 html, body, #root {

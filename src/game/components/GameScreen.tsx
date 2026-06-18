@@ -4,19 +4,29 @@ import { GAME_STORAGE_KEYS } from '../data/GameStorageKeys.data'
 import type { CharacterEntity } from '../entities/character/types/Character.types'
 import CharacterEntityCreate from '../entities/character/components/new/CharacterEntityCreate'
 import CharacterEntityList from '../entities/character/components/list/CharacterEntityList'
-import { gameEventBus } from '../engine/GameEventBus'
-import { gameClockService } from '../engine/GameClockService'
-import { activityRuntimeService } from '../engine/ActivityRuntimeService'
+import { gameEventBus } from '../engine/event-bus/GameEventBus'
+import { activityRuntimeService } from '../engine/activity/ActivityRuntimeService'
 import type { PlayerEntity } from '../entities/player/types/PlayerEntity.types'
 import styles from './GameScreen.module.css'
+import { characterRuntimeService } from '../engine/character/CharacterRuntimeService'
+import { useFloatingNotifications } from './ui/notifications/hooks/useFloatingNotify'
+import NotificationList from './ui/notifications/NotificationList'
+import { GAME_QUESTS } from '../entities/quest/data/quest/Quests.data'
+import type { ActivityType } from '../engine/activity/types/Activity.types'
 
 export type GameMode = 'boot' | 'character_create' | 'world'
 
 export default function GameScreen() {
+  const {
+    notifications,
+    addNotification
+  } = useFloatingNotifications()
+
   const [saving, setSaving] = useState('')
   const [mode, setMode] = useState<GameMode>('boot')
 
   const [, refreshActivity] = useState(0)
+  const [, refreshCharacters] = useState(0)
 
   const [player, setPlayer] = useLocalStorage<PlayerEntity | undefined>(
     GAME_STORAGE_KEYS.PLAYER_GAME,
@@ -39,7 +49,37 @@ export default function GameScreen() {
     for (const c of characters ?? []) map[c.id] = c
     runtimeCharactersRef.current = map
     runtimePlayerRef.current = player
+
+    characterRuntimeService.init(
+      characters ?? []
+    )
+
+    characterRuntimeService.start()
+
     setMode(!characters || characters.length === 0 ? 'character_create' : 'world')
+  }, [])
+
+  useEffect(() => {
+    const unsub =
+      characterRuntimeService.subscribe(() => {
+        refreshCharacters(v => v + 1)
+
+        const runtimeMap: Record<
+          string,
+          CharacterEntity
+        > = {}
+
+        for (
+          const character
+          of characterRuntimeService.getAll()
+        ) {
+          runtimeMap[character.id] = character
+        }
+
+        runtimeCharactersRef.current = runtimeMap
+      })
+
+    return unsub
   }, [])
 
   useEffect(() => {
@@ -59,6 +99,11 @@ export default function GameScreen() {
       if (event.type === 'player:save') {
         dirtyPlayerRef.current = event.player
         flushPlayerSave()
+        addNotification(
+          'Player Saved',
+          undefined,
+          5000
+        )
         return
       }
 
@@ -70,6 +115,11 @@ export default function GameScreen() {
       if (event.type === 'character:save') {
         dirtyCharactersRef.current.add(event.characterId)
         flushCharacterSave(event.characterId)
+        addNotification(
+          'Character Saved',
+          undefined,
+          5000
+        )
         return
       }
     })
@@ -89,6 +139,46 @@ export default function GameScreen() {
     }, 5000)
 
     return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const unsub = gameEventBus.subscribe(event => {
+      if(!['quest:start', 'quest:cancel', 'quest:complete'].includes(event.type)){
+        return
+      }
+
+      const character = characterRuntimeService.getCharacter(event.characterId as string)
+      const characterName = character?.name ? `${character.name} ` : 'Someone '
+      if (event.type === 'quest:start') {
+        const quest = GAME_QUESTS.find(q => q.id === event?.questId as string)
+        console.log(quest)
+        addNotification(
+          <>{characterName}started the quest "{quest?.title}".</>,
+          undefined,
+          5000
+        )
+      }
+
+      if (event.type === 'quest:complete') {
+        const quest = GAME_QUESTS.find(q => q.id === event?.questId as string)
+        addNotification(
+          <>{characterName}completed the quest "{quest?.title}"!</>,
+          undefined,
+          5000
+        )
+      }
+
+      if (event.type === 'quest:cancel') {
+        const quest = GAME_QUESTS.find(q => q.id === event?.questId as string)
+        addNotification(
+          <>{characterName}cancelled the quest "{quest?.title}".</>,
+          undefined,
+          5000
+        )
+      }
+    })
+
+    return unsub
   }, [])
 
   const flushPlayerSave = () => {
@@ -118,18 +208,26 @@ export default function GameScreen() {
       gameEventBus.emit({ type: 'player:save', player })
     }
 
-    runtimeCharactersRef.current[character.id] = character
+    characterRuntimeService.setCharacter(
+      character
+    )
     gameEventBus.emit({ type: 'character:save', characterId: character.id })
     setMode('world')
+    addNotification(
+      `${character.name} Created!`,
+      undefined,
+      5000
+    )
   }
 
   const handleResetEverything = () => {
     setCharacters([])
     setPlayer(undefined)
+
     window.location.reload()
   }
 
-  const runtimeCharacters = Object.values(runtimeCharactersRef.current)
+  const runtimeCharacters = characterRuntimeService.getAll()
   const runtimePlayer = runtimePlayerRef.current
 
   return (
@@ -153,8 +251,12 @@ export default function GameScreen() {
       )}
 
       <div className={styles.screenView}>
-        {mode === 'world' && <CharacterEntityList characters={runtimeCharacters} />}
+        {mode === 'world' && <CharacterEntityList 
+          characters={runtimeCharacters} 
+        />}
       </div>
+      <NotificationList notifications={notifications} />
+
     </div>
   )
 }

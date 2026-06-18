@@ -12,8 +12,8 @@ export default function QuestEntityListRecord(props: Props){
     onClick,
     quest
   } = props
-  return <div onClick={() => {onClick(quest)}}>
-    <div>
+  return <div className={styles.record} onClick={() => {onClick(quest)}}>
+    <div className={styles.header}>
       {quest.title}
     </div>
     <div>
@@ -53,7 +53,6 @@ export default function QuestEntityListRecord(props: Props){
         const reqDivs = []
         for(const propName of Object.getOwnPropertyNames(req)){
           if(propName === 'title') continue
-          const name = propName.toUpperCase()
           //@ts-ignore
           let value = req[propName]
           if(propName === 'timeMillis'){
@@ -69,6 +68,9 @@ export default function QuestEntityListRecord(props: Props){
             } else {
               value = `${seconds} second(s)`
             }
+          }
+          if(typeof value === 'number'){
+            value = value.toFixed(1)
           }
           reqDivs.push(<div>
             {req.title}: {`${value}`}
