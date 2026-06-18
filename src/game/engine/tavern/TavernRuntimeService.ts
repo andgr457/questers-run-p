@@ -83,7 +83,6 @@ class TavernRuntimeService {
       })
       return
     }
-    character.gold = character.gold - tavernAction.cost
 
     // mark dirty via runtime
     gameEventBus.emit({
@@ -136,13 +135,14 @@ class TavernRuntimeService {
     character.hp = Math.min(character.hp + hpAmount, character.hpMax)
     character.mana = Math.min(character.mana + manaAmount, character.manaMax)
     character.stamina = Math.min(character.stamina + staminaAmount, character.staminaMax)
+    character.gold = character.gold - tavernAction.cost
 
     // player XP (if needed)
     // const player = (character as any).playerRef // optional future improvement
 
     notificationService.notify({
       lifetime: 5000,
-      text: `${character.name} rested for ${tavernAction.percent * 100}% stat gains.`,
+      text: `${character.name} paid ${tavernAction.cost}g to at the tavern for ${tavernAction.percent * 100}% revitalization.`,
       type: 'success'
     })
     // -----------------------------------

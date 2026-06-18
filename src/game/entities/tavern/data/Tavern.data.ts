@@ -4,7 +4,7 @@ export const TAVERN_ACTION_SNACK: TavernAction = {
   id: 'tavern_action_snack',
   title: 'Eat a Snack',
   cost: 5,
-  duration: 30000,
+  duration: 10000,
   percent: .25
 }
 
