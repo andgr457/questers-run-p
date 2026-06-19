@@ -1,11 +1,27 @@
 .wrapper {
+  pointer-events: auto;
   padding: 5px;
   border: 1px solid var(--text);
   background-color: var(--bg-dark);
   min-height: 300px;
   max-height: 300px;
   overflow-y: auto;
-  /* overscroll-behavior-y: contain; */
+  transition: opactity 0.5s;
+  opacity: 1;
+
+}
+
+.wrapperLocked {
+  pointer-events: none;
+  padding: 5px;
+  border: 1px solid var(--text);
+  background-color: var(--bg-dark);
+  min-height: 300px;
+  max-height: 300px;
+  overflow-y: auto;
+  opacity: .5;
+  transition: opactity 0.5s;
+  
 }
 
 .children {
@@ -99,18 +115,4 @@
   .actionLocked button {
     width: 100%;
   }
-}
-
-.wrapper::-webkit-scrollbar {
-  width: 5px;
-}
-
-.wrapper::-webkit-scrollbar-thumb {
-  background: var(--gold);
-
-  border-radius: 1px;
-}
-
-.wrapper::-webkit-scrollbar-track {
-  background: transparent;
 }

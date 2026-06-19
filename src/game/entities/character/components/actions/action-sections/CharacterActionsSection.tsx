@@ -2,15 +2,17 @@ import styles from './CharacterActionsSection.module.css'
 
 interface Props {
   title: React.ReactNode
+  locked: boolean
   children: React.ReactNode
 }
 
 export default function CharacterActionsSection(props: Props){
   const {
     title,
-    children
+    children,
+    locked
   } = props
-  return <div className={styles.wrapper}>
+  return <div className={!locked ? styles.wrapper : styles.wrapperLocked}>
     <div className={styles.title}>
       {title}
     </div>

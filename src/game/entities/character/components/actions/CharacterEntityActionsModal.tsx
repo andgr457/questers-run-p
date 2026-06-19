@@ -124,10 +124,10 @@ export default function CharacterEntityActionsModal(props: Props) {
           Upgrades
         </button>
       </div>
-      <div className={`${isActive ? styles.sectionsLocked : styles.sections}`}>
-        
+      <div className={styles.sections}>
         <CharacterActionsTavern 
           character={character}
+          locked={isActive}
         />
         
         <CharacterActionsQuest 
@@ -137,7 +137,9 @@ export default function CharacterEntityActionsModal(props: Props) {
           selectedQuestGroup={selectedQuestGroup}
           setShowQuestsModal={setShowQuestsModal}
           setShowQuestModal={handleShowQuestModal}
+          locked={isActive}
         />
+        
 
       </div>
     </GameModalFull>

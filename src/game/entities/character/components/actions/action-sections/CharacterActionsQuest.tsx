@@ -7,6 +7,7 @@ import CharacterActionsSection from './CharacterActionsSection'
 import QuestEntityListRecord from '../../../../quest/components/list/QuestEntityListRecord'
 
 interface Props {
+  locked: boolean
   selectedQuest?: QuestEntity
   selectedQuestGroup?: QuestGroupEntity
   continuous: boolean
@@ -23,6 +24,7 @@ export default function CharacterActionsQuest(props: Props){
     setShowQuestModal,
     continuous,
     characterId,
+    locked,
   } = props
 
   const handleQuestStartClicked = useCallback(() => {
@@ -41,6 +43,7 @@ export default function CharacterActionsQuest(props: Props){
 
   return <CharacterActionsSection 
     title='quests'
+    locked={locked}
   >
     <div>
       <div className={styles.label}>

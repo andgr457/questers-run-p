@@ -7,11 +7,13 @@ import CharacterActionsSection from './CharacterActionsSection'
 
 interface Props {
   character: CharacterEntity
+  locked: boolean
 }
 
 export default function CharacterActionsTavern(props: Props){
   const {
     character,
+    locked,
   } = props
 
   const handleActionClicked = useCallback((actionId: string) => {
@@ -27,6 +29,7 @@ export default function CharacterActionsTavern(props: Props){
 
   return <CharacterActionsSection
     title='Tavern'
+    locked={locked}
   >
     <div>
 

@@ -82,3 +82,18 @@ html, body, #root {
 
   overflow-x: hidden;
 }
+
+
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--gold);
+
+  border-radius: 1px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}

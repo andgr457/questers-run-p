@@ -10,17 +10,6 @@
   
 }
 
-.sectionsLocked {
-  padding: 5px;
-  pointer-events: none;
-  opacity: .5;
-  transition: opactity 0.5s;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  letter-spacing: 1px;
-}
-
 .section {
   display: flex;
   flex-direction: column;
