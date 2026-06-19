@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
 
-  background: #1526548b;
+  background: var(--bg-dark-0);
 
   display: flex;
   justify-content: center;
@@ -27,9 +27,6 @@
   justify-content: center;
 
   width: 100%;
-
-
-  width: 100%;
   height: 100%;
   flex-direction: column;
   gap: 0;
@@ -44,7 +41,7 @@
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
   letter-spacing: 1px;
   opacity: 0;
-  animation: modalFadeIn 0.5s ease-in forwards;
+  animation: modalFadeIn 0.10s ease-in forwards;
   font-size: 12px;
   width: 100%;
   max-width: none;
@@ -58,7 +55,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--bg-dark);
+  background: var(--bg-dark-0);
+
   text-transform: uppercase;
   color: var(--text);
   font-weight: 700;
@@ -82,14 +80,15 @@
   background: transparent;
   cursor: pointer;
   color: white;
+  font-size: 1.5em;
 }
 
 .gameModalBody {
   color: var(--text);
   font-size: 1.1em;
 
-  /* background-color: var(--bg-dark); */
-  background: var(--bg-dark);
+  background: var(--bg-dark-0);
+
   border: solid var(--text);
   border-width: 1px;
   border-radius: 0 0 3px 3px;
@@ -138,11 +137,11 @@
 @keyframes modalFadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: translateX(100%);
   }
 
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0);
   }
 }

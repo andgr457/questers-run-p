@@ -16,6 +16,11 @@ import CharacterInventoryList from '../../../character-inventory/components/list
 import type { CharacterInventoryEntity } from '../../../character-inventory/types/CharacterInventoryEntity.types'
 import type { InventoryItemEntity } from '../../../inventory-item/types/InventoryItemEntity.types'
 import CharacterInventoryDetail from '../../../character-inventory/components/detail/CharacterInventoryDetail'
+import UpgradeEntityList from '../../../upgrade/components/list/UpgradeEntityList'
+import UpgradeEntityDetail from '../../../upgrade/components/detail/UpgradeEntityDetail'
+import type { UpgradeEntity } from '../../../upgrade/types/UpdateEntity.types'
+import type { CharacterUpgradeEntity } from '../../../character-upgrade/types/CharacterUpgradeEntity.types'
+import { GAME_QUEST_GROUPS } from '../../../quest/data/quest-groups/QuestGroups.data'
 
 interface Props {
   open: boolean
@@ -24,6 +29,7 @@ interface Props {
 
   characterInventories: CharacterInventoryEntity[]
   inventoryItems: InventoryItemEntity[]
+  characterUpgrades: CharacterUpgradeEntity[]
 }
 
 export default function CharacterEntityActionsModal(props: Props) {
@@ -33,6 +39,7 @@ export default function CharacterEntityActionsModal(props: Props) {
     open,
     characterInventories,
     inventoryItems,
+    characterUpgrades,
   } = props
 
   const [selectedQuest, setSelectedQuest] = useState<QuestEntity | undefined>(undefined)
@@ -40,25 +47,27 @@ export default function CharacterEntityActionsModal(props: Props) {
   const [selectedViewQuest, setSelectedViewQuest] = useState<QuestEntity | undefined>(undefined)
   const [selectedViewQuestGroup, setSelectedViewQuestGroup] = useState<QuestGroupEntity | undefined>(undefined)
   const [selectedInventoryId, setSelectedInventoryId] = useState<string | null>(null)
-
+  const [selectedUpgrade, setSelectedUpgrade] = useState<UpgradeEntity | undefined>(undefined)
+  
   const [showQuestsModal, setShowQuestsModal] = useState(false)
   const [showQuestModal, setShowQuestModal] = useState(false)
   const [showInventoriesModal, setShowInventoriesModal] = useState(false)
-  
+  const [showUpgrades, setShowUpgrades] = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
+
   const activity = activityRuntimeService.getActive(character.id)?.[0]
   
   const [continuous, setContinuous] = useState(activity?.continuous ?? false)
 
-  const handleQuestChosen = useCallback((quest: QuestEntity, questGroup: QuestGroupEntity) => {
+  const handleQuestChosen = useCallback((quest: QuestEntity) => {
     setSelectedQuest(quest)
-    setSelectedQuestGroup(questGroup)
+    setSelectedQuestGroup(GAME_QUEST_GROUPS.find(g => g.id === quest.questGroupId))
     setShowQuestsModal(false)
   }, [])
 
-  const handleShowQuestModal = useCallback((quest: QuestEntity, questGroup: QuestGroupEntity) => {
+  const handleShowQuestModal = useCallback((quest: QuestEntity) => {
     setSelectedViewQuest(quest)
-    setSelectedViewQuestGroup(questGroup)
-    setShowQuestsModal(false)
+    setSelectedViewQuestGroup(GAME_QUEST_GROUPS.find(g => g.id === quest.questGroupId))
     setShowQuestModal(true)
   }, [])
 
@@ -66,7 +75,7 @@ export default function CharacterEntityActionsModal(props: Props) {
     if (!activity) return
 
     setContinuous(false)
-    
+
     activityRuntimeService.cancel(character.id, activity.id)
 
     gameEventBus.emit({
@@ -101,9 +110,6 @@ export default function CharacterEntityActionsModal(props: Props) {
         {!activity?.status && <button className='button-basic dark'>
           NO ACTIVITY
         </button>}
-        <button className='button-basic dark' onClick={() => setShowInventoriesModal(true)}>
-          Inventory
-        </button>
       </div>
       <div className={`${isActive ? styles.sectionsLocked : styles.sections}`}>
         <button className='button-basic dark'
@@ -111,46 +117,31 @@ export default function CharacterEntityActionsModal(props: Props) {
         >
           CONTINUOUS {continuous ? 'ON' : 'OFF'}
         </button>
+        <button className='button-basic dark' onClick={() => setShowInventoriesModal(true)}>
+          Inventory
+        </button>
+        <button className='button-basic dark' onClick={() => setShowUpgrades(true)}>
+          Upgrades
+        </button>
       </div>
       <div className={`${isActive ? styles.sectionsLocked : styles.sections}`}>
         
-        <div className={styles.section}>
-          <div className={styles.sectionContent}>
-            <CharacterActionsTavern 
-              character={character}
-            />
-          </div>
-        </div>
-
-        <div className={styles.section}>
-          <div className={styles.sectionContent}>
-            <CharacterActionsQuest 
-              characterId={character.id}
-              continuous={continuous}
-              selectedQuest={selectedQuest}
-              selectedQuestGroup={selectedQuestGroup}
-              setShowQuestsModal={setShowQuestsModal}
-              setShowQuestModal={setShowQuestModal}
-            />
-          </div>
-        </div>
-
-
+        <CharacterActionsTavern 
+          character={character}
+        />
+        
+        <CharacterActionsQuest 
+          characterId={character.id}
+          continuous={continuous}
+          selectedQuest={selectedQuest}
+          selectedQuestGroup={selectedQuestGroup}
+          setShowQuestsModal={setShowQuestsModal}
+          setShowQuestModal={handleShowQuestModal}
+        />
 
       </div>
     </GameModalFull>
 
-    <GameModalFull
-      backdropHides={false}
-      closeButton={true}
-      isOpen={showQuestModal && !showQuestsModal}
-      onClose={() => {
-        setShowQuestModal(false)
-      }}
-      title={`QUEST: ${selectedViewQuest?.titleString}`}
-    >
-      <QuestEntityCard quest={selectedViewQuest as QuestEntity} questGroup={selectedViewQuestGroup as QuestGroupEntity} />
-    </GameModalFull>
 
     <GameModalFull
       isOpen={showQuestsModal}
@@ -166,8 +157,26 @@ export default function CharacterEntityActionsModal(props: Props) {
           character={character}
           onClick={() => {}}
         />
-        <QuestEntityList onQuestChosen={handleQuestChosen} onQuestView={handleShowQuestModal} />
+        <QuestEntityList 
+          onQuestChosen={handleQuestChosen} 
+          onQuestView={handleShowQuestModal} 
+        />
       </div>
+    </GameModalFull>
+
+    <GameModalFull
+      backdropHides={false}
+      closeButton={true}
+      isOpen={showQuestModal}
+      onClose={() => {
+        setShowQuestModal(false)
+      }}
+      title={`Quest Detail`}
+    >
+      <QuestEntityCard 
+        quest={selectedViewQuest as QuestEntity} 
+        questGroup={selectedViewQuestGroup as QuestGroupEntity} 
+      />
     </GameModalFull>
 
     <GameModalFull
@@ -218,6 +227,52 @@ export default function CharacterEntityActionsModal(props: Props) {
       </div>
     </GameModalFull>
 
+    <GameModalFull
+      isOpen={showUpgrades}
+      backdropHides={false}
+      onClose={() => {
+        setShowUpgrades(false)
+      }}
+      closeButton={true}
+      title={`UPGRADES`}
+    >
+      <div className={styles.section}>
+        <CharacterEntityListRecord 
+          character={character}
+          onClick={() => {}}
+        />
+        <UpgradeEntityList 
+          onView={(upgrade: UpgradeEntity) => {
+            setSelectedUpgrade(upgrade)
+            setShowUpgrade(true)
+          }}
+          onUpgrade={(upgrade: UpgradeEntity) => {
+            
+          }}
+        />
+      </div>
+    </GameModalFull>
+
+    <GameModalFull
+      isOpen={showUpgrade}
+      backdropHides={false}
+      onClose={() => {
+        setShowUpgrade(false)
+      }}
+      closeButton={true}
+      title={`UPGRADE: ${selectedUpgrade?.titleString}`}
+    >
+      <div className={styles.section}>
+        <CharacterEntityListRecord 
+          character={character}
+          onClick={() => {}}
+        />
+        <UpgradeEntityDetail 
+          upgrade={selectedUpgrade as UpgradeEntity}
+          
+        />
+      </div>
+    </GameModalFull>
   </>
   )
 }

@@ -32,6 +32,8 @@ export type GameEventType = 'activity:start'
   | 'tavern:cancel'
   | 'tavern:complete'
 
+  | 'upgrade:purchased'
+
 export interface GameEvent {
   type: GameEventType
   characterId: string
@@ -102,6 +104,10 @@ export interface GameEvent_TavernComplete extends GameEvent {
   type: 'tavern:complete'
 }
 
+export interface GameEvent_UpgradePurchased extends GameEvent {
+  type: 'upgrade:purchased'
+}
+
 export type GameEvents = GameEvent_ActivityStart
   | GameEvent_ActivityProgress
   | GameEvent_ActivityComplete
@@ -120,6 +126,8 @@ export type GameEvents = GameEvent_ActivityStart
   | GameEvent_TavernStart
   | GameEvent_TavernCancel
   | GameEvent_TavernComplete
+
+  | GameEvent_UpgradePurchased
 
   | {
       type: 'character:xp:add'

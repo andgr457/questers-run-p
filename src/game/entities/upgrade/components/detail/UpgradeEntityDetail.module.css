@@ -1,16 +1,21 @@
-.wrapper {
-  padding: 5px;
-  border: 1px solid var(--text);
-  background-color: var(--bg-dark);
-  min-height: 300px;
-  max-height: 300px;
-  overflow-y: auto;
-  /* overscroll-behavior-y: contain; */
+.card {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+
+  gap: 10px; /* uniform spacing between all children */
+
+  font-size: 1em;
+  margin-top: 5px;
 }
 
-.children {
-  margin-top: 5px;
-  
+.items {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 15px;
+ width: 100%;
+ letter-spacing: 1px;
 }
 
 .title {
@@ -23,14 +28,23 @@
 }
 
 .label {
-  font-size: 0.9em;
-  padding: 5px;
+  font-size: 0.8em;
   text-align: center;
+  opacity: .6;
+  padding-left: 10px;
+  padding-right: 10px;
+  min-height: 15px;
+  align-content: center;
+}
+
+.header {
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .actions {
   margin-top: auto;
-  
+
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -79,27 +93,6 @@
   width: 100%;
 }
 
-@media (max-width: 768px) {
-  .actions {
-    margin-top: 4px;
-    justify-content: space-between;
-    justify-items: center;
-  }
-  .action {
-    width: 100%;
-  }
-  .action button {
-    width: 100%;
-
-  }
-  .actionLocked {
-    width: 100%;
-
-  }
-  .actionLocked button {
-    width: 100%;
-  }
-}
 
 .wrapper::-webkit-scrollbar {
   width: 5px;

@@ -54,8 +54,10 @@ export default function CharacterEntityListRecord({
               Lv {character.level} {className}
             </div>
           </div>
-
-          <div style={{ width: '35%' }}>
+          <div className={styles.meta} style={{color: 'gold'}}>
+            {character.gold}g
+          </div>
+          <div className={styles.progressActivity}>
             <ProgressBar
               value={progress * 100}
               max={100}
@@ -64,9 +66,7 @@ export default function CharacterEntityListRecord({
               showLabel={false}
             />
           </div>
-          <div className={styles.meta} style={{color: 'gold'}}>
-            {character.gold}g
-          </div>
+          
         </div>
 
         <div className={styles.stats}>

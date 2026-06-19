@@ -71,4 +71,6 @@ export type ActivityMeta = {
 
   player?: PlayerEntity
 
+  upgradeId?: string
+
 }

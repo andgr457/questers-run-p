@@ -20,6 +20,7 @@ import type { CharacterInventoryEntity } from '../entities/character-inventory/t
 import type { InventoryItemEntity } from '../entities/inventory-item/types/InventoryItemEntity.types'
 import { createStarterInventory } from '../entities/character-inventory/utils/createStarterInventory'
 import CharacterEntityActionsModal from '../entities/character/components/actions/CharacterEntityActionsModal'
+import type { CharacterUpgradeEntity } from '../entities/character-upgrade/types/CharacterUpgradeEntity.types'
 
 export type GameMode = 'boot' 
   | 'character_create' 
@@ -55,6 +56,13 @@ export default function GameScreen() {
       GAME_STORAGE_KEYS.INVENTORY_ITEMS_GAME,
       []
   )
+
+  const [characterUpgrades, setCharacterUpgrades] = 
+    useLocalStorage<CharacterUpgradeEntity[] | undefined>(
+      GAME_STORAGE_KEYS.CHARACTER_UPGRADES_GAME,
+      []
+    )
+
   // =========================
   // RUNTIME REFS (SOURCE OF TRUTH)
   // =========================
@@ -313,6 +321,7 @@ export default function GameScreen() {
               setMode('world')
             }}
             open={true}
+            characterUpgrades={characterUpgrades as CharacterUpgradeEntity[]}
           />
         )}
       </div>

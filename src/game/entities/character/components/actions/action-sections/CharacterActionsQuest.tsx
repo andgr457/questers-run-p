@@ -4,6 +4,7 @@ import type { QuestGroupEntity } from '../../../../quest/types/QuestGroupEntity.
 import { gameEventBus } from '../../../../../engine/event-bus/GameEventBus'
 import styles from './CharacterActionsSection.module.css'
 import CharacterActionsSection from './CharacterActionsSection'
+import QuestEntityListRecord from '../../../../quest/components/list/QuestEntityListRecord'
 
 interface Props {
   selectedQuest?: QuestEntity
@@ -11,7 +12,7 @@ interface Props {
   continuous: boolean
   characterId: string
   setShowQuestsModal: (value: boolean) => void
-  setShowQuestModal: (value: boolean) => void
+  setShowQuestModal: (quest: QuestEntity, questGroup: QuestGroupEntity) => void
 }
 
 export default function CharacterActionsQuest(props: Props){
@@ -43,25 +44,36 @@ export default function CharacterActionsQuest(props: Props){
   >
     <div>
       <div className={styles.label}>
-        {!selectedQuest && (
-          <div>
-            Select a quest.
+        Quest to gain XP, gold, and loot.
+      </div>
+      <div className={styles.actions}>
+        
+
+        <div className={styles.action}>
+          <button className="button-basic dark" onClick={() => setShowQuestsModal(true)}>
+            CHOOSE QUEST
+          </button>
+        </div>
+        {selectedQuest && (
+          <div className={styles.action}>
+
+            <button className="button-basic gold-outline" onClick={handleQuestStartClicked}>
+              START QUEST
+            </button>
           </div>
         )}
         {selectedQuest && (
-          <button className='button-basic dark' onClick={() => {setShowQuestModal(true)}}>
-            {selectedQuestGroup?.title} - {selectedQuest.title}
-          </button>
-        )}
-      </div>
-      <div className={styles.actions}>
-        <button className="button-basic dark" onClick={() => setShowQuestsModal(true)}>
-          CHOOSE QUEST
-        </button>
-        {selectedQuest && (
-          <button className="button-basic dark" onClick={handleQuestStartClicked}>
-            START QUEST
-          </button>
+          <>
+          <div>
+            <QuestEntityListRecord 
+              onView={() => {
+                setShowQuestModal(selectedQuest, selectedQuestGroup as QuestGroupEntity)
+              }}
+              quest={selectedQuest}
+              questGroup={selectedQuestGroup as QuestGroupEntity}
+            />            
+          </div>
+          </>
         )}
       </div>
     </div>

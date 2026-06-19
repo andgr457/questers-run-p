@@ -129,6 +129,13 @@
   color: var(--text);
 }
 
+.button-basic.gold-outline {
+  text-shadow: 0 0 5px var(--text);
+  border: solid var(--gold) 2px;
+  background-color: var(--bg-dark);
+  color: var(--text);
+}
+
 /* =========================
    BUTTON
 ========================= */
