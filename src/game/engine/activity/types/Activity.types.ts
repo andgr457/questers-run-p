@@ -1,4 +1,6 @@
+import type { CharacterEntity } from '../../../entities/character/types/Character.types'
 import type { PlayerEntity } from '../../../entities/player/types/PlayerEntity.types'
+import type { QuestEntity } from '../../../entities/quest/types/QuestEntity.types'
 
 export type ActivityType =
   | 'hunting'
@@ -69,8 +71,10 @@ export type ActivityMeta = {
   xpReward?: number
   goldReward?: number
 
-  player?: PlayerEntity
-
+  //upgrades
   upgradeId?: string
-
+  
+  player?: PlayerEntity
+  character?: CharacterEntity
+  quest?: QuestEntity
 }

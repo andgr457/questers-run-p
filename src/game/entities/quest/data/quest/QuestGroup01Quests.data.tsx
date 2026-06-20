@@ -2,7 +2,7 @@ import type { QuestEntity } from '../../types/QuestEntity.types';
 import { QUEST_GROUP_IDS } from '../quest-groups/QuestGroups.data';
 
 //timer
-export const QUEST_GQ_01_TIMER: QuestEntity = {
+export const QUEST_GQ_01_TIMER_01: QuestEntity = {
   id: 'q_qg_1_timer',
   title: <>
    Explore your Surroundings
@@ -43,7 +43,7 @@ export const QUEST_GQ_01_TIMER: QuestEntity = {
   }
 }
 
-export const QUEST_GQ_02_TIMER: QuestEntity = {
+export const QUEST_GQ_02_TIMER_02: QuestEntity = {
   id: 'q_qg_2_timer',
   title: <>
    Tavern Brawl
@@ -89,6 +89,6 @@ export const QUEST_GQ_02_TIMER: QuestEntity = {
 }
 
 export const QUEST_GROUP_01_QUESTS: QuestEntity[] = [
-  QUEST_GQ_01_TIMER,
-  QUEST_GQ_02_TIMER,
+  QUEST_GQ_01_TIMER_01,
+  QUEST_GQ_02_TIMER_02,
 ]

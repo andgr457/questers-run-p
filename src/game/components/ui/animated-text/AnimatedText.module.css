@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.word {
+  white-space: nowrap;
+}
+
+.letter {
+  display: inline-block;
+  opacity: 0;
+
+  animation-name: letterIn;
+  animation-duration: 400ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+@keyframes letterIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-16px);
+    filter: brightness(1);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(2px);
+  }
+
+  85% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: brightness(2);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: brightness(1);
+  }
+}

@@ -134,13 +134,13 @@ export default function GameScreen() {
 
       // ---------- CHARACTER ----------
       if (event.type === 'character:dirty') {
-        dirtyCharactersRef.current.add(event.characterId)
+        dirtyCharactersRef.current.add(event.characterId as string)
         return
       }
 
       if (event.type === 'character:save') {
-        dirtyCharactersRef.current.add(event.characterId)
-        flushCharacterSave(event.characterId)
+        dirtyCharactersRef.current.add(event.characterId as string)
+        flushCharacterSave(event.characterId as string)
       }
     })
 

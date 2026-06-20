@@ -12,9 +12,11 @@ export type GameEventType = 'activity:start'
 
   | 'player:dirty'
   | 'player:save'
+  | 'player:saved'
 
   | 'character:dirty'
   | 'character:save'
+  | 'character:saved'
 
   | 'quest:start'
   | 'quest:cancel'
@@ -36,7 +38,7 @@ export type GameEventType = 'activity:start'
 
 export interface GameEvent {
   type: GameEventType
-  characterId: string
+  characterId?: string
   continuous?: boolean
   duration?: number
   meta?: ActivityMeta
@@ -72,12 +74,20 @@ export interface GameEvent_PlayerSave extends GameEvent {
   type: 'player:save'
 }
 
+export interface GameEvent_PlayerSaved extends GameEvent {
+  type: 'player:saved'
+}
+
 export interface GameEvent_CharacterDirty extends GameEvent {
   type: 'character:dirty'
 }
 
 export interface GameEvent_CharacterSave extends GameEvent {
   type: 'character:save'
+}
+
+export interface GameEvent_CharacterSaved extends GameEvent {
+  type: 'character:saved'
 }
 
 export interface GameEvent_QuestStart extends GameEvent {
@@ -115,9 +125,11 @@ export type GameEvents = GameEvent_ActivityStart
 
   | GameEvent_PlayerDirty
   | GameEvent_PlayerSave
+  | GameEvent_PlayerSaved
 
   | GameEvent_CharacterDirty
   | GameEvent_CharacterSave
+  | GameEvent_CharacterSaved
 
   | GameEvent_QuestStart 
   | GameEvent_QuestCancel 
