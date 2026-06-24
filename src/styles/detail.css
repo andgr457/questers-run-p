@@ -1,0 +1,29 @@
+.detail-wrapper {
+  padding: 15px;
+  font-size: 14px;
+}
+
+.detail-title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.detail-rows {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.detail-field-name {
+  opacity: 0.8;
+}
+
+.detail-field-value {
+  font-size: 0.8em;
+}

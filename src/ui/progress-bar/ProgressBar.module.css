@@ -1,0 +1,58 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 11px;
+  width: 100%;
+  min-width: 0;
+}
+
+.label {
+  width: 34px;
+  flex-shrink: 0;
+  opacity: 0.85;
+  text-align: right;
+}
+
+.bar {
+  position: relative;
+  flex: 1;
+  min-width: 80px;
+  height: 14px;
+
+  background: #555555;
+  border-radius: 5px;
+
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.2s ease;
+  border-radius: 5px;
+}
+
+.centerText {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  color: rgb(0, 0, 0);
+
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.value {
+  width: 70px;
+  opacity: 0.85;
+  flex-shrink: 0;
+}

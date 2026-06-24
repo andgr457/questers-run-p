@@ -1,0 +1,77 @@
+.game-panel-section {
+  opacity: 0;
+  transition: opacity .5s ease-out;
+  font-size: 14px;
+}
+
+.game-panel-section.show {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.game-panel-section-title {
+  font-size: 1.2em;
+  letter-spacing: 2px;
+  margin-top: 5px;
+  text-align: center;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: var(--bg-dark-3);
+  border-radius: 3px;
+}
+
+.game-panel-section-title:after {
+  content: ' ▶'
+
+}
+
+.game-panel-section-title.show:after {
+  content: ' ▼';
+
+}
+
+.game-panel-section-children-wrapper {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+   transition:
+    max-height 0.3s ease-out,
+    opacity 0.5s ease-out;
+}
+
+.game-panel-section-children-wrapper.show {
+  opacity: 1;
+  max-height: 1000px;
+  pointer-events: all;
+  transition:
+    max-height 0.3s ease-in,
+    opacity 0.5s ease-in;
+}
+
+.game-panel-section-description {
+  margin-top: 10px;
+  text-align: center;
+  opacity: .8;
+  letter-spacing: 1px;
+}
+
+.game-panel-section-children {
+  margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+.game-panel-section-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-around;
+}
+
+.game-panel-section-action button {
+  min-width: 100px;
+}
