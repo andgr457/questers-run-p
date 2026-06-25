@@ -1,0 +1,39 @@
+.tutorial {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 12px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.description {
+  opacity: 0.85;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  text-align: left;
+
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.option:hover {
+  background: rgba(255, 255, 255, 0.06);
+}

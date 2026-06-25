@@ -18,9 +18,12 @@ import NewCharacter from '../entity/character/components/new/NewCharacter'
 import EventHistoryList from './event-history/components/list/EventHistoryList'
 import Dashboard from './dashboard/components/Dashboard'
 import CharacterList from '../entity/character/components/list/CharacterList'
+import Tutorial from './tutorial/components/Tutorial'
+import { tutorialRuntimeService } from '../engine/tutorial/TutorialRuntimeService'
 
 export default function World() {
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('world')
+  const [tutorial, setTutorial] = useState(tutorialRuntimeService.getCurrentTutorial())
 
   const {showConfirm} = useConfirm()
 
@@ -66,6 +69,9 @@ export default function World() {
         }
         fn()
       }
+      if(event.type === 'tutorial:updated'){
+        setTutorial(tutorialRuntimeService.getCurrentTutorial())
+      }
     })
     return unsub
   }, [])
@@ -101,6 +107,12 @@ export default function World() {
       />
 
       <OverlayLayer>
+        {overlayMode === 'tutorial' && tutorial && (
+          <Tutorial 
+            title={tutorial?.title}
+            description={tutorial?.description}
+          />
+        )}
         {overlayMode === 'dashboard' && (
           <Dashboard />
         )}

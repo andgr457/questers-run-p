@@ -12,4 +12,5 @@ export const ContextMenuIcon: Record<ContextMenuIconName, string> = {
   recordLogs: '>_',
   world: '⬡',
   notifications: '✱',
+  tutorial: 't',
 }

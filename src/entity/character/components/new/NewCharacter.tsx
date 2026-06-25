@@ -93,6 +93,9 @@ export default function NewCharacter(){
                   <div>
                     Select a class for {name}.
                   </div>
+                  {nameError && <div className='error-label'>
+                    {nameError}  
+                  </div>}
                 </>
               ),
               inputs: [

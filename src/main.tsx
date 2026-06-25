@@ -8,6 +8,7 @@ import { characterRuntimeService } from './engine/character/CharacterRuntimeServ
 import { playerRuntimeService } from './engine/player/PlayerRuntimeService.ts'
 import { eventDebugRuntimeService } from './engine/event/EventDebugRuntimeService.ts'
 import { eventHistoryRuntimeService } from './engine/event/EventHistoryRuntimeService.ts'
+import { tutorialRuntimeService } from './engine/tutorial/TutorialRuntimeService.ts'
 clockRuntimeService.start()
 eventDebugRuntimeService.init()
 activityRuntimeService.init()
@@ -15,6 +16,7 @@ playerRuntimeService.init()
 characterRuntimeService.init()
 characterRuntimeService.start()
 eventHistoryRuntimeService.init()
+tutorialRuntimeService.init()
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

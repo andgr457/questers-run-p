@@ -14,6 +14,8 @@ export type GameEventType = PlayerEventTypes
   | CharacterEventTypes
   | 'world:mode:change'
   | 'event:history:updated'
+  | 'tutorial:updated'
+
   | 'activity:start'
   | 'activity:progress'
   | 'activity:complete'
@@ -110,12 +112,17 @@ export interface GameEvent_EventHistoryUpdated extends GameEvent {
   type: 'event:history:updated'
 }
 
+export interface GameEvent_EventTutorialUpdated extends GameEvent {
+  type: 'tutorial:updated'
+}
+
 export type GameEvents = GameEvent_ActivityStart
   | GameEvent_ActivityProgress
   | GameEvent_ActivityComplete
   | GameEvent_ActivityCancel
   | GameEvent_WorldModeChange
   | GameEvent_EventHistoryUpdated
+  | GameEvent_EventTutorialUpdated
 
   | DebugEvents
 

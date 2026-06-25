@@ -13,6 +13,7 @@ import { characterRuntimeService } from '../../../engine/character/CharacterRunt
 import type { CharacterEntity } from '../../../entity/character/types/CharacterEntity.types'
 import { eventHistoryRuntimeService } from '../../../engine/event/EventHistoryRuntimeService'
 import type { EventHistoryItem } from '../../../engine/event/types/EventHistory.types'
+import { tutorialRuntimeService } from '../../../engine/tutorial/TutorialRuntimeService'
 
 interface Props {
   overlayMode: OverlayMode
@@ -29,6 +30,7 @@ export default function ContextMenuShell(props: Props) {
   const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
   const [characters, setCharacters] = useState<CharacterEntity[]>(characterRuntimeService.getCharacters())
   const [eventHistory, setEventHistory] = useState<EventHistoryItem[]>(eventHistoryRuntimeService.getHistory())
+  const [tutorial, setTutorial] = useState(tutorialRuntimeService.getCurrentTutorial())
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
@@ -43,6 +45,9 @@ export default function ContextMenuShell(props: Props) {
       }
       if(event.type === 'event:history:updated'){
         setEventHistory(eventHistoryRuntimeService.getHistory())
+      }
+      if(event.type === 'tutorial:updated'){
+        setTutorial(tutorialRuntimeService.getCurrentTutorial())
       }
     })
     return unsub
@@ -107,7 +112,7 @@ export default function ContextMenuShell(props: Props) {
         )
       },
     }]
-    if(player){
+    if(player && characters.length > 0){
       actions.push({
         id: 'dashboard',
         label: 'Dashboard',
@@ -116,7 +121,17 @@ export default function ContextMenuShell(props: Props) {
         borderColor: overlayMode === 'dashboard' ? 'var(--gold)' : 'var(--text)',
         onClick: () => overlayMode === 'dashboard' ? setOverlayMode('world') : setOverlayMode('dashboard'),
       })
+      actions.push({
+        id: 'tutorial',
+        label: 'Tutorial',
+        iconName: 'tutorial',
+        iconRotate: false,
+        color: !tutorial ? 'var(--text)' : 'var(--success)',
+        borderColor: overlayMode === 'tutorial' ? 'var(--gold)' : 'var(--text)',
+        onClick: () => overlayMode === 'tutorial' ? setOverlayMode('world') : setOverlayMode('tutorial'),
+      })
     }
+    
     if(recordingDetail.isDebugMode){
       actions.push({
         id: 'debug-event-recording',
