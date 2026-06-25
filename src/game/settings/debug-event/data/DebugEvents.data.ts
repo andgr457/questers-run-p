@@ -8,7 +8,6 @@ export const GAME_DEBUG_EVENT_DEFAULTS: Partial<Record<GameEventType, GameEvent>
       player: {
         id: '',
         characterTokens: 1,
-        gold: 0,
         level: 1,
         name: 'debug-player',
         xp: 0,
@@ -16,21 +15,23 @@ export const GAME_DEBUG_EVENT_DEFAULTS: Partial<Record<GameEventType, GameEvent>
       }
     }
   },
-  'player:saved': {
+  'player:gold': {
     id: '',
-    parentEventId: '',
-    type: 'player:saved',
+    type: 'player:gold',
     meta: {
-      player: {
+      playerGoldTransaction: {
         id: '',
-        characterTokens: 1,
-        gold: 0,
-        level: 1,
-        name: 'debug-player',
-        xp: 0,
-        xpNextLevel: 100,
+        amount: 1,
+        date: 0,
       }
     }
   },
+  'player:xp': {
+    id: '',
+    type: 'player:xp',
+    meta: {
+      xp: 0
+    }
+  }
 }
 

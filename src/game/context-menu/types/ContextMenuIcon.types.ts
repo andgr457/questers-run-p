@@ -7,3 +7,5 @@ export type ContextMenuIconName =
   | 'recordStart'
   | 'recordStop'
   | 'recordLogs'
+  | 'world'
+  | 'notifications'

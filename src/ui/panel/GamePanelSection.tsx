@@ -3,13 +3,14 @@ import type { ItemActions } from '../item-action/types/ItemAction.types'
 import { ContextMenuIcon } from '../../game/context-menu/data/ContextMenuIcon.data'
 
 interface Props<T> {
-  title: React.ReactNode
-  description: React.ReactNode
+  title?: React.ReactNode
+  description?: React.ReactNode
   actions: ItemActions<T>
   onBack?: () => void
   onBackLabel?: string
   expandable?: boolean
   children?: React.ReactNode
+  actionsLocation?: 'top' | 'bottom'
 }
 
 export default function GamePanelSection<T>(props: Props<T>){
@@ -20,7 +21,8 @@ export default function GamePanelSection<T>(props: Props<T>){
     children,
     expandable = true,
     onBack,
-    onBackLabel
+    onBackLabel,
+    actionsLocation = 'top'
   } = props
   const [show, setShow] = useState(false)
   const [showChildren, setShowChildren] = useState(true)
@@ -32,30 +34,23 @@ export default function GamePanelSection<T>(props: Props<T>){
   }, [])
 
   return <div className={`game-panel-section ${show === true ? 'show' : ''}`}>
-    {onBack && <div style={{textAlign: 'right', marginTop: '10px', marginBottom: '10px'}}>
+    {actionsLocation === 'top' && onBack && <div className='game-panel-section-back' style={{width: '100%'}}>
       <button
-        className='button gold'
+        className='button'
+        style={{width: '100%'}}
         onClick={onBack}
       >
         {ContextMenuIcon.back} Back {onBackLabel && ` to ${onBackLabel}`}
       </button>
     </div>}    
-    <div onClick={() => {
+    {title && <div onClick={() => {
       if(expandable){
         setShowChildren(!showChildren)
       }
     }} className={`game-panel-section-title ${showChildren === true ? 'show' : ''}`}>
       {title}
-    </div>
-    <div className={`game-panel-section-children-wrapper ${showChildren ? 'show' : ''}`}>
-      <div className='game-panel-section-description'>
-        {description}
-      </div>
-
-      {children && <div className='game-panel-section-children'>
-        {children}
-      </div>}
-      
+    </div>}
+    
       <div className='game-panel-section-actions'>
         {actions.map(action => {
 
@@ -70,7 +65,23 @@ export default function GamePanelSection<T>(props: Props<T>){
         })}
         
       </div>
-      
+    <div className={`game-panel-section-children-wrapper ${showChildren ? 'show' : ''}`}>
+      {description && <div className='game-panel-section-description'>
+        {description}
+      </div>}
+
+      {children && <div className='game-panel-section-children'>
+        {children}
+      </div>}
     </div>
+    {actionsLocation === 'bottom' && onBack && <div className='game-panel-section-back' style={{width: '100%'}}>
+      <button
+        className='button'
+        style={{width: '100%'}}
+        onClick={onBack}
+      >
+        {ContextMenuIcon.back} Back {onBackLabel && ` to ${onBackLabel}`}
+      </button>
+    </div>}  
   </div>
 }

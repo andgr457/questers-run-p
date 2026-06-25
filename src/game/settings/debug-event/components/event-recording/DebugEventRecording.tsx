@@ -1,29 +1,34 @@
+import { useEffect, useState } from 'react'
 import { formatDateFromMillis } from '../../../../../engine/clock/utils/formatTimeRemaining'
 import { eventBus } from '../../../../../engine/event/EventBus'
 import { eventDebugRuntimeService } from '../../../../../engine/event/EventDebugRuntimeService'
-import type { EventBusLog, GameEventType } from '../../../../../engine/event/types/EventBus.types'
-import type { CharacterEntity } from '../../../../../entity/character/types/CharacterEntity.types'
-import type { PlayerEntity } from '../../../../../entity/player/types/PlayerEntity.types'
+import type { GameEventType } from '../../../../../engine/event/types/EventBus.types'
 import GamePanelSection from '../../../../../ui/panel/GamePanelSection'
 import DetailRow from '../../../../detail/DetailRow'
 import type { DebugEventsMode } from '../../types/DebugEvents.types'
+import { GAME_EVENT_BUS_DEBUG_RECORDING_TYPES } from '../../../../../engine/event/utils/EventBus.utils'
+import DebugEventLogs from '../event-logs/DebugEventLogs'
 
 interface Props {
-  recordingDetail: any
-  player: PlayerEntity
-  characters: CharacterEntity[]
-  setRelatedEvents: (eventLogs: EventBusLog[]) => void
-  setMode: (mode: DebugEventsMode) => void
+  title?: string
+  setMode?: (mode: DebugEventsMode) => void
 }
 
 export default function DebugEventRecording(props: Props){
   const {
-    recordingDetail,
+    title,
     setMode,
-    setRelatedEvents,
-    characters,
-    player,
   } = props
+
+  const [recordingDetail, setRecordingDetail] = useState(eventDebugRuntimeService.getRecordingDetail())
+
+  useEffect(() => {
+    const unsub = eventBus.subscribe(event => {
+      if(!GAME_EVENT_BUS_DEBUG_RECORDING_TYPES.includes(event.type)) return
+      setRecordingDetail(eventDebugRuntimeService.getRecordingDetail())
+    })
+    return unsub
+  }, [])
 
   let lastRecordingStartDateFormatted = ''
   let lastRecordingEndDateFormatted = ''
@@ -33,9 +38,11 @@ export default function DebugEventRecording(props: Props){
   if(recordingDetail.lastEndDate){
     lastRecordingEndDateFormatted = formatDateFromMillis(recordingDetail.lastEndDate)
   }
+  const onBackFn = setMode ? () => {setMode('main')} : undefined
+  const onBackLabel = setMode ? 'Event Categories' : ''
   return <GamePanelSection
-    onBack={(() => setMode('main'))}
-    onBackLabel='Event Categories'
+    onBack={onBackFn}
+    onBackLabel={onBackLabel}
     actions={[
       {
         name: recordingDetail.isRecording ? 'STOP' : 'START',
@@ -53,34 +60,35 @@ export default function DebugEventRecording(props: Props){
       },
       {
         name: 'Clear Recorded Events',
-        className: 'button gold',
+        className: 'button',
         fn: () => {
           eventDebugRuntimeService.clearHistory()
         }
       }
     ]}
-    title='Global Event Recording'
+    title={title}
     expandable={false}
     description={<>
         While recording, this keeps track of all game events as well as 
         any manually triggered below. You can come back to this screen to view new event logs 
         so long as recording has been started.
-        <br/><br/>
-        Manually triggered events below will only keep track of events while this window is open.
     </>}
   >  
-    <div className='deta'>
+    <div className='detail-rows'>
       <DetailRow field='State' value={recordingDetail.isRecording ? 'Recording' : 'Stopped'} />
       <DetailRow onRowClick={() => {
         if(!recordingDetail.history.length) return
 
-        setRelatedEvents(recordingDetail.history)
-        setMode('debug_event_logs')
+        if(setMode){
+          setMode('debug_event_logs')
+        }
       }} field='Recorded Event(s)' value={recordingDetail.history.length.toFixed(0)} />
       <DetailRow field='Last Started' value={lastRecordingStartDateFormatted} />
       <DetailRow field='Last Stopped' value={lastRecordingEndDateFormatted} />
-      <DetailRow field='Player' value={player ? 'Created' : ''} />
-      <DetailRow field='Character(s)' value={characters?.length ? `${characters.length}` : '0'} />
     </div>
+    <DebugEventLogs 
+      eventLogs={eventDebugRuntimeService.getRecordingDetail().history}
+      setModeToLabel='World'
+    />
   </GamePanelSection>
 }

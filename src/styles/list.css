@@ -1,5 +1,5 @@
 .game-list-wrapper {
-  font-size: 16px;
+  font-size: 14px;
   opacity: 0;
   padding: 0;
   transition: opacity .5s ease-out, 
@@ -34,21 +34,21 @@
 
 .game-list-wrapper-title {
   font-size: 1.2em;
-  font-weight: 300;
   letter-spacing: 2px;
-  text-transform: uppercase;
   text-align: center;
   cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  background-color: var(--bg-dark-3);
+  text-transform: uppercase;
   border-radius: 3px;
+  margin-top: 5px;
+  filter: brightness(1);
+  background-color: var(--bg-dark-1);
+  transition: background-color .25s ease-in, filter .25s ease-in;
 }
 
 .game-list-wrapper-title:hover {
   filter: brightness(1.2);
+  background-color: var(--bg-dark-2);
+  transition: background-color .25s ease-in, filter .25s ease-in;
 }
 
 .game-list-wrapper-title:after {
@@ -76,7 +76,7 @@
 }
 
 .game-list-item {
-  padding: 5px;
+  padding: 6px;
   border: 1px solid var(--bg-dark-3);
   border-radius: 10px;
   overflow-y: auto;
@@ -86,8 +86,9 @@
   opacity: 0;
   transition: opacity .5s ease-out;
   justify-content: center;
-  min-height: 100px;
+  min-height: 60px;
   letter-spacing: 1px;
+
 }
 
 .game-list-item.pointer {
@@ -96,11 +97,13 @@
 
 .game-list-item.show {
   opacity: 1;
-  transition: opacity .5s ease-in 1s;
+  filter: brightness(1);
+  transition: opacity .5s ease-in 1s, filter 0.25s ease-in;
 }
 
 .game-list-item:hover {
   filter: brightness(1.2);
+  transition: filter 0.25s ease-in;
 }
 
 .game-list-item-content {
@@ -123,14 +126,7 @@
   font-weight: 300;
   letter-spacing: 3px;
   text-align: center;
-}
-
-.game-list-item-header:after {
-  content: ' ▶'
-}
-
-.game-list-item-header.show:after {
-  content: ' ▼';
+  text-transform: uppercase;
 }
 
 .game-list-item-label {
@@ -175,10 +171,6 @@
   width: 100%;
 
 }
-
-/* .game-list-item-action.locked button {
-  width: 100%;
-} */
 
 .game-list-item::-webkit-scrollbar {
   width: 1px;

@@ -1,6 +1,6 @@
-import type { CharacterEntity } from '../../../entity/character/types/CharacterEntity.types'
-import type { PlayerEntity } from '../../../entity/player/types/PlayerEntity.types'
-import type { QuestEntity } from '../../../entity/quest/types/QuestEntity.types'
+import type { CharacterEntity, CharacterGoldTransaction } from '../../../entity/character/types/CharacterEntity.types'
+import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types'
+import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
 
 export type ActivityType =
   | 'hunting'
@@ -35,48 +35,15 @@ export interface ActivityEntry {
 }
 
 export type ActivityMeta = {
-  mode?: string
-  
-  // generic naming
-  name?: string
-
-  // questing
-  questId?: string
-  questName?: string
-
-  // resting
-  tavernActionId?: string
-
-  // hunting
-  mobId?: string
-  mobName?: string
-  zoneId?: string
-  zoneName?: string
-
-  // professions
-  professionId?: string
-  professionName?: string
-
-  // crafting
-  recipeId?: string
-  recipeName?: string
-  itemId?: string
-  itemName?: string
-
-  // dungeon / raid
-  dungeonId?: string
-  dungeonName?: string
-  raidId?: string
-  raidName?: string
-
+  isDebugMode?: boolean
+  worldMode?: OverlayMode
   // generic runtime values
-  xpReward?: number
-  goldReward?: number
-
-  //upgrades
-  upgradeId?: string
+  xp?: number
+  gold?: number
   
   player?: PlayerEntity
+  playerGoldTransaction?: PlayerGoldTransaction
   character?: CharacterEntity
-  quest?: QuestEntity
+  characterId?: string
+  characterGoldTransaction?: CharacterGoldTransaction
 }

@@ -5,7 +5,6 @@ export interface CharacterEntity {
   partyId?: string
   
   name: string
-  gold: number
   classId: string
   xp: number
   xpNextLevel: number
@@ -21,4 +20,11 @@ export interface CharacterEntity {
   strength: number
   intellect: number
   agility: number
+}
+
+export interface CharacterGoldTransaction {
+  id: string
+  characterId: string
+  date: number
+  amount: number
 }

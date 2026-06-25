@@ -26,10 +26,6 @@
   width: 36px;
   height: 36px;
 
-  /* display: flex; */
-  /* align-items: center; */
-  /* justify-content: center; */
-
   border: 1px solid var(--text);
   border-radius: 50%;
 
@@ -39,12 +35,13 @@
   cursor: pointer;
 
   pointer-events: all;
-
-  transition: transform 0.15s;
+  filter: brightness(1);
+  transition: filter 0.25s ease-in;
 }
 
 .contextButton:hover {
   filter: brightness(1.2);
+  transition: filter 0.25s ease-in;
 }
 
 .contextButton:hover .icon {

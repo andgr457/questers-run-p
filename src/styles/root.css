@@ -9,12 +9,12 @@
   --gold-opaque: rgba(207, 176, 0, 0.322);
 
   --danger: #8b1e1e;
-  --success: #1e8119;
+  --danger-light: #f02828;
+  --danger-text-shadow: ; 
   
-  --green-success: #1e8119;
+  --success: #1e8119;
   --green-success-2: #39eb2f;
   --danger-opaque: #8b1e1e34;
-  --danger-light: #f02828;
   --red: #580707;
   --orange-dark: rgb(171, 111, 0);
   --text-dark: #212121;
@@ -29,6 +29,34 @@
   --blue-sd: #2a71bc;
   --blue-sd-dark: #1e3a8a;
   --blue-sd-darker: #152654;
+  --scroll: radial-gradient(circle at center,
+      var(--text) 5%,
+      transparent 60%
+    ),
+    radial-gradient(circle at 20% 20%,
+      var(--bg-dark-3),
+      transparent 40%
+    ),
+    radial-gradient(circle at 80% 80%,
+      var(--bg-dark-2),
+      transparent 40%
+    ),
+    linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-1));
+  --scroll-hover: radial-gradient(circle at center,
+      var(--text) 0%,
+      var(--text) 10%,
+      rgba(0, 0, 0, 0.6) 100%,
+      transparent 60%
+    ),
+    radial-gradient(circle at 20% 20%,
+      var(--green-dark),
+      transparent 40%
+    ),
+    radial-gradient(circle at 80% 80%,
+      rgba(255, 215, 0, 0.4),
+      transparent 40%
+    ),
+    linear-gradient(135deg, #3b82f6, #1e3a8a);
   --cool-bg: radial-gradient(circle at center,
       var(--text) 0%,
       var(--text) 10%,
@@ -86,15 +114,23 @@ html, body, #root {
 
 
 *::-webkit-scrollbar {
-  width: 2px;
+  width: 16px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgb(0, 0, 0);
+  background: var(--scroll);
+  border: 4px solid transparent;
+  border-radius: 10px;
+  background-clip: padding-box;  
+}
 
-  border-radius: 1px;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-hover);
+
+  cursor: pointer;
 }
 
 *::-webkit-scrollbar-track {
   background: transparent;
 }
+

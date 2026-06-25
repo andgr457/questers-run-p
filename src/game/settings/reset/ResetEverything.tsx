@@ -1,19 +1,20 @@
-import { useCallback, useState } from 'react'
-import { characterRuntimeService } from '../../../engine/entity/CharacterRuntimeService'
-import { playerRuntimeService } from '../../../engine/entity/PlayerRuntimeService'
-import type { CharacterEntity } from '../../../entity/character/types/CharacterEntity.types'
-import type { PlayerEntity } from '../../../entity/player/types/PlayerEntity.types'
-import GamePanel from '../../../ui/panel/GamePanel'
+import { useCallback } from 'react'
+import { characterRuntimeService } from '../../../engine/character/CharacterRuntimeService'
+import { playerRuntimeService } from '../../../engine/player/PlayerRuntimeService'
 import { useConfirm } from '../../../ui/modal/providers/ConfirmProvider'
 import GamePanelSection from '../../../ui/panel/GamePanelSection'
 import DetailRow from '../../detail/DetailRow'
+import type { SettingsMode } from '../types/SettingsPanel.types'
 
-export default function ResetEverything() {
+interface Props {
+  setSettingsMode: (mode: SettingsMode) => void
+}
+
+export default function ResetEverything(props: Props) {
   const {showConfirm} = useConfirm()
-  const [progress, setProgress] = useState(0)
-  const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
-  const [characters, setCharacters] = useState<CharacterEntity[]>(characterRuntimeService.getCharacters())
-  
+  const {
+    setSettingsMode
+  } = props
   const handleResetEverythingClicked = useCallback(async () => {
     const confirmResult = await showConfirm({
       isYesNo: true,
@@ -25,24 +26,28 @@ export default function ResetEverything() {
     localStorage.clear()
     window.location.reload()  
   }, [])
-  const resetAction = {
-    name: 'RESET EVERYTHING',
-    fn: handleResetEverythingClicked
-  }
+
+  const player = playerRuntimeService.getPlayer()
+  const characters = characterRuntimeService.getCharacters()
   return <GamePanelSection
     title='WARNING!'
     actions={[
-      resetAction,
+      {
+        name: 'reset everything',
+        className: 'button danger',
+        fn: () => {
+          handleResetEverythingClicked()
+        }
+      }
     ]}
+    onBack={() => {setSettingsMode('main')}}
+    onBackLabel='Settings'
     description={<>
       Confirming this will clear everything on this site, for this browser. 
       Only continue if you are absolutely sure you want this done.
     </>}
   >
-    <div>
-      <div className='game-list-item-header'>
-        Local Storage
-      </div>
+    <div className='detail-rows'>
       <DetailRow field='Player' value={typeof player === 'undefined' ? '' : player.name} />
       <DetailRow field='Characters' value={`${characters.length}`} />
     </div>

@@ -7,7 +7,7 @@
   --input-padding: 8px 10px;
   --input-border: 1px solid rgba(255, 255, 255, 0.08);
   --input-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --input-focus: 0 0 0 2px rgba(80, 140, 255, 0.35);
+  --input-focus: 0 0 0 1px var(--text);
 }
 
 /* Shared input base */
@@ -23,6 +23,12 @@ textarea {
   outline: none;
   transition: all 0.2s ease;
   box-shadow: var(--input-shadow);
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+input.invalid {
+  border-color: var(--danger);
 }
 
 input:focus,
@@ -91,11 +97,10 @@ select:hover {
 
 .form-label {
   color: var(--text);
-  font-size: 0.75em;
   letter-spacing: 1px;
-  margin-bottom: 4px;
   display: inline-block;
   opacity: 0.9;
+  margin-left: 5px;
 }
 
 input:disabled,
@@ -167,4 +172,10 @@ textarea:disabled {
   margin-right: 20%;
   margin-top: 10px;
   min-width: fit-content;
+}
+
+.error-label {
+  padding: 5px;
+  color: var(--danger-light);
+
 }

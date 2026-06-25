@@ -1,30 +1,25 @@
+import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
 import type { ActivityMeta, ActivityType } from '../../activity/types/Activity.types'
+import type { CharacterEvents, CharacterEventTypes } from './EventBusCharacter.types'
+import type { DebugEvents, DebugEventTypes } from './EventBusDebug.types'
+import type { PlayerEvents, PlayerEventTypes } from './EventBusPlayer.types'
 
 export interface EventSession {
   event: Partial<GameEvents>
   createdDate: number
 }
 
-export type GameEventType = 'activity:start'
+export type GameEventType = PlayerEventTypes 
+  | DebugEventTypes
+  | CharacterEventTypes
+  | 'world:mode:change'
+  | 'event:history:updated'
+  | 'activity:start'
   | 'activity:progress'
   | 'activity:complete'
   | 'activity:cancel'
 
-  | 'event:debug:recording:start'
-  | 'event:debug:recording:started'
-  | 'event:debug:recording:stop'
-  | 'event:debug:recording:stopped'
-  | 'event:debug:recording:history'
-
   | 'mode:settings'
-
-  | 'player:dirty'
-  | 'player:save'
-  | 'player:saved'
-
-  | 'character:dirty'
-  | 'character:save'
-  | 'character:saved'
 
   | 'quest:start'
   | 'quest:cancel'
@@ -59,6 +54,13 @@ export interface ActivityGameEvent extends GameEvent {
   activityType: ActivityType
 }
 
+export interface GameEvent_WorldModeChange extends GameEvent {
+  type: 'world:mode:change'
+  meta: {
+    worldMode: OverlayMode
+  }
+}
+
 export interface GameEvent_ActivityStart extends ActivityGameEvent {
   type: 'activity:start'
 }
@@ -74,30 +76,6 @@ export interface GameEvent_ActivityComplete extends ActivityGameEvent {
 
 export interface GameEvent_ActivityCancel extends ActivityGameEvent {
   type: 'activity:cancel'
-}
-
-export interface GameEvent_PlayerDirty extends GameEvent {
-  type: 'player:dirty'
-}
-
-export interface GameEvent_PlayerSave extends GameEvent {
-  type: 'player:save'
-}
-
-export interface GameEvent_PlayerSaved extends GameEvent {
-  type: 'player:saved'
-}
-
-export interface GameEvent_CharacterDirty extends GameEvent {
-  type: 'character:dirty'
-}
-
-export interface GameEvent_CharacterSave extends GameEvent {
-  type: 'character:save'
-}
-
-export interface GameEvent_CharacterSaved extends GameEvent {
-  type: 'character:saved'
 }
 
 export interface GameEvent_QuestStart extends GameEvent {
@@ -128,53 +106,22 @@ export interface GameEvent_UpgradePurchased extends GameEvent {
   type: 'upgrade:purchased'
 }
 
-export interface GameEvent_ModeSettings extends GameEvent {
-  type: 'mode:settings'
-  meta: {
-    mode: string
-  }
-}
-
-export interface GameEvent_DebugRecordingStart extends GameEvent {
-  type: 'event:debug:recording:start'
-}
-
-export interface GameEvent_DebugRecordingStarted extends GameEvent {
-  type: 'event:debug:recording:started'
-}
-
-export interface GameEvent_DebugRecordingStop extends GameEvent {
-  type: 'event:debug:recording:stop'
-}
-
-export interface GameEvent_DebugRecordingStopped extends GameEvent {
-  type: 'event:debug:recording:stopped'
-}
-
-export interface GameEvent_DebugRecordingHistory extends GameEvent {
-  type: 'event:debug:recording:history'
+export interface GameEvent_EventHistoryUpdated extends GameEvent {
+  type: 'event:history:updated'
 }
 
 export type GameEvents = GameEvent_ActivityStart
   | GameEvent_ActivityProgress
   | GameEvent_ActivityComplete
   | GameEvent_ActivityCancel
+  | GameEvent_WorldModeChange
+  | GameEvent_EventHistoryUpdated
 
-  | GameEvent_DebugRecordingStart
-  | GameEvent_DebugRecordingStarted
-  | GameEvent_DebugRecordingStop
-  | GameEvent_DebugRecordingStopped
-  | GameEvent_DebugRecordingHistory
+  | DebugEvents
 
-  | GameEvent_ModeSettings
+  | PlayerEvents
 
-  | GameEvent_PlayerDirty
-  | GameEvent_PlayerSave
-  | GameEvent_PlayerSaved
-
-  | GameEvent_CharacterDirty
-  | GameEvent_CharacterSave
-  | GameEvent_CharacterSaved
+  | CharacterEvents
 
   | GameEvent_QuestStart 
   | GameEvent_QuestCancel 
@@ -185,25 +132,6 @@ export type GameEvents = GameEvent_ActivityStart
   | GameEvent_TavernComplete
 
   | GameEvent_UpgradePurchased
-
-  | {
-      type: 'character:xp:add'
-      characterId: string
-      amount: number
-      source?: string
-    }
-  | {
-      type: 'character:stamina:add'
-      characterId: string
-      amount: number
-      source?: string
-    }
-  | {
-      type: 'character:stamina:remove'
-      characterId: string
-      amount: number
-      source?: string
-    }
 
 export interface EventBusLog {
   date: number

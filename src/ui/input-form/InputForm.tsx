@@ -7,6 +7,7 @@ import type { Transition } from '../transition/types/Transition.types'
 interface Props {
   screens: InputScreen[]
   transition: Transition
+  showCancel: boolean
 }
 
 interface ScreenIndexes {
@@ -15,9 +16,13 @@ interface ScreenIndexes {
 }
 
 export default function ViewInputScreen(props: Props) {
-  const { screens, transition } = props
+  const { 
+    screens, 
+    transition,
+    showCancel
+  } = props
 
-  const [screenIndexes] = useState<ScreenIndexes>({
+  const [screenIndexes, setScreenIndexes] = useState<ScreenIndexes>({
     screenIndex: 0,
     screenStepIndex: 0
   })
@@ -36,7 +41,13 @@ export default function ViewInputScreen(props: Props) {
   }, [showTransition])
 
   const screen = screens[screenIndexes.screenIndex]
-  const step = screen.steps[screenIndexes.screenStepIndex]
+  const step = screen?.steps[screenIndexes.screenStepIndex]
+  const prevStep = screen?.steps[screenIndexes.screenStepIndex - 1]
+  const nextStep = screen?.steps[screenIndexes.screenStepIndex + 1]
+  
+  const prevScreen = screens[screenIndexes.screenIndex - 1]
+
+  const nextScreen = screens[screenIndexes.screenIndex + 1]
 
   const getValue = (label: string) => formState[label] ?? ''
 
@@ -47,6 +58,9 @@ export default function ViewInputScreen(props: Props) {
     }))
   }
 
+  const prevStepExists = typeof prevStep !== 'undefined'
+  const prevScreenExists = typeof prevScreen !== 'undefined'
+  const canGoBack = prevStepExists || prevScreenExists
   return (
     <div className={styles.wrapper}>
 
@@ -72,7 +86,7 @@ export default function ViewInputScreen(props: Props) {
         <div className={styles.inputs}>
           {step.inputs.map((input, i) => (
             <div key={step.id + i} className={styles.inputRow}>
-              <label className={styles.label}>
+              <label className='form-label'>
                 {input.label}
               </label>
 
@@ -83,13 +97,72 @@ export default function ViewInputScreen(props: Props) {
             </div>
           ))}
         </div>
+        <div className='game-panel-section-actions'>
+          <div className='game-panel-section-action'>
+            <button className='button success' onClick={() => {
+              step.onAccept()
+              if(nextStep){
+                setScreenIndexes(prev => {
+                  if (!prev) return prev
 
-        {step.onAccept && <div>
-          <button className='button-basic dark' onClick={step.onAccept}>
-            Confirm
-          </button>  
-        </div>}
+                  return {
+                    screenIndex: prev.screenIndex,
+                    screenStepIndex: prev.screenStepIndex + 1
+                  }
+                })
+                return
+              }
+              if(nextScreen){
+                setScreenIndexes(prev => {
+                  if (!prev) return prev
 
+                  return {
+                    screenIndex: prev.screenIndex + 1,
+                    screenStepIndex: 0
+                  }
+                })
+                return
+              }
+            }}>
+              Confirm
+            </button>  
+          </div>
+          {showCancel && <div className='game-panel-section-action'>
+            <button className='button dark' onClick={step.onCancel}>
+              Cancel
+            </button>  
+          </div>}
+          {canGoBack && <div className='game-panel-section-action'>
+            <button className='button dark' onClick={() => {
+              if(prevStep){
+                //this screen previous step
+                setScreenIndexes(prev => {
+                  if (!prev) return prev
+
+                  return {
+                    screenIndex: prev.screenIndex,
+                    screenStepIndex: prev.screenStepIndex - 1
+                  }
+                })
+                return
+              }
+              if(prevScreen){
+                //last screen last step
+                setScreenIndexes(prev => {
+                  if (!prev) return prev
+
+                  return {
+                    screenIndex: prev.screenIndex - 1,
+                    screenStepIndex: prevScreen.steps.length - 1
+                  }
+                })
+                return
+              }
+            }}>
+              Back
+            </button>  
+          </div>}
+        </div>        
       </div>
     </div>
   )

@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
-import ContextMenuButton from '../../game/context-menu/components/ContextMenuButton'
 
 interface Props {
   title: string
   currentScreenName: string
-  onBackTo?: () => void
   children: React.ReactNode
 }
 
@@ -14,7 +12,6 @@ export default function GamePanel(props: Props) {
     children,
     title,
     currentScreenName,
-    onBackTo
   } = props
   const [show, setShow] = useState(false)
 
@@ -31,17 +28,6 @@ export default function GamePanel(props: Props) {
         </div>
         {currentScreenName && <div className='game-panel-title-current-screen'>
           {currentScreenName}
-        </div>}
-        {onBackTo && <div className='game-panel-title-back-button'>
-          <ContextMenuButton 
-            action={{
-              id: 'back-settings',
-              label: 'Back',
-              iconName: 'back',
-              iconRotate: false,
-              onClick: onBackTo ? () => {onBackTo?.()} : undefined as any,
-            }}
-          />
         </div>}
       </div>
     )}

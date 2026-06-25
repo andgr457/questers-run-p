@@ -7,20 +7,14 @@ export interface InputScreen {
 export interface InputScreenStep {
   id: string
   title?: React.ReactNode
-  content: React.ReactNode
+  content?: React.ReactNode
   inputs: ViewInputScreenStepInput[]
-  onAccept?: () => void
-  onCancel?: () => void
-}
-
-export interface InputValidationResult {
-  isValid: boolean
-  error?: string
+  onAccept: () => void
+  onCancel: () => void
 }
 
 export interface ViewInputScreenStepInput {
   label: string
   value: string
-  onValidate: (value: string) => InputValidationResult
   render: (value: string, onChange: (v: string) => void) => React.ReactNode
 }

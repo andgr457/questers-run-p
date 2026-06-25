@@ -1,4 +1,3 @@
-import type { GameEventType } from '../../../../../engine/event/types/EventBus.types'
 import GameList from '../../../../../ui/list/GameList'
 import GamePanelSection from '../../../../../ui/panel/GamePanelSection'
 import type { DebugEventsMode, GroupEventItem } from '../../types/DebugEvents.types'
@@ -7,17 +6,13 @@ import DebugEventListItem from '../list/DebugEventListItem'
 interface Props {
   title: string
   groupEventItems: GroupEventItem[] | undefined
-  eventIds: Record<GameEventType, string[]>
-  handleShowLogs: (eventType: GameEventType) => void
   setMode: (mode: DebugEventsMode) => void
 }
 
-export default function DebugPlayerEvents(props: Props){
+export default function DebugEntityEvents(props: Props){
   const {
     title,
     groupEventItems,
-    handleShowLogs,
-    eventIds,
     setMode,
   } = props
 
@@ -37,15 +32,6 @@ export default function DebugPlayerEvents(props: Props){
           name: 'Emit',
           fn: (entity) => {
             entity?.emit?.()
-          }
-        },
-        {
-          name: 'Session Logs',
-          getName: (entity) => {
-            return `Session Logs [${eventIds[entity.type]?.length ?? 0}]`
-          },
-          fn: (entity) => {
-            handleShowLogs(entity?.type as GameEventType)
           }
         }
       ]}

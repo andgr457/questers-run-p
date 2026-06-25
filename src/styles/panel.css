@@ -1,15 +1,11 @@
 .game-panel-wrapper {
   height: 100%;
   overflow-y: auto;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 
 .game-panel {
-  scroll-behavior: smooth;
   opacity: 0;
-  transition: opacity .5s ease-out, 
-    padding .5s ease-out;
+  transition: opacity .5s ease-out;
 }
 
 .game-panel.show {
@@ -21,22 +17,28 @@
   position: sticky;
   top: 0;
   z-index: 99999;
-  background-color: var(--bg-dark-2);
-  padding-left: 25px;
-  padding-right: 25px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-
+  padding-top: 3px;
+  padding-bottom: 3px;
+  border: solid 1px var(--bg-dark-3);
+  background-color: var(--bg-dark-1);
   border-radius: 5px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-evenly;
   text-transform: uppercase;
+  margin-bottom: 5px;
+  filter: brightness(1);
+  transition: background-color .25s ease-in, filter .25s ease-in;
+}
+
+.game-panel-title:hover {
+  filter: brightness(1.2);
+  background-color: var(--bg-dark-2);
+  transition: background-color .25s ease-in, filter .25s ease-in;
 }
 
 .game-panel-title-main {
-  font-size: 1.2em;
   letter-spacing: 3px;
 }
 
@@ -45,22 +47,11 @@
   letter-spacing: 2px;
 }
 
-.game-panel-title-back-button {
-
-}
 
 .game-panel-title-back-button button {
   border-color: var(--gold);
 }
 
 .game-panel-children {
-  margin-bottom: 25px;
-}
-
-@media (max-width: 768px) {
-  .game-panel-title {
-    /* display: inline-flex; */
-    /* top: -1px; */
-    
-  }
+  margin-bottom: 10px;
 }

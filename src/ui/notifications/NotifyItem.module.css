@@ -1,0 +1,59 @@
+.item {
+  min-width: 220px;
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  background: rgb(20, 20, 25);
+  color: white;
+
+  font-size: 13px;
+  line-height: 1.2;
+
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+
+  transition: all 180ms ease;
+  will-change: transform, opacity;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* ======================
+   STATES
+   ====================== */
+
+.enter {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.exit {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+}
+
+/* ======================
+   TYPES
+   ====================== */
+
+.info {
+  border-left: 3px solid #4aa3ff;
+}
+
+.success {
+  border-left: 3px solid #3ddc97;
+}
+
+.warning {
+  border-left: 3px solid #ffcc66;
+}
+
+.error {
+  border-left: 3px solid #ff5c5c;
+}

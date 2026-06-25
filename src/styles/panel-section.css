@@ -12,15 +12,20 @@
 .game-panel-section-title {
   font-size: 1.2em;
   letter-spacing: 2px;
-  margin-top: 5px;
   text-align: center;
   cursor: pointer;
   text-transform: uppercase;
-  margin-bottom: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  background-color: var(--bg-dark-3);
   border-radius: 3px;
+  margin-top: 5px;
+  filter: brightness(1);
+  background-color: var(--bg-dark-1);
+  transition: background-color .25s ease-in, filter .25s ease-in;
+}
+
+.game-panel-section-title:hover {
+  filter: brightness(1.2);
+  background-color: var(--bg-dark-2);
+  transition: background-color .25s ease-in, filter .25s ease-in;
 }
 
 .game-panel-section-title:after {
@@ -45,7 +50,7 @@
 
 .game-panel-section-children-wrapper.show {
   opacity: 1;
-  max-height: 1000px;
+  max-height: fit-content;
   pointer-events: all;
   transition:
     max-height 0.3s ease-in,
@@ -53,25 +58,37 @@
 }
 
 .game-panel-section-description {
-  margin-top: 10px;
   text-align: center;
   opacity: .8;
   letter-spacing: 1px;
+  padding: 5px;
 }
 
 .game-panel-section-children {
-  margin-top: 10px;
   letter-spacing: 1px;
+  
 }
 
-.game-panel-section-actions {
-  margin-top: 10px;
+.game-panel-section-action {
+  min-width: 100px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: space-around;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  
 }
 
 .game-panel-section-action button {
-  min-width: 100px;
+  width: 100%;
+}
+
+.game-panel-section-back {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.game-panel-section-back button {
+  width: 100%;
 }

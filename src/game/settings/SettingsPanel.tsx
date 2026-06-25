@@ -7,21 +7,28 @@ import { GAME_SETTINGS_MODE_NAMES } from './utils/SettingsPanel.utils';
 import SettingsPanelListItem from './SettingsPanelListItem';
 import ResetEverything from './reset/ResetEverything';
 import { eventBus } from '../../engine/event/EventBus';
+import { eventDebugRuntimeService } from '../../engine/event/EventDebugRuntimeService';
+import { GAME_EVENT_BUS_DEBUG_RECORDING_TYPES } from '../../engine/event/utils/EventBus.utils';
 
 export default function SettingsPanel(){
   const [mode, setMode] = useState<SettingsMode>('main')
-  
+  const [recordingDetail, setRecordingDetail] = useState(eventDebugRuntimeService.getRecordingDetail())
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
-      if(event.type !== 'mode:settings') return
-      setMode(event.meta.mode as SettingsMode)
+      if(GAME_EVENT_BUS_DEBUG_RECORDING_TYPES.includes(event.type)){
+        setRecordingDetail(eventDebugRuntimeService.getRecordingDetail())
+      }
     })
     return unsub
   }, [])
 
   const lists: SettingsListUI[] = [
-    {
+    
+    
+  ]
+  if(recordingDetail.isDebugMode){
+    lists.push({
       title: 'debug',
       description: <></>,
       items: [
@@ -36,8 +43,10 @@ export default function SettingsPanel(){
           mode: 'debug_ui'
         }
       ]
-    },
-    {
+    })
+  }
+
+  lists.push({
       title: 'reset',
       description: <></>,
       items: [
@@ -47,23 +56,35 @@ export default function SettingsPanel(){
           mode: 'reset_everything'
         }
       ]
-    }
-  ]
+    })
 
   return (
     <>
       <GamePanel
         title='settings'
         currentScreenName={GAME_SETTINGS_MODE_NAMES[mode]}
-        onBackTo={() => {
-          setMode('main')
-        }}
       >
+        <div>
+          <button 
+            className={`button ${recordingDetail.isDebugMode ? 'button gold' : 'button dark'}`}
+            onClick={() => {
+              eventBus.emit({
+                id: crypto.randomUUID(),
+                type: 'event:debug:mode',
+                meta: {
+                  isDebugMode: !recordingDetail.isDebugMode
+                }
+              })
+            }}
+          >
+            DEBUG MODE {recordingDetail.isDebugMode ? 'ON' : 'OFF'}
+          </button>
+        </div>
         {mode === 'debug_events' && (
-          <DebugEventList  />
+          <DebugEventList setSettingsMode={setMode} />
         )}
         {mode === 'reset_everything' && (
-          <ResetEverything />
+          <ResetEverything setSettingsMode={setMode} />
         )}
         {mode === 'main' && (
           lists.map(l => {

@@ -1,6 +1,4 @@
-import type { PlayerEntity } from '../../entity/player/types/PlayerEntity.types'
 import { clockRuntimeService } from '../clock/ClockRuntimeService'
-import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { EventBusLog, GameEvent } from '../event/types/EventBus.types'
 import { GAME_EVENT_BUS_DEBUG_RECORDING_TYPES } from './utils/EventBus.utils'
@@ -11,6 +9,7 @@ class EventDebugRuntimeService {
   private isRecording = false
   private lastStartDate: number | undefined
   private lastEndDate: number | undefined
+  private isDebugMode = false
 
   init() {
     if (this.initialized) {
@@ -31,16 +30,19 @@ class EventDebugRuntimeService {
       if(event.type === 'event:debug:recording:stop'){
         this.stopRecording(event)
       }
+      if(event.type === 'event:debug:mode'){
+        this.isDebugMode = event.meta.isDebugMode
+      }
     })
   }
 
   private addHistory(event: GameEvent){
     this.history = [
-      ...this.history,
       {
         date: clockRuntimeService.getNow(),
         event
-      }
+      },
+      ...this.history,
     ]
     eventBus.emit({
       id: crypto.randomUUID(),
@@ -82,7 +84,8 @@ class EventDebugRuntimeService {
       isRecording: this.isRecording,
       history: this.history,
       lastStartDate: this.lastStartDate,
-      lastEndDate: this.lastEndDate
+      lastEndDate: this.lastEndDate,
+      isDebugMode: this.isDebugMode
     }
   }
 }

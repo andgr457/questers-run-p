@@ -6,4 +6,6 @@ export interface ContextMenuAction {
   iconName: ContextMenuIconName
   iconRotate: boolean
   onClick: () => void
+  color?: string
+  borderColor?: string
 }

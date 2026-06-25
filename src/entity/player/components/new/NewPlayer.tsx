@@ -1,32 +1,31 @@
 import { useState, useCallback } from 'react'
 import ViewInputScreen from '../../../../ui/input-form/InputForm'
-import type { InputValidationResult } from '../../../../ui/input-form/types/InputForm.types'
 import type { PlayerEntity } from '../../types/PlayerEntity.types'
 import { eventBus } from '../../../../engine/event/EventBus'
+import { eventHistoryRuntimeService } from '../../../../engine/event/EventHistoryRuntimeService'
 
 export default function NewPlayer(){
   const [name, setName] = useState('')
+  const [nameError, setNameError] = useState('')
 
   const NAME_MAX_LENGTH = 16
+  const NAME_MIN_LENGTH = 3
 
-  const validateName = useCallback((): InputValidationResult => {
+  const validateName = useCallback(() => {
+    setNameError('')
+    console.log(name)
     if (!name || !name.trim()) {
-      return {
-        isValid: false,
-        error: 'Player name is empty.'
-      }
+      setNameError('Player name is empty.')
+      return false
     }
 
     const trimmed = name.trim()
-
-    if (trimmed.length < 3) {
-      return {
-        isValid: false,
-        error: 'Player name is too short.'
-      }
+    if (trimmed.length < NAME_MIN_LENGTH) {
+      setNameError('Player name is too short.')
+      return false
     }
 
-    return { isValid: true }
+    return true
   }, [name])
 
 
@@ -34,55 +33,69 @@ export default function NewPlayer(){
     <ViewInputScreen
       transition={{
         title: 'The world slowly comes into focus...',
-        delay: 4000
+        delay: 1000
       }}
+      showCancel={false}
       screens={[
         {
           index: 0,
           steps: [
             {
               id: 'player-name',
-              title: 'Who Are You?',
+              title: 'New Player',
               content: (
                 <>
-                  Before your adventure begins, tell us your name.
+                  <div>
+                    Enter a player name to get started.
+                  </div>
+                  {nameError && <div className='error-label'>
+                    {nameError}  
+                  </div>}
                 </>
               ),
               inputs: [
                 {
-                  label: `Name (max ${NAME_MAX_LENGTH})`,
+                  label: `New Player Name ( ${NAME_MIN_LENGTH}-${NAME_MAX_LENGTH} characters )`,
                   value: '',
-                  onValidate: validateName,
                   render: (value, onChange) => (
                     <input
-                      className="input"
+                      className={`input ${!nameError ? '' : 'invalid' }`}
                       maxLength={NAME_MAX_LENGTH}
                       value={value}
                       onChange={(e) => {
-                        onChange(e.target.value)
                         setName(e.target.value)
+                        onChange(e.target.value)
                       }}
                     />
                   )
                 }
               ],
               onAccept: () => {
+                const nameValid = validateName()
+                if(!nameValid) return
+
                 const player: PlayerEntity = {
                   id: crypto.randomUUID(),
                   name: name,
                   characterTokens: 1,
-                  gold: 0,
                   level: 1,
                   xp: 0,
                   xpNextLevel: 100
-                } as PlayerEntity
-
+                }
+                eventHistoryRuntimeService.addHistory(
+                  `Player Event`,
+                  `${name} was created!`
+                )
                 eventBus.emit({
+                  id: crypto.randomUUID(),
                   type: 'player:save',
                   meta: {
                     player
                   }
                 })
+              },
+              onCancel: () => {
+                window.close()
               }
             }
           ]
