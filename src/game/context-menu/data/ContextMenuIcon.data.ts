@@ -4,6 +4,7 @@ export const ContextMenuIcon: Record<ContextMenuIconName, string> = {
   settings: '⚙',
   player: 'p',
   characters: 'c',
+  dashboard: 'd',
   back: '←',
   close: 'x',
   recordStart: '▶',

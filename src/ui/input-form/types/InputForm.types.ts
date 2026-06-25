@@ -9,7 +9,7 @@ export interface InputScreenStep {
   title?: React.ReactNode
   content?: React.ReactNode
   inputs: ViewInputScreenStepInput[]
-  onAccept: () => void
+  onAccept: () => boolean
   onCancel: () => void
 }
 

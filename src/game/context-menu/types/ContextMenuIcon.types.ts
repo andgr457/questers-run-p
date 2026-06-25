@@ -2,6 +2,7 @@ export type ContextMenuIconName =
   | 'settings'
   | 'player'
   | 'characters'
+  | 'dashboard'
   | 'back'
   | 'close'
   | 'recordStart'

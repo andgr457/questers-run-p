@@ -13,7 +13,6 @@ export default function NewPlayer(){
 
   const validateName = useCallback(() => {
     setNameError('')
-    console.log(name)
     if (!name || !name.trim()) {
       setNameError('Player name is empty.')
       return false
@@ -36,6 +35,7 @@ export default function NewPlayer(){
         delay: 1000
       }}
       showCancel={false}
+      actionsLocation='bottom'
       screens={[
         {
           index: 0,
@@ -55,7 +55,7 @@ export default function NewPlayer(){
               ),
               inputs: [
                 {
-                  label: `New Player Name ( ${NAME_MIN_LENGTH}-${NAME_MAX_LENGTH} characters )`,
+                  label: ``,
                   value: '',
                   render: (value, onChange) => (
                     <input
@@ -72,7 +72,7 @@ export default function NewPlayer(){
               ],
               onAccept: () => {
                 const nameValid = validateName()
-                if(!nameValid) return
+                if(!nameValid) return false
 
                 const player: PlayerEntity = {
                   id: crypto.randomUUID(),
@@ -93,6 +93,7 @@ export default function NewPlayer(){
                     player
                   }
                 })
+                return true
               },
               onCancel: () => {
                 window.close()

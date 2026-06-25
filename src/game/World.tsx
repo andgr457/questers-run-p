@@ -101,7 +101,7 @@ export default function World() {
       />
 
       <OverlayLayer>
-        {overlayMode === 'world' && (
+        {overlayMode === 'dashboard' && (
           <Dashboard />
         )}
         {overlayMode === 'event_history' && (

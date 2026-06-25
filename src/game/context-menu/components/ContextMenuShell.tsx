@@ -88,6 +88,7 @@ export default function ContextMenuShell(props: Props) {
         onClick: () => overlayMode === 'characters' ? setOverlayMode('world') : setOverlayMode('characters'),
       })
     }
+    
     return actions
   }, [overlayMode, setOverlayMode, player, characters])
 
@@ -106,6 +107,16 @@ export default function ContextMenuShell(props: Props) {
         )
       },
     }]
+    if(player){
+      actions.push({
+        id: 'dashboard',
+        label: 'Dashboard',
+        iconName: 'dashboard',
+        iconRotate: false,
+        borderColor: overlayMode === 'dashboard' ? 'var(--gold)' : 'var(--text)',
+        onClick: () => overlayMode === 'dashboard' ? setOverlayMode('world') : setOverlayMode('dashboard'),
+      })
+    }
     if(recordingDetail.isDebugMode){
       actions.push({
         id: 'debug-event-recording',

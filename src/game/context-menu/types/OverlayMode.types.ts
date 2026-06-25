@@ -1,6 +1,7 @@
 export type OverlayMode =
   | 'world'
   | 'event_history'
+  | 'dashboard'
 
   | 'settings'
   | 'settings_debug_logs'

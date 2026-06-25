@@ -18,7 +18,6 @@ export default function NewCharacter(){
 
   const validateName = useCallback(() => {
     setNameError('')
-    console.log(name)
     if (!name || !name.trim()) {
       setNameError('Character name is empty.')
       return false
@@ -41,6 +40,7 @@ export default function NewCharacter(){
         delay: 2000
       }}
       showCancel={false}
+      actionsLocation='top'
       screens={[
         {
           index: 0,
@@ -60,7 +60,7 @@ export default function NewCharacter(){
               ),
               inputs: [
                 {
-                  label: `New Character Name ( ${NAME_MIN_LENGTH}-${NAME_MAX_LENGTH} characters )`,
+                  label: `Name`,
                   value: '',
                   render: (value, onChange) => (
                     <input
@@ -77,8 +77,8 @@ export default function NewCharacter(){
               ],
               onAccept: () => {
                 const nameValid = validateName()
-                if(!nameValid) return
-
+                if(!nameValid) return false
+                return true
                 //valid name go to next screen
               },
               onCancel: () => {
@@ -97,12 +97,12 @@ export default function NewCharacter(){
               ),
               inputs: [
                 {
-                  label: `Classes`,
+                  label: `Class`,
                   value: '',
                   render: (value, onChange) => (
                     <select
                       // className={`input`}
-                      value={value}
+                      value={value ?? ''}
                       onChange={(e) => {
                         if(!e.target.value) return
 
@@ -122,13 +122,17 @@ export default function NewCharacter(){
                 {
                   label: ``,
                   value: '',
-                  render: (value, onChange) => (
-                    characterClass && <CharacterClassDetail characterClass={characterClass as CharacterClassEntity} />
-                  )
+                  render: (value, onChange) => {
+                    if(value || !onChange) return
+                    return characterClass && <CharacterClassDetail characterClass={characterClass as CharacterClassEntity} />
+                  }
                 }
               ],
               onAccept: () => {
-                if(!characterClass) return
+                if(!characterClass) {
+                  setNameError('Class not selected.')
+                  return false
+                }
                 
                 const character: CharacterEntity = {
                   id: crypto.randomUUID(),
@@ -166,6 +170,7 @@ export default function NewCharacter(){
                     worldMode: 'world'
                   }
                 })
+                return true
               },
               onCancel: () => {
               }

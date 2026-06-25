@@ -10,6 +10,8 @@ import { getPlayerGold } from '../../../engine/player/utils/Player.utils';
 import { GAME_CHARACTER_CLASSES } from '../../../entity/character-class/data/CharacterClassEntity.data';
 import type { CharacterClassId } from '../../../entity/character-class/types/CharacterClassEntity.types';
 import { getCharacterGold } from '../../../engine/character/utils/Character.utils';
+import ProgressBar from '../../../ui/progress-bar/ProgressBar';
+import { getProgress } from '../../../ui/progress-bar/utils/ProgressBar.utils';
 
 interface CharacterDashboard {
   id: string
@@ -45,10 +47,11 @@ export default function Dashboard() {
       status: 'Idle'
     })
   }
+  if(!player) return
 
   return (
     <GamePanel
-      title={`Quester's Run`}
+      title={`Dashboard`}
       currentScreenName=''
     >
       <div>
@@ -58,13 +61,18 @@ export default function Dashboard() {
           </div>
 
           <div className='dashboard-row'>
-            <div>{player?.name}</div>
-            <div>Lv. {player?.level ?? 1}</div>
+            <div>{player.name}</div>
+            <div>Lv. {player.level ?? 1}</div>
             <div>
-              XP {(player?.xp ?? 0).toLocaleString()} / {(player?.xpNextLevel ?? 0).toLocaleString()}
+              <ProgressBar
+                value={getProgress(player.xp, player.xpNextLevel)}
+                max={player.xpNextLevel}
+                color='#a855f7'
+                label='XP'
+              />
             </div>
             <div>{getPlayerGold().toLocaleString()}g</div>
-            <div>Tokens {player?.characterTokens ?? 0}</div>
+            <div>Tokens {player.characterTokens ?? 0}</div>
           </div>
         </div>
 
@@ -78,7 +86,12 @@ export default function Dashboard() {
               <div>{c.name}</div>
               <div>Lv. {c.level ?? 1}</div>
               <div>
-                XP {(c.xp ?? 0).toLocaleString()} / {(c.xpNextLevel ?? 0).toLocaleString()}
+                <ProgressBar
+                  value={getProgress(c.xp, c.xpNextLevel)}
+                  max={c.xpNextLevel}
+                  color='#a855f7'
+                  label='XP'
+                />
               </div>
               <div>{getCharacterGold(c.id).toLocaleString()}g</div>
               <div>{GAME_CHARACTER_CLASSES[c.classId as CharacterClassId].name}</div>
