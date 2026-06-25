@@ -3,7 +3,7 @@ import GameList from './GameList';
 import type { ItemActions } from '../item-action/types/ItemAction.types';
 
 interface Props<T> {
-  title: string
+  title?: string
   entities: T[]
   actions: ItemActions<T>
   getEntityContent: (entity: T) => React.ReactNode
@@ -29,11 +29,11 @@ export default function GameListWrapper<T>(props: Props<T>){
   }, [])
 
   return <div className={`game-list-wrapper ${show === true ? 'show' : ''}`}>
-    <div 
+    {title && <div 
       onClick={() => setShowChildren(!showChildren)} 
       className={`game-list-wrapper-title ${showChildren ? 'show' : ''}`}>
       {title}
-    </div>
+    </div>}
     <div className={`game-list-wrapper-list ${showChildren ? 'show' : ''}`}>
       <GameList
         actions={actions}

@@ -17,6 +17,7 @@ import PlayerDetail from '../entity/player/components/detail/PlayerDetail'
 import NewCharacter from '../entity/character/components/new/NewCharacter'
 import EventHistoryList from './event-history/components/list/EventHistoryList'
 import Dashboard from './dashboard/components/Dashboard'
+import CharacterList from '../entity/character/components/list/CharacterList'
 
 export default function World() {
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('world')
@@ -131,9 +132,7 @@ export default function World() {
         )}
 
         {overlayMode === 'characters' && (
-          <div>
-            CHARACTER PANEL
-          </div>
+          <CharacterList />
         )}
       </OverlayLayer>
     

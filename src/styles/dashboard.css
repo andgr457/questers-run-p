@@ -1,0 +1,32 @@
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.dashboard-section-title {
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.dashboard-row {
+  letter-spacing: 2px;
+
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 2fr)
+    minmax(100px, 1fr)
+    minmax(120px, 1fr)
+    minmax(100px, 1fr)
+    minmax(100px, 1fr)
+    minmax(100px, 1fr);
+
+  gap: 10px;
+  align-items: center;
+
+  padding: 5px;
+
+  background: var(--bg-dark);
+}
