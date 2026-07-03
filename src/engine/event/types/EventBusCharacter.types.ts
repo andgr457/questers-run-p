@@ -1,4 +1,4 @@
-import type { CharacterEntity } from '../../../entity/character/types/CharacterEntity.types'
+import type { CharacterEntity, CharacterGoldTransaction } from '../../../entity/character/types/CharacterEntity.types'
 import type { GameEvent } from './EventBus.types'
 
 export type CharacterEventTypes = 'character:save'
@@ -10,6 +10,7 @@ export type CharacterEventTypes = 'character:save'
   | 'character:level'
   | 'character:stats'
   | 'character:stats:changed'
+  | 'character:manage'
 
 
 export interface GameEvent_CharacterSave extends GameEvent {
@@ -26,8 +27,7 @@ export interface GameEvent_CharacterSaved extends GameEvent {
 export interface GameEvent_CharacterGold extends GameEvent {
   type: 'character:gold'
   meta: {
-    gold: number
-    characterId: string
+    characterGoldTransaction: CharacterGoldTransaction
   }
 }
 
@@ -54,6 +54,13 @@ export interface GameEvent_CharacterLevel extends GameEvent {
   }
 }
 
+export interface GameEvent_CharacterManage extends GameEvent {
+  type: 'character:manage'
+  meta: {
+    characterId: string
+  }
+}
+
 export type CharacterEvents = GameEvent_CharacterSave
   | GameEvent_CharacterSaved
   | GameEvent_CharacterGold
@@ -61,3 +68,4 @@ export type CharacterEvents = GameEvent_CharacterSave
   | GameEvent_CharacterXP
   | GameEvent_CharacterXPAdded
   | GameEvent_CharacterLevel
+  | GameEvent_CharacterManage

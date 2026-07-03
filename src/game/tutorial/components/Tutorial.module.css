@@ -4,17 +4,22 @@
   gap: 12px;
 
   padding: 12px;
+  font-size: 14px;
 }
 
 .title {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 0.9em;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .description {
-  opacity: 0.85;
-  font-size: 14px;
-  line-height: 1.4;
+  font-size: 0.8em;
+  opacity: .8;
+  padding: 10px;
+  text-align: center;
 }
 
 .options {

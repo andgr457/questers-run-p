@@ -18,6 +18,8 @@ export const GAME_EVENT_BUS_PLAYER_TYPES: GameEventType[] = [
   'player:xp',
   'player:xp:added',
   'player:level',
+  'player:token',
+  'player:token:added',
 ]
 
 export const GAME_EVENT_BUS_DEBUG_RECORDING_TYPES: GameEventType[] = [
@@ -37,4 +39,5 @@ export const GAME_EVENT_BUS_CHARACTER_TYPES: GameEventType[] = [
   'character:xp',
   'character:xp:added',
   'character:level',
+  'character:manage'
 ]

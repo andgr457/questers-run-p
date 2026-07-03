@@ -20,23 +20,24 @@ import Dashboard from './dashboard/components/Dashboard'
 import CharacterList from '../entity/character/components/list/CharacterList'
 import Tutorial from './tutorial/components/Tutorial'
 import { tutorialRuntimeService } from '../engine/tutorial/TutorialRuntimeService'
+import CharacterManage from '../entity/character/components/manage/CharacterManage'
+import TravelTransition from './travel/TravelTransition'
+import Background from '../ui/background/Background'
 
 export default function World() {
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('world')
   const [tutorial, setTutorial] = useState(tutorialRuntimeService.getCurrentTutorial())
-
+  
   const {showConfirm} = useConfirm()
 
   useEffect(() => {
     const player = playerRuntimeService.getPlayer()
     if(!player){
-      console.log('player not found')
       setOverlayMode('player_create')
       return
     }
     const characters = characterRuntimeService.getCharacters()
     if(!characters || characters.length === 0){
-      console.log('characters not found')
       setOverlayMode('character_create')
       return
     }
@@ -48,17 +49,13 @@ export default function World() {
       if(event.type === 'player:save'){
         const characters = characterRuntimeService.getCharacters()
         if(!characters || characters.length === 0){
-          console.log('characters not found')
           setOverlayMode('character_create')
-          return
         }
       }
       if(event.type === 'world:mode:change'){
         setOverlayMode(event.meta.worldMode)
-        return
       }
       if(event.type === 'player:level'){
-        console.log('world level up sub?')
         const player = playerRuntimeService.getPlayer()
         const fn = async () => {
           await showConfirm({
@@ -72,6 +69,7 @@ export default function World() {
       if(event.type === 'tutorial:updated'){
         setTutorial(tutorialRuntimeService.getCurrentTutorial())
       }
+      
     })
     return unsub
   }, [])
@@ -105,12 +103,25 @@ export default function World() {
         overlayMode={overlayMode}
         setOverlayMode={setOverlayMode}
       />
+      
 
       <OverlayLayer>
+        {characterRuntimeService?.getCharacters()?.length > 0 &&
+          <Background 
+            topText={`Quester's`}
+            bottomText={`Run`}
+          />
+        }
+        {overlayMode === 'transition' && (
+          <TravelTransition />
+        )}
+        {overlayMode === 'character_manage' && (
+          <CharacterManage />
+        )}
         {overlayMode === 'tutorial' && tutorial && (
           <Tutorial 
-            title={tutorial?.title}
-            description={tutorial?.description}
+            title={tutorial.title}
+            description={tutorial.description ?? ''}
           />
         )}
         {overlayMode === 'dashboard' && (

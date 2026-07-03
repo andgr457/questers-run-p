@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import type { Transition } from './types/Transition.types'
 import styles from './Transition.module.css'
 import AnimatedText from '../text/animated-text/AnimatedText'
+import { eventBus } from '../../engine/event/EventBus'
+import { transitionRuntimeService } from '../../engine/transition/TransitionRuntimeService'
 
 interface Props {
   transition: Transition
@@ -9,7 +11,7 @@ interface Props {
   onComplete?: () => void
 }
 
-export default function Transition(props: Props) {
+export default function TransitionDetail(props: Props) {
   const { transition, className, onComplete } = props
 
   const [visible, setVisible] = useState(false)
@@ -51,6 +53,12 @@ export default function Transition(props: Props) {
 
               setTimeout(() => {
                 onComplete?.()
+                if(transitionRuntimeService.getCurrentTransition()?.transition){
+                  eventBus.emit({
+                    id: crypto.randomUUID(),
+                    type: 'transition:stop'
+                  })
+                }
               }, 400)
             }
           }}

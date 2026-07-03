@@ -9,8 +9,10 @@ import { playerRuntimeService } from './engine/player/PlayerRuntimeService.ts'
 import { eventDebugRuntimeService } from './engine/event/EventDebugRuntimeService.ts'
 import { eventHistoryRuntimeService } from './engine/event/EventHistoryRuntimeService.ts'
 import { tutorialRuntimeService } from './engine/tutorial/TutorialRuntimeService.ts'
+import { transitionRuntimeService } from './engine/transition/TransitionRuntimeService.ts'
 clockRuntimeService.start()
 eventDebugRuntimeService.init()
+transitionRuntimeService.init()
 activityRuntimeService.init()
 playerRuntimeService.init()
 characterRuntimeService.init()

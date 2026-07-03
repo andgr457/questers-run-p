@@ -11,6 +11,7 @@ class CharacterRuntimeService {
   private dirtyCharacters = new Set<string>()
   private saveInterval: number | undefined
   private characterGoldTransactions: CharacterGoldTransaction[] = []
+  private characterIdManaging: string | undefined
 
   init() {
     if (this.initialized) {
@@ -49,6 +50,9 @@ class CharacterRuntimeService {
       }
       if(event.type === 'character:xp'){
         this.addXP(event)
+      }
+      if(event.type === 'character:manage'){
+        this.characterIdManaging = event.meta.characterId
       }
     })
   }
@@ -91,6 +95,11 @@ class CharacterRuntimeService {
     })
   }
 
+  getManagingCharacter(): CharacterEntity | undefined {
+    if(!this.characterIdManaging) return undefined
+    return this.characters[this.characterIdManaging]
+  }
+
   getCharacterGoldTransactions(characterId: string){
     return this.characterGoldTransactions.filter(txn => txn.characterId === characterId)
   }
@@ -118,11 +127,6 @@ class CharacterRuntimeService {
       id: crypto.randomUUID(),
       type: 'character:gold:added'
     })
-    notificationRuntimeService.notify({
-      text: `Player Gold ${txn.amount < 0 ? '' : '+'}${txn.amount}`,
-      type: "info",
-      lifetime: 2000
-    })
   }
 
   private addXP(event: GameEvent) {
@@ -131,11 +135,6 @@ class CharacterRuntimeService {
     if(!event.meta || !event.meta.xp) return
     
     const xp = event.meta?.xp
-    notificationRuntimeService.notify({
-      text: `Character XP +${xp}`,
-      type: "info",
-      lifetime: 2000
-    })
     const xpWithNew = character.xp + xp
     console.log('character xpWithNew xpNext', xpWithNew, character.xpNextLevel)
     //if over, then level up

@@ -22,7 +22,6 @@
   0% {
     opacity: 0;
     transform: translateY(-16px);
-    filter: brightness(1);
   }
 
   70% {
@@ -33,12 +32,10 @@
   85% {
     opacity: 1;
     transform: translateY(0);
-    filter: brightness(2);
   }
 
   100% {
     opacity: 1;
     transform: translateY(0);
-    filter: brightness(1);
   }
 }

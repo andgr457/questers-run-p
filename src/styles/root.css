@@ -22,7 +22,7 @@
   --input-text: #e6e2d3;
   --label: rgba(0, 0, 0, 0.747);
   --label-dark: rgba(170, 170, 170, 0.747);
-  --border: #7e7e7e;
+  --border: var(--bg-dark-1);
   --blue-sd-lighter-2: #7cb9fc;
   --blue-sd-lighter: #3b95f5;
   --blue-sd-light: #3484d8;
@@ -56,8 +56,23 @@
       rgba(255, 215, 0, 0.4),
       transparent 40%
     ),
-    linear-gradient(135deg, #3b82f6, #1e3a8a);
+    linear-gradient(135deg, var(--blue-sd-light), var(--blue-sd-dark));
   --cool-bg: radial-gradient(circle at center,
+      var(--text) 0%,
+      var(--text) 10%,
+      rgba(0, 0, 0, 0.6) 100%,
+      transparent 60%
+    ),
+    radial-gradient(circle at 20% 20%,
+      var(--green-success-2),
+      transparent 40%
+    ),
+    radial-gradient(circle at 80% 80%,
+      var(--green-success-2),
+      transparent 40%
+    ),
+    linear-gradient(135deg, var(--blue-sd-light), var(--blue-sd-dark));
+  --cool-bg-2: radial-gradient(circle at center,
       var(--text) 0%,
       var(--text) 10%,
       rgba(0, 0, 0, 0.6) 100%,
@@ -73,16 +88,16 @@
     ),
     linear-gradient(135deg, #3b82f6, #1e3a8a);
   --dark-text-shadow: 
-  0 0 1px var(--text)
-  ,0 0 1px var(--text)
-  ,0 0 1px var(--text)
-  ,0 0 1px var(--text)
-  ,0 0 1px var(--text);
+  0 0 1px var(--bg-dark-1)
+  ,0 0 2px var(--bg-dark-1)
+  ,0 0 2px var(--bg-dark-1)
+  ,0 0 2px var(--bg-dark-1)
+  ,0 0 1px var(--bg-dark-1);
   --bright-text-shadow: 
   0 0 1px var(--text)
-  ,0 0 1px var(--text)
-  ,0 0 1px var(--text)
-  ,0 0 1px var(--text)
+  ,0 0 2px var(--text)
+  ,0 0 2px var(--text)
+  ,0 0 2px var(--text)
   ,0 0 1px var(--text);
   --gold-text-shadow: 
   0 0 1px gold

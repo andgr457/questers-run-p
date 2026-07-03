@@ -1,4 +1,4 @@
-import type { PlayerEntity } from '../../../entity/player/types/PlayerEntity.types';
+import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types';
 import type { GameEvent } from './EventBus.types';
 
 export type PlayerEventTypes = 'player:save'
@@ -8,6 +8,8 @@ export type PlayerEventTypes = 'player:save'
   | 'player:gold:added'
   | 'player:xp'
   | 'player:xp:added'
+  | 'player:token'
+  | 'player:token:added'
 
 
 export interface GameEvent_PlayerSave extends GameEvent {
@@ -24,7 +26,7 @@ export interface GameEvent_PlayerSaved extends GameEvent {
 export interface GameEvent_PlayerGold extends GameEvent {
   type: 'player:gold'
   meta: {
-    gold: number
+    playerGoldTransaction: PlayerGoldTransaction
   }
 }
 
@@ -43,6 +45,17 @@ export interface GameEvent_PlayerXPAdded extends GameEvent {
   type: 'player:xp:added'
 }
 
+export interface GameEvent_PlayerToken extends GameEvent {
+  type: 'player:token'
+  meta: {
+    characterTokens: number
+  }
+}
+
+export interface GameEvent_PlayerTokenAdded extends GameEvent {
+  type: 'player:token:added'
+}
+
 export interface GameEvent_PlayerLevel extends GameEvent {
   type: 'player:level'
 }
@@ -54,3 +67,5 @@ export type PlayerEvents = GameEvent_PlayerSave
   | GameEvent_PlayerGoldAdded
   | GameEvent_PlayerXP
   | GameEvent_PlayerXPAdded
+  | GameEvent_PlayerToken
+  | GameEvent_PlayerTokenAdded

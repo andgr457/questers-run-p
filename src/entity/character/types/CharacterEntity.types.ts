@@ -20,6 +20,8 @@ export interface CharacterEntity {
   strength: number
   intellect: number
   agility: number
+
+  locationId: string
 }
 
 export interface CharacterGoldTransaction {

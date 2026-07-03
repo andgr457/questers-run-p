@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { clockRuntimeService } from '../clock/ClockRuntimeService'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
@@ -27,9 +28,22 @@ class EventHistoryRuntimeService {
       }
 
       this.history = JSON.parse(history)
+      this.purgeHistory()
+      this.saveHistory()
+      this.emitHistoryUpdated()
     } catch {
       this.history = []
     }
+  }
+
+  private purgeHistory() {
+    const hourAgoMs = DateTime.now().minus({hours: 1}).toMillis()
+    const purgableHistoryIds = this.history.filter(h => 
+      h.date < hourAgoMs && h.viewed === true
+    ).map(h => h.id)
+    this.history = this.history.filter(
+      item => !purgableHistoryIds.includes(item.id)
+    )
   }
 
   private saveHistory() {
@@ -60,7 +74,7 @@ class EventHistoryRuntimeService {
       },
       ...this.history,
     ]
-
+    this.purgeHistory()
     this.saveHistory()
     this.emitHistoryUpdated()
   }

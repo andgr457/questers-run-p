@@ -7,6 +7,7 @@ import type { CharacterEntity } from '../../types/CharacterEntity.types'
 import { playerRuntimeService } from '../../../../engine/player/PlayerRuntimeService'
 import { eventHistoryRuntimeService } from '../../../../engine/event/EventHistoryRuntimeService'
 import { eventBus } from '../../../../engine/event/EventBus'
+import { LOCATION_IDS } from '../../../location/data/Location.data'
 
 export default function NewCharacter(){
   const [name, setName] = useState('')
@@ -140,6 +141,7 @@ export default function NewCharacter(){
                 const character: CharacterEntity = {
                   id: crypto.randomUUID(),
                   name: name,
+                  locationId: LOCATION_IDS.ORON_WOODS_1,
                   level: 1,
                   xp: 0,
                   xpNextLevel: 100,
@@ -168,9 +170,16 @@ export default function NewCharacter(){
                 })
                 eventBus.emit({
                   id: crypto.randomUUID(),
+                  type: 'player:token',
+                  meta: {
+                    characterTokens: -1
+                  }
+                })
+                eventBus.emit({
+                  id: crypto.randomUUID(),
                   type: 'world:mode:change',
                   meta: {
-                    worldMode: 'world'
+                    worldMode: 'characters'
                   }
                 })
                 return true

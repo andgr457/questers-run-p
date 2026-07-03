@@ -1,6 +1,8 @@
 import type { CharacterEntity, CharacterGoldTransaction } from '../../../entity/character/types/CharacterEntity.types'
+import type { Location } from '../../../entity/location/types/Location.types'
 import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types'
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
+import type { Transition } from '../../../ui/transition/types/Transition.types'
 
 export type ActivityType =
   | 'hunting'
@@ -37,12 +39,17 @@ export interface ActivityEntry {
 export type ActivityMeta = {
   isDebugMode?: boolean
   worldMode?: OverlayMode
-  // generic runtime values
+  transition?: Transition
+  destination?: Location
+  departure?: Location
+
   xp?: number
   gold?: number
   
   player?: PlayerEntity
   playerGoldTransaction?: PlayerGoldTransaction
+  characterTokens?: number
+  
   character?: CharacterEntity
   characterId?: string
   characterGoldTransaction?: CharacterGoldTransaction

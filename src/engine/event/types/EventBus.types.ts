@@ -1,4 +1,5 @@
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
+import type { Transition } from '../../../ui/transition/types/Transition.types'
 import type { ActivityMeta, ActivityType } from '../../activity/types/Activity.types'
 import type { CharacterEvents, CharacterEventTypes } from './EventBusCharacter.types'
 import type { DebugEvents, DebugEventTypes } from './EventBusDebug.types'
@@ -15,6 +16,9 @@ export type GameEventType = PlayerEventTypes
   | 'world:mode:change'
   | 'event:history:updated'
   | 'tutorial:updated'
+  | 'transition:start'
+  | 'transition:started'
+  | 'transition:stop'
 
   | 'activity:start'
   | 'activity:progress'
@@ -34,6 +38,7 @@ export type GameEventType = PlayerEventTypes
   | 'character:hp:remove'
   | 'character:mp:add'
   | 'character:mp:remove'
+  
 
   | 'tavern:start'
   | 'tavern:cancel'
@@ -116,6 +121,28 @@ export interface GameEvent_EventTutorialUpdated extends GameEvent {
   type: 'tutorial:updated'
 }
 
+export interface GameEvent_EventTransitionStart extends GameEvent {
+  type: 'transition:start'
+  meta: {
+    transition: Transition
+    characterId: string
+    destinationId: string
+  }
+}
+
+export interface GameEvent_EventTransitionStarted extends GameEvent {
+  type: 'transition:started'
+  meta: {
+    characterId: string
+    locationId: string
+  }
+}
+
+
+export interface GameEvent_EventTransitionStop extends GameEvent {
+  type: 'transition:stop'
+}
+
 export type GameEvents = GameEvent_ActivityStart
   | GameEvent_ActivityProgress
   | GameEvent_ActivityComplete
@@ -123,6 +150,9 @@ export type GameEvents = GameEvent_ActivityStart
   | GameEvent_WorldModeChange
   | GameEvent_EventHistoryUpdated
   | GameEvent_EventTutorialUpdated
+  | GameEvent_EventTransitionStart
+  | GameEvent_EventTransitionStarted
+  | GameEvent_EventTransitionStop
 
   | DebugEvents
 

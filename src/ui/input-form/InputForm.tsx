@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import ViewTransition from '../transition/Transition'
+import TransitionDetail from '../transition/TransitionDetail'
 import styles from './InputForm.module.css'
 import type { InputScreen } from './types/InputForm.types'
 import type { Transition } from '../transition/types/Transition.types'
@@ -137,7 +137,7 @@ export default function ViewInputScreen(props: Props) {
     <div className={styles.wrapper}>
 
       {showTransition && (
-        <ViewTransition
+        <TransitionDetail
           transition={transition}
           onComplete={() => setShowTransition(false)}
         />

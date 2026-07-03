@@ -43,6 +43,9 @@ class PlayerRuntimeService {
       if(event.type === 'player:xp'){
         this.addXP(event)
       }
+      if(event.type === 'player:token'){
+        this.addTokens(event)
+      }
     })
   }
 
@@ -52,6 +55,26 @@ class PlayerRuntimeService {
 
   getPlayerGoldTransactions() {
     return this.playerGoldTransactions
+  }
+
+  private addTokens(event: GameEvent){
+    if(!this.player || !event.meta?.characterTokens) return
+    
+    this.player.characterTokens += event.meta.characterTokens
+
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      parentEventId: event.id,
+      type: 'player:token:added'
+    })
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: 'player:save',
+      parentEventId: event.id,
+      meta: {
+        player: this.player
+      }
+    })
   }
 
   private addGoldTransaction(event: GameEvent) {
@@ -78,22 +101,12 @@ class PlayerRuntimeService {
       id: crypto.randomUUID(),
       type: 'player:gold:added'
     })
-    notificationRuntimeService.notify({
-      text: `Player Gold ${txn.amount < 0 ? '' : '+'}${txn.amount}`,
-      type: "info",
-      lifetime: 2000
-    })
   }
 
   private addXP(event: GameEvent) {
     if(!this.player || !event.meta?.xp) return
 
     const xp = event.meta?.xp
-    notificationRuntimeService.notify({
-      text: `Player XP +${xp}`,
-      type: "info",
-      lifetime: 2000
-    })
     const xpWithNew = this.player?.xp + xp
     console.log('player xpWithNew xpNext', xpWithNew, this.player.xpNextLevel)
     //if over, then level up

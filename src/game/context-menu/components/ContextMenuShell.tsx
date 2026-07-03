@@ -56,6 +56,7 @@ export default function ContextMenuShell(props: Props) {
   const leftActions = useMemo<ContextMenuAction[]>(() => {
     if(!player) return []
     if(!characters || characters.length === 0) return []
+    if(overlayMode === 'transition') return []
 
     const actions: ContextMenuAction[] = []
     actions.push({
@@ -72,7 +73,7 @@ export default function ContextMenuShell(props: Props) {
       iconName: 'notifications',
       iconRotate: false,
       borderColor: overlayMode === 'event_history' ? 'var(--gold)' : 'var(--text)',
-      color: eventHistory.filter(h => h.viewed === false).length > 0 ? 'var(--success)' : 'var(--text)',
+      color: eventHistory.filter(h => h.viewed === false).length > 0 ? '#ef4444' : 'var(--text)',
       onClick: () => overlayMode === 'event_history' ? setOverlayMode('world') : setOverlayMode('event_history'),
     })
     actions.push({
@@ -98,7 +99,11 @@ export default function ContextMenuShell(props: Props) {
   }, [overlayMode, setOverlayMode, player, characters])
 
   const rightActions = useMemo<ContextMenuAction[]>(() => {
-    const actions: ContextMenuAction[] = [{
+    if(overlayMode === 'transition') return []
+
+    const actions: ContextMenuAction[] = []
+    if(player && characters.length > 0){
+      actions.push({
       id: 'settings',
       label: 'Settings',
       iconName: overlayMode === 'settings' ? 'close' : 'settings',
@@ -111,8 +116,7 @@ export default function ContextMenuShell(props: Props) {
             : 'settings'
         )
       },
-    }]
-    if(player && characters.length > 0){
+    })
       actions.push({
         id: 'dashboard',
         label: 'Dashboard',
@@ -126,7 +130,7 @@ export default function ContextMenuShell(props: Props) {
         label: 'Tutorial',
         iconName: 'tutorial',
         iconRotate: false,
-        color: !tutorial ? 'var(--text)' : 'var(--success)',
+        color: !tutorial ? 'var(--text)' : '#ef4444',
         borderColor: overlayMode === 'tutorial' ? 'var(--gold)' : 'var(--text)',
         onClick: () => overlayMode === 'tutorial' ? setOverlayMode('world') : setOverlayMode('tutorial'),
       })
