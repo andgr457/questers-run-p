@@ -16,7 +16,7 @@ interface ScreenIndexes {
   screenStepIndex: number
 }
 
-export default function ViewInputScreen(props: Props) {
+export default function InputForm(props: Props) {
   const { 
     screens, 
     transition,
@@ -135,7 +135,7 @@ export default function ViewInputScreen(props: Props) {
 
   return (
     <div className={styles.wrapper}>
-
+      
       {showTransition && (
         <TransitionDetail
           transition={transition}

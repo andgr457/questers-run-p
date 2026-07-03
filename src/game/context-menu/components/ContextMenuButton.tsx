@@ -10,6 +10,9 @@ interface Props {
 
 export default function ContextMenuButton(props: Props) {
   const { action } = props
+  if(!action.pulse){
+    action.pulse = false
+  }
 
   let border = 'solid 1px '
   if(action.borderColor){
@@ -19,7 +22,7 @@ export default function ContextMenuButton(props: Props) {
   }
   return (
     <button
-      className={styles.contextButton}
+      className={`${styles.contextButton} ${action.pulse === true ? styles.pulse : '' }`}
       onClick={action.onClick}
       title={action.label}
       style={{color: action.color ?? 'var(--text)', border: border}}

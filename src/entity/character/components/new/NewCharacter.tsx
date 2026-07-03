@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import ViewInputScreen from '../../../../ui/input-form/InputForm'
+import InputForm from '../../../../ui/input-form/InputForm'
 import { type CharacterClassEntity, type CharacterClassId } from '../../../character-class/types/CharacterClassEntity.types'
 import { GAME_CHARACTER_CLASSES, GAME_CLASSES } from '../../../character-class/data/CharacterClassEntity.data'
 import CharacterClassDetail from '../../../character-class/components/detail/CharacterClassDetail'
@@ -35,13 +35,13 @@ export default function NewCharacter(){
 
 
   return (
-    <ViewInputScreen
+    <InputForm
       transition={{
         title: 'Time for someone new to join the ranks...',
         delay: 2000
       }}
       showCancel={false}
-      actionsLocation='top'
+      actionsLocation='bottom'
       screens={[
         {
           index: 0,
@@ -142,6 +142,7 @@ export default function NewCharacter(){
                   id: crypto.randomUUID(),
                   name: name,
                   locationId: LOCATION_IDS.ORON_WOODS_1,
+                  isIdle: true,
                   level: 1,
                   xp: 0,
                   xpNextLevel: 100,

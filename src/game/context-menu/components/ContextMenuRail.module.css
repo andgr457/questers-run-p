@@ -71,7 +71,7 @@
   transition: transform 1s ease;
 }
 
-.recording {
+.pulse {
   animation: pulse 1s infinite;
 }
 

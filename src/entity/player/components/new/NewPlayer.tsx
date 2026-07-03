@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import ViewInputScreen from '../../../../ui/input-form/InputForm'
+import InputForm from '../../../../ui/input-form/InputForm'
 import type { PlayerEntity } from '../../types/PlayerEntity.types'
 import { eventBus } from '../../../../engine/event/EventBus'
 import { eventHistoryRuntimeService } from '../../../../engine/event/EventHistoryRuntimeService'
@@ -29,7 +29,7 @@ export default function NewPlayer(){
 
 
   return (
-    <ViewInputScreen
+    <InputForm
       transition={{
         title: 'The world slowly comes into focus...',
         delay: 1000

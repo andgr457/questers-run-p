@@ -6,6 +6,7 @@ export interface CharacterEntity {
   
   name: string
   classId: string
+  isIdle: boolean
   xp: number
   xpNextLevel: number
   level: number

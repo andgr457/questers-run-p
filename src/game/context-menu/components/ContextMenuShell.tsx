@@ -53,6 +53,7 @@ export default function ContextMenuShell(props: Props) {
     return unsub
   }, [])
 
+  const anyUnviewedNotifications = eventHistory.some(h => h.viewed === false)
   const leftActions = useMemo<ContextMenuAction[]>(() => {
     if(!player) return []
     if(!characters || characters.length === 0) return []
@@ -73,7 +74,8 @@ export default function ContextMenuShell(props: Props) {
       iconName: 'notifications',
       iconRotate: false,
       borderColor: overlayMode === 'event_history' ? 'var(--gold)' : 'var(--text)',
-      color: eventHistory.filter(h => h.viewed === false).length > 0 ? '#ef4444' : 'var(--text)',
+      pulse: anyUnviewedNotifications,
+      color: anyUnviewedNotifications ? '#ef4444' : 'var(--text)',
       onClick: () => overlayMode === 'event_history' ? setOverlayMode('world') : setOverlayMode('event_history'),
     })
     actions.push({

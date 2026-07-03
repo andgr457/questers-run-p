@@ -8,4 +8,5 @@ export interface ContextMenuAction {
   onClick: () => void
   color?: string
   borderColor?: string
+  pulse?: boolean
 }
