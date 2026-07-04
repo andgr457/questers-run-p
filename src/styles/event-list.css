@@ -58,6 +58,14 @@
   font-size: 12px;
 }
 
+.event-history-list-no-results {
+  margin: 0 auto;
+  
+  font-size: 1.5em;
+  letter-spacing: 3px;
+  opacity: .5;
+}
+
 @media (max-width: 700px) {
   .event-history-list-title {
     display: none;

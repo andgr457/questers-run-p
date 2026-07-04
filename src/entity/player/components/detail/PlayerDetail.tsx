@@ -7,6 +7,8 @@ import styles from './PlayerDetail.module.css'
 import ProgressBar from '../../../../ui/progress-bar/ProgressBar'
 import { getProgress } from '../../../../ui/progress-bar/utils/ProgressBar.utils'
 import GamePanel from '../../../../ui/panel/GamePanel'
+import PlayerCharacterTokens from './PlayerCharacterTokens'
+import GoldDetail from '../../../../ui/gold/GoldDetail'
 
 export default function PlayerDetail(){
 
@@ -42,10 +44,10 @@ export default function PlayerDetail(){
             Lv. {player.level}
           </div>
           <div className={styles.label}>
-            {player.characterTokens.toLocaleString()} Token(s)
+            <GoldDetail gold={gold} />
           </div>
-          <div className={styles.label} style={{color: 'gold'}}>
-            {gold.toLocaleString()}g
+          <div className={styles.label}>
+            <PlayerCharacterTokens tokens={player.characterTokens} />
           </div>
         </div>
 
@@ -59,6 +61,10 @@ export default function PlayerDetail(){
             />
           </div>
 
+        </div>
+
+        <div>
+          {}
         </div>
       </div>
     </GamePanel>    

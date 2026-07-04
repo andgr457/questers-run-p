@@ -4,10 +4,7 @@
   gap: 4px;
 
   padding: 18px;
-  border: 2px solid var(--border, var(--bg-dark-2));
-  border-radius: 4px;
 
-  /* background: var(--bg-dark, #1a1a1a); */
   letter-spacing: 1px;
   cursor: pointer;
 }
@@ -17,11 +14,11 @@
   letter-spacing: 2px;
   display: flex;
   justify-content: space-between;
+  font-size: 1.2em;
 }
 
 .label {
   font-size: 0.85rem;
-  opacity: 0.8;
 }
 
 .bars {

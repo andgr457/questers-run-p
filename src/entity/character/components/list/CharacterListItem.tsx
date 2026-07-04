@@ -9,6 +9,7 @@ import ProgressBar from '../../../../ui/progress-bar/ProgressBar'
 import styles from './CharacterListItem.module.css'
 import { getProgress } from '../../../../ui/progress-bar/utils/ProgressBar.utils'
 import { GAME_LOCATIONS } from '../../../location/data/Location.data'
+import GoldDetail from '../../../../ui/gold/GoldDetail'
 
 interface Props {
   entity: CharacterEntity
@@ -36,7 +37,7 @@ export default function CharacterListItem(props: Props) {
   const className = GAME_CHARACTER_CLASSES[entity?.classId as CharacterClassId]?.name
   const onClickFn = !onClick ? undefined : () => {onClick?.(entity)}
   return (
-    <div className={styles.wrapper} onClick={onClickFn}>
+    <div className={styles.wrapper} >
       <div className={styles.title}>
         <div className={styles.name}>
           {entity.name}
@@ -47,12 +48,15 @@ export default function CharacterListItem(props: Props) {
         <div className={styles.label}>
           {className}
         </div>
-        <div className={styles.label} style={{color: 'gold'}}>
-          {gold.toLocaleString()}g
-        </div>
         <div className={styles.label}>
           {currentLocation?.name}
         </div>
+        <div className={styles.label}>
+          <GoldDetail gold={gold} />
+        </div>
+        {onClickFn && <button className='button dark' onClick={onClickFn}>
+          ...
+        </button>}
       </div>
 
       <div className={styles.bars}>

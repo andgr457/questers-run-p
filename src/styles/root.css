@@ -1,5 +1,6 @@
 :root {
   --bg-dark-1: #111111; 
+  --bg-dark-1-opaque: #111111ee; 
   --bg-dark-2: #202020;
   --bg-dark-3: #424242;
   --green-dark: #225622;
@@ -10,7 +11,6 @@
 
   --danger: #8b1e1e;
   --danger-light: #f02828;
-  --danger-text-shadow: ; 
   
   --success: #1e8119;
   --green-success-2: #39eb2f;

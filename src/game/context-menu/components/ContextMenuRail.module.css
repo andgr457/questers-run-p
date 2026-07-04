@@ -81,7 +81,8 @@
   }
 
   50% {
-    transform: scale(1.15);
+    transform: scale(1.03);
+    border-color: var(--green-success-2);
   }
 
   100% {

@@ -137,9 +137,8 @@ textarea:disabled {
 }
 
 .button.selected {
-  background-color: var(--gold);
-  border-color: var(--bg-dark-2);
-  color: var(--bg-dark-1);
+  border-color: var(--blue-sd-lighter-2);
+  color: var(--text);
 }
 
 .button.gold {

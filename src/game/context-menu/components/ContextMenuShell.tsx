@@ -14,6 +14,7 @@ import type { CharacterEntity } from '../../../entity/character/types/CharacterE
 import { eventHistoryRuntimeService } from '../../../engine/event/EventHistoryRuntimeService'
 import type { EventHistoryItem } from '../../../engine/event/types/EventHistory.types'
 import { tutorialRuntimeService } from '../../../engine/tutorial/TutorialRuntimeService'
+import { checkForPulse } from '../utils/ContextMenu.utils'
 
 interface Props {
   overlayMode: OverlayMode
@@ -52,8 +53,10 @@ export default function ContextMenuShell(props: Props) {
     })
     return unsub
   }, [])
-
+  const selectedBorderColor = 'var(--blue-sd-lighter-2)'
+  const requiresAttentionColor = 'var(--green-success-2)'
   const anyUnviewedNotifications = eventHistory.some(h => h.viewed === false)
+  const anyCharactersIdle = characterRuntimeService.getCharacters().some(c => c.isIdle === true)
   const leftActions = useMemo<ContextMenuAction[]>(() => {
     if(!player) return []
     if(!characters || characters.length === 0) return []
@@ -65,17 +68,20 @@ export default function ContextMenuShell(props: Props) {
       label: 'World',
       iconName: 'world',
       iconRotate: false,
-      borderColor: overlayMode === 'world' ? 'var(--gold)' : 'var(--text)',
+      borderColor: overlayMode === 'world' ? selectedBorderColor : '',
       onClick: () => setOverlayMode('world'),
     })
+    const notificationsCanPulse = checkForPulse(() => {
+      return anyUnviewedNotifications
+    }, overlayMode, 'tutorial')
     actions.push({
       id: 'notifications',
       label: 'Notifications',
       iconName: 'notifications',
       iconRotate: false,
-      borderColor: overlayMode === 'event_history' ? 'var(--gold)' : 'var(--text)',
-      pulse: anyUnviewedNotifications,
-      color: anyUnviewedNotifications ? '#ef4444' : 'var(--text)',
+      borderColor: overlayMode === 'event_history' ? selectedBorderColor : '',
+      pulse: notificationsCanPulse,
+      color: notificationsCanPulse ? requiresAttentionColor : '',
       onClick: () => overlayMode === 'event_history' ? setOverlayMode('world') : setOverlayMode('event_history'),
     })
     actions.push({
@@ -83,16 +89,21 @@ export default function ContextMenuShell(props: Props) {
       label: 'Player',
       iconName: 'player',
       iconRotate: false,
-      borderColor: overlayMode === 'player' ? 'var(--gold)' : 'var(--text)',
+      borderColor: overlayMode === 'player' ? selectedBorderColor : '',
       onClick: () => overlayMode === 'player' ? setOverlayMode('world') : setOverlayMode('player'),
     })
     if(characters && characters.length > 0){
+      const canPulse = checkForPulse(() => {
+        return anyCharactersIdle
+      }, overlayMode, 'characters')
       actions.push({
         id: 'characters',
         label: 'Characters',
         iconName: 'characters',
         iconRotate: false,
-        borderColor: overlayMode === 'characters' ? 'var(--gold)' : 'var(--text)',
+        pulse: canPulse,
+        color: canPulse ? requiresAttentionColor : '',
+        borderColor: overlayMode === 'characters' ? selectedBorderColor : '',
         onClick: () => overlayMode === 'characters' ? setOverlayMode('world') : setOverlayMode('characters'),
       })
     }
@@ -110,7 +121,7 @@ export default function ContextMenuShell(props: Props) {
       label: 'Settings',
       iconName: overlayMode === 'settings' ? 'close' : 'settings',
       iconRotate: overlayMode === 'settings' ? false : true,
-      borderColor: overlayMode === 'settings' ? 'var(--gold)' : 'var(--text)',
+      borderColor: overlayMode === 'settings' ? selectedBorderColor : '',
       onClick: () => {
         setOverlayMode(
           overlayMode === 'settings'
@@ -124,16 +135,21 @@ export default function ContextMenuShell(props: Props) {
         label: 'Dashboard',
         iconName: 'dashboard',
         iconRotate: false,
-        borderColor: overlayMode === 'dashboard' ? 'var(--gold)' : 'var(--text)',
+        borderColor: overlayMode === 'dashboard' ? selectedBorderColor : '',
         onClick: () => overlayMode === 'dashboard' ? setOverlayMode('world') : setOverlayMode('dashboard'),
       })
+
+      const tutorialCanPulse = checkForPulse(() => {
+        return typeof tutorial !== 'undefined'
+      }, overlayMode, 'tutorial')
       actions.push({
         id: 'tutorial',
         label: 'Tutorial',
         iconName: 'tutorial',
         iconRotate: false,
-        color: !tutorial ? 'var(--text)' : '#ef4444',
-        borderColor: overlayMode === 'tutorial' ? 'var(--gold)' : 'var(--text)',
+        pulse: tutorialCanPulse,
+        color: tutorialCanPulse ? requiresAttentionColor : '',
+        borderColor: overlayMode === 'tutorial' ? selectedBorderColor : '',
         onClick: () => overlayMode === 'tutorial' ? setOverlayMode('world') : setOverlayMode('tutorial'),
       })
     }
@@ -144,7 +160,7 @@ export default function ContextMenuShell(props: Props) {
         label: 'Debug Event Recording',
         iconName: recordingDetail.isRecording ? 'recordStop' : 'recordStart',
         iconRotate: false,
-        borderColor: recordingDetail.isRecording ? 'var(--danger)' : 'var(--text)',
+        borderColor: recordingDetail.isRecording ? 'var(--danger)' : '',
         color: recordingDetail.isRecording ? 'var(--danger)' : 'var(--success)',
         onClick: () => {
           if(recordingDetail.isRecording){

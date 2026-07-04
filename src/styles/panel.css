@@ -1,15 +1,20 @@
 .game-panel-wrapper {
   height: 100%;
   overflow-y: auto;
+  background-color: var(--bg-dark-1-opaque);
+  border-radius: 5px;
+
 }
 
 .game-panel {
   opacity: 0;
   transition: opacity .5s ease-out;
+  
 }
 
 .game-panel.show {
   opacity: 1;
+  
   transition: opacity .5s ease-in;
 }
 
@@ -17,6 +22,9 @@
   position: sticky;
   top: 0;
   z-index: 99999;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 5px;
   padding-top: 3px;
   padding-bottom: 3px;
   border: solid 1px var(--bg-dark-3);

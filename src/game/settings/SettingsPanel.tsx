@@ -64,21 +64,24 @@ export default function SettingsPanel(){
         title='settings'
         currentScreenName={GAME_SETTINGS_MODE_NAMES[mode]}
       >
-        <div>
-          <button 
-            className={`button ${recordingDetail.isDebugMode ? 'button gold' : 'button dark'}`}
-            onClick={() => {
-              eventBus.emit({
-                id: crypto.randomUUID(),
-                type: 'event:debug:mode',
-                meta: {
-                  isDebugMode: !recordingDetail.isDebugMode
-                }
-              })
-            }}
-          >
-            DEBUG MODE {recordingDetail.isDebugMode ? 'ON' : 'OFF'}
-          </button>
+        <div className='game-panel-section-actions'>
+          <div className='game-panel-section-action'>
+            <button 
+              className={`button ${recordingDetail.isDebugMode ? 'button selected' : 'button dark'}`}
+              onClick={() => {
+                eventBus.emit({
+                  id: crypto.randomUUID(),
+                  type: 'event:debug:mode',
+                  meta: {
+                    isDebugMode: !recordingDetail.isDebugMode
+                  }
+                })
+              }}
+            >
+              DEBUG MODE {recordingDetail.isDebugMode ? 'ON' : 'OFF'}
+            </button>
+          </div>
+
         </div>
         {mode === 'debug_events' && (
           <DebugEventList setSettingsMode={setMode} />

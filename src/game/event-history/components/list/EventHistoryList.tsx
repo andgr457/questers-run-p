@@ -41,7 +41,7 @@ export default function EventHistoryList(){
       <div className='filter-list'>
         <div>
           <button 
-            className={`button ${filterView === 'all' ? 'gold' : 'dark'}`}
+            className={`button ${filterView === 'all' ? 'selected' : 'dark'}`}
             onClick={() => setFilterView('all')}
           >
             ALL
@@ -49,7 +49,7 @@ export default function EventHistoryList(){
         </div>
         <div>
           <button 
-            className={`button ${filterView === 'unread' ? 'gold' : 'dark'}`}
+            className={`button ${filterView === 'unread' ? 'selected' : 'dark'}`}
             onClick={() => setFilterView('unread')}
           >
             UNREAD [ {unread.length} ]
@@ -57,7 +57,7 @@ export default function EventHistoryList(){
         </div>
         <div>
           <button 
-            className={`button ${filterView === 'read' ? 'gold' : 'dark'}`}
+            className={`button ${filterView === 'read' ? 'selected' : 'dark'}`}
             onClick={() => setFilterView('read')}
           >
             READ
@@ -65,7 +65,7 @@ export default function EventHistoryList(){
         </div>
         <div>
           <button 
-            className={`button gold`}
+            className={`button selected`}
             onClick={() => {
               if(sortDirection === 'asc'){
                 setSortDirection('desc')
@@ -78,7 +78,11 @@ export default function EventHistoryList(){
           </button> 
         </div>
       </div>
+
       <div className='event-history-list'>
+        {historySorted.length === 0 && <div className='event-history-list-no-results'>
+          EMPTY  
+        </div>}
         {historySorted.map(h => {
 
           return <div className='event-history-list-item-wrapper'>
