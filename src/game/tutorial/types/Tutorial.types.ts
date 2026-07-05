@@ -2,10 +2,16 @@ export interface TutorialProgress {
   completedTutorialIds: string[]
 }
 
+export interface TutorialHint {
+  title: string
+  description: string
+}
+
 export interface Tutorial {
   id: string
   title: string
   description: string
+  hints: TutorialHint[]
   rewards: {
     player?: {
       xp?: number

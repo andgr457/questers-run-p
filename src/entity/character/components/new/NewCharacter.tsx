@@ -8,11 +8,14 @@ import { playerRuntimeService } from '../../../../engine/player/PlayerRuntimeSer
 import { eventHistoryRuntimeService } from '../../../../engine/event/EventHistoryRuntimeService'
 import { eventBus } from '../../../../engine/event/EventBus'
 import { LOCATION_IDS } from '../../../location/data/Location.data'
+import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService'
+import { useTutorial } from '../../../../game/tutorial/hooks/useTutorial'
 
 export default function NewCharacter(){
   const [name, setName] = useState('')
   const [nameError, setNameError] = useState('')
   const [characterClass, setCharacterClass] = useState<CharacterClassEntity | undefined>(undefined)
+  const {tutorialProgress} = useTutorial()
 
   const NAME_MAX_LENGTH = 16
   const NAME_MIN_LENGTH = 3
@@ -116,8 +119,14 @@ export default function NewCharacter(){
                     >
                       <option>Choose a class...</option>
                       {GAME_CLASSES.map(c => {
-                        return <option value={c.id}>
-                          {c.name}
+                        let disabled = false
+                        if(characterRuntimeService.getCharacters().length === 0){
+                          if(c.id !== 'cc_warrior'){
+                            disabled = true
+                          }
+                        }
+                        return <option disabled={disabled} value={c.id}>
+                          {c.name}{disabled === true ? ' (locked)' : ''}
                         </option>
                       })}
                     </select>
@@ -180,7 +189,7 @@ export default function NewCharacter(){
                   id: crypto.randomUUID(),
                   type: 'world:mode:change',
                   meta: {
-                    worldMode: 'characters'
+                    worldMode: tutorialProgress?.completedTutorialIds.length === 0 ? 'tutorial' : 'characters'
                   }
                 })
                 return true

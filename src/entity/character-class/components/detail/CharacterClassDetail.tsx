@@ -24,7 +24,6 @@ export default function CharacterClassDetail(props: Props){
       </div>
       <div className='detail-rows'>
         <DetailRow field='Name' value={characterClass?.name ?? ''} />
-        <DetailRow field='ID' value={characterClass?.id ?? ''} />
         <DetailRow field='Description' value={`${characterClass?.description ?? ''}`} />
         <DetailRow field='Strength Bonus' value={characterClass?.strength?.toFixed(0) ?? ''} />
         <DetailRow field='Agility Bonus' value={characterClass?.agility?.toFixed(0) ?? ''} />

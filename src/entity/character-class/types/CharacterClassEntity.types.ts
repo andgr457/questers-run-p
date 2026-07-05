@@ -5,6 +5,7 @@ export interface CharacterClassEntity {
   strength: number
   intellect: number
   agility: number
+  roles: PartyRole[]
 }
 
 export type CharacterClassId = 'cc_warrior'

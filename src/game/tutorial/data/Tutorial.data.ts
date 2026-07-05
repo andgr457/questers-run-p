@@ -20,8 +20,22 @@ const BASE_TUTORIAL_REWARDS = {
 export const TUTORIALS: Tutorial[] = [
   {
     id: TUTORIAL_IDS.TRAVEL_TO_TOWN,
-    title: 'Travel',
-    description: 'The road ahead leads toward a nearby town. Tap the "c" to the left to see all your characters, then tap on a character, select Travel, and then choose Town.',
+    title: '1. Travel',
+    description: 'The road ahead leads toward the nearby town of Oron. Travel there using Character actions.',
+    hints: [
+      {
+        title: 'Characters List',
+        description: 'Click the "c" circle on the left to access your character list.'
+      },
+      {
+        title: 'Manage Character',
+        description: 'Click the elipses on the right of the character you wish to manage.'
+      },
+      {
+        title: 'Travel Actions',
+        description: 'Click "Travel" on the "Town of Oron" travel action.'
+      }
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS
@@ -35,6 +49,9 @@ export const TUTORIALS: Tutorial[] = [
     id: TUTORIAL_IDS.VISIT_ADV_GUILD,
     title: 'Adventurer\'s Guild',
     description: 'Visit the local Adventurer\'s Guild in town to take a quest.',
+    hints: [
+
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS
@@ -45,6 +62,9 @@ export const TUTORIALS: Tutorial[] = [
     id: TUTORIAL_IDS.ACCEPT_FIRST_QUEST,
     title: 'Quest Accepted',
     description: 'Take your first quest at the Adventurer\'s Guild.',
+    hints: [
+      
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS
@@ -55,6 +75,9 @@ export const TUTORIALS: Tutorial[] = [
     id: TUTORIAL_IDS.COMPLETE_FIRST_QUEST,
     title: 'Quest Complete',
     description: 'Turn in your first quest at the Adventurer\'s Guild.',
+    hints: [
+      
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS,
@@ -66,6 +89,9 @@ export const TUTORIALS: Tutorial[] = [
     id: TUTORIAL_IDS.CREATE_SECOND_CHARACTER,
     title: 'Battle Buddy',
     description: 'Create a second character with your new character token.',
+    hints: [
+      
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS
@@ -76,6 +102,9 @@ export const TUTORIALS: Tutorial[] = [
     id: TUTORIAL_IDS.CREATE_FIRST_PARTY,
     title: 'Party Hardy',
     description: 'Create a party with a character.',
+    hints: [
+      
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS
@@ -86,6 +115,9 @@ export const TUTORIALS: Tutorial[] = [
     id: TUTORIAL_IDS.JOIN_PARTY,
     title: 'Party on Garth',
     description: 'Have another character join an existing character\'s party.',
+    hints: [
+      
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS
@@ -96,6 +128,9 @@ export const TUTORIALS: Tutorial[] = [
     id: TUTORIAL_IDS.PARTY_ROLES,
     title: 'Party Hardy',
     description: 'Assign a party role to a party member.',
+    hints: [
+      
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS,
@@ -107,6 +142,9 @@ export const TUTORIALS: Tutorial[] = [
     id: TUTORIAL_IDS.FULL_PARTY,
     title: 'No Occupancy',
     description: 'Create 3 more characters and have them join your party. A tank, healer, and 3 damage dealers are required for dungeons and raids.',
+    hints: [
+      
+    ],
     rewards: {
       player: {
         ...BASE_TUTORIAL_REWARDS
