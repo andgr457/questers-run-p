@@ -18,7 +18,7 @@ export default function Background({
         <div className={styles.top}>
           <AnimatedText
             text={topText}
-            delay={1000}
+            delay={4000}
           />
         </div>
 
@@ -26,7 +26,7 @@ export default function Background({
           <div className={styles.bottom}>
             <AnimatedText
               text={bottomText}
-              delay={1000}
+              delay={5500}
             />
           </div>
         )}
