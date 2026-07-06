@@ -14,3 +14,6 @@ export type OverlayMode =
   | 'characters'
   | 'character_create'
   | 'character_manage'
+
+  | 'party_list'
+  | 'party'

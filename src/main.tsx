@@ -10,6 +10,7 @@ import { eventDebugRuntimeService } from './engine/event/EventDebugRuntimeServic
 import { eventHistoryRuntimeService } from './engine/event/EventHistoryRuntimeService.ts'
 import { tutorialRuntimeService } from './engine/tutorial/TutorialRuntimeService.ts'
 import { transitionRuntimeService } from './engine/transition/TransitionRuntimeService.ts'
+import { partyRuntimeService } from './engine/party/PartyRuntimeService.ts'
 clockRuntimeService.start()
 eventDebugRuntimeService.init()
 transitionRuntimeService.init()
@@ -17,6 +18,7 @@ activityRuntimeService.init()
 playerRuntimeService.init()
 characterRuntimeService.init()
 characterRuntimeService.start()
+partyRuntimeService.init()
 eventHistoryRuntimeService.init()
 tutorialRuntimeService.init()
 

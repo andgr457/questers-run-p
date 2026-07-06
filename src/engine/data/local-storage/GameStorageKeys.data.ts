@@ -10,4 +10,6 @@ export const GAME_STORAGE_KEYS = {
   CHARACTER_INVENTORIES_GAME: 'qr-game-character-inventories',
   INVENTORY_ITEMS_GAME: 'qr-game-inventory-items',
   CHARACTER_UPGRADES_GAME: 'qr-game-character-upgrades',
+
+  PARTIES_GAME: 'qr-game-parties',
 }

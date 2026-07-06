@@ -1,5 +1,6 @@
 import type { CharacterEntity, CharacterGoldTransaction } from '../../../entity/character/types/CharacterEntity.types'
 import type { Location } from '../../../entity/location/types/Location.types'
+import type { PartyEntity } from '../../../entity/party/types/PartyEntity.types'
 import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types'
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
 import type { Transition } from '../../../ui/transition/types/Transition.types'
@@ -53,4 +54,7 @@ export type ActivityMeta = {
   character?: CharacterEntity
   characterId?: string
   characterGoldTransaction?: CharacterGoldTransaction
+
+  party?: PartyEntity
+  partyId?: string
 }

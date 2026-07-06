@@ -9,7 +9,7 @@ import { eventHistoryRuntimeService } from '../../../../engine/event/EventHistor
 import { eventBus } from '../../../../engine/event/EventBus'
 import { LOCATION_IDS } from '../../../location/data/Location.data'
 import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService'
-import { useTutorial } from '../../../../game/tutorial/hooks/useTutorial'
+import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial'
 
 export default function NewCharacter(){
   const [name, setName] = useState('')

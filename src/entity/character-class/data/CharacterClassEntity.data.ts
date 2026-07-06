@@ -7,6 +7,7 @@ export const CLASS_WARRIOR: CharacterClassEntity = {
   agility: 0,
   intellect: 0,
   strength: 2,
+  roles: ['tank', 'damage']
 }
 
 export const CLASS_HUNTER: CharacterClassEntity = {
@@ -16,6 +17,7 @@ export const CLASS_HUNTER: CharacterClassEntity = {
   agility: 2,
   intellect: 0,
   strength: 0,
+  roles: ['damage']
 }
 
 export const CLASS_ROGUE: CharacterClassEntity = {
@@ -25,6 +27,7 @@ export const CLASS_ROGUE: CharacterClassEntity = {
   agility: 2,
   intellect: 0,
   strength: 0,
+  roles: ['damage']
 }
 
 export const CLASS_MAGE: CharacterClassEntity = {
@@ -34,6 +37,7 @@ export const CLASS_MAGE: CharacterClassEntity = {
   agility: 0,
   intellect: 2,
   strength: 0,
+  roles: ['damage']
 }
 
 export const CLASS_PRIEST: CharacterClassEntity = {
@@ -43,6 +47,7 @@ export const CLASS_PRIEST: CharacterClassEntity = {
   agility: 0,
   intellect: 2,
   strength: 0,
+  roles: ['healer']
 }
 
 export const GAME_CHARACTER_CLASSES: Record<CharacterClassId, CharacterClassEntity> = {

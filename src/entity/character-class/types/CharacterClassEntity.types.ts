@@ -1,3 +1,5 @@
+import type { PartyRole } from '../../party/types/PartyRole.types'
+
 export interface CharacterClassEntity {
   id: CharacterClassId
   name: string

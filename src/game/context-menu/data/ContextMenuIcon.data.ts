@@ -2,7 +2,7 @@ import type { ContextMenuIconName } from '../types/ContextMenuIcon.types'
 
 export const ContextMenuIcon: Record<ContextMenuIconName, string> = {
   settings: '⚙',
-  player: 'p',
+  player: 'pl',
   characters: 'c',
   dashboard: 'd',
   back: '←',
@@ -13,4 +13,5 @@ export const ContextMenuIcon: Record<ContextMenuIconName, string> = {
   world: '⬡',
   notifications: '✱',
   tutorial: 't',
+  parties: 'pa',
 }

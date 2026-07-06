@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { tutorialRuntimeService } from '../../../engine/tutorial/TutorialRuntimeService';
 import { eventBus } from '../../../engine/event/EventBus';
-import type { TutorialProgress, Tutorial } from '../types/Tutorial.types';
+import type { Tutorial, TutorialProgress } from '../../../game/tutorial/types/Tutorial.types';
 
 export function useTutorial(){
   const [tutorial, setTutorial] = useState<Tutorial | undefined>(undefined)

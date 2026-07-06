@@ -1,4 +1,5 @@
 .game-panel-wrapper {
+  
   height: 100%;
   overflow-y: auto;
   background-color: var(--bg-dark-1-opaque);
@@ -60,6 +61,3 @@
   border-color: var(--gold);
 }
 
-.game-panel-children {
-  margin-bottom: 10px;
-}

@@ -92,21 +92,29 @@ export default function ContextMenuShell(props: Props) {
       borderColor: overlayMode === 'player' ? selectedBorderColor : '',
       onClick: () => overlayMode === 'player' ? setOverlayMode('world') : setOverlayMode('player'),
     })
-    if(characters && characters.length > 0){
-      const canPulse = checkForPulse(() => {
-        return anyCharactersIdle
-      }, overlayMode, 'characters')
-      actions.push({
-        id: 'characters',
-        label: 'Characters',
-        iconName: 'characters',
-        iconRotate: false,
-        pulse: canPulse,
-        color: canPulse ? requiresAttentionColor : '',
-        borderColor: overlayMode === 'characters' ? selectedBorderColor : '',
-        onClick: () => overlayMode === 'characters' ? setOverlayMode('world') : setOverlayMode('characters'),
-      })
-    }
+    const canCharactersListPulse = checkForPulse(() => {
+      return anyCharactersIdle
+    }, overlayMode, 'characters')
+    actions.push({
+      id: 'characters',
+      label: 'Characters',
+      iconName: 'characters',
+      iconRotate: false,
+      pulse: canCharactersListPulse,
+      color: canCharactersListPulse ? requiresAttentionColor : '',
+      borderColor: overlayMode === 'characters' ? selectedBorderColor : '',
+      onClick: () => overlayMode === 'characters' ? setOverlayMode('world') : setOverlayMode('characters'),
+    })
+    actions.push({
+      id: 'parties',
+      label: 'Parties',
+      iconName: 'parties',
+      iconRotate: false,
+      pulse: false,
+      color: '',
+      borderColor: overlayMode === 'party_list' ? selectedBorderColor : '',
+      onClick: () => overlayMode === 'party_list' ? setOverlayMode('world') : setOverlayMode('party_list'),
+    })
     
     return actions
   }, [overlayMode, setOverlayMode, player, characters])

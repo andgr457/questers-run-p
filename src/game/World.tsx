@@ -15,7 +15,7 @@ import { characterRuntimeService } from '../engine/character/CharacterRuntimeSer
 import NewPlayer from '../entity/player/components/new/NewPlayer'
 import PlayerDetail from '../entity/player/components/detail/PlayerDetail'
 import NewCharacter from '../entity/character/components/new/NewCharacter'
-import EventHistoryList from './event-history/components/list/EventHistoryList'
+import NotificationList from './notification/components/list/NotificationList'
 import Dashboard from './dashboard/components/Dashboard'
 import CharacterList from '../entity/character/components/list/CharacterList'
 import Tutorial from './tutorial/components/Tutorial'
@@ -119,7 +119,7 @@ export default function World() {
           <Dashboard />
         )}
         {overlayMode === 'event_history' && (
-          <EventHistoryList />
+          <NotificationList />
         )}
         {overlayMode === 'player_create' && (
           <NewPlayer />

@@ -1,6 +1,7 @@
 import type { CharacterEntity, CharacterGoldTransaction } from '../../entity/character/types/CharacterEntity.types'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
+import { eventHistoryRuntimeService } from '../event/EventHistoryRuntimeService'
 import type { GameEvent } from '../event/types/EventBus.types'
 import { notificationRuntimeService } from '../notifications/NotificationRuntimeService'
 import { getCharacterGold } from './utils/Character.utils'
@@ -156,7 +157,10 @@ class CharacterRuntimeService {
           characterId: character.id
         }
       })
-      
+      eventHistoryRuntimeService.addHistory(
+        `Character Event`,
+        `${character.name} leveled up to ${character.level}!`
+      )
       notificationRuntimeService.notify({
         text: `Character Level Up ${character.level}`,
         type: "info",

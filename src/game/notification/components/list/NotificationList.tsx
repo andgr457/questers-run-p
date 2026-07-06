@@ -7,7 +7,7 @@ import GamePanel from '../../../../ui/panel/GamePanel';
 
 type FilterView = 'all' | 'read' | 'unread'
 
-export default function EventHistoryList(){
+export default function NotificationList(){
   const [history, setHistory] = useState(eventHistoryRuntimeService.getHistory())
   const [filterView, setFilterView] = useState<FilterView>('unread')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')

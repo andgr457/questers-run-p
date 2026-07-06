@@ -4,6 +4,7 @@ import { TUTORIAL_IDS } from '../../game/tutorial/data/Tutorial.data'
 import type { Transition } from '../../ui/transition/types/Transition.types'
 import { characterRuntimeService } from '../character/CharacterRuntimeService'
 import { eventBus } from '../event/EventBus'
+import { eventHistoryRuntimeService } from '../event/EventHistoryRuntimeService'
 import { tutorialRuntimeService } from '../tutorial/TutorialRuntimeService'
 
 class TransitionRuntimeService {
@@ -28,6 +29,7 @@ class TransitionRuntimeService {
           type: 'transition:started',
           meta: {
             characterId: event.meta.characterId,
+            partyId: event.meta.partyId,
             locationId: event.meta.destinationId
           }
         })
@@ -41,19 +43,24 @@ class TransitionRuntimeService {
         })
       }
       if(event.type === 'transition:started'){
-        eventBus.emit({
-          id: crypto.randomUUID(),
-          type: 'character:save',
-          parentEventId: event.id,
-          meta: {
-            character: {
-              ...characterRuntimeService.getCharacter(
-                event.meta.characterId
-              ),
-              locationId: event.meta.locationId
+        if(event.meta.characterId){
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'character:save',
+            parentEventId: event.id,
+            meta: {
+              character: {
+                ...characterRuntimeService.getCharacter(
+                  event.meta.characterId
+                ),
+                locationId: event.meta.locationId
+              }
             }
-          }
-        })
+          })
+        }
+        if(event.meta.partyId){
+          console.log('Party Transition Not Implemented')
+        }
       }
       if(event.type === 'transition:stop'){
         //need to do this or other things not using normal transition (input form) wont work correctly
@@ -64,6 +71,20 @@ class TransitionRuntimeService {
             )
             if(travelTutorialComplete === false){
               tutorialRuntimeService.completeTutorial(TUTORIAL_IDS.TRAVEL_TO_TOWN)
+            }
+            if(event.meta.characterId){{
+              const character = characterRuntimeService.getCharacter(event.meta.characterId)
+              eventHistoryRuntimeService.addHistory(
+                `Character Event`,
+                `${character.name} arrived at ${this.destination.name}.`
+              )
+            }}
+            if(event.meta.partyId){
+              const party = {name: 'not implemented!'}
+              eventHistoryRuntimeService.addHistory(
+                `Party Event`,
+                `${party.name} arrived at ${this.destination.name}.`
+              )
             }
           }
           if(this.destination.type === 'adv_guild'){

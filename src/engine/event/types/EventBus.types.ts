@@ -3,6 +3,7 @@ import type { Transition } from '../../../ui/transition/types/Transition.types'
 import type { ActivityMeta, ActivityType } from '../../activity/types/Activity.types'
 import type { CharacterEvents, CharacterEventTypes } from './EventBusCharacter.types'
 import type { DebugEvents, DebugEventTypes } from './EventBusDebug.types'
+import type { PartyEvents, PartyEventTypes } from '../../party/types/EventBusParty.types'
 import type { PlayerEvents, PlayerEventTypes } from './EventBusPlayer.types'
 
 export interface EventSession {
@@ -13,9 +14,12 @@ export interface EventSession {
 export type GameEventType = PlayerEventTypes 
   | DebugEventTypes
   | CharacterEventTypes
+  | PartyEventTypes
   | 'world:mode:change'
   | 'event:history:updated'
+
   | 'tutorial:updated'
+
   | 'transition:start'
   | 'transition:started'
   | 'transition:stop'
@@ -125,7 +129,8 @@ export interface GameEvent_EventTransitionStart extends GameEvent {
   type: 'transition:start'
   meta: {
     transition: Transition
-    characterId: string
+    characterId?: string
+    partyId?: string
     destinationId: string
   }
 }
@@ -133,7 +138,8 @@ export interface GameEvent_EventTransitionStart extends GameEvent {
 export interface GameEvent_EventTransitionStarted extends GameEvent {
   type: 'transition:started'
   meta: {
-    characterId: string
+    characterId?: string
+    partyId?: string
     locationId: string
   }
 }
@@ -141,6 +147,11 @@ export interface GameEvent_EventTransitionStarted extends GameEvent {
 
 export interface GameEvent_EventTransitionStop extends GameEvent {
   type: 'transition:stop'
+  meta: {
+    characterId?: string
+    partyId?: string
+    locationId: string
+  }
 }
 
 export type GameEvents = GameEvent_ActivityStart
@@ -157,8 +168,8 @@ export type GameEvents = GameEvent_ActivityStart
   | DebugEvents
 
   | PlayerEvents
-
   | CharacterEvents
+  | PartyEvents
 
   | GameEvent_QuestStart 
   | GameEvent_QuestCancel 

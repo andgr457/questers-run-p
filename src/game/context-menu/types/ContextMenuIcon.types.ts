@@ -11,3 +11,4 @@ export type ContextMenuIconName =
   | 'world'
   | 'notifications'
   | 'tutorial'
+  | 'parties'

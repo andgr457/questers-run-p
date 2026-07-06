@@ -5,7 +5,7 @@ interface Props {
   entity: EventHistoryItem
 }
 
-export default function EventHistoryListItem(props: Props){
+export default function NotificationListItem(props: Props){
   const {
     entity,
   } = props

@@ -1,3 +1,4 @@
+import type { CharacterClassId } from '../../character-class/types/CharacterClassEntity.types'
 
 export interface CharacterEntity {
   id: string
@@ -5,7 +6,7 @@ export interface CharacterEntity {
   partyId?: string
   
   name: string
-  classId: string
+  classId: CharacterClassId
   isIdle: boolean
   xp: number
   xpNextLevel: number

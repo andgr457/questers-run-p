@@ -1,5 +1,5 @@
+import { useTutorial } from '../../../engine/tutorial/hooks/useTutorial'
 import GamePanel from '../../../ui/panel/GamePanel'
-import { useTutorial } from '../hooks/useTutorial'
 import styles from './Tutorial.module.css'
 
 export default function Tutorial() {
@@ -31,14 +31,15 @@ export default function Tutorial() {
           {tutorial.description}
         </div>
 
+        <div className={styles.title}>Hints</div>
         {tutorial.hints.length > 0 && <div className={styles.hints}>
           {tutorial.hints.map(hint => {
 
             return <div className={styles.hint}>
-              <div className={styles.hintTitle}>
+              <div className={styles.title}>
                 {hint.title}
               </div>
-              <div className={styles.hintDescription}>
+              <div className={styles.description}>
                 {hint.description}
               </div>
             </div>

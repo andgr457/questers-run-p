@@ -20,7 +20,7 @@ const BASE_TUTORIAL_REWARDS = {
 export const TUTORIALS: Tutorial[] = [
   {
     id: TUTORIAL_IDS.TRAVEL_TO_TOWN,
-    title: '1. Travel',
+    title: 'Travel to Town',
     description: 'The road ahead leads toward the nearby town of Oron. Travel there using Character actions.',
     hints: [
       {
@@ -29,7 +29,7 @@ export const TUTORIALS: Tutorial[] = [
       },
       {
         title: 'Manage Character',
-        description: 'Click the elipses on the right of the character you wish to manage.'
+        description: 'Click the elipses "..." on the right of the character you wish to manage.'
       },
       {
         title: 'Travel Actions',
