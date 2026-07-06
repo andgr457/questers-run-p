@@ -2,11 +2,11 @@ import { DateTime } from 'luxon'
 import { clockRuntimeService } from '../clock/ClockRuntimeService'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
-import type { EventHistoryItem } from './types/EventHistory.types'
+import type { Notification } from '../../game/notification/types/Notification.types'
 
-class EventHistoryRuntimeService {
+class NotificationRuntimeService {
   private initialized = false
-  private history: EventHistoryItem[] = []
+  private notifications: Notification[] = []
 
   init() {
     if (this.initialized) {
@@ -23,25 +23,25 @@ class EventHistoryRuntimeService {
       const history = localStorage.getItem(GAME_STORAGE_KEYS.EVENT_HISTORY_GAME)
 
       if (!history) {
-        this.history = []
+        this.notifications = []
         return
       }
 
-      this.history = JSON.parse(history)
+      this.notifications = JSON.parse(history)
       this.purgeHistory()
       this.saveHistory()
       this.emitHistoryUpdated()
     } catch {
-      this.history = []
+      this.notifications = []
     }
   }
 
   private purgeHistory() {
     const hourAgoMs = DateTime.now().minus({hours: 1}).toMillis()
-    const purgableHistoryIds = this.history.filter(h => 
+    const purgableHistoryIds = this.notifications.filter(h => 
       h.date < hourAgoMs && h.viewed === true
     ).map(h => h.id)
-    this.history = this.history.filter(
+    this.notifications = this.notifications.filter(
       item => !purgableHistoryIds.includes(item.id)
     )
   }
@@ -49,14 +49,14 @@ class EventHistoryRuntimeService {
   private saveHistory() {
     localStorage.setItem(
       GAME_STORAGE_KEYS.EVENT_HISTORY_GAME,
-      JSON.stringify(this.history)
+      JSON.stringify(this.notifications)
     )
   }
 
   private emitHistoryUpdated() {
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'event:history:updated',
+      type: 'notification:updated',
     })
   }
 
@@ -64,7 +64,7 @@ class EventHistoryRuntimeService {
     title: string,
     description?: string,
   ) {
-    this.history = [
+    this.notifications = [
       {
         id: crypto.randomUUID(),
         date: clockRuntimeService.getNow(),
@@ -72,7 +72,7 @@ class EventHistoryRuntimeService {
         description,
         viewed: false,
       },
-      ...this.history,
+      ...this.notifications,
     ]
     this.purgeHistory()
     this.saveHistory()
@@ -80,7 +80,7 @@ class EventHistoryRuntimeService {
   }
 
   markViewed(id: string) {
-    this.history = this.history.map(item =>
+    this.notifications = this.notifications.map(item =>
       item.id === id
         ? {
             ...item,
@@ -94,7 +94,7 @@ class EventHistoryRuntimeService {
   }
 
   removeHistory(id: string) {
-    this.history = this.history.filter(
+    this.notifications = this.notifications.filter(
       item => item.id !== id
     )
 
@@ -103,22 +103,22 @@ class EventHistoryRuntimeService {
   }
 
   clearHistory() {
-    this.history = []
+    this.notifications = []
 
     this.saveHistory()
     this.emitHistoryUpdated()
   }
 
-  getHistory() {
-    return [...this.history]
+  getNotifications() {
+    return [...this.notifications]
   }
 
   getUnreadCount() {
-    return this.history.filter(
+    return this.notifications.filter(
       item => !item.viewed
     ).length
   }
 }
 
-export const eventHistoryRuntimeService =
-  new EventHistoryRuntimeService()
+export const notificationRuntimeService =
+  new NotificationRuntimeService()

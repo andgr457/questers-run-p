@@ -11,10 +11,9 @@ import type { PlayerEntity } from '../../../entity/player/types/PlayerEntity.typ
 import { playerRuntimeService } from '../../../engine/player/PlayerRuntimeService'
 import { characterRuntimeService } from '../../../engine/character/CharacterRuntimeService'
 import type { CharacterEntity } from '../../../entity/character/types/CharacterEntity.types'
-import { eventHistoryRuntimeService } from '../../../engine/event/EventHistoryRuntimeService'
-import type { EventHistoryItem } from '../../../engine/event/types/EventHistory.types'
-import { tutorialRuntimeService } from '../../../engine/tutorial/TutorialRuntimeService'
 import { checkForPulse } from '../utils/ContextMenu.utils'
+import { useTutorial } from '../../../engine/tutorial/hooks/useTutorial'
+import { useNotifications } from '../../../engine/notification/hooks/useNotifications'
 
 interface Props {
   overlayMode: OverlayMode
@@ -27,12 +26,13 @@ export default function ContextMenuShell(props: Props) {
     setOverlayMode,
   } = props
 
+  const {tutorial} = useTutorial()
+  const {notifications} = useNotifications()
   const [recordingDetail, setRecordingDetail] = useState(eventDebugRuntimeService.getRecordingDetail())
   const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
   const [characters, setCharacters] = useState<CharacterEntity[]>(characterRuntimeService.getCharacters())
-  const [eventHistory, setEventHistory] = useState<EventHistoryItem[]>(eventHistoryRuntimeService.getHistory())
-  const [tutorial, setTutorial] = useState(tutorialRuntimeService.getCurrentTutorial())
-
+  console.log(tutorial)
+  
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
       if(GAME_EVENT_BUS_DEBUG_RECORDING_TYPES.includes(event.type)){
@@ -44,18 +44,12 @@ export default function ContextMenuShell(props: Props) {
       if(event.type === 'character:save'){
         setCharacters(characterRuntimeService.getCharacters())
       }
-      if(event.type === 'event:history:updated'){
-        setEventHistory(eventHistoryRuntimeService.getHistory())
-      }
-      if(event.type === 'tutorial:updated'){
-        setTutorial(tutorialRuntimeService.getCurrentTutorial())
-      }
     })
     return unsub
   }, [])
   const selectedBorderColor = 'var(--blue-sd-lighter-2)'
   const requiresAttentionColor = 'var(--green-success-2)'
-  const anyUnviewedNotifications = eventHistory.some(h => h.viewed === false)
+  const anyUnviewedNotifications = notifications.some(h => h.viewed === false)
   const anyCharactersIdle = characterRuntimeService.getCharacters().some(c => c.isIdle === true)
   const leftActions = useMemo<ContextMenuAction[]>(() => {
     if(!player) return []
@@ -73,16 +67,16 @@ export default function ContextMenuShell(props: Props) {
     })
     const notificationsCanPulse = checkForPulse(() => {
       return anyUnviewedNotifications
-    }, overlayMode, 'tutorial')
+    }, overlayMode, 'notifications')
     actions.push({
       id: 'notifications',
       label: 'Notifications',
       iconName: 'notifications',
       iconRotate: false,
-      borderColor: overlayMode === 'event_history' ? selectedBorderColor : '',
+      borderColor: overlayMode === 'notifications' ? selectedBorderColor : '',
       pulse: notificationsCanPulse,
       color: notificationsCanPulse ? requiresAttentionColor : '',
-      onClick: () => overlayMode === 'event_history' ? setOverlayMode('world') : setOverlayMode('event_history'),
+      onClick: () => overlayMode === 'notifications' ? setOverlayMode('world') : setOverlayMode('notifications'),
     })
     actions.push({
       id: 'player',

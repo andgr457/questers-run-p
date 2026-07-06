@@ -1,5 +1,5 @@
 import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types';
-import type { GameEvent } from './EventBus.types';
+import type { GameEvent } from '../../event/types/EventBus.types';
 
 export type PlayerEventTypes = 'player:save'
   | 'player:saved'

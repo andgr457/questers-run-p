@@ -1,7 +1,7 @@
 export type OverlayMode =
   | 'world'
   | 'transition'
-  | 'event_history'
+  | 'notifications'
   | 'dashboard'
   | 'tutorial'
 

@@ -1,5 +1,4 @@
-
-export interface EventHistoryItem {
+export interface Notification {
   id: string
   date: number
   title: string

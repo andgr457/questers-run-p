@@ -118,7 +118,7 @@ export default function World() {
         {overlayMode === 'dashboard' && (
           <Dashboard />
         )}
-        {overlayMode === 'event_history' && (
+        {overlayMode === 'notifications' && (
           <NotificationList />
         )}
         {overlayMode === 'player_create' && (

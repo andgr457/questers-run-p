@@ -4,7 +4,7 @@ import { TUTORIAL_IDS } from '../../game/tutorial/data/Tutorial.data'
 import type { Transition } from '../../ui/transition/types/Transition.types'
 import { characterRuntimeService } from '../character/CharacterRuntimeService'
 import { eventBus } from '../event/EventBus'
-import { eventHistoryRuntimeService } from '../event/EventHistoryRuntimeService'
+import { notificationRuntimeService } from '../notification/NotificationRuntimeService'
 import { tutorialRuntimeService } from '../tutorial/TutorialRuntimeService'
 
 class TransitionRuntimeService {
@@ -74,14 +74,14 @@ class TransitionRuntimeService {
             }
             if(event.meta.characterId){{
               const character = characterRuntimeService.getCharacter(event.meta.characterId)
-              eventHistoryRuntimeService.addHistory(
+              notificationRuntimeService.addHistory(
                 `Character Event`,
                 `${character.name} arrived at ${this.destination.name}.`
               )
             }}
             if(event.meta.partyId){
               const party = {name: 'not implemented!'}
-              eventHistoryRuntimeService.addHistory(
+              notificationRuntimeService.addHistory(
                 `Party Event`,
                 `${party.name} arrived at ${this.destination.name}.`
               )

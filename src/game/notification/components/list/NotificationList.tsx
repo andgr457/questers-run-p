@@ -1,28 +1,20 @@
-import { useEffect, useState } from 'react';
-import { eventBus } from '../../../../engine/event/EventBus';
-import { eventHistoryRuntimeService } from '../../../../engine/event/EventHistoryRuntimeService';
+import { useState } from 'react';
+import { notificationRuntimeService } from '../../../../engine/notification/NotificationRuntimeService';
 import { formatDateFromMillis } from '../../../../engine/clock/utils/formatTimeRemaining';
 import type { SortDirection } from '../../../types/Game.types';
 import GamePanel from '../../../../ui/panel/GamePanel';
+import { useNotifications } from '../../../../engine/notification/hooks/useNotifications';
 
 type FilterView = 'all' | 'read' | 'unread'
 
 export default function NotificationList(){
-  const [history, setHistory] = useState(eventHistoryRuntimeService.getHistory())
   const [filterView, setFilterView] = useState<FilterView>('unread')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
-  useEffect(() => {
-    const unsub = eventBus.subscribe(event => {
-      if(event.type === 'event:history:updated'){
-        setHistory(eventHistoryRuntimeService.getHistory())
-      }
-    })
-    return unsub
-  }, [])
-
-  const read = history.filter(h => h.viewed === true)
-  const unread = history.filter(h => h.viewed === false)
-  const filteredHistory = filterView === 'all' ? history : 
+  const {notifications} = useNotifications()
+  
+  const read = notifications.filter(h => h.viewed === true)
+  const unread = notifications.filter(h => h.viewed === false)
+  const filteredHistory = filterView === 'all' ? notifications : 
     filterView === 'read' ? read : 
     filterView === 'unread' ? unread : []
 
@@ -99,7 +91,7 @@ export default function NotificationList(){
               {!h.viewed && <button
                 className='button dark'
                 onClick={() => {
-                  eventHistoryRuntimeService.markViewed(h.id)
+                  notificationRuntimeService.markViewed(h.id)
                 }}
               >
                 Mark Viewed

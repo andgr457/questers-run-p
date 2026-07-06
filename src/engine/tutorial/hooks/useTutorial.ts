@@ -4,21 +4,19 @@ import { eventBus } from '../../../engine/event/EventBus';
 import type { Tutorial, TutorialProgress } from '../../../game/tutorial/types/Tutorial.types';
 
 export function useTutorial(){
-  const [tutorial, setTutorial] = useState<Tutorial | undefined>(undefined)
-  const [tutorialProgress, setTutorialProgress] = useState<TutorialProgress | undefined>(tutorialRuntimeService.getProgress())
+  const [tutorial, setTutorial] = useState<Tutorial | undefined>(tutorialRuntimeService.getCurrentTutorial())
+  const [tutorialProgress, setTutorialProgress] = useState<TutorialProgress | undefined>(
+    tutorialRuntimeService.getProgress()
+  )
 
   useEffect(() => {
-    setTutorial(tutorialRuntimeService.getCurrentTutorial())
-    setTutorialProgress(tutorialRuntimeService.getProgress())
-  }, [])
-
-  useEffect(() => {
-    eventBus.subscribe(event => {
+    const unsub = eventBus.subscribe(event => {
       if(event.type === 'tutorial:updated'){
         setTutorial(tutorialRuntimeService.getCurrentTutorial())
         setTutorialProgress(tutorialRuntimeService.getProgress())
       }
     })
+    return unsub
   }, [])
 
   return {

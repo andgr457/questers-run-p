@@ -1,5 +1,5 @@
 import type { CharacterEntity, CharacterGoldTransaction } from '../../../entity/character/types/CharacterEntity.types'
-import type { GameEvent } from './EventBus.types'
+import type { GameEvent } from '../../event/types/EventBus.types'
 
 export type CharacterEventTypes = 'character:save'
   | 'character:saved'

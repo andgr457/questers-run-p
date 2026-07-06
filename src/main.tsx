@@ -7,7 +7,7 @@ import { activityRuntimeService } from './engine/activity/ActivityRuntimeService
 import { characterRuntimeService } from './engine/character/CharacterRuntimeService.ts'
 import { playerRuntimeService } from './engine/player/PlayerRuntimeService.ts'
 import { eventDebugRuntimeService } from './engine/event/EventDebugRuntimeService.ts'
-import { eventHistoryRuntimeService } from './engine/event/EventHistoryRuntimeService.ts'
+import { notificationRuntimeService } from './engine/notification/NotificationRuntimeService.ts'
 import { tutorialRuntimeService } from './engine/tutorial/TutorialRuntimeService.ts'
 import { transitionRuntimeService } from './engine/transition/TransitionRuntimeService.ts'
 import { partyRuntimeService } from './engine/party/PartyRuntimeService.ts'
@@ -19,7 +19,7 @@ playerRuntimeService.init()
 characterRuntimeService.init()
 characterRuntimeService.start()
 partyRuntimeService.init()
-eventHistoryRuntimeService.init()
+notificationRuntimeService.init()
 tutorialRuntimeService.init()
 
 createRoot(document.getElementById('root')!).render(

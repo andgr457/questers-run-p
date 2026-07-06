@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService'
-import { getCharacterGold } from '../../../../engine/character/utils/Character.utils'
+import { getCharacterGold } from '../../utils/Character.utils'
 import { eventBus } from '../../../../engine/event/EventBus'
 import { GAME_EVENT_BUS_CHARACTER_TYPES } from '../../../../engine/event/utils/EventBus.utils'
 import DetailRow from '../../../../game/detail/DetailRow'

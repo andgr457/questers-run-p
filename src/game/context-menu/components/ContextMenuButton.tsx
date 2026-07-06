@@ -14,18 +14,18 @@ export default function ContextMenuButton(props: Props) {
     action.pulse = false
   }
 
-  let border = 'solid 1px '
+  let borderColor = ''
   if(action.borderColor){
-    border += action.borderColor
+    borderColor += action.borderColor
   } else {
-    border += 'var(--text)'
+    borderColor += 'var(--text)'
   }
   return (
     <button
       className={`${styles.contextButton} ${action.pulse === true ? styles.pulse : '' }`}
       onClick={action.onClick}
       title={action.label}
-      style={{color: action.color ?? 'var(--text)', border: border}}
+      style={{color: action.color ?? 'var(--text)', borderColor: borderColor}}
     >
       <span className={action.iconRotate ? styles.icon : styles.iconNoRotate}>
         {ContextMenuIcon[action.iconName]}

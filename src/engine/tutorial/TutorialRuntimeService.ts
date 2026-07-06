@@ -2,7 +2,6 @@ import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import { TUTORIALS } from '../../game/tutorial/data/Tutorial.data'
 import type { TutorialProgress } from '../../game/tutorial/types/Tutorial.types'
-import { notificationRuntimeService } from '../notifications/NotificationRuntimeService'
 import { characterRuntimeService } from '../character/CharacterRuntimeService'
 import { clockRuntimeService } from '../clock/ClockRuntimeService'
 
@@ -71,12 +70,6 @@ class TutorialRuntimeService {
     )
     const completedTutorial = TUTORIALS.find(t => t.id === tutorialId)
     if(completedTutorial){
-      notificationRuntimeService.notify({
-        text: `Tutorial "${completedTutorial.title}" completed!`,
-        lifetime: 5000,
-        type: 'success'
-      })
-
       if(completedTutorial.rewards.characterSpecific){
         const managedCharacter = characterRuntimeService.getManagingCharacter()
         if(managedCharacter){

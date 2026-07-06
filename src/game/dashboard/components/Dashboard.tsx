@@ -6,10 +6,10 @@ import type { CharacterEntity } from '../../../entity/character/types/CharacterE
 import { characterRuntimeService } from '../../../engine/character/CharacterRuntimeService';
 import { eventBus } from '../../../engine/event/EventBus';
 import { GAME_EVENT_BUS_CHARACTER_TYPES, GAME_EVENT_BUS_PLAYER_TYPES } from '../../../engine/event/utils/EventBus.utils';
-import { getPlayerGold } from '../../../engine/player/utils/Player.utils';
+import { getPlayerGold } from '../../../entity/player/utils/Player.utils';
 import { GAME_CHARACTER_CLASSES } from '../../../entity/character-class/data/CharacterClassEntity.data';
 import type { CharacterClassId } from '../../../entity/character-class/types/CharacterClassEntity.types';
-import { getCharacterGold } from '../../../engine/character/utils/Character.utils';
+import { getCharacterGold } from '../../../entity/character/utils/Character.utils';
 import ProgressBar from '../../../ui/progress-bar/ProgressBar';
 import { getProgress } from '../../../ui/progress-bar/utils/ProgressBar.utils';
 

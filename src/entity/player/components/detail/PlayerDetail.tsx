@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { eventBus } from '../../../../engine/event/EventBus'
-import { getPlayerGold } from '../../../../engine/player/utils/Player.utils'
+import { getPlayerGold } from '../../utils/Player.utils'
 import { GAME_EVENT_BUS_PLAYER_TYPES } from '../../../../engine/event/utils/EventBus.utils'
 import { playerRuntimeService } from '../../../../engine/player/PlayerRuntimeService'
 import styles from './PlayerDetail.module.css'

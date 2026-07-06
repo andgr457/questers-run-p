@@ -1,4 +1,4 @@
-import { characterRuntimeService } from '../CharacterRuntimeService'
+import { characterRuntimeService } from '../../../engine/character/CharacterRuntimeService'
 
 export function getCharacterGold(characterId: string) {
   const txns = characterRuntimeService.getCharacterGoldTransactions(characterId)

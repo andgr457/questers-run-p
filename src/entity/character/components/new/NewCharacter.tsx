@@ -5,7 +5,7 @@ import { GAME_CHARACTER_CLASSES, GAME_CLASSES } from '../../../character-class/d
 import CharacterClassDetail from '../../../character-class/components/detail/CharacterClassDetail'
 import type { CharacterEntity } from '../../types/CharacterEntity.types'
 import { playerRuntimeService } from '../../../../engine/player/PlayerRuntimeService'
-import { eventHistoryRuntimeService } from '../../../../engine/event/EventHistoryRuntimeService'
+import { notificationRuntimeService } from '../../../../engine/notification/NotificationRuntimeService'
 import { eventBus } from '../../../../engine/event/EventBus'
 import { LOCATION_IDS } from '../../../location/data/Location.data'
 import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService'
@@ -167,7 +167,7 @@ export default function NewCharacter(){
                   classId: characterClass.id,
                   playerId: playerRuntimeService.getPlayer()?.id as string,
                 }
-                eventHistoryRuntimeService.addHistory(
+                notificationRuntimeService.addHistory(
                   `Character Event`,
                   `${name} was created!`
                 )

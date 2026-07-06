@@ -2,8 +2,8 @@ import type { PlayerEntity, PlayerGoldTransaction } from '../../entity/player/ty
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { GameEvent } from '../event/types/EventBus.types'
-import { notificationRuntimeService } from '../notifications/NotificationRuntimeService'
-import { getPlayerGold } from './utils/Player.utils'
+import { notificationRuntimeService } from '../notification/NotificationRuntimeService'
+import { getPlayerGold } from '../../entity/player/utils/Player.utils'
 
 class PlayerRuntimeService {
   private initialized = false

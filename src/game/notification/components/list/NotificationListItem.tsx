@@ -1,8 +1,8 @@
 import { formatDateFromMillis } from '../../../../engine/clock/utils/formatTimeRemaining'
-import type { EventHistoryItem } from '../../../../engine/event/types/EventHistory.types'
+import type { Notification } from '../../types/Notification.types'
 
 interface Props {
-  entity: EventHistoryItem
+  entity: Notification
 }
 
 export default function NotificationListItem(props: Props){

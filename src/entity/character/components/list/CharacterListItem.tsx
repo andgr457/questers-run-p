@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getCharacterGold } from '../../../../engine/character/utils/Character.utils'
+import { getCharacterGold } from '../../utils/Character.utils'
 import { eventBus } from '../../../../engine/event/EventBus'
 import type { CharacterEntity } from '../../types/CharacterEntity.types'
 import { GAME_CHARACTER_CLASSES } from '../../../character-class/data/CharacterClassEntity.data'

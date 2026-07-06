@@ -1,4 +1,4 @@
-import { playerRuntimeService } from '../PlayerRuntimeService'
+import { playerRuntimeService } from '../../../engine/player/PlayerRuntimeService'
 
 export function getPlayerGold() {
   const txns = playerRuntimeService.getPlayerGoldTransactions()

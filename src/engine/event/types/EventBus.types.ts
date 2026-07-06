@@ -1,10 +1,10 @@
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
 import type { Transition } from '../../../ui/transition/types/Transition.types'
 import type { ActivityMeta, ActivityType } from '../../activity/types/Activity.types'
-import type { CharacterEvents, CharacterEventTypes } from './EventBusCharacter.types'
+import type { CharacterEvents, CharacterEventTypes } from '../../character/types/CharacterEvent.types'
 import type { DebugEvents, DebugEventTypes } from './EventBusDebug.types'
-import type { PartyEvents, PartyEventTypes } from '../../party/types/EventBusParty.types'
-import type { PlayerEvents, PlayerEventTypes } from './EventBusPlayer.types'
+import type { PartyEvents, PartyEventTypes } from '../../party/types/PartyEvent.types'
+import type { PlayerEvents, PlayerEventTypes } from '../../player/types/PlayerEvent.types'
 
 export interface EventSession {
   event: Partial<GameEvents>
@@ -16,7 +16,7 @@ export type GameEventType = PlayerEventTypes
   | CharacterEventTypes
   | PartyEventTypes
   | 'world:mode:change'
-  | 'event:history:updated'
+  | 'notification:updated'
 
   | 'tutorial:updated'
 
@@ -117,8 +117,8 @@ export interface GameEvent_UpgradePurchased extends GameEvent {
   type: 'upgrade:purchased'
 }
 
-export interface GameEvent_EventHistoryUpdated extends GameEvent {
-  type: 'event:history:updated'
+export interface GameEvent_NotificationUpdated extends GameEvent {
+  type: 'notification:updated'
 }
 
 export interface GameEvent_EventTutorialUpdated extends GameEvent {
@@ -159,7 +159,7 @@ export type GameEvents = GameEvent_ActivityStart
   | GameEvent_ActivityComplete
   | GameEvent_ActivityCancel
   | GameEvent_WorldModeChange
-  | GameEvent_EventHistoryUpdated
+  | GameEvent_NotificationUpdated
   | GameEvent_EventTutorialUpdated
   | GameEvent_EventTransitionStart
   | GameEvent_EventTransitionStarted
