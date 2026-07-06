@@ -6,7 +6,6 @@ import GamePanel from '../../../../ui/panel/GamePanel';
 import type { CharacterEntity } from '../../types/CharacterEntity.types';
 import { GAME_LOCATIONS } from '../../../location/data/Location.data';
 import GamePanelSection from '../../../../ui/panel/GamePanelSection';
-import GameListWrapper from '../../../../ui/list/GameListWrapper';
 import type { Location } from '../../../location/types/Location.types';
 import LocationDetail from '../../../location/components/detail/LocationDetail';
 import LocationList from '../../../location/components/list/LocationList';

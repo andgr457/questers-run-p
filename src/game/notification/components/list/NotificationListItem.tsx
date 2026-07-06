@@ -1,4 +1,3 @@
-import { formatDateFromMillis } from '../../../../engine/clock/utils/formatTimeRemaining'
 import { notificationRuntimeService } from '../../../../engine/notification/NotificationRuntimeService'
 import { ContextMenuIcon } from '../../../context-menu/data/ContextMenuIcon.data'
 import { formatPrimitiveValueToString } from '../../../utils/Game.utils'
