@@ -149,3 +149,7 @@ html, body, #root {
   background: transparent;
 }
 
+.unselectable {
+  -webkit-user-select: none; /* Safari */
+  user-select: none;         /* Standard syntax for Chrome, Edge, Firefox, and Opera */
+}

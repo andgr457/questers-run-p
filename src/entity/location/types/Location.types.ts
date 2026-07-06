@@ -16,4 +16,6 @@ export interface Location {
   name: string
   description: string
   linkedLocationIds: string[]
+  mobIds: string[]
+  professionItemIds: string[]
 }

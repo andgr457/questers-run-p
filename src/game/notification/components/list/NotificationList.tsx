@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { notificationRuntimeService } from '../../../../engine/notification/NotificationRuntimeService';
-import { formatDateFromMillis } from '../../../../engine/clock/utils/formatTimeRemaining';
 import type { SortDirection } from '../../../types/Game.types';
 import GamePanel from '../../../../ui/panel/GamePanel';
 import { useNotifications } from '../../../../engine/notification/hooks/useNotifications';
+import NotificationListItem from './NotificationListItem';
 
 type FilterView = 'all' | 'read' | 'unread'
 
@@ -14,11 +13,11 @@ export default function NotificationList(){
   
   const read = notifications.filter(h => h.viewed === true)
   const unread = notifications.filter(h => h.viewed === false)
-  const filteredHistory = filterView === 'all' ? notifications : 
+  const filtered = filterView === 'all' ? notifications : 
     filterView === 'read' ? read : 
     filterView === 'unread' ? unread : []
 
-  const historySorted = filteredHistory.sort((a, b) => {
+  const sorted = filtered.sort((a, b) => {
     if(sortDirection === 'desc'){
       return b.date - a.date
     } else {
@@ -72,32 +71,34 @@ export default function NotificationList(){
       </div>
 
       <div className='event-history-list'>
-        {historySorted.length === 0 && <div className='event-history-list-no-results'>
+        {sorted.length === 0 && <div className='event-history-list-no-results'>
           EMPTY  
         </div>}
-        {historySorted.map(h => {
+        {sorted.map(h => {
 
-          return <div className='event-history-list-item-wrapper'>
-            <div className='event-history-list-item-title'>
-              {h.title}
-            </div>
-            <div className='event-history-list-item-description'>
-              {h.description}
-            </div>
-            <div className='event-history-list-item-date'>
-              {formatDateFromMillis(h.date)}
-            </div>
-            <div>
-              {!h.viewed && <button
-                className='button dark'
-                onClick={() => {
-                  notificationRuntimeService.markViewed(h.id)
-                }}
-              >
-                Mark Viewed
-              </button>}
-            </div>
-          </div>
+          return <NotificationListItem entity={h} />
+          
+          // <div className='event-history-list-item-wrapper'>
+          //   <div className='event-history-list-item-title'>
+          //     {h.title}
+          //   </div>
+          //   <div className='event-history-list-item-description'>
+          //     {h.description}
+          //   </div>
+          //   <div className='event-history-list-item-date'>
+          //     {formatDateFromMillis(h.date)}
+          //   </div>
+          //   <div>
+          //     {!h.viewed && <button
+          //       className='button dark'
+          //       onClick={() => {
+          //         notificationRuntimeService.markViewed(h.id)
+          //       }}
+          //     >
+          //       Mark Viewed
+          //     </button>}
+          //   </div>
+          // </div>
         })}
         
       </div>

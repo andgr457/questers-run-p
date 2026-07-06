@@ -17,3 +17,5 @@ export type OverlayMode =
 
   | 'party_list'
   | 'party'
+  | 'party_manage'
+  | 'party_create'

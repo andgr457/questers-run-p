@@ -1,0 +1,29 @@
+.row {
+  display: flex;
+  align-items: center;
+
+
+  padding: 10px;
+
+  height: 46px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  font-size: 13px;
+  letter-spacing: 2px;
+  justify-content: space-between;
+}
+
+.title {
+  text-transform: uppercase;
+  font-weight: 200;
+}
+
+.action {
+  color: var(--text);
+  background-color: var(--bg-dark-4);
+  border: unset;
+  font-size: 1.2rem;
+  cursor: pointer;
+}

@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-
+const GAME_DATE_TIME_FORMAT = 'M/d/yy t'
 export function formatTimeRemaining(totalMs: number): string {
   if (totalMs <= 0) return '0s'
 
@@ -30,5 +30,5 @@ export function formatTimeRemaining(totalMs: number): string {
 }
 
 export function formatDateFromMillis(ms: number): string {
-  return DateTime.fromMillis(ms).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+  return DateTime.fromMillis(ms).toFormat(GAME_DATE_TIME_FORMAT)
 }

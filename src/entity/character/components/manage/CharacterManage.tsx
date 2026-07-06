@@ -8,6 +8,7 @@ import { GAME_LOCATIONS } from '../../../location/data/Location.data';
 import GamePanelSection from '../../../../ui/panel/GamePanelSection';
 import GameListWrapper from '../../../../ui/list/GameListWrapper';
 import type { Location } from '../../../location/types/Location.types';
+import LocationDetail from '../../../location/components/LocationDetail';
 
 export default function CharacterManage() {
   const [character, setCharacter] = useState<CharacterEntity | undefined>(characterRuntimeService.getManagingCharacter())
@@ -32,17 +33,14 @@ export default function CharacterManage() {
     title={`Manage ${character.name}`}
     currentScreenName=''
   >
-    <GamePanelSection
-      actions={[]}
-      actionsLocation='bottom'
-      title={`${currentLocation.name} Actions`}
-    >
+    <div className='game-list-item-header'>
+      {currentLocation.name}
+    </div>
 
-    </GamePanelSection>
     <GamePanelSection
       actions={[]}
       actionsLocation='bottom'
-      title={`Travel from ${currentLocation.name ?? 'No'}`}
+      title={`Travel (${travelToLocations.length})`}
     >
       <GameListWrapper<Location>
         actions={[
@@ -53,12 +51,13 @@ export default function CharacterManage() {
                 id: crypto.randomUUID(),
                 type: 'transition:start',
                 meta: {
-                  characterId: character.id,
-                  destinationId: entity?.id as string,
                   transition: {
                     title: `${character.name} is travelling to the ${entity?.name}...`,
-                    delay: 5000
-                  }
+                    delay: 5000,
+                    characterId: character.id,
+                    destinationLocationId: entity?.id as string,
+                    sourceLocationId: character.locationId,
+                  },
                 }
               })
             }
@@ -66,32 +65,31 @@ export default function CharacterManage() {
         ]}
         entities={travelToLocations}
         getEntityContent={(entity) => {
-          const linkedLocations = GAME_LOCATIONS.filter(l => 
-            entity?.linkedLocationIds?.includes(l.id)
-          )
-          return <>
-            <div className='game-list-item-title'>
-              {entity.name}
-            </div>
-            <div style={{width: '100%', textAlign: 'center'}}>
-              <div className='game-code'>
-                {entity.type}
-              </div>
-            </div>
-            <div className='game-list-item-label'>
-              {entity.description}
-            </div>
-            <div>
-              <div className='game-list-item-title'>
-                Linked To
-              </div>
-              {linkedLocations.map(l => {
-                return <div className='game-list-item-label' style={{padding: '2px', marginBottom: '2px', marginTop: '2px', textTransform: 'uppercase'}}>
-                  {l.name}
-                </div>
-              })}
-            </div>
-          </>
+
+          return <LocationDetail entity={entity} />
+          // <>
+          //   <div className='game-list-item-title'>
+          //     {entity.name}
+          //   </div>
+          //   <div style={{width: '100%', textAlign: 'center'}}>
+          //     <div className='game-code'>
+          //       {entity.type}
+          //     </div>
+          //   </div>
+          //   <div className='game-list-item-label'>
+          //     {entity.description}
+          //   </div>
+          //   <div>
+          //     <div className='game-list-item-title'>
+          //       Linked To
+          //     </div>
+          //     {linkedLocations.map(l => {
+          //       return <div className='game-list-item-label' style={{padding: '2px', marginBottom: '2px', marginTop: '2px', textTransform: 'uppercase'}}>
+          //         {l.name}
+          //       </div>
+          //     })}
+          //   </div>
+          // </>
         }}
       />
     </GamePanelSection>

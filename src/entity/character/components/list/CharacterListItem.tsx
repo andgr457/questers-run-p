@@ -38,9 +38,11 @@ export default function CharacterListItem(props: Props) {
   const onClickFn = !onClick ? undefined : () => {onClick?.(entity)}
   return (
     <div className={styles.wrapper} >
-      <div className={styles.title}>
-        <div className={styles.name}>
-          {entity.name}
+      <div className={styles.header}>
+        <div className={styles.title}>
+          <div className={styles.name}>
+            {entity.name}
+          </div>
         </div>
         <div className={styles.label}>
           Lv. {entity.level}
@@ -54,11 +56,15 @@ export default function CharacterListItem(props: Props) {
         <div className={styles.label}>
           <GoldDetail gold={gold} />
         </div>
-        {onClickFn && <button className='button dark' onClick={onClickFn}>
-          ...
-        </button>}
+        
+        {onClickFn && <div 
+          title={`Manage ${entity.name}`}
+          className={`${styles.action} ${styles.rotate}`} 
+          onClick={onClickFn}
+        >
+          ⚙
+        </div>}
       </div>
-
       <div className={styles.bars}>
         <div className={styles.bar}>
           <ProgressBar

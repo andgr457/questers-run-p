@@ -3,7 +3,6 @@ import type { Transition } from './types/Transition.types'
 import styles from './Transition.module.css'
 import AnimatedText from '../text/animated-text/AnimatedText'
 import { eventBus } from '../../engine/event/EventBus'
-import { transitionRuntimeService } from '../../engine/transition/TransitionRuntimeService'
 
 interface Props {
   transition: Transition
@@ -43,7 +42,7 @@ export default function TransitionDetail(props: Props) {
         className ?? ''
       ].join(' ')}
     >
-      <div className={styles.container}>
+      <div className={`${styles.container} unselectable`}>
         <AnimatedText
           text={transition.title}
           delay={transition.delay ?? 3000}
@@ -53,10 +52,13 @@ export default function TransitionDetail(props: Props) {
 
               setTimeout(() => {
                 onComplete?.()
-                if(transitionRuntimeService.getCurrentTransition()?.transition){
+                if(transition){
                   eventBus.emit({
                     id: crypto.randomUUID(),
-                    type: 'transition:stop'
+                    type: 'transition:stop',
+                    meta: {
+                      transition,
+                    }
                   })
                 }
               }, 400)

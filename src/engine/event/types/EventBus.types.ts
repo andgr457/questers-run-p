@@ -129,18 +129,13 @@ export interface GameEvent_EventTransitionStart extends GameEvent {
   type: 'transition:start'
   meta: {
     transition: Transition
-    characterId?: string
-    partyId?: string
-    destinationId: string
   }
 }
 
 export interface GameEvent_EventTransitionStarted extends GameEvent {
   type: 'transition:started'
   meta: {
-    characterId?: string
-    partyId?: string
-    locationId: string
+    transition: Transition
   }
 }
 
@@ -148,9 +143,7 @@ export interface GameEvent_EventTransitionStarted extends GameEvent {
 export interface GameEvent_EventTransitionStop extends GameEvent {
   type: 'transition:stop'
   meta: {
-    characterId?: string
-    partyId?: string
-    locationId: string
+    transition: Transition
   }
 }
 

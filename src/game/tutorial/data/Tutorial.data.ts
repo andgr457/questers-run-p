@@ -29,7 +29,7 @@ export const TUTORIALS: Tutorial[] = [
       },
       {
         title: 'Manage Character',
-        description: 'Click the elipses "..." on the right of the character you wish to manage.'
+        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage.'
       },
       {
         title: 'Travel Actions',

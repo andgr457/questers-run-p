@@ -5,6 +5,7 @@ import type { Transition } from '../../ui/transition/types/Transition.types'
 import { characterRuntimeService } from '../character/CharacterRuntimeService'
 import { eventBus } from '../event/EventBus'
 import { notificationRuntimeService } from '../notification/NotificationRuntimeService'
+import { partyRuntimeService } from '../party/PartyRuntimeService'
 import { tutorialRuntimeService } from '../tutorial/TutorialRuntimeService'
 
 class TransitionRuntimeService {
@@ -22,15 +23,32 @@ class TransitionRuntimeService {
     eventBus.subscribe(event => {
       if (event.type === 'transition:start') {
         this.transition = event.meta.transition
-        this.destination = GAME_LOCATIONS.find(l => l.id === event.meta.destinationId)
+        if(!event.meta.transition.characterId && !event.meta.transition.partyId){
+          //input form, no travel
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'transition:started',
+            meta: {
+              transition: event.meta.transition,
+            }
+          })
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            parentEventId: event.id,
+            type: 'world:mode:change',
+            meta: {
+              worldMode: 'transition'
+            }
+          })
+          return
+        }
+        this.destination = GAME_LOCATIONS.find(l => l.id === event.meta.transition.destinationLocationId as string)
 
         eventBus.emit({
           id: crypto.randomUUID(),
           type: 'transition:started',
           meta: {
-            characterId: event.meta.characterId,
-            partyId: event.meta.partyId,
-            locationId: event.meta.destinationId
+            transition: event.meta.transition,
           }
         })
         eventBus.emit({
@@ -43,7 +61,7 @@ class TransitionRuntimeService {
         })
       }
       if(event.type === 'transition:started'){
-        if(event.meta.characterId){
+        if(event.meta.transition.characterId){
           eventBus.emit({
             id: crypto.randomUUID(),
             type: 'character:save',
@@ -51,15 +69,22 @@ class TransitionRuntimeService {
             meta: {
               character: {
                 ...characterRuntimeService.getCharacter(
-                  event.meta.characterId
+                  event.meta.transition.characterId
                 ),
-                locationId: event.meta.locationId
+                locationId: event.meta.transition.destinationLocationId as string
               }
             }
           })
         }
-        if(event.meta.partyId){
-          console.log('Party Transition Not Implemented')
+        if(event.meta.transition.partyId){
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'party:save',
+            parentEventId: event.id,
+            meta: {
+              party: partyRuntimeService.getParty(event.meta.transition.partyId)
+            }
+          })
         }
       }
       if(event.type === 'transition:stop'){
@@ -72,14 +97,14 @@ class TransitionRuntimeService {
             if(travelTutorialComplete === false){
               tutorialRuntimeService.completeTutorial(TUTORIAL_IDS.TRAVEL_TO_TOWN)
             }
-            if(event.meta.characterId){{
-              const character = characterRuntimeService.getCharacter(event.meta.characterId)
+            if(event.meta.transition.characterId){{
+              const character = characterRuntimeService.getCharacter(event.meta.transition.characterId)
               notificationRuntimeService.addHistory(
                 `Character Event`,
                 `${character.name} arrived at ${this.destination.name}.`
               )
             }}
-            if(event.meta.partyId){
+            if(event.meta.transition.partyId){
               const party = {name: 'not implemented!'}
               notificationRuntimeService.addHistory(
                 `Party Event`,
@@ -99,22 +124,32 @@ class TransitionRuntimeService {
 
         this.transition = undefined
         this.destination = undefined
-        eventBus.emit({
-          id: crypto.randomUUID(),
-          parentEventId: event.id,
-          type: 'world:mode:change',
-          meta: {
-            worldMode: 'character_manage'
-          }
-        })
+        if(event.meta.transition.characterId){
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            parentEventId: event.id,
+            type: 'world:mode:change',
+            meta: {
+              worldMode: 'character_manage'
+            }
+          })
+        }
+        if(event.meta.transition.partyId){
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            parentEventId: event.id,
+            type: 'world:mode:change',
+            meta: {
+              worldMode: 'party_manage'
+            }
+          })
+        }
       }
     })
   }
 
   getCurrentTransition(){
-    return {
-      transition: this.transition,
-    }
+    return this.transition
   }
 
 }

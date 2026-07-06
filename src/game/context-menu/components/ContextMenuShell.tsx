@@ -31,7 +31,6 @@ export default function ContextMenuShell(props: Props) {
   const [recordingDetail, setRecordingDetail] = useState(eventDebugRuntimeService.getRecordingDetail())
   const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
   const [characters, setCharacters] = useState<CharacterEntity[]>(characterRuntimeService.getCharacters())
-  console.log(tutorial)
   
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
@@ -73,9 +72,9 @@ export default function ContextMenuShell(props: Props) {
       label: 'Notifications',
       iconName: 'notifications',
       iconRotate: false,
-      borderColor: overlayMode === 'notifications' ? selectedBorderColor : '',
       pulse: notificationsCanPulse,
       color: notificationsCanPulse ? requiresAttentionColor : '',
+      borderColor: notificationsCanPulse ? requiresAttentionColor : overlayMode === 'notifications' ? selectedBorderColor : '',
       onClick: () => overlayMode === 'notifications' ? setOverlayMode('world') : setOverlayMode('notifications'),
     })
     actions.push({
@@ -96,7 +95,7 @@ export default function ContextMenuShell(props: Props) {
       iconRotate: false,
       pulse: canCharactersListPulse,
       color: canCharactersListPulse ? requiresAttentionColor : '',
-      borderColor: overlayMode === 'characters' ? selectedBorderColor : '',
+      borderColor: canCharactersListPulse ? requiresAttentionColor  : overlayMode === 'characters' ? selectedBorderColor : '',
       onClick: () => overlayMode === 'characters' ? setOverlayMode('world') : setOverlayMode('characters'),
     })
     actions.push({
@@ -151,7 +150,7 @@ export default function ContextMenuShell(props: Props) {
         iconRotate: false,
         pulse: tutorialCanPulse,
         color: tutorialCanPulse ? requiresAttentionColor : '',
-        borderColor: overlayMode === 'tutorial' ? selectedBorderColor : '',
+        borderColor: tutorialCanPulse ? requiresAttentionColor : overlayMode === 'tutorial' ? selectedBorderColor : '',
         onClick: () => overlayMode === 'tutorial' ? setOverlayMode('world') : setOverlayMode('tutorial'),
       })
     }

@@ -1,20 +1,23 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 
-  padding: 18px;
-
-  letter-spacing: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
   cursor: pointer;
 }
 
-.title {
-  font-weight: 600;
-  letter-spacing: 2px;
+.header {
   display: flex;
   justify-content: space-between;
-  font-size: 1.2em;
+  align-items: center;
+
+}
+
+.title {
+  letter-spacing: 2px;
+  /* font-size: 1.2em; */
 }
 
 .label {
@@ -29,4 +32,19 @@
 
 .bar {
   width: 100%;
+}
+
+.action:hover {
+  transform: rotate(90deg);
+}
+
+.action {
+  color: var(--text);
+  background-color: var(--bg-dark-4);
+  border: unset;
+  cursor: pointer;
+}
+
+.rotate {
+  transition: transform 1s ease;
 }

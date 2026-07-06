@@ -1,33 +1,13 @@
-import { useEffect, useState } from 'react';
-import { transitionRuntimeService } from '../../engine/transition/TransitionRuntimeService';
-import { eventBus } from '../../engine/event/EventBus';
 import TransitionDetail from '../../ui/transition/TransitionDetail';
+import { useTransition } from '../../engine/transition/hooks/useTransition';
 
 export default function TravelTransition(){
-  const [transitionState, setTransitionState] = useState(transitionRuntimeService.getCurrentTransition())
-  
-  useEffect(() => {
-    const unsub = eventBus.subscribe(event => {
-      if(event.type === 'transition:start'){
-        setTransitionState(transitionRuntimeService.getCurrentTransition())
-      }
-      if(event.type === 'transition:started'){
-        setTransitionState(transitionRuntimeService.getCurrentTransition())
-      }
-      if(event.type === 'transition:stop'){
-        setTransitionState(transitionRuntimeService.getCurrentTransition())
-      }
-    })
-    return unsub
-  }, [])
-
+  const {transition} = useTransition()
   if(
-    !transitionState || 
-    !transitionState.transition
-
+    !transition
   ) return null
 
   return <TransitionDetail 
-    transition={transitionState.transition}
+    transition={transition}
   />
 }
