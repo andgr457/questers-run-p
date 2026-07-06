@@ -9,7 +9,6 @@
   box-sizing: border-box;
 
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-
   letter-spacing: 2px;
   justify-content: space-between;
 }
@@ -30,7 +29,7 @@
   color: var(--text);
   background-color: var(--bg-dark-4);
   border: unset;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
 }
 

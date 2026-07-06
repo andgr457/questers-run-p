@@ -13,6 +13,14 @@
   font-size: 0.9em;
   font-weight: 300;
   letter-spacing: 3px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: 0.9em;
+  font-weight: 300;
+  letter-spacing: 3px;
   text-align: center;
   text-transform: uppercase;
 }
@@ -24,18 +32,41 @@
   text-align: center;
 }
 
-.hints {
+.item {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+
+
+  padding: 10px;
+
+  height: 46px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  font-size: 13px;
+  letter-spacing: 2px;
+  justify-content: space-between;
 }
 
-.hint {
+.itemTitle {
+  font-size: 0.9em;
+  font-weight: 300;
+  letter-spacing: 3px;
   text-align: left;
+  text-transform: uppercase;
+  min-width: 50%;
+}
 
-  padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: transparent;
+.items {
+  width: 100%;
+}
 
-  transition: background 0.2s ease;
+
+.rewardGroup {
+  font-size: 0.9em;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 5px;
 }

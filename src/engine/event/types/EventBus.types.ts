@@ -5,6 +5,8 @@ import type { CharacterEvents, CharacterEventTypes } from '../../character/types
 import type { DebugEvents, DebugEventTypes } from './EventBusDebug.types'
 import type { PartyEvents, PartyEventTypes } from '../../party/types/PartyEvent.types'
 import type { PlayerEvents, PlayerEventTypes } from '../../player/types/PlayerEvent.types'
+import type { RewardsEvents, RewardsEventTypes } from '../../rewards/types/RewardsEvents.types'
+import type { TutorialEvents, TutorialEventTypes } from '../../tutorial/types/TutorialEvents.types'
 
 export interface EventSession {
   event: Partial<GameEvents>
@@ -15,10 +17,11 @@ export type GameEventType = PlayerEventTypes
   | DebugEventTypes
   | CharacterEventTypes
   | PartyEventTypes
+  | RewardsEventTypes
+  | TutorialEventTypes
   | 'world:mode:change'
   | 'notification:updated'
 
-  | 'tutorial:updated'
 
   | 'transition:start'
   | 'transition:started'
@@ -121,10 +124,6 @@ export interface GameEvent_NotificationUpdated extends GameEvent {
   type: 'notification:updated'
 }
 
-export interface GameEvent_EventTutorialUpdated extends GameEvent {
-  type: 'tutorial:updated'
-}
-
 export interface GameEvent_EventTransitionStart extends GameEvent {
   type: 'transition:start'
   meta: {
@@ -153,7 +152,6 @@ export type GameEvents = GameEvent_ActivityStart
   | GameEvent_ActivityCancel
   | GameEvent_WorldModeChange
   | GameEvent_NotificationUpdated
-  | GameEvent_EventTutorialUpdated
   | GameEvent_EventTransitionStart
   | GameEvent_EventTransitionStarted
   | GameEvent_EventTransitionStop
@@ -163,6 +161,8 @@ export type GameEvents = GameEvent_ActivityStart
   | PlayerEvents
   | CharacterEvents
   | PartyEvents
+  | RewardsEvents
+  | TutorialEvents
 
   | GameEvent_QuestStart 
   | GameEvent_QuestCancel 

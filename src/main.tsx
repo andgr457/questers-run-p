@@ -11,10 +11,12 @@ import { notificationRuntimeService } from './engine/notification/NotificationRu
 import { tutorialRuntimeService } from './engine/tutorial/TutorialRuntimeService.ts'
 import { transitionRuntimeService } from './engine/transition/TransitionRuntimeService.ts'
 import { partyRuntimeService } from './engine/party/PartyRuntimeService.ts'
+import { rewardsRuntimeService } from './engine/rewards/RewardsRuntimeService.ts'
 clockRuntimeService.start()
 eventDebugRuntimeService.init()
 transitionRuntimeService.init()
 activityRuntimeService.init()
+rewardsRuntimeService.init()
 playerRuntimeService.init()
 characterRuntimeService.init()
 characterRuntimeService.start()

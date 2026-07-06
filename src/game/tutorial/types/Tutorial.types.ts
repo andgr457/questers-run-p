@@ -12,19 +12,18 @@ export interface Tutorial {
   title: string
   description: string
   hints: TutorialHint[]
-  rewards: {
-    player?: {
-      xp?: number
-      gold?: number
-      characterTokens?: number
-    }
-    characterSpecific?: {
-      xp?: number
-      gold?: number
-    }
-    charactersAll?: {
-      xp?: number
-      gold?: number
-    }
-  }
+  rewards: TutorialReward[]
 }
+
+export type TutorialRewardType = 'player'
+  | 'character'
+  | 'characters'
+  
+export interface TutorialReward {
+  type: TutorialRewardType
+  xp?: number 
+  gold?: number
+  characterTokens?: number
+}
+
+ 

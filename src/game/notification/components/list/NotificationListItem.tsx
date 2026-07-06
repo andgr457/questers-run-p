@@ -1,5 +1,7 @@
 import { formatDateFromMillis } from '../../../../engine/clock/utils/formatTimeRemaining'
 import { notificationRuntimeService } from '../../../../engine/notification/NotificationRuntimeService'
+import { ContextMenuIcon } from '../../../context-menu/data/ContextMenuIcon.data'
+import { formatPrimitiveValueToString } from '../../../utils/Game.utils'
 import type { Notification } from '../../types/Notification.types'
 
 import styles from './NotificationListItem.module.css'
@@ -15,7 +17,7 @@ export default function NotificationListItem(props: Props) {
     <div className={styles.row}>
       <div className={styles.main}>
         <div className={styles.title}>
-          {entity.title}
+          {entity.title} @ {formatPrimitiveValueToString(entity.date, true)}
         </div>
 
         <div className={styles.description}>
@@ -23,24 +25,20 @@ export default function NotificationListItem(props: Props) {
         </div>
       </div>
 
-      <div className={styles.time}>
-        {formatDateFromMillis(entity.date)}
+      <div className={styles.description}>
+        
       </div>
-      {entity.viewed === false && <div 
-        title='Mark as Viewed' 
-        className={styles.action}
-        onClick={() => {
-          notificationRuntimeService.markViewed(entity.id)
-        }}
-      >
-        👁
-      </div>}
-      {entity.viewed === true && <div
-        title='Already Marked as Viewed.'
-        className={styles.action}
-      >
-        ⊖
-      </div>}
+      <div>
+        {entity.viewed === false && <div 
+          title='Mark as Viewed' 
+          className={styles.action}
+          onClick={() => {
+            notificationRuntimeService.markViewed(entity.id)
+          }}
+        >
+          {ContextMenuIcon.close}
+        </div>}
+      </div>
     </div>
   )
 }

@@ -159,7 +159,7 @@ export default function ContextMenuShell(props: Props) {
       actions.push({
         id: 'debug-event-recording',
         label: 'Debug Event Recording',
-        iconName: recordingDetail.isRecording ? 'recordStop' : 'recordStart',
+        iconName: recordingDetail.isRecording ? 'stop' : 'start',
         iconRotate: false,
         borderColor: recordingDetail.isRecording ? 'var(--danger)' : '',
         color: recordingDetail.isRecording ? 'var(--danger)' : 'var(--success)',

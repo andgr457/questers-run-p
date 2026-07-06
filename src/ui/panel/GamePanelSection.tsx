@@ -57,7 +57,7 @@ export default function GamePanelSection<T>(props: Props<T>){
           return <div className='game-panel-section-action'>
             <button
               onClick={() => {action.fn()}}
-              className={action.className}
+              className={action.className ?? 'button'}
             >
               {action.name}
             </button>

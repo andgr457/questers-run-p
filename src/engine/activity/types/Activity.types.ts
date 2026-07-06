@@ -4,6 +4,7 @@ import type { PartyEntity } from '../../../entity/party/types/PartyEntity.types'
 import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types'
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
 import type { Transition } from '../../../ui/transition/types/Transition.types'
+import type { RewardsGrantMeta } from '../../rewards/types/RewardsEvents.types'
 
 export type ActivityType =
   | 'hunting'
@@ -57,4 +58,7 @@ export type ActivityMeta = {
 
   party?: PartyEntity
   partyId?: string
+
+  rewards?: RewardsGrantMeta
+  tutorialId?: string
 }

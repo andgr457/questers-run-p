@@ -1,13 +1,12 @@
-.row {
-  display: flex;
+.wrapper {
   align-items: center;
-
 
   padding: 10px;
 
   box-sizing: border-box;
   
   justify-content: space-between;
+  letter-spacing: 2px;
 }
 
 .title {

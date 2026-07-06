@@ -1,5 +1,7 @@
 import { useTutorial } from '../../../engine/tutorial/hooks/useTutorial'
 import GamePanel from '../../../ui/panel/GamePanel'
+import { GAME_TUTORIALS } from '../data/Tutorial.data'
+import TutorialListItem from './tutorial-rewards/TutorialListItem'
 import styles from './Tutorial.module.css'
 
 export default function Tutorial() {
@@ -21,7 +23,7 @@ export default function Tutorial() {
 
   return (
     <GamePanel
-      title='Tutorial'
+      title={`Tutorial ${tutorialProgress.completedTutorialIds.length}/${GAME_TUTORIALS.length}`}
       currentScreenName=''
     >
       <div className={styles.tutorial}>
@@ -30,19 +32,43 @@ export default function Tutorial() {
         <div className={styles.description}>
           {tutorial.description}
         </div>
+        <div className={styles.subtitle}>Rewards</div>
+        {tutorial.rewards.length > 0 && <>
+          <div className={styles.items}>
+            {tutorial.rewards.map((r, i) => {
+              const entries = [
+                r.gold !== undefined ? { title: 'Gold', value: r.gold } : null,
+                r.xp !== undefined ? { title: 'XP', value: r.xp } : null,
+                r.characterTokens !== undefined
+                  ? { title: 'Character Tokens', value: r.characterTokens }
+                  : null,
+              ].filter(Boolean)
 
-        <div className={styles.title}>Hints</div>
-        {tutorial.hints.length > 0 && <div className={styles.hints}>
-          {tutorial.hints.map(hint => {
+              return (
+                <div key={i} className={styles.rewardGroup}>
+                  <div>{`${r.type === 'characters' ? 'All ' : ''}${r.type}`}</div>
 
-            return <div className={styles.hint}>
-              <div className={styles.title}>
-                {hint.title}
-              </div>
-              <div className={styles.description}>
-                {hint.description}
-              </div>
-            </div>
+                  {entries.map((e, idx) => (
+                    <TutorialListItem
+                      key={idx}
+                      title={e!.title}
+                      value={e!.value}
+                    />
+                  ))}
+                </div>
+              )
+            })}
+          </div>
+        </>} 
+        <div className={styles.subtitle}>Hints</div>
+        {tutorial.hints.length > 0 && <div className={styles.items}>
+          {tutorial.hints.map((hint, index) => {
+            const title = `${index+1}. ${hint.title}`
+            
+            return <TutorialListItem 
+              title={title}
+              value={hint.description}
+            />
           })}
         </div>}
       </div>

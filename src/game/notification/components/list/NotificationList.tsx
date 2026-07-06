@@ -70,7 +70,7 @@ export default function NotificationList(){
         </div>
       </div>
 
-      <div className='event-history-list'>
+      <div>
         {sorted.length === 0 && <div className='event-history-list-no-results'>
           EMPTY  
         </div>}
