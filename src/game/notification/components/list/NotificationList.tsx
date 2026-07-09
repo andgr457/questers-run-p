@@ -77,28 +77,6 @@ export default function NotificationList(){
         {sorted.map(h => {
 
           return <NotificationListItem entity={h} />
-          
-          // <div className='event-history-list-item-wrapper'>
-          //   <div className='event-history-list-item-title'>
-          //     {h.title}
-          //   </div>
-          //   <div className='event-history-list-item-description'>
-          //     {h.description}
-          //   </div>
-          //   <div className='event-history-list-item-date'>
-          //     {formatDateFromMillis(h.date)}
-          //   </div>
-          //   <div>
-          //     {!h.viewed && <button
-          //       className='button dark'
-          //       onClick={() => {
-          //         notificationRuntimeService.markViewed(h.id)
-          //       }}
-          //     >
-          //       Mark Viewed
-          //     </button>}
-          //   </div>
-          // </div>
         })}
         
       </div>

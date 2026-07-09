@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 
 export interface InputScreen {
   index: number
@@ -16,5 +17,6 @@ export interface InputScreenStep {
 export interface ViewInputScreenStepInput {
   label: string
   value: string
-  render: (value: string, onChange: (v: string) => void) => React.ReactNode
+  render: (value: string, onChange: (v: string) => void, acceptButtonRef: RefObject<HTMLButtonElement | null>
+) => React.ReactNode
 }

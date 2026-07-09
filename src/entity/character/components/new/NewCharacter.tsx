@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import InputForm from '../../../../ui/input-form/InputForm'
 import { type CharacterClassEntity, type CharacterClassId } from '../../../character-class/types/CharacterClassEntity.types'
 import { GAME_CHARACTER_CLASSES, GAME_CLASSES } from '../../../character-class/data/CharacterClassEntity.data'
@@ -12,11 +12,24 @@ import { characterRuntimeService } from '../../../../engine/character/CharacterR
 import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial'
 
 export default function NewCharacter(){
+  const [step, setStep] = useState<'name' | 'class'>('name')
+
   const [name, setName] = useState('')
   const [nameError, setNameError] = useState('')
   const [characterClass, setCharacterClass] = useState<CharacterClassEntity | undefined>(undefined)
   const {tutorialProgress} = useTutorial()
+  const inputRef = useRef<HTMLInputElement>(null)
+  const selectRef = useRef<HTMLSelectElement>(null)
 
+  useEffect(() => {
+    if(step === 'name'){
+      inputRef.current?.focus()
+    }
+    if(step === 'class'){
+      selectRef.current?.focus()
+    }
+  }, [step])
+  
   const NAME_MAX_LENGTH = 16
   const NAME_MIN_LENGTH = 3
 
@@ -66,14 +79,22 @@ export default function NewCharacter(){
                 {
                   label: `Name`,
                   value: '',
-                  render: (value, onChange) => (
+                  render: (value, onChange, acceptButtonRef) => (
                     <input
                       className={`input ${!nameError ? '' : 'invalid' }`}
+                      ref={inputRef}
                       maxLength={NAME_MAX_LENGTH}
                       value={value}
                       onChange={(e) => {
                         setName(e.target.value)
                         onChange(e.target.value)
+                      }}
+                      onKeyDown={(e) => {
+                        if(acceptButtonRef){
+                          if(e.key === 'Enter'){
+                            acceptButtonRef.current?.click()
+                          }
+                        }
                       }}
                     />
                   )
@@ -82,6 +103,7 @@ export default function NewCharacter(){
               onAccept: () => {
                 const nameValid = validateName()
                 if(!nameValid) return false
+                setStep('class')
                 return true
                 //valid name go to next screen
               },
@@ -106,15 +128,23 @@ export default function NewCharacter(){
                 {
                   label: `Class`,
                   value: '',
-                  render: (value, onChange) => (
+                  render: (value, onChange, acceptButtonRef) => (
                     <select
                       // className={`input`}
+                      ref={selectRef}
                       value={value ?? ''}
                       onChange={(e) => {
                         if(!e.target.value) return
 
                         setCharacterClass(GAME_CHARACTER_CLASSES[e.target.value as CharacterClassId])
                         onChange(e.target.value)
+                      }}
+                      onKeyDown={(e) => {
+                        if(acceptButtonRef){
+                          if(e.key === 'Enter'){
+                            acceptButtonRef.current?.click()
+                          }
+                        }
                       }}
                     >
                       <option>Choose a class...</option>

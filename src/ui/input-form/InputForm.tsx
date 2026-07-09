@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TransitionDetail from '../transition/TransitionDetail'
 import styles from './InputForm.module.css'
 import type { InputScreen } from './types/InputForm.types'
@@ -23,11 +23,11 @@ export default function InputForm(props: Props) {
     showCancel,
     actionsLocation = 'bottom'
   } = props
-
   const [screenIndexes, setScreenIndexes] = useState<ScreenIndexes>({
     screenIndex: 0,
     screenStepIndex: 0
   })
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   const [showTransition, setShowTransition] = useState(true)
   const [screenClass, setScreenClass] = useState('')
@@ -66,7 +66,7 @@ export default function InputForm(props: Props) {
 
   const actions = <div className='game-panel-section-actions'>
     <div className='game-panel-section-action'>
-      <button className='button success' onClick={() => {
+      <button ref={buttonRef} className='button success' onClick={() => {
         const accepted = step.onAccept()
         if(!accepted) return
         
@@ -165,7 +165,8 @@ export default function InputForm(props: Props) {
 
               {input.render(
                 getValue(input.label),
-                (value) => setValue(input.label, value)
+                (value) => setValue(input.label, value),
+                buttonRef
               )}
             </div>
           ))}

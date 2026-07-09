@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import InputForm from '../../../../ui/input-form/InputForm'
 import type { PlayerEntity } from '../../types/PlayerEntity.types'
 import { eventBus } from '../../../../engine/event/EventBus'
@@ -7,10 +7,15 @@ import { notificationRuntimeService } from '../../../../engine/notification/Noti
 export default function NewPlayer(){
   const [name, setName] = useState('')
   const [nameError, setNameError] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const NAME_MAX_LENGTH = 16
   const NAME_MIN_LENGTH = 3
 
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
+  
   const validateName = useCallback(() => {
     setNameError('')
     if (!name || !name.trim()) {
@@ -57,14 +62,22 @@ export default function NewPlayer(){
                 {
                   label: ``,
                   value: '',
-                  render: (value, onChange) => (
+                  render: (value, onChange, acceptButtonRef) => (
                     <input
+                      ref={inputRef}
                       className={`input ${!nameError ? '' : 'invalid' }`}
                       maxLength={NAME_MAX_LENGTH}
                       value={value}
                       onChange={(e) => {
                         setName(e.target.value)
                         onChange(e.target.value)
+                      }}
+                      onKeyDown={(e) => {
+                        if(acceptButtonRef){
+                          if(e.key === 'Enter'){
+                            acceptButtonRef.current?.click()
+                          }
+                        }
                       }}
                     />
                   )
