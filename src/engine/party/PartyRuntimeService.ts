@@ -36,7 +36,7 @@ class PartyRuntimeService {
       }
 
       if (event.type === 'party:manage') {
-        this.partyIdManaging = event.meta.partyId
+        this.partyIdManaging = event.meta?.partyId
       }
     })
   }

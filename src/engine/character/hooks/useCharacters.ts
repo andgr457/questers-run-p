@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { eventBus } from '../../event/EventBus';
 import type { CharacterEntity } from '../../../entity/character/types/CharacterEntity.types';
 import { characterRuntimeService } from '../CharacterRuntimeService';
-import { GAME_EVENT_BUS_CHARACTER_TYPES } from '../../event/utils/EventBus.utils';
+import { GAME_EVENT_BUS_CHARACTER_TYPES } from '../data/CharacterEvents.data';
 
 export function useCharacters(){
   const [characters, setCharacters] = useState<CharacterEntity[]>(

@@ -2,7 +2,6 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import InputForm from '../../../../ui/input-form/InputForm'
 import type { PlayerEntity } from '../../types/PlayerEntity.types'
 import { eventBus } from '../../../../engine/event/EventBus'
-import { notificationRuntimeService } from '../../../../engine/notification/NotificationRuntimeService'
 
 export default function NewPlayer(){
   const [name, setName] = useState('')
@@ -95,10 +94,16 @@ export default function NewPlayer(){
                   xp: 0,
                   xpNextLevel: 100
                 }
-                notificationRuntimeService.addHistory(
-                  `Player Event`,
-                  `${name} was created!`
-                )
+                eventBus.emit({
+                  id: crypto.randomUUID(),
+                  type: 'notification:save',
+                  meta: {
+                    notification: {
+                      title: 'Player Event',
+                      description: `${name} was created.`
+                    }
+                  }
+                })
                 eventBus.emit({
                   id: crypto.randomUUID(),
                   type: 'player:save',

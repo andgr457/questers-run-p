@@ -3,10 +3,13 @@ import { clockRuntimeService } from '../clock/ClockRuntimeService'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { Notification } from '../../game/notification/types/Notification.types'
+import type { GameEvent } from '../event/types/EventBus.types'
+import { GAME_EVENT_BUS_NOTIFICATION_TYPES } from './data/NotificationEvents.data'
 
 class NotificationRuntimeService {
   private initialized = false
   private notifications: Notification[] = []
+  private purgeInterval: number | undefined
 
   init() {
     if (this.initialized) {
@@ -14,29 +17,34 @@ class NotificationRuntimeService {
     }
 
     this.initialized = true
+    const historyValue = localStorage.getItem(GAME_STORAGE_KEYS.NOTIFICATIONS_GAME)
+    this.notifications = JSON.parse(historyValue ?? '[]')
+    this.saveNotifications()
+    this.startPurgeTimer()
 
-    this.loadHistory()
-  }
+    eventBus.subscribe(event => {
+      if(!GAME_EVENT_BUS_NOTIFICATION_TYPES.includes(event.type)) return
 
-  private loadHistory() {
-    try {
-      const history = localStorage.getItem(GAME_STORAGE_KEYS.EVENT_HISTORY_GAME)
-
-      if (!history) {
-        this.notifications = []
-        return
+      if(event.type === 'notification:save'){
+        this.addNotification(event)
       }
-
-      this.notifications = JSON.parse(history)
-      this.purgeHistory()
-      this.saveHistory()
-      this.emitHistoryUpdated()
-    } catch {
-      this.notifications = []
-    }
+      if(event.type === 'notification:viewed'){
+        this.markNotificationViewed(event)
+      }
+    })
   }
 
-  private purgeHistory() {
+  private startPurgeTimer() {
+    if (this.purgeInterval) {
+      return
+    }
+
+    this.purgeInterval = window.setInterval(() => {
+      this.purgeOldNotifications()
+    }, 60000)
+  }
+
+  private purgeOldNotifications() {
     const hourAgoMs = DateTime.now().minus({hours: 1}).toMillis()
     const purgableHistoryIds = this.notifications.filter(h => 
       h.date < hourAgoMs && h.viewed === true
@@ -44,42 +52,52 @@ class NotificationRuntimeService {
     this.notifications = this.notifications.filter(
       item => !purgableHistoryIds.includes(item.id)
     )
+    this.saveNotifications()
+    this.emitNotificationsSaved()
   }
 
-  private saveHistory() {
+  private saveNotifications() {
     localStorage.setItem(
-      GAME_STORAGE_KEYS.EVENT_HISTORY_GAME,
+      GAME_STORAGE_KEYS.NOTIFICATIONS_GAME,
       JSON.stringify(this.notifications)
     )
   }
 
-  private emitHistoryUpdated() {
+  private emitNotificationsSaved() {
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'notification:updated',
+      type: 'notification:saved',
     })
   }
 
-  addHistory(
-    title: string,
-    description?: string,
+  private addNotification(
+    event: GameEvent
   ) {
+    const notification = event.meta?.notification
+    if(!notification){
+      return
+    }
+
     this.notifications = [
       {
         id: crypto.randomUUID(),
         date: clockRuntimeService.getNow(),
-        title,
-        description,
+        title: notification.title,
+        description: notification.description,
         viewed: false,
       },
       ...this.notifications,
     ]
-    this.purgeHistory()
-    this.saveHistory()
-    this.emitHistoryUpdated()
+    this.saveNotifications()
+    this.emitNotificationsSaved()
   }
 
-  markViewed(id: string) {
+  private markNotificationViewed(event: GameEvent) {
+    const id = event.meta?.notificationId
+    if(!id){
+      return
+    }
+
     this.notifications = this.notifications.map(item =>
       item.id === id
         ? {
@@ -89,34 +107,12 @@ class NotificationRuntimeService {
         : item
     )
 
-    this.saveHistory()
-    this.emitHistoryUpdated()
-  }
-
-  removeHistory(id: string) {
-    this.notifications = this.notifications.filter(
-      item => item.id !== id
-    )
-
-    this.saveHistory()
-    this.emitHistoryUpdated()
-  }
-
-  clearHistory() {
-    this.notifications = []
-
-    this.saveHistory()
-    this.emitHistoryUpdated()
+    this.saveNotifications()
+    this.emitNotificationsSaved()
   }
 
   getNotifications() {
     return [...this.notifications]
-  }
-
-  getUnreadCount() {
-    return this.notifications.filter(
-      item => !item.viewed
-    ).length
   }
 }
 

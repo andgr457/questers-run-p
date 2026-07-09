@@ -14,29 +14,29 @@ export type CharacterEventTypes = 'character:save'
   | 'character:manage:added'
 
 
-export interface GameEvent_CharacterSave extends GameEvent {
+interface GameEvent_CharacterSave extends GameEvent {
   type: 'character:save'
   meta: {
     character: CharacterEntity
   }
 }
 
-export interface GameEvent_CharacterSaved extends GameEvent {
+interface GameEvent_CharacterSaved extends GameEvent {
   type: 'character:saved'
 }
 
-export interface GameEvent_CharacterGold extends GameEvent {
+interface GameEvent_CharacterGold extends GameEvent {
   type: 'character:gold'
   meta: {
     characterGoldTransaction: CharacterGoldTransaction
   }
 }
 
-export interface GameEvent_CharacterGoldAdded extends GameEvent {
+interface GameEvent_CharacterGoldAdded extends GameEvent {
   type: 'character:gold:added'
 }
 
-export interface GameEvent_CharacterXP extends GameEvent {
+interface GameEvent_CharacterXP extends GameEvent {
   type: 'character:xp'
   meta: {
     xp: number
@@ -44,25 +44,25 @@ export interface GameEvent_CharacterXP extends GameEvent {
   }
 }
 
-export interface GameEvent_CharacterXPAdded extends GameEvent {
+interface GameEvent_CharacterXPAdded extends GameEvent {
   type: 'character:xp:added'
 }
 
-export interface GameEvent_CharacterLevel extends GameEvent {
+interface GameEvent_CharacterLevel extends GameEvent {
   type: 'character:level'
   meta: {
     characterId: string
   }
 }
 
-export interface GameEvent_CharacterManage extends GameEvent {
+interface GameEvent_CharacterManage extends GameEvent {
   type: 'character:manage'
   meta: {
     characterId: string
   }
 }
 
-export interface GameEvent_CharacterManageAdded extends GameEvent {
+interface GameEvent_CharacterManageAdded extends GameEvent {
   type: 'character:manage:added'
   meta: {
     characterId: string
@@ -77,3 +77,4 @@ export type CharacterEvents = GameEvent_CharacterSave
   | GameEvent_CharacterXPAdded
   | GameEvent_CharacterLevel
   | GameEvent_CharacterManage
+  | GameEvent_CharacterManageAdded

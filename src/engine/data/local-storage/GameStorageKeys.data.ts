@@ -1,5 +1,5 @@
 export const GAME_STORAGE_KEYS = {
-  EVENT_HISTORY_GAME: 'qr-event-history',
+  NOTIFICATIONS_GAME: 'qr-notifications',
   TUTORIAL_PROGRESS_GAME: 'qr-tutorial-progress',
   PLAYER_GAME: 'qr-game-player',
   PLAYER_GOLD_GAME: 'qr-game-player-gold',

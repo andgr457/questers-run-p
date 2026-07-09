@@ -31,7 +31,7 @@ class EventDebugRuntimeService {
         this.stopRecording(event)
       }
       if(event.type === 'event:debug:mode'){
-        this.isDebugMode = event.meta.isDebugMode
+        this.isDebugMode = event.meta?.isDebugMode ?? false
       }
     })
   }

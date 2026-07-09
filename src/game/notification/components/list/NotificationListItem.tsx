@@ -1,4 +1,4 @@
-import { notificationRuntimeService } from '../../../../engine/notification/NotificationRuntimeService'
+import { eventBus } from '../../../../engine/event/EventBus'
 import { ContextMenuIcon } from '../../../context-menu/data/ContextMenuIcon.data'
 import { formatPrimitiveValueToString } from '../../../utils/Game.utils'
 import type { Notification } from '../../types/Notification.types'
@@ -32,7 +32,13 @@ export default function NotificationListItem(props: Props) {
           title='Mark as Viewed' 
           className={styles.action}
           onClick={() => {
-            notificationRuntimeService.markViewed(entity.id)
+            eventBus.emit({
+              id: crypto.randomUUID(),
+              type: 'notification:viewed',
+              meta: {
+                notificationId: entity.id
+              }
+            })
           }}
         >
           {ContextMenuIcon.close}

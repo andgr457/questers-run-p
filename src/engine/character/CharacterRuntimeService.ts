@@ -2,7 +2,6 @@ import type { CharacterEntity, CharacterGoldTransaction } from '../../entity/cha
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { GameEvent } from '../event/types/EventBus.types'
-import { notificationRuntimeService } from '../notification/NotificationRuntimeService'
 import { getCharacterGold } from '../../entity/character/utils/Character.utils'
 
 class CharacterRuntimeService {
@@ -161,10 +160,16 @@ class CharacterRuntimeService {
           characterId: character.id
         }
       })
-      notificationRuntimeService.addHistory(
-        `Character Event`,
-        `${character.name} leveled up to ${character.level}!`
-      )
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: 'notification:save',
+        meta: {
+          notification: {
+            title: 'Character Event',
+            description: `${character.name} leveled up to ${character.level}!`
+          }
+        }
+      })
     } else {
       character.xp += xp
     }

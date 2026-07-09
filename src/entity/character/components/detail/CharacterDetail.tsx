@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService'
 import { getCharacterGold } from '../../utils/Character.utils'
 import { eventBus } from '../../../../engine/event/EventBus'
-import { GAME_EVENT_BUS_CHARACTER_TYPES } from '../../../../engine/event/utils/EventBus.utils'
+import { GAME_EVENT_BUS_CHARACTER_TYPES } from '../../../../engine/character/data/CharacterEvents.data'
 import DetailRow from '../../../../game/detail/DetailRow'
 import GamePanelSection from '../../../../ui/panel/GamePanelSection'
 

@@ -5,3 +5,8 @@ export interface Notification {
   description?: string
   viewed: boolean
 }
+
+export interface NotificationEventAddMeta {
+  title: string
+  description: string
+}

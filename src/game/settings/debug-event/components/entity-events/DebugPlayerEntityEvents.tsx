@@ -3,14 +3,13 @@ import type { EventBusLog, GameEvent, GameEvents } from '../../../../../engine/e
 import { type DebugEventsMode, type GroupEventItem } from '../../types/DebugEvents.types'
 import { getDebugGamePlayerGoldEmit, getDebugGamePlayerSaveEmit, getDebugGamePlayerXPEmit } from '../../utils/GameEvents.utils'
 import DebugEntityEvents from './DebugEntityEvents'
-import { playerRuntimeService } from '../../../../../engine/player/PlayerRuntimeService'
 import { eventBus } from '../../../../../engine/event/EventBus'
-import { GAME_EVENT_BUS_PLAYER_TYPES } from '../../../../../engine/event/utils/EventBus.utils'
-import type { PlayerEntity } from '../../../../../entity/player/types/PlayerEntity.types'
+import { GAME_EVENT_BUS_PLAYER_TYPES } from '../../../../../engine/player/data/PlayerEvents.data'
 import GamePanelSection from '../../../../../ui/panel/GamePanelSection'
 import PlayerDetail from '../../../../../entity/player/components/detail/PlayerDetail'
 import { clockRuntimeService } from '../../../../../engine/clock/ClockRuntimeService'
 import DebugEventLogs from '../event-logs/DebugEventLogs'
+import { usePlayer } from '../../../../../engine/player/hooks/usePlayer'
 
 interface Props {
   setMode: (mode: DebugEventsMode) => void
@@ -20,7 +19,7 @@ export default function DebugPlayerEntityEvents(props: Props){
   const {
     setMode,
   } = props
-  const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
+  const {player} = usePlayer()
   const [playerEvents, setPlayerEvents] = useState<EventBusLog[]>([])
   const addEvent = (event: GameEvent) => {
     setPlayerEvents(prev => {
@@ -45,7 +44,6 @@ export default function DebugPlayerEntityEvents(props: Props){
       if(!GAME_EVENT_BUS_PLAYER_TYPES.includes(event.type)){
         return
       }
-      setPlayer(playerRuntimeService.getPlayer())
       addEvent(event as GameEvent)
     })
     return unsub

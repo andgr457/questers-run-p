@@ -1,12 +1,19 @@
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
 import type { Transition } from '../../../ui/transition/types/Transition.types'
-import type { EventMeta, ActivityType } from '../../activity/types/Activity.types'
+import type { ActivityType } from '../../activity/types/Activity.types'
 import type { CharacterEvents, CharacterEventTypes } from '../../character/types/CharacterEvent.types'
 import type { DebugEvents, DebugEventTypes } from './EventBusDebug.types'
 import type { PartyEvents, PartyEventTypes } from '../../party/types/PartyEvent.types'
 import type { PlayerEvents, PlayerEventTypes } from '../../player/types/PlayerEvent.types'
 import type { RewardsEvents, RewardsEventTypes } from '../../rewards/types/RewardsEvents.types'
 import type { TutorialEvents, TutorialEventTypes } from '../../tutorial/types/TutorialEvents.types'
+import type { NotificationEvents, NotificationEventTypes } from '../../notification/types/NotificationEvent.types'
+import type { CharacterEntity, CharacterGoldTransaction } from '../../../entity/character/types/CharacterEntity.types'
+import type { Location } from '../../../entity/location/types/Location.types'
+import type { PartyEntity } from '../../../entity/party/types/PartyEntity.types'
+import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types'
+import type { TutorialReward } from '../../../game/tutorial/types/Tutorial.types'
+import type { NotificationEventAddMeta } from '../../../game/notification/types/Notification.types'
 
 export interface EventSession {
   event: Partial<GameEvents>
@@ -19,9 +26,9 @@ export type GameEventType = PlayerEventTypes
   | PartyEventTypes
   | RewardsEventTypes
   | TutorialEventTypes
-  | 'world:mode:change'
-  | 'notification:updated'
+  | NotificationEventTypes
 
+  | 'world:mode:change'
 
   | 'transition:start'
   | 'transition:started'
@@ -120,10 +127,6 @@ export interface GameEvent_UpgradePurchased extends GameEvent {
   type: 'upgrade:purchased'
 }
 
-export interface GameEvent_NotificationUpdated extends GameEvent {
-  type: 'notification:updated'
-}
-
 export interface GameEvent_EventTransitionStart extends GameEvent {
   type: 'transition:start'
   meta: {
@@ -151,7 +154,6 @@ export type GameEvents = GameEvent_ActivityStart
   | GameEvent_ActivityComplete
   | GameEvent_ActivityCancel
   | GameEvent_WorldModeChange
-  | GameEvent_NotificationUpdated
   | GameEvent_EventTransitionStart
   | GameEvent_EventTransitionStarted
   | GameEvent_EventTransitionStop
@@ -163,6 +165,7 @@ export type GameEvents = GameEvent_ActivityStart
   | PartyEvents
   | RewardsEvents
   | TutorialEvents
+  | NotificationEvents
 
   | GameEvent_QuestStart 
   | GameEvent_QuestCancel 
@@ -177,4 +180,33 @@ export type GameEvents = GameEvent_ActivityStart
 export interface EventBusLog {
   date: number
   event: GameEvent
+}
+export type EventMeta = {
+  isDebugMode?: boolean
+  worldMode?: OverlayMode
+  transition?: Transition
+  destination?: Location
+  departure?: Location
+
+  xp?: number
+  characterTokens?: number
+  gold?: number
+
+  player?: PlayerEntity
+  playerGoldTransaction?: PlayerGoldTransaction
+
+  character?: CharacterEntity
+  characterId?: string
+  characterGoldTransaction?: CharacterGoldTransaction
+  characterIds?: string[]
+
+
+  party?: PartyEntity
+  partyId?: string
+
+  tutorialId?: string
+  tutorialRewards?: TutorialReward[]
+
+  notification?: NotificationEventAddMeta
+  notificationId?: string
 }

@@ -7,14 +7,13 @@ import type { OverlayMode } from '../types/OverlayMode.types'
 import { eventDebugRuntimeService } from '../../../engine/event/EventDebugRuntimeService'
 import { eventBus } from '../../../engine/event/EventBus'
 import { GAME_EVENT_BUS_DEBUG_RECORDING_TYPES } from '../../../engine/event/utils/EventBus.utils'
-import type { PlayerEntity } from '../../../entity/player/types/PlayerEntity.types'
-import { playerRuntimeService } from '../../../engine/player/PlayerRuntimeService'
 import { characterRuntimeService } from '../../../engine/character/CharacterRuntimeService'
-import type { CharacterEntity } from '../../../entity/character/types/CharacterEntity.types'
 import { checkForPulse } from '../utils/ContextMenu.utils'
 import { useTutorial } from '../../../engine/tutorial/hooks/useTutorial'
 import { useNotifications } from '../../../engine/notification/hooks/useNotifications'
 import { useManagedCharacter } from '../../../engine/character/hooks/useManagedCharacters'
+import { usePlayer } from '../../../engine/player/hooks/usePlayer'
+import { useCharacters } from '../../../engine/character/hooks/useCharacters'
 
 interface Props {
   overlayMode: OverlayMode
@@ -30,20 +29,14 @@ export default function ContextMenuShell(props: Props) {
   const {tutorial} = useTutorial()
   const {notifications} = useNotifications()
   const [recordingDetail, setRecordingDetail] = useState(eventDebugRuntimeService.getRecordingDetail())
-  const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
-  const [characters, setCharacters] = useState<CharacterEntity[]>(characterRuntimeService.getCharacters())
   const {managedCharacter} = useManagedCharacter()
+  const {player} = usePlayer()
+  const {characters} = useCharacters()
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
       if(GAME_EVENT_BUS_DEBUG_RECORDING_TYPES.includes(event.type)){
         setRecordingDetail(eventDebugRuntimeService.getRecordingDetail())
-      }
-      if(event.type === 'player:save'){
-        setPlayer(playerRuntimeService.getPlayer())
-      }
-      if(event.type === 'character:save'){
-        setCharacters(characterRuntimeService.getCharacters())
       }
     })
     return unsub

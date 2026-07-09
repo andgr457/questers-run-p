@@ -2,7 +2,6 @@ import type { PlayerEntity, PlayerGoldTransaction } from '../../entity/player/ty
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { GameEvent } from '../event/types/EventBus.types'
-import { notificationRuntimeService } from '../notification/NotificationRuntimeService'
 import { getPlayerGold } from '../../entity/player/utils/Player.utils'
 
 class PlayerRuntimeService {
@@ -125,11 +124,11 @@ class PlayerRuntimeService {
         id: crypto.randomUUID(),
         type: 'player:level'
       })
-      notificationRuntimeService.notify({
-        text: `Player Level Up ${this.player.level}`,
-        type: "info",
-        lifetime: 5000
-      })
+      // notificationRuntimeService.notify({
+      //   text: `Player Level Up ${this.player.level}`,
+      //   type: "info",
+      //   lifetime: 5000
+      // })
     } else {
       this.player.xp += xp
     }

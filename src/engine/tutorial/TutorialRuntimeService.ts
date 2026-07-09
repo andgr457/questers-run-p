@@ -4,7 +4,6 @@ import { characterRuntimeService } from '../character/CharacterRuntimeService'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { GameEvent } from '../event/types/EventBus.types'
-import { notificationRuntimeService } from '../notification/NotificationRuntimeService'
 
 class TutorialRuntimeService {
   private initialized = false
@@ -46,10 +45,16 @@ class TutorialRuntimeService {
       type: 'tutorial:completed',
       parentEventId: event.id
     })
-    notificationRuntimeService.addHistory(
-      'Tutorial Event',
-      `Completed tutorial "${tutorial.title}".`
-    )
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: 'notification:save',
+      meta: {
+        notification: {
+          title: 'Tutorial Event',
+          description: `Completed tutorial "${tutorial.title}".`
+        }
+      }
+    })
   }
 
   completeTutorial(event: GameEvent) {

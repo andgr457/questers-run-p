@@ -5,7 +5,6 @@ import { GAME_CHARACTER_CLASSES, GAME_CLASSES } from '../../../character-class/d
 import CharacterClassDetail from '../../../character-class/components/detail/CharacterClassDetail'
 import type { CharacterEntity } from '../../types/CharacterEntity.types'
 import { playerRuntimeService } from '../../../../engine/player/PlayerRuntimeService'
-import { notificationRuntimeService } from '../../../../engine/notification/NotificationRuntimeService'
 import { eventBus } from '../../../../engine/event/EventBus'
 import { LOCATION_IDS } from '../../../location/data/Location.data'
 import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService'
@@ -197,10 +196,16 @@ export default function NewCharacter(){
                   classId: characterClass.id,
                   playerId: playerRuntimeService.getPlayer()?.id as string,
                 }
-                notificationRuntimeService.addHistory(
-                  `Character Event`,
-                  `${name} was created!`
-                )
+                eventBus.emit({
+                  id: crypto.randomUUID(),
+                  type: 'notification:save',
+                  meta: {
+                    notification: {
+                      title: 'Character Event',
+                      description: `${name} was created.`
+                    }
+                  }
+                })
                 eventBus.emit({
                   id: crypto.randomUUID(),
                   type: 'character:save',
