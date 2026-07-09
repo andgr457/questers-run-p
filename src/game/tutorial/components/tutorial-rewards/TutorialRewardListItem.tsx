@@ -1,23 +1,23 @@
 import { formatPrimitiveValueToString } from '../../../utils/Game.utils'
-import styles from '../Tutorial.module.css'
+import styles from './TutorialRewardListItem.module.css'
 
 interface Props {
   title: string
   value: string | number | boolean
 }
 
-export default function TutorialListItem(props: Props){
+export default function TutorialRewardListItem(props: Props){
   const {
     title,
     value,
   } = props
 
   return (
-    <div className={styles.item}>
-      <div className={styles.itemTitle}>
+    <div className={styles.wrapper}>
+      {title && <div className={styles.title}>
         {title}
-      </div>
-      <div className={styles.description}>
+      </div>}
+      <div className={styles.value}>
         {formatPrimitiveValueToString(value)}
       </div>
     </div>

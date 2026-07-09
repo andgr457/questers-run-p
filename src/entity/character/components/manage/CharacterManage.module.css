@@ -7,6 +7,7 @@
 
   padding: 12px;
   font-size: 14px;
+  
 }
 
 .title {
@@ -15,12 +16,13 @@
   text-align: center;
   text-transform: uppercase;
   background-color: var(--bg-dark-2);
-  width: 100%;
   padding: 5px;
+  width: 100%;
 }
 
 .subtitle {
   font-weight: 400;
+  padding: 3px;
   letter-spacing: 3px;
   text-align: center;
   text-transform: uppercase;
@@ -35,39 +37,6 @@
   letter-spacing: 2px;
 }
 
-.item {
-  display: flex;
-  align-items: center;
-
-  height: fit-content;
-  box-sizing: border-box;
-
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-
-  justify-content: space-between;
-}
-
-.itemTitle {
-  font-size: 0.9em;
-  font-weight: 300;
-  letter-spacing: 3px;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.items {
-  width: 80%;
-}
-
-.rewardGroup {
-  font-size: 0.9em;
-  font-weight: 400;
-  text-transform: uppercase;
-  padding: 5px;
-}
-
-.sections {
-  display: grid;
-  grid-template-columns: 50% 50%;
-  gap: 5px;
+.section {
+  width: 100%;
 }

@@ -1,7 +1,9 @@
 import { useTutorial } from '../../../engine/tutorial/hooks/useTutorial'
 import GamePanel from '../../../ui/panel/GamePanel'
 import { GAME_TUTORIALS } from '../data/Tutorial.data'
-import TutorialListItem from './tutorial-rewards/TutorialListItem'
+import TutorialHintList from './tutorial-hints/TutorialHintList'
+import TutorialRewardList from './tutorial-rewards/TutorialRewardList'
+import TutorialRewardListItem from './tutorial-rewards/TutorialRewardListItem'
 import styles from './Tutorial.module.css'
 
 export default function Tutorial() {
@@ -26,51 +28,27 @@ export default function Tutorial() {
       title={`Tutorial ${tutorialProgress.completedTutorialIds?.length ?? 0}/${GAME_TUTORIALS.length}`}
       currentScreenName=''
     >
-      <div className={styles.tutorial}>
-        <div className={styles.title}>{`${tutorialProgress.completedTutorialIds?.length ?? 0 + 1}. ${tutorial.title}`}</div>
+      <div className={styles.wrapper}>
+        <div className={styles.title}>{`${tutorialProgress.completedTutorialIds.length + 1}. ${tutorial.title}`}</div>
 
         <div className={styles.description}>
           {tutorial.description}
         </div>
-        <div className={styles.subtitle}>Rewards</div>
-        {tutorial.rewards.length > 0 && <>
-          <div className={styles.items}>
-            {tutorial.rewards.map((r, i) => {
-              const entries = [
-                r.gold !== undefined ? { title: 'Gold', value: r.gold } : null,
-                r.xp !== undefined ? { title: 'XP', value: r.xp } : null,
-                r.characterTokens !== undefined
-                  ? { title: 'Character Tokens', value: r.characterTokens }
-                  : null,
-              ].filter(Boolean)
 
-              return (
-                <div key={i} className={styles.rewardGroup}>
-                  <div>{`${r.type === 'characters' ? 'All ' : ''}${r.type}`}</div>
-
-                  {entries.map((e, idx) => (
-                    <TutorialListItem
-                      key={idx}
-                      title={e!.title}
-                      value={e!.value}
-                    />
-                  ))}
-                </div>
-              )
-            })}
+        <div className={styles.sections}>
+          <div className={styles.section}>
+            <div className={styles.subtitle}>Rewards</div>
+            {tutorial.rewards.length > 0 && <>
+              <TutorialRewardList rewards={tutorial.rewards} />
+            </>} 
           </div>
-        </>} 
-        <div className={styles.subtitle}>Hints</div>
-        {tutorial.hints.length > 0 && <div className={styles.items}>
-          {tutorial.hints.map((hint, index) => {
-            const title = `${index+1}. ${hint.title}`
-            
-            return <TutorialListItem 
-              title={title}
-              value={hint.description}
-            />
-          })}
-        </div>}
+          <div className={styles.section}>
+            <div className={styles.subtitle}>Hints</div>
+            {tutorial.hints.length > 0 && <div>
+              <TutorialHintList hints={tutorial.hints} />
+            </div>}
+          </div>
+        </div>
       </div>
     </GamePanel>
   )

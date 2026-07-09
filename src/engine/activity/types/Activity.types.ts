@@ -3,8 +3,8 @@ import type { Location } from '../../../entity/location/types/Location.types'
 import type { PartyEntity } from '../../../entity/party/types/PartyEntity.types'
 import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types'
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
+import type { TutorialReward } from '../../../game/tutorial/types/Tutorial.types'
 import type { Transition } from '../../../ui/transition/types/Transition.types'
-import type { RewardsGrantMeta } from '../../rewards/types/RewardsEvents.types'
 
 export type ActivityType =
   | 'hunting'
@@ -35,10 +35,10 @@ export interface ActivityEntry {
   continuous: boolean
   completedAt?: number
 
-  meta?: ActivityMeta
+  meta?: EventMeta
 }
 
-export type ActivityMeta = {
+export type EventMeta = {
   isDebugMode?: boolean
   worldMode?: OverlayMode
   transition?: Transition
@@ -46,19 +46,21 @@ export type ActivityMeta = {
   departure?: Location
 
   xp?: number
+  characterTokens?: number
   gold?: number
-  
+
   player?: PlayerEntity
   playerGoldTransaction?: PlayerGoldTransaction
-  characterTokens?: number
   
   character?: CharacterEntity
   characterId?: string
   characterGoldTransaction?: CharacterGoldTransaction
+  characterIds?: string[]
 
+  
   party?: PartyEntity
   partyId?: string
-
-  rewards?: RewardsGrantMeta
+  
   tutorialId?: string
+  tutorialRewards?: TutorialReward[]
 }

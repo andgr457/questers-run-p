@@ -3,27 +3,26 @@ import type { LocationWithAction } from './LocationList'
 import styles from './LocationListItem.module.css'
 
 interface Props {
-  locationWithTravel: LocationWithAction
+  locationWithAction: LocationWithAction
 }
 
 export default function LocationListItem(props: Props) {
-  const {locationWithTravel} = props
+  const {locationWithAction} = props
   const { 
     location,
     actions,
-  } = locationWithTravel
+  } = locationWithAction
 
   return (
-    <div className={styles.row}>
-      <div className={styles.main}>
-        <div className={styles.title}>
-          {location.name}
-        </div>
-
-        <div className={styles.description}>
-          {location.description}
-        </div>
+    <div className={styles.wrapper}>
+      <div className={styles.text}>
+        {location.name} 
       </div>
+
+      <div className={styles.text}>
+        Lv. {location.level}
+      </div>
+      
       <div className={styles.actions}>
         {actions.map(a => {
           

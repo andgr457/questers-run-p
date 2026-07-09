@@ -4,9 +4,9 @@ import type { CharacterEntity } from '../../../entity/character/types/CharacterE
 import { characterRuntimeService } from '../CharacterRuntimeService';
 import { GAME_EVENT_BUS_CHARACTER_TYPES } from '../../event/utils/EventBus.utils';
 
-export function useManagedCharacter(){
-  const [managedCharacter, setManagedCharacter] = useState<CharacterEntity | undefined>(
-    characterRuntimeService.getManagingCharacter()
+export function useCharacters(){
+  const [characters, setCharacters] = useState<CharacterEntity[]>(
+    characterRuntimeService.getCharacters()
   )
 
   useEffect(() => {
@@ -15,16 +15,12 @@ export function useManagedCharacter(){
         return
       }
       
-      if(event.type === 'character:manage:added'
-        || event.type === 'character:saved'
-      ){
-        setManagedCharacter(characterRuntimeService.getManagingCharacter())
-      }
+      setCharacters(characterRuntimeService.getCharacters())
     })
     return unsub
   }, [])
 
   return {
-    managedCharacter
+    characters
   }
 }

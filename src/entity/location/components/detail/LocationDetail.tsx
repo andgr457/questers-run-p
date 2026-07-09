@@ -17,6 +17,9 @@ export default function LocationDetail(props: Props){
     <div className={styles.wrapper}>
       <div className={styles.title}>
         {entity.name}
+        <div className={styles.location}>
+          Requires Character Level {entity.level}
+        </div>
       </div>
       <div className={styles.description}>
         {entity.description}

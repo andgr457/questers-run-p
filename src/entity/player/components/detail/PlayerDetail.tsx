@@ -36,35 +36,31 @@ export default function PlayerDetail(){
       title='Player'
     >
       <div className={styles.wrapper}>
-        <div className={styles.title}>
-          <div className={styles.name}>
-            {player.name}
+        <div className={styles.topRow}>
+          <div>
+            <div className={styles.name}>
+              {player.name}
+            </div>
           </div>
-          <div className={styles.label}>
+
+          <div className={styles.level}>
             Lv. {player.level}
           </div>
-          <div className={styles.label}>
-            <GoldDetail gold={gold} />
-          </div>
-          <div className={styles.label}>
+        </div>
+
+        <div className={styles.infoRow}>
+          <ProgressBar
+            value={getProgress(player.xp, player.xpNextLevel)}
+            max={player.xpNextLevel}
+            color='#a855f7'
+            label='XP'
+          />
+          <div className={styles.gold}>
             <PlayerCharacterTokens tokens={player.characterTokens} />
           </div>
-        </div>
-
-        <div className={styles.bars}>
-          <div className={styles.bar}>
-            <ProgressBar
-              value={getProgress(player.xp, player.xpNextLevel)}
-              max={player.xpNextLevel}
-              color='#a855f7'
-              label='XP'
-            />
+          <div className={styles.gold}>
+            <GoldDetail gold={gold} />
           </div>
-
-        </div>
-
-        <div>
-          {}
         </div>
       </div>
     </GamePanel>    

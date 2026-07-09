@@ -1,54 +1,25 @@
+import type { TutorialReward } from '../../../game/tutorial/types/Tutorial.types'
 import type { GameEvent } from '../../event/types/EventBus.types'
 
 export type RewardsEventTypes =
-  | 'rewards:grant'
-  | 'rewards:granted'
+  | 'rewards:start'
+  | 'rewards:completed'
 
-export type RewardsSourceType =
-  | 'tutorial'
-  | 'quest'
-  | 'achievement'
-  | 'debug'
-  | 'system'
-
-export type RewardsTargetType =
-  | 'player'
-  | 'character'
-  | 'characters'
-
-export interface RewardBase {
-  type: RewardsTargetType
-  gold?: number
-  xp?: number
-  characterTokens?: number
-}
-
-export interface RewardsGrantMeta {
-  rewardsBase: RewardBase[]
-  source?: {
-    type: RewardsSourceType
-    eventId?: string
+export interface GameEvent_RewardsStart extends GameEvent {
+  type: 'rewards:start'
+  meta: {
+    tutorialRewards?: TutorialReward[]
     characterId?: string
-    partyId?: string
-    tutorialId?: string
-    questId?: string
   }
 }
 
-export interface GameEvent_RewardsGrant extends GameEvent {
-  type: 'rewards:grant'
+export interface GameEvent_RewardsCompleted extends GameEvent {
+  type: 'rewards:completed'
   meta: {
-    rewards: RewardsGrantMeta
-  }
-}
-
-export interface GameEvent_RewardsGranted extends GameEvent {
-  type: 'rewards:granted'
-  meta: {
-    rewards: RewardsGrantMeta
+    tutorialRewards?: TutorialReward[]
   }
 }
 
 export type RewardsEvents =
-  | GameEvent_RewardsGrant
-  | GameEvent_RewardsGranted
+  | GameEvent_RewardsStart
+  | GameEvent_RewardsCompleted

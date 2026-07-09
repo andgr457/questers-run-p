@@ -59,7 +59,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
       },
       {
         title: 'Characters List',
-        description: 'Click the "c" circle on the left to access your character list.',
+        description: 'Click the "c" circle on the left to access your character list. Alternatively, "cm" brings you directly to the last managed character.',
         uiPath: 'characters'
       },
       {
@@ -84,7 +84,23 @@ export const GAME_TUTORIALS: Tutorial[] = [
     title: 'Quest Accepted',
     description:
       "Take your first quest at the Adventurer's Guild.",
-    hints: [],
+    hints: [
+      {
+        title: 'Characters List',
+        description: 'Click the "c" circle on the left to access your character list. Alternatively, "cm" brings you directly to the last managed character.',
+        uiPath: 'characters'
+      },
+      {
+        title: 'Manage Character',
+        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage.',
+        uiPath: 'characters:manage'
+      },
+      {
+        title: 'Quest Board',
+        description: 'Take a quest from the Adventurer\'s Guild quest board.',
+        uiPath: 'characters:manage:quest:tutorial',
+      }
+    ],
     rewards: [
       getBaseTutorialRewards('player'),
       getBaseTutorialRewards('character'),

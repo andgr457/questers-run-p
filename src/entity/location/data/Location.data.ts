@@ -9,6 +9,14 @@ export const LOCATION_IDS = {
   ORON_MINE: 'oron_mine',
 } as const
 
+const DISTANCES = {
+  SHORT: 2000,
+  MEDIUM: 5000,
+  LONG: 10000,
+  VERY_LONG: 20000,
+  IN_TOWN: 500
+}
+
 export const GAME_LOCATIONS: Location[] = [
   {
     id: LOCATION_IDS.ORON_WOODS_1,
@@ -19,7 +27,9 @@ export const GAME_LOCATIONS: Location[] = [
     ],
     type: 'woods',
     mobIds: [],
-    professionItemIds: []
+    professionItemIds: [],
+    level: 1,
+    travelMs: DISTANCES.SHORT
   },
   {
     id: LOCATION_IDS.ORON_TOWN,
@@ -32,7 +42,9 @@ export const GAME_LOCATIONS: Location[] = [
     ],
     type: 'town',
     mobIds: [],
-    professionItemIds: []
+    professionItemIds: [],
+    level: 1,
+    travelMs: DISTANCES.SHORT
   },
   {
     id: LOCATION_IDS.ORON_ADV_GUILD,
@@ -43,7 +55,9 @@ export const GAME_LOCATIONS: Location[] = [
     ],
     type: 'adv_guild',
     mobIds: [],
-    professionItemIds: []
+    professionItemIds: [],
+    level: 1,
+    travelMs: DISTANCES.IN_TOWN
   },
   {
     id: LOCATION_IDS.ORON_PLAINS,
@@ -55,7 +69,9 @@ export const GAME_LOCATIONS: Location[] = [
     ],
     type: 'plains',
     mobIds: [],
-    professionItemIds: []
+    professionItemIds: [],
+    level: 1,
+    travelMs: DISTANCES.MEDIUM
   },
   {
     id: LOCATION_IDS.ORON_MINE,
@@ -66,6 +82,8 @@ export const GAME_LOCATIONS: Location[] = [
     ],
     type: 'mine',
     mobIds: [],
-    professionItemIds: []
+    professionItemIds: [],
+    level: 2,
+    travelMs: DISTANCES.MEDIUM
   },
 ]

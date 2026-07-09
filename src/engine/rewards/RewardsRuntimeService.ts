@@ -1,6 +1,8 @@
 import { eventBus } from '../event/EventBus'
 import { clockRuntimeService } from '../clock/ClockRuntimeService'
 import { characterRuntimeService } from '../character/CharacterRuntimeService'
+import type { GameEvent } from '../event/types/EventBus.types'
+import type { TutorialReward } from '../../game/tutorial/types/Tutorial.types'
 
 class RewardsRuntimeService {
   private initialized = false
@@ -13,25 +15,39 @@ class RewardsRuntimeService {
     this.initialized = true
 
     eventBus.subscribe(event => {
-      if (event.type === 'rewards:grant') {
-        this.handleGrant(event)
+      if (event.type === 'rewards:start') {
+        if(event.meta?.tutorialRewards){
+          this.handleApplyTutorialRewards(event)
+        }
       }
     })
   }
 
-  private handleGrant(event: any) {
-    const { rewards, source } = event.meta || {}
+  private emitRewardsComplete(event: GameEvent){
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      parentEventId: event.id,
+      type: 'rewards:completed',
+      meta: {
+        ...event.meta
+      }
+    })
+  }
 
-    if (!rewards || !Array.isArray(rewards)) {
+  private handleApplyTutorialRewards(event: GameEvent) {
+    const rewards = event.meta?.tutorialRewards
+    if (!rewards || rewards.length === 0) {
+      this.emitRewardsComplete(event)
       return
     }
 
     for (const reward of rewards) {
-      this.applyReward(reward, source)
+      this.applyTutorialReward(reward, event)
     }
   }
 
-  private applyReward(reward: any, source: any) {
+  private applyTutorialReward(reward: TutorialReward, event: GameEvent) {
+    console.log('applying reward', reward)
     const now = clockRuntimeService.getNow()
 
     switch (reward.type) {
@@ -74,7 +90,7 @@ class RewardsRuntimeService {
       }
 
       case 'character': {
-        const characterId = source?.meta?.characterId
+        const characterId = event?.meta?.characterId
 
         if (!characterId) {
           break

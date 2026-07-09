@@ -1,10 +1,11 @@
 import type { Location } from '../../types/Location.types';
 import LocationListItem from './LocationListItem';
 
-interface LocationAction {
+export interface LocationAction {
   title: string
   icon: string
   isTutorial?: boolean
+  isDisabled?: boolean
   fn?: (entity: Location) => void
 }
 
@@ -27,7 +28,7 @@ export default function LocationList(props: Props){
       {locationsWithActions.map(l => {
 
         return <LocationListItem 
-          locationWithTravel={l}
+          locationWithAction={l}
         />
       })}
     </div>

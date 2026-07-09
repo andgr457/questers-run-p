@@ -9,18 +9,20 @@ import type { PlayerEntity } from '../../../player/types/PlayerEntity.types'
 import { playerRuntimeService } from '../../../../engine/player/PlayerRuntimeService'
 import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider'
 import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial'
+import { useCharacters } from '../../../../engine/character/hooks/useCharacters'
+
+export type CharacterListMode = 'list'
+  | 'detail'
 
 export default function CharacterList() {
   const {showConfirm} = useConfirm()
-  const [characters, setCharacters] = useState<CharacterEntity[]>(characterRuntimeService.getCharacters())
+  const {characters} = useCharacters()
+
   const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
   const {tutorial} = useTutorial()
   
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
-      if(GAME_EVENT_BUS_CHARACTER_TYPES.includes(event.type)){
-        setCharacters(characterRuntimeService.getCharacters())
-      }
       if(GAME_EVENT_BUS_PLAYER_TYPES.includes(event.type)){
         setPlayer(playerRuntimeService.getPlayer())
       }

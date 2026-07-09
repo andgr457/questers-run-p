@@ -125,7 +125,7 @@ class CharacterRuntimeService {
     ]
 
     localStorage.setItem(
-      GAME_STORAGE_KEYS.PLAYER_GOLD_GAME,
+      GAME_STORAGE_KEYS.CHARACTER_GOLD_GAME,
       JSON.stringify(this.characterGoldTransactions)
     )
     eventBus.emit({

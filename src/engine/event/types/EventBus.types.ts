@@ -1,6 +1,6 @@
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
 import type { Transition } from '../../../ui/transition/types/Transition.types'
-import type { ActivityMeta, ActivityType } from '../../activity/types/Activity.types'
+import type { EventMeta, ActivityType } from '../../activity/types/Activity.types'
 import type { CharacterEvents, CharacterEventTypes } from '../../character/types/CharacterEvent.types'
 import type { DebugEvents, DebugEventTypes } from './EventBusDebug.types'
 import type { PartyEvents, PartyEventTypes } from '../../party/types/PartyEvent.types'
@@ -60,7 +60,7 @@ export interface GameEvent {
   characterId?: string
   continuous?: boolean
   duration?: number
-  meta?: ActivityMeta
+  meta?: EventMeta
 }
 
 export interface ActivityGameEvent extends GameEvent {
