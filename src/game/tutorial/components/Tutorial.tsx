@@ -3,7 +3,6 @@ import GamePanel from '../../../ui/panel/GamePanel'
 import { GAME_TUTORIALS } from '../data/Tutorial.data'
 import TutorialHintList from './tutorial-hints/TutorialHintList'
 import TutorialRewardList from './tutorial-rewards/TutorialRewardList'
-import TutorialRewardListItem from './tutorial-rewards/TutorialRewardListItem'
 import styles from './Tutorial.module.css'
 
 export default function Tutorial() {
