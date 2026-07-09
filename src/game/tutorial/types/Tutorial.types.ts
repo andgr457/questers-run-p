@@ -2,9 +2,16 @@ export interface TutorialProgress {
   completedTutorialIds: string[]
 }
 
+export type TutorialUIPath = 'characters'
+  | 'characters:manage'
+  | 'characters:manage:travel:town'
+  | 'characters:manage:travel:adv_guild'
+
+
 export interface TutorialHint {
   title: string
   description: string
+  uiPath?: TutorialUIPath
 }
 
 export interface Tutorial {

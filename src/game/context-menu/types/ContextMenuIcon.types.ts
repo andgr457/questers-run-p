@@ -2,6 +2,7 @@ export type ContextMenuIconName =
   | 'settings'
   | 'player'
   | 'characters'
+  | 'character_manage'
   | 'dashboard'
   | 'back'
   | 'close'
@@ -12,4 +13,5 @@ export type ContextMenuIconName =
   | 'notifications'
   | 'tutorial'
   | 'parties'
+  | 'party_manage'
   | 'eye'

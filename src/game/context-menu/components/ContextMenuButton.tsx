@@ -22,7 +22,7 @@ export default function ContextMenuButton(props: Props) {
   }
   return (
     <button
-      className={`${styles.contextButton} ${action.pulse === true ? styles.pulse : '' }`}
+      className={`${styles.contextButton} ${action.pulse === true ? 'pulse' : '' }`}
       onClick={action.onClick}
       title={action.label}
       style={{color: action.color ?? 'var(--text)', borderColor: borderColor}}

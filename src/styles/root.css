@@ -153,3 +153,43 @@ html, body, #root {
   -webkit-user-select: none; /* Safari */
   user-select: none;         /* Standard syntax for Chrome, Edge, Firefox, and Opera */
 }
+
+.tutorial-hint {
+  color: gold;
+}
+
+.pulse {
+  animation: pulse 1s infinite;
+}
+
+.pulse-tutorial {
+  animation: pulse2 0.25s infinite 0.5s;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse2 {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}

@@ -28,6 +28,9 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  margin-left: 10%;
+  margin-right: 10%;
+
 }
 
 .bar {
@@ -43,6 +46,7 @@
   background-color: var(--bg-dark-4);
   border: unset;
   cursor: pointer;
+  font-size: 1.2rem;
 }
 
 .rotate {

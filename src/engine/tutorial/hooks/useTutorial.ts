@@ -11,7 +11,7 @@ export function useTutorial(){
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
-      if(event.type === 'tutorial:updated'){
+      if(event.type === 'tutorial:completed'){
         setTutorial(tutorialRuntimeService.getCurrentTutorial())
         setTutorialProgress(tutorialRuntimeService.getProgress())
       }

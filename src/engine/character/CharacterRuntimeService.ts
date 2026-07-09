@@ -52,7 +52,12 @@ class CharacterRuntimeService {
         this.addXP(event)
       }
       if(event.type === 'character:manage'){
-        this.characterIdManaging = event.meta.characterId
+        this.characterIdManaging = event.meta?.characterId
+        eventBus.emit({
+          id: crypto.randomUUID(),
+          parentEventId: event.id,
+          type: 'character:manage:added'
+        })
       }
     })
   }

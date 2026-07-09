@@ -27,18 +27,18 @@ export const GAME_TUTORIALS: Tutorial[] = [
     hints: [
       {
         title: 'Characters List',
-        description:
-          'Click the "c" circle on the left to access your character list.',
+        description: 'Click the "c" circle on the left to access your character list.',
+        uiPath: 'characters'
       },
       {
         title: 'Manage Character',
-        description:
-          'Click the cog wheel "⚙" on the right of the character you wish to manage.',
+        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage.',
+        uiPath: 'characters:manage'
       },
       {
         title: 'Travel Actions',
-        description:
-          'Click "Travel" on the "Town of Oron" travel action.',
+        description: 'Click "Travel" on the "Town of Oron" travel action.',
+        uiPath: 'characters:manage:travel:town'
       },
     ],
     rewards: [
@@ -59,18 +59,18 @@ export const GAME_TUTORIALS: Tutorial[] = [
       },
       {
         title: 'Characters List',
-        description:
-          'Click the "c" circle on the left to access your character list.',
+        description: 'Click the "c" circle on the left to access your character list.',
+        uiPath: 'characters'
       },
       {
         title: 'Manage Character',
-        description:
-          'Click the cog wheel "⚙" on the right of the character you wish to manage.',
+        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage.',
+        uiPath: 'characters:manage'
       },
       {
         title: 'Travel Actions',
-        description:
-          "Click \"Travel\" on the \"Oron Adventurer's Guild\" travel action.",
+        description: "Click \"Travel\" on the \"Oron Adventurer's Guild\" travel action.",
+        uiPath: 'characters:manage:travel:adv_guild'
       },
     ],
     rewards: [

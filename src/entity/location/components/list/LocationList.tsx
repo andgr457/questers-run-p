@@ -4,6 +4,7 @@ import LocationListItem from './LocationListItem';
 interface LocationAction {
   title: string
   icon: string
+  isTutorial?: boolean
   fn?: (entity: Location) => void
 }
 

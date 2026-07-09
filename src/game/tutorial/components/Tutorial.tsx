@@ -23,11 +23,11 @@ export default function Tutorial() {
 
   return (
     <GamePanel
-      title={`Tutorial ${tutorialProgress.completedTutorialIds.length}/${GAME_TUTORIALS.length}`}
+      title={`Tutorial ${tutorialProgress.completedTutorialIds?.length ?? 0}/${GAME_TUTORIALS.length}`}
       currentScreenName=''
     >
       <div className={styles.tutorial}>
-        <div className={styles.title}>{`${tutorialProgress.completedTutorialIds.length + 1}. ${tutorial.title}`}</div>
+        <div className={styles.title}>{`${tutorialProgress.completedTutorialIds?.length ?? 0 + 1}. ${tutorial.title}`}</div>
 
         <div className={styles.description}>
           {tutorial.description}

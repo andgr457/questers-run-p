@@ -11,6 +11,7 @@ export type CharacterEventTypes = 'character:save'
   | 'character:stats'
   | 'character:stats:changed'
   | 'character:manage'
+  | 'character:manage:added'
 
 
 export interface GameEvent_CharacterSave extends GameEvent {
@@ -56,6 +57,13 @@ export interface GameEvent_CharacterLevel extends GameEvent {
 
 export interface GameEvent_CharacterManage extends GameEvent {
   type: 'character:manage'
+  meta: {
+    characterId: string
+  }
+}
+
+export interface GameEvent_CharacterManageAdded extends GameEvent {
+  type: 'character:manage:added'
   meta: {
     characterId: string
   }

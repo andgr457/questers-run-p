@@ -8,11 +8,14 @@ import { GAME_EVENT_BUS_CHARACTER_TYPES, GAME_EVENT_BUS_PLAYER_TYPES } from '../
 import type { PlayerEntity } from '../../../player/types/PlayerEntity.types'
 import { playerRuntimeService } from '../../../../engine/player/PlayerRuntimeService'
 import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider'
+import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial'
 
 export default function CharacterList() {
   const {showConfirm} = useConfirm()
   const [characters, setCharacters] = useState<CharacterEntity[]>(characterRuntimeService.getCharacters())
   const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
+  const {tutorial} = useTutorial()
+  
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
       if(GAME_EVENT_BUS_CHARACTER_TYPES.includes(event.type)){
@@ -41,6 +44,13 @@ export default function CharacterList() {
     })
   }
 
+  let showTutorialHint = false
+  if(tutorial){
+    if(tutorial.hints.some(h => h.uiPath === 'characters:manage')){
+      showTutorialHint = true
+    }
+  }
+  
   return <GamePanel
     currentScreenName=''
     title='Characters'
@@ -52,8 +62,9 @@ export default function CharacterList() {
         </button>
       </div>
     </div>
-    {characters.map(c => {
-      return <CharacterListItem entity={c} onClick={(entity) => {
+    {characters.map((c, index) => {
+      
+      return <CharacterListItem showTutorial={showTutorialHint && index === 0}  entity={c} onClick={(entity) => {
         eventBus.emit({
           id: crypto.randomUUID(),
           type: 'character:manage',

@@ -1,11 +1,11 @@
-import type { GameEvents } from './types/EventBus.types'
+import type { GameEvent } from './types/EventBus.types'
 
-type Listener = (event: GameEvents) => void
+type Listener = (event: GameEvent) => void
 
 class EventBus {
   private listeners = new Set<Listener>()
 
-  emit(event: GameEvents) {
+  emit(event: GameEvent) {
     for (const listener of this.listeners) {
       listener(event)
     }

@@ -21,14 +21,14 @@ class TransitionRuntimeService {
 
     eventBus.subscribe(event => {
       if (event.type === 'transition:start') {
-        this.transition = event.meta.transition
+        this.transition = event.meta?.transition
 
-        if (!event.meta.transition.characterId && !event.meta.transition.partyId) {
+        if (!event.meta?.transition?.characterId && !event.meta?.transition?.partyId) {
           eventBus.emit({
             id: crypto.randomUUID(),
             type: 'transition:started',
             meta: {
-              transition: event.meta.transition,
+              transition: event.meta?.transition,
             },
           })
 
@@ -45,7 +45,7 @@ class TransitionRuntimeService {
         }
 
         this.destination = GAME_LOCATIONS.find(
-          l => l.id === event.meta.transition.destinationLocationId as string
+          l => l.id === event.meta?.transition?.destinationLocationId as string
         )
 
         eventBus.emit({
@@ -67,7 +67,7 @@ class TransitionRuntimeService {
       }
 
       if (event.type === 'transition:started') {
-        if (event.meta.transition.characterId) {
+        if (event.meta?.transition?.characterId) {
           eventBus.emit({
             id: crypto.randomUUID(),
             type: 'character:save',
@@ -83,7 +83,7 @@ class TransitionRuntimeService {
           })
         }
 
-        if (event.meta.transition.partyId) {
+        if (event.meta?.transition?.partyId) {
           eventBus.emit({
             id: crypto.randomUUID(),
             type: 'party:save',
@@ -108,7 +108,7 @@ class TransitionRuntimeService {
               },
             })
 
-            if (event.meta.transition.characterId) {
+            if (event.meta?.transition?.characterId) {
               const character = characterRuntimeService.getCharacter(
                 event.meta.transition.characterId
               )
@@ -119,7 +119,7 @@ class TransitionRuntimeService {
               )
             }
 
-            if (event.meta.transition.partyId) {
+            if (event.meta?.transition?.partyId) {
               const party = { name: 'not implemented!' }
 
               notificationRuntimeService.addHistory(
@@ -143,7 +143,7 @@ class TransitionRuntimeService {
         this.transition = undefined
         this.destination = undefined
 
-        if (event.meta.transition.characterId) {
+        if (event.meta?.transition?.characterId) {
           eventBus.emit({
             id: crypto.randomUUID(),
             parentEventId: event.id,
@@ -154,7 +154,7 @@ class TransitionRuntimeService {
           })
         }
 
-        if (event.meta.transition.partyId) {
+        if (event.meta?.transition?.partyId) {
           eventBus.emit({
             id: crypto.randomUUID(),
             parentEventId: event.id,

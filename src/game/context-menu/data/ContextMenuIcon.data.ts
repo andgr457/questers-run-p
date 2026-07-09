@@ -15,4 +15,6 @@ export const ContextMenuIcon: Record<ContextMenuIconName, string> = {
   tutorial: 't',
   parties: 'pa',
   eye: '👁',
+  character_manage: 'cm',
+  party_manage: 'pm'
 }

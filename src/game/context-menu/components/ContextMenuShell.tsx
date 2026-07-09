@@ -14,6 +14,7 @@ import type { CharacterEntity } from '../../../entity/character/types/CharacterE
 import { checkForPulse } from '../utils/ContextMenu.utils'
 import { useTutorial } from '../../../engine/tutorial/hooks/useTutorial'
 import { useNotifications } from '../../../engine/notification/hooks/useNotifications'
+import { useManagedCharacter } from '../../../engine/character/hooks/useManagedCharacters'
 
 interface Props {
   overlayMode: OverlayMode
@@ -31,7 +32,8 @@ export default function ContextMenuShell(props: Props) {
   const [recordingDetail, setRecordingDetail] = useState(eventDebugRuntimeService.getRecordingDetail())
   const [player, setPlayer] = useState<PlayerEntity | undefined>(playerRuntimeService.getPlayer())
   const [characters, setCharacters] = useState<CharacterEntity[]>(characterRuntimeService.getCharacters())
-  
+  const {managedCharacter} = useManagedCharacter()
+
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
       if(GAME_EVENT_BUS_DEBUG_RECORDING_TYPES.includes(event.type)){
@@ -46,8 +48,10 @@ export default function ContextMenuShell(props: Props) {
     })
     return unsub
   }, [])
+
   const selectedBorderColor = 'var(--blue-sd-lighter-2)'
   const requiresAttentionColor = 'var(--green-success-2)'
+  
   const anyUnviewedNotifications = notifications.some(h => h.viewed === false)
   const anyCharactersIdle = characterRuntimeService.getCharacters().some(c => c.isIdle === true)
   const leftActions = useMemo<ContextMenuAction[]>(() => {
@@ -85,19 +89,39 @@ export default function ContextMenuShell(props: Props) {
       borderColor: overlayMode === 'player' ? selectedBorderColor : '',
       onClick: () => overlayMode === 'player' ? setOverlayMode('world') : setOverlayMode('player'),
     })
+
     const canCharactersListPulse = checkForPulse(() => {
       return anyCharactersIdle
     }, overlayMode, 'characters')
+    let charactersTutorialHint = false
+    if(tutorial){
+      if(overlayMode !== 'characters'){
+        if(tutorial.hints.some(h => h.uiPath === 'characters')){
+          charactersTutorialHint = true
+        }
+      }
+    }
     actions.push({
       id: 'characters',
       label: 'Characters',
       iconName: 'characters',
       iconRotate: false,
-      pulse: canCharactersListPulse,
-      color: canCharactersListPulse ? requiresAttentionColor : '',
-      borderColor: canCharactersListPulse ? requiresAttentionColor  : overlayMode === 'characters' ? selectedBorderColor : '',
+      pulse: charactersTutorialHint || canCharactersListPulse,
+      color: charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor : '',
+      borderColor: charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor  : overlayMode === 'characters' ? selectedBorderColor : '',
       onClick: () => overlayMode === 'characters' ? setOverlayMode('world') : setOverlayMode('characters'),
     })
+    if(managedCharacter){
+      actions.push({
+        id: 'manage-characters',
+        label: 'Manage Character',
+        iconName: 'character_manage',
+        iconRotate: false,
+        pulse: false,
+        borderColor: overlayMode === 'character_manage' ? selectedBorderColor : '',
+        onClick: () => overlayMode === 'character_manage' ? setOverlayMode('world') : setOverlayMode('character_manage'),
+      })
+    }
     actions.push({
       id: 'parties',
       label: 'Parties',

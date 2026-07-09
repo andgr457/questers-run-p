@@ -1,32 +1,23 @@
-import { useState, useEffect } from 'react';
-import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService';
+import { useState } from 'react';
 import { eventBus } from '../../../../engine/event/EventBus';
-import { GAME_EVENT_BUS_CHARACTER_TYPES } from '../../../../engine/event/utils/EventBus.utils';
 import GamePanel from '../../../../ui/panel/GamePanel';
-import type { CharacterEntity } from '../../types/CharacterEntity.types';
 import { GAME_LOCATIONS } from '../../../location/data/Location.data';
 import GamePanelSection from '../../../../ui/panel/GamePanelSection';
 import type { Location } from '../../../location/types/Location.types';
 import LocationDetail from '../../../location/components/detail/LocationDetail';
 import LocationList from '../../../location/components/list/LocationList';
 import { ContextMenuIcon } from '../../../../game/context-menu/data/ContextMenuIcon.data';
+import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial';
+import { useManagedCharacter } from '../../../../engine/character/hooks/useManagedCharacters';
 
 type CharacterManageMode = 'main'
   | 'location_detail'
 
 export default function CharacterManage() {
-  const [character, setCharacter] = useState<CharacterEntity | undefined>(characterRuntimeService.getManagingCharacter())
+  const {managedCharacter: character} = useManagedCharacter()
   const [mode, setMode] = useState<CharacterManageMode>('main')
   const [viewLocation, setViewLocation] = useState<Location | undefined>(undefined)
-
-  useEffect(() => {
-    const unsub = eventBus.subscribe(event => {
-      if(GAME_EVENT_BUS_CHARACTER_TYPES.includes(event.type)){
-        setCharacter(characterRuntimeService.getManagingCharacter())
-      }
-    })
-    return unsub
-  }, [])
+  const {tutorial} = useTutorial()
 
   const currentLocation = GAME_LOCATIONS.find(l => l.id === character?.locationId)
 
@@ -69,13 +60,22 @@ export default function CharacterManage() {
       >
         <LocationList 
           locationsWithActions={travelToLocations.map(l => {
-
+            let isTutorial = false
+            if(tutorial){
+              const foundHint = tutorial.hints.find(h => h.uiPath?.includes(l.type))
+              console.log(tutorial, foundHint, l)
+              if(foundHint){
+                isTutorial = true
+              }
+            }
+            
             return {
               location: l,
               actions: [
                 {
                   title: 'Travel',
                   icon: ContextMenuIcon.start,
+                  isTutorial,
                   fn: (entity) => {
                     eventBus.emit({
                       id: crypto.randomUUID(),

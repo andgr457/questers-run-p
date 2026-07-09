@@ -13,13 +13,15 @@ import GoldDetail from '../../../../ui/gold/GoldDetail'
 
 interface Props {
   entity: CharacterEntity
+  showTutorial?: boolean
   onClick?: (entity: CharacterEntity) => void
 }
 
 export default function CharacterListItem(props: Props) {
   const { 
     entity,
-    onClick
+    onClick,
+    showTutorial = false,
   } = props
 
   const [gold, setGold] = useState(getCharacterGold(entity?.id))
@@ -36,6 +38,7 @@ export default function CharacterListItem(props: Props) {
   const currentLocation = GAME_LOCATIONS.find(l => l.id === entity.locationId)
   const className = GAME_CHARACTER_CLASSES[entity?.classId as CharacterClassId]?.name
   const onClickFn = !onClick ? undefined : () => {onClick?.(entity)}
+  
   return (
     <div className={styles.wrapper} >
       <div className={styles.header}>
@@ -59,8 +62,9 @@ export default function CharacterListItem(props: Props) {
         
         {onClickFn && <div 
           title={`Manage ${entity.name}`}
-          className={`${styles.action} ${styles.rotate}`} 
+          className={`${styles.action} ${styles.rotate} ${showTutorial ? 'tutorial-hint pulse-tutorial' : ''}`} 
           onClick={onClickFn}
+          
         >
           ⚙
         </div>}

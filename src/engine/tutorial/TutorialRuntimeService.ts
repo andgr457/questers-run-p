@@ -2,6 +2,7 @@ import { GAME_TUTORIALS } from '../../game/tutorial/data/Tutorial.data'
 import type { TutorialProgress } from '../../game/tutorial/types/Tutorial.types'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
+import type { GameEvent } from '../event/types/EventBus.types'
 
 class TutorialRuntimeService {
   private initialized = false
@@ -14,27 +15,18 @@ class TutorialRuntimeService {
     if (this.initialized) {
       return
     }
-
     this.initialized = true
-    this.loadProgress()
-  }
+    let progressValue = localStorage.getItem(
+      GAME_STORAGE_KEYS.TUTORIAL_PROGRESS_GAME
+    )
 
-  private loadProgress() {
-    try {
-      const progress = localStorage.getItem(
-        GAME_STORAGE_KEYS.TUTORIAL_PROGRESS_GAME
-      )
+    this.progress = !progressValue ? this.progress : JSON.parse(progressValue)
 
-      if (!progress) {
-        return
+    eventBus.subscribe(event => {
+      if (event.type === 'tutorial:complete') {
+        this.completeTutorial(event)
       }
-
-      this.progress = JSON.parse(progress)
-    } catch {
-      this.progress = {
-        completedTutorialIds: [],
-      }
-    }
+    })
   }
 
   private saveProgress() {
@@ -44,14 +36,20 @@ class TutorialRuntimeService {
     )
   }
 
-  private emitUpdated() {
+  private emit(event?: GameEvent) {
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'tutorial:updated',
+      type: 'tutorial:completed',
+      parentEventId: event?.id
     })
   }
 
-  completeTutorial(tutorialId: string) {
+  completeTutorial(event: GameEvent) {
+    const tutorialId = event.meta?.tutorialId
+    if(!tutorialId){
+      return
+    }
+    
     if (this.progress.completedTutorialIds.includes(tutorialId)) {
       return
     }
@@ -77,7 +75,7 @@ class TutorialRuntimeService {
     }
 
     this.saveProgress()
-    this.emitUpdated()
+    this.emit()
   }
 
   resetAllTutorials() {
@@ -86,11 +84,11 @@ class TutorialRuntimeService {
     }
 
     this.saveProgress()
-    this.emitUpdated()
+    this.emit()
   }
 
   isComplete(tutorialId: string) {
-    return this.progress.completedTutorialIds.includes(tutorialId)
+    return this.progress.completedTutorialIds?.includes(tutorialId) ?? false
   }
 
   getProgress() {

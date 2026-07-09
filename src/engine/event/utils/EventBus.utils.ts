@@ -39,5 +39,6 @@ export const GAME_EVENT_BUS_CHARACTER_TYPES: GameEventType[] = [
   'character:xp',
   'character:xp:added',
   'character:level',
-  'character:manage'
+  'character:manage',
+  'character:manage:added'
 ]
