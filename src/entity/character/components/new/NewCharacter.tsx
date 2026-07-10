@@ -6,7 +6,7 @@ import CharacterClassDetail from '../../../character-class/components/detail/Cha
 import type { CharacterEntity } from '../../types/CharacterEntity.types'
 import { playerRuntimeService } from '../../../../engine/player/PlayerRuntimeService'
 import { eventBus } from '../../../../engine/event/EventBus'
-import { LOCATION_IDS } from '../../../location/data/Location.data'
+import { GAME_LOCATION_IDS } from '../../../location/data/Location.data'
 import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService'
 import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial'
 
@@ -179,7 +179,7 @@ export default function NewCharacter(){
                 const character: CharacterEntity = {
                   id: crypto.randomUUID(),
                   name: name,
-                  locationId: LOCATION_IDS.ORON_WOODS_1,
+                  locationId: GAME_LOCATION_IDS.ORON_WOODS_1,
                   isIdle: true,
                   level: 1,
                   xp: 0,

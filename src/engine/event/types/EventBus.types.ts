@@ -14,6 +14,8 @@ import type { PartyEntity } from '../../../entity/party/types/PartyEntity.types'
 import type { PlayerEntity, PlayerGoldTransaction } from '../../../entity/player/types/PlayerEntity.types'
 import type { TutorialReward } from '../../../game/tutorial/types/Tutorial.types'
 import type { NotificationEventAddMeta } from '../../../game/notification/types/Notification.types'
+import type { QuestEntity } from '../../../entity/quest/types/QuestEntity.types'
+import type { QuestEvents, QuestEventTypes } from '../../quest/types/QuestEvents.types'
 
 export interface EventSession {
   event: Partial<GameEvents>
@@ -27,6 +29,7 @@ export type GameEventType = PlayerEventTypes
   | RewardsEventTypes
   | TutorialEventTypes
   | NotificationEventTypes
+  | QuestEventTypes
 
   | 'world:mode:change'
 
@@ -166,6 +169,7 @@ export type GameEvents = GameEvent_ActivityStart
   | RewardsEvents
   | TutorialEvents
   | NotificationEvents
+  | QuestEvents
 
   | GameEvent_QuestStart 
   | GameEvent_QuestCancel 
@@ -209,4 +213,7 @@ export type EventMeta = {
 
   notification?: NotificationEventAddMeta
   notificationId?: string
+
+  questId?: string
+  quest?: QuestEntity
 }

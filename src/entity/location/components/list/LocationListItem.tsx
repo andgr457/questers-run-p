@@ -1,17 +1,17 @@
-import type { LocationWithAction } from './LocationList'
+import type { LocationWithActions } from './LocationList'
 
 import styles from './LocationListItem.module.css'
 
 interface Props {
-  locationWithAction: LocationWithAction
+  locationWithActions: LocationWithActions
 }
 
 export default function LocationListItem(props: Props) {
-  const {locationWithAction} = props
+  const {locationWithActions} = props
   const { 
     location,
     actions,
-  } = locationWithAction
+  } = locationWithActions
 
   return (
     <div className={styles.wrapper}>

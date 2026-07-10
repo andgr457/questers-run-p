@@ -55,7 +55,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
     hints: [
       {
         title: 'Current Location',
-        description: 'While in the "Town of Oron"...',
+        description: 'While at the "Town of Oron"...',
       },
       {
         title: 'Characters List',
@@ -86,9 +86,8 @@ export const GAME_TUTORIALS: Tutorial[] = [
       "Take your first quest at the Adventurer's Guild.",
     hints: [
       {
-        title: 'Characters List',
-        description: 'Click the "c" circle on the left to access your character list. Alternatively, "cm" brings you directly to the last managed character.',
-        uiPath: 'characters'
+        title: 'Current Location',
+        description: 'While at the "Oron Adventurer\'s Guild"...',
       },
       {
         title: 'Manage Character',
@@ -96,9 +95,9 @@ export const GAME_TUTORIALS: Tutorial[] = [
         uiPath: 'characters:manage'
       },
       {
-        title: 'Quest Board',
-        description: 'Take a quest from the Adventurer\'s Guild quest board.',
-        uiPath: 'characters:manage:quest:tutorial',
+        title: 'Enter the Guild',
+        description: 'Click the action to "Enter the Oron Adventuer\'s Guild" to bring up the guild window.',
+        uiPath: 'characters:manage:action:adv_guild',
       }
     ],
     rewards: [

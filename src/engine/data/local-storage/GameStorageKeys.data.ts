@@ -5,7 +5,8 @@ export const GAME_STORAGE_KEYS = {
   PLAYER_GOLD_GAME: 'qr-game-player-gold',
 
   CHARACTERS_GAME: 'qr-game-characters',
-  CHARACTER_GOLD_GAME: 'qr-game-characters-gold',
+  CHARACTERS_GOLD_GAME: 'qr-game-characters-gold',
+  CHARACTERS_QUEST_GAME: 'qr-game-character-quests',
 
   CHARACTER_INVENTORIES_GAME: 'qr-game-character-inventories',
   INVENTORY_ITEMS_GAME: 'qr-game-inventory-items',

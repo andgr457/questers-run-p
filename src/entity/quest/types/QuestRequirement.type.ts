@@ -5,7 +5,7 @@ export interface QuestEntityRequirementStartStat {
   charAmount: number
 }
 
-export interface QuestEntityRequirementStart {
+export interface QuestRequirementStart {
   title: string
   itemId?: string
   itemAmount?: number
@@ -25,7 +25,7 @@ export interface QuestEntityRequirementStart {
   guildRank?: number
 }
 
-export interface QuestEntityRequirementComplete{
+export interface QuestRequirementComplete {
   title: string
   itemId?: string
   itemAmount?: number

@@ -12,6 +12,7 @@ import { tutorialRuntimeService } from './engine/tutorial/TutorialRuntimeService
 import { transitionRuntimeService } from './engine/transition/TransitionRuntimeService.ts'
 import { partyRuntimeService } from './engine/party/PartyRuntimeService.ts'
 import { rewardsRuntimeService } from './engine/rewards/RewardsRuntimeService.ts'
+import { questRuntimeService } from './engine/quest/QuestRuntimeService.ts'
 clockRuntimeService.start()
 eventDebugRuntimeService.init()
 transitionRuntimeService.init()
@@ -23,6 +24,8 @@ characterRuntimeService.start()
 partyRuntimeService.init()
 notificationRuntimeService.init()
 tutorialRuntimeService.init()
+questRuntimeService.init()
+questRuntimeService.start()
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

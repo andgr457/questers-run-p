@@ -14,6 +14,7 @@ import { useNotifications } from '../../../engine/notification/hooks/useNotifica
 import { useManagedCharacter } from '../../../engine/character/hooks/useManagedCharacters'
 import { usePlayer } from '../../../engine/player/hooks/usePlayer'
 import { useCharacters } from '../../../engine/character/hooks/useCharacters'
+import { GAME_LOCATIONS } from '../../../entity/location/data/Location.data'
 
 interface Props {
   overlayMode: OverlayMode
@@ -32,6 +33,7 @@ export default function ContextMenuShell(props: Props) {
   const {managedCharacter} = useManagedCharacter()
   const {player} = usePlayer()
   const {characters} = useCharacters()
+  const currentLocation = GAME_LOCATIONS.find(l => l.id === managedCharacter?.locationId)
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
@@ -148,14 +150,14 @@ export default function ContextMenuShell(props: Props) {
         )
       },
     })
-      actions.push({
-        id: 'dashboard',
-        label: 'Dashboard',
-        iconName: 'dashboard',
-        iconRotate: false,
-        borderColor: overlayMode === 'dashboard' ? selectedBorderColor : '',
-        onClick: () => overlayMode === 'dashboard' ? setOverlayMode('world') : setOverlayMode('dashboard'),
-      })
+      // actions.push({
+      //   id: 'dashboard',
+      //   label: 'Dashboard',
+      //   iconName: 'dashboard',
+      //   iconRotate: false,
+      //   borderColor: overlayMode === 'dashboard' ? selectedBorderColor : '',
+      //   onClick: () => overlayMode === 'dashboard' ? setOverlayMode('world') : setOverlayMode('dashboard'),
+      // })
 
       const tutorialCanPulse = checkForPulse(() => {
         return typeof tutorial !== 'undefined'
@@ -170,6 +172,26 @@ export default function ContextMenuShell(props: Props) {
         borderColor: tutorialCanPulse ? requiresAttentionColor : overlayMode === 'tutorial' ? selectedBorderColor : '',
         onClick: () => overlayMode === 'tutorial' ? setOverlayMode('world') : setOverlayMode('tutorial'),
       })
+      if(managedCharacter && currentLocation && currentLocation.type === 'adv_guild'){
+        let advGuildTutorialHint = false
+        if(tutorial){
+          if(overlayMode !== 'adv_guild'){
+            if(tutorial.hints.some(h => h.uiPath?.endsWith('adv_guild'))){
+              advGuildTutorialHint = true
+            }
+          }
+        }
+        actions.push({
+          id: 'advguild',
+          label: `${currentLocation.name}`,
+          iconName: 'adv_guild',
+          iconRotate: true,
+          pulse: true,
+          color: advGuildTutorialHint ? 'gold' : '',
+          borderColor: advGuildTutorialHint ? 'gold' : overlayMode === 'adv_guild' ? selectedBorderColor : '',
+          onClick: () => overlayMode === 'adv_guild' ? setOverlayMode('world') : setOverlayMode('adv_guild'),
+        })
+      }
     }
     
     if(recordingDetail.isDebugMode){

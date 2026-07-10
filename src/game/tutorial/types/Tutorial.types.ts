@@ -7,8 +7,7 @@ export type TutorialUIPath = 'characters'
   | 'characters:manage:travel:town'
   | 'characters:manage:travel:adv_guild'
   
-  | 'characters:manage:quest:tutorial'
-
+  | 'characters:manage:action:adv_guild'
 
 export interface TutorialHint {
   title: string

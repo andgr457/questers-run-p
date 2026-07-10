@@ -73,7 +73,7 @@ export default function CharacterManageTravel(props: Props){
               icon: ContextMenuIcon.eye,
               fn: (entity) => {
                 setViewLocation(entity)
-                setMode('location_detail')
+                setMode('detail')
               }
             }
           ]

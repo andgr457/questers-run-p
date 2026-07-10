@@ -22,6 +22,7 @@ import Tutorial from './tutorial/components/Tutorial'
 import CharacterManage from '../entity/character/components/manage/CharacterManage'
 import TravelTransition from './travel/TravelTransition'
 import Background from '../ui/background/Background'
+import AdventurersGuild from './adv-guild/components/AdventurersGuild'
 
 export default function World() {
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('world')
@@ -51,7 +52,7 @@ export default function World() {
         }
       }
       if(event.type === 'world:mode:change'){
-        setOverlayMode(event.meta.worldMode)
+        setOverlayMode(event.meta?.worldMode ?? 'world')
       }
       if(event.type === 'player:level'){
         const player = playerRuntimeService.getPlayer()
@@ -106,6 +107,9 @@ export default function World() {
             bottomText={`Run`}
           />
         }
+        {overlayMode === 'adv_guild' && (
+          <AdventurersGuild />
+        )}
         {overlayMode === 'transition' && (
           <TravelTransition />
         )}

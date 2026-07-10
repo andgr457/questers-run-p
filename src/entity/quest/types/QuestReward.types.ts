@@ -1,4 +1,4 @@
-export interface QuestEntityReward {
+export interface QuestReward {
   title: string
   xp?: number
   itemId?: string

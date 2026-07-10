@@ -1,16 +1,14 @@
-import type { QuestEntityRequirementComplete, QuestEntityRequirementStart } from './QuestRequirement.type'
-import type { QuestEntityReward } from './QuestReward.types'
+import type { QuestRequirementComplete, QuestRequirementStart } from './QuestRequirement.type'
+import type { QuestReward } from './QuestReward.types'
 
 export interface QuestEntity {
   id: string
-  questGroupId: string
   title: React.ReactNode
-  titleString: string
   description: React.ReactNode
   repeatable: boolean
-  rewards: QuestEntityReward[]
+  rewards: QuestReward[]
   requirements: {
-    start: QuestEntityRequirementStart[]
-    complete: QuestEntityRequirementComplete[]
+    start: QuestRequirementStart[]
+    complete: QuestRequirementComplete[]
   }
 }

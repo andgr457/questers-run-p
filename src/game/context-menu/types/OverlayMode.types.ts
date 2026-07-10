@@ -4,7 +4,7 @@ export type OverlayMode =
   | 'notifications'
   | 'dashboard'
   | 'tutorial'
-
+  | 'adv_guild'
   | 'settings'
   | 'settings_debug_logs'
 

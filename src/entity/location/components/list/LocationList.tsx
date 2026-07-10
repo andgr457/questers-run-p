@@ -9,13 +9,13 @@ export interface LocationAction {
   fn?: (entity: Location) => void
 }
 
-export interface LocationWithAction {
+export interface LocationWithActions {
   location: Location
   actions: LocationAction[]
 }
 
 interface Props {
-  locationsWithActions: LocationWithAction[]  
+  locationsWithActions: LocationWithActions[]  
 }
 
 export default function LocationList(props: Props){
@@ -28,7 +28,7 @@ export default function LocationList(props: Props){
       {locationsWithActions.map(l => {
 
         return <LocationListItem 
-          locationWithAction={l}
+          locationWithActions={l}
         />
       })}
     </div>

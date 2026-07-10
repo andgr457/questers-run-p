@@ -17,5 +17,6 @@ export const ContextMenuIcon: Record<ContextMenuIconName, string> = {
   eye: '👁',
   character_manage: 'cm',
   party_manage: 'pm',
-  prohibited: '🛇'
+  prohibited: '🛇',
+  adv_guild: '✦',
 }

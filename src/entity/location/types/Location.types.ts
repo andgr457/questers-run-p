@@ -19,5 +19,6 @@ export interface Location {
   level: number
   linkedLocationIds: string[]
   mobIds: string[]
-  professionItemIds: string[]
+  itemIds: string[]
+  questIds: string[]
 }
