@@ -10,8 +10,6 @@ import GamePanel from '../../../ui/panel/GamePanel';
 import GamePanelSection from '../../../ui/panel/GamePanelSection';
 import { ContextMenuIcon } from '../../context-menu/data/ContextMenuIcon.data';
 import type { QuestEntity } from '../../../entity/quest/types/QuestEntity.types';
-import AnimatedText from '../../../ui/text/animated-text/AnimatedText';
-import styles from './AdventurersGuild.module.css'
 import AdventurersGuildClerk from './clerk/AdventurersGuildClerk';
 
 export type AdventurersGuildMode = 'main'
