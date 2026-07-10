@@ -1,0 +1,52 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.namePlate {
+  padding: 0.75rem;
+
+  border: 1px solid rgba(255,255,255,0.25);
+
+  background: rgba(0,0,0,0.35);
+
+  text-align: center;
+}
+
+
+.name {
+  font-size: 1.25rem;
+  font-weight: bold;
+
+  letter-spacing: 0.1rem;
+}
+
+
+.title {
+
+  font-size: 0.8rem;
+
+  opacity: 0.7;
+}
+
+
+.dialogBox {
+  min-height: 5rem;
+
+  padding: 1rem;
+
+  border: 1px solid rgba(255,255,255,0.15);
+
+  background: rgba(0,0,0,0.2);
+
+  line-height: 1.5;
+}
+
+.dialogBoxTextFadeIn {
+  animation: fadeIn 1.5s forwards;
+}
+
+.dialogBoxTextFadeOut {
+  animation: fadeOut 1.5s forwards;
+}

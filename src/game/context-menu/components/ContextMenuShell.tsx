@@ -70,7 +70,7 @@ export default function ContextMenuShell(props: Props) {
       id: 'notifications',
       label: 'Notifications',
       iconName: 'notifications',
-      iconRotate: false,
+      iconRotate: notificationsCanPulse ?? false,
       pulse: notificationsCanPulse,
       color: notificationsCanPulse ? requiresAttentionColor : '',
       borderColor: notificationsCanPulse ? requiresAttentionColor : overlayMode === 'notifications' ? selectedBorderColor : '',
@@ -100,7 +100,7 @@ export default function ContextMenuShell(props: Props) {
       id: 'characters',
       label: 'Characters',
       iconName: 'characters',
-      iconRotate: false,
+      iconRotate: canCharactersListPulse ?? false,
       pulse: charactersTutorialHint || canCharactersListPulse,
       color: charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor : '',
       borderColor: charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor  : overlayMode === 'characters' ? selectedBorderColor : '',
@@ -181,12 +181,15 @@ export default function ContextMenuShell(props: Props) {
             }
           }
         }
+        const advGuildCanPulse = checkForPulse(() => {
+          return advGuildTutorialHint === true
+        }, overlayMode, 'adv_guild')
         actions.push({
           id: 'advguild',
           label: `${currentLocation.name}`,
           iconName: 'adv_guild',
           iconRotate: true,
-          pulse: true,
+          pulse: advGuildCanPulse,
           color: advGuildTutorialHint ? 'gold' : '',
           borderColor: advGuildTutorialHint ? 'gold' : overlayMode === 'adv_guild' ? selectedBorderColor : '',
           onClick: () => overlayMode === 'adv_guild' ? setOverlayMode('world') : setOverlayMode('adv_guild'),

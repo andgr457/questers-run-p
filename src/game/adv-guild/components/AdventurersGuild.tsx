@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useManagedCharacter } from '../../../engine/character/hooks/useManagedCharacters';
-import { eventBus } from '../../../engine/event/EventBus';
 import { useQuests } from '../../../engine/quest/hooks/useQuests';
 import { useTutorial } from '../../../engine/tutorial/hooks/useTutorial';
 import { GAME_LOCATIONS } from '../../../entity/location/data/Location.data';
@@ -11,6 +10,9 @@ import GamePanel from '../../../ui/panel/GamePanel';
 import GamePanelSection from '../../../ui/panel/GamePanelSection';
 import { ContextMenuIcon } from '../../context-menu/data/ContextMenuIcon.data';
 import type { QuestEntity } from '../../../entity/quest/types/QuestEntity.types';
+import AnimatedText from '../../../ui/text/animated-text/AnimatedText';
+import styles from './AdventurersGuild.module.css'
+import AdventurersGuildClerk from './clerk/AdventurersGuildClerk';
 
 export type AdventurersGuildMode = 'main'
   | 'quest_board'
@@ -26,33 +28,17 @@ export default function AdventurersGuild(){
   const {characterQuests} = useQuests()
   const currentLocation = GAME_LOCATIONS.find(l => l.id === managedCharacter?.locationId)
   const guildQuests = GAME_QUESTS.filter(q => currentLocation?.questIds.includes(q.id))
-  console.log(currentLocation?.questIds)
   
   if(!currentLocation || !managedCharacter){
     return null
   }
 
   return <>
-  {mode === 'main' && <GamePanel
-    title={currentLocation.name}
-    currentScreenName=''
-  >
-    <GamePanelSection
-      actions={[
-        {
-          name: 'Quest Board',
-          fn: () => {
-            setViewQuest(undefined)
-            setMode('quest_board')
-          }
-        }
-      ]}
-    >
-      <div>
-        Clerk: "Welcome to the {currentLocation.name}! Check the quest board often, new quests may show up."
-      </div>
-    </GamePanelSection>
-  </GamePanel>}
+  {mode === 'main' && <AdventurersGuildClerk
+    currentLocation={currentLocation}
+    setMode={setMode}
+    activeQuest={characterQuests[managedCharacter.id]}
+  />}
   {mode === 'quest_detail' && viewQuest && <GamePanel
     title={`${viewQuest.title}`}
     currentScreenName=''
@@ -83,7 +69,6 @@ export default function AdventurersGuild(){
         onBackLabel={'Front Desk'}
       >
         <QuestList questsWithActions={guildQuests.map(q => {
-          console.log('building quest with actions', q)
           let isTutorial = false
           if(tutorial){
             const foundHint = tutorial.hints.find(h => h.uiPath?.includes(currentLocation.type))

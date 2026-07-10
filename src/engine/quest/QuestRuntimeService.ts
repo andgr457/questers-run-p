@@ -3,6 +3,7 @@ import type { QuestEntity } from '../../entity/quest/types/QuestEntity.types'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { GameEvent } from '../event/types/EventBus.types'
+import type { QuestHistory } from './types/QuestHistory.types'
 
 class QuestRuntimeService {
   private initialized = false
@@ -11,7 +12,10 @@ class QuestRuntimeService {
   private characterQuestsIds: Record<string, string> = {}
   private characterQuests: Record<string, QuestEntity | undefined> = {}
 
+  private historyCharacterQuests: Record<string, QuestHistory[]> = {}
+
   private dirtyCharacterQuests = new Set<string>()
+  private dirtyCharacterQuestHistory = new Set<string>()
 
   init() {
     if (this.initialized) {
@@ -26,6 +30,14 @@ class QuestRuntimeService {
 
     if (characterQuestsValue) {
       this.characterQuestsIds = JSON.parse(characterQuestsValue)
+    }
+
+    const historyCharacterQuestsValue = localStorage.getItem(
+      GAME_STORAGE_KEYS.CHARACTERS_QUEST_HISTORY_GAME
+    )
+
+    if (historyCharacterQuestsValue) {
+      this.historyCharacterQuests = JSON.parse(historyCharacterQuestsValue)
     }
 
     this.updateQuestEntities()
@@ -69,6 +81,14 @@ class QuestRuntimeService {
     return this.characterQuests[characterId]
   }
 
+  getCharacterAllHistory(): Record<string, QuestHistory[]> {
+    return this.historyCharacterQuests
+  }
+
+  getCharacterQuestHistory(characterId: string): QuestHistory[] {
+    return this.historyCharacterQuests[characterId] ?? []
+  }
+
   private getCharacterQuestId(characterId: string): string | undefined {
     return this.characterQuestsIds[characterId]
   }
@@ -88,6 +108,7 @@ class QuestRuntimeService {
     if (!quest) {
       return
     }
+
     this.characterQuestsIds[characterId] = questId
     this.characterQuests[characterId] = quest
 
@@ -113,10 +134,20 @@ class QuestRuntimeService {
 
     const quest = this.characterQuests[characterId]
 
+    if (!quest) {
+      return
+    }
+
+    this.addQuestHistory(
+      characterId,
+      quest.id
+    )
+
     delete this.characterQuestsIds[characterId]
     delete this.characterQuests[characterId]
 
     this.dirtyCharacterQuests.add(characterId)
+    this.dirtyCharacterQuestHistory.add(characterId)
 
     eventBus.emit({
       id: crypto.randomUUID(),
@@ -127,6 +158,33 @@ class QuestRuntimeService {
         quest
       }
     })
+  }
+
+  private addQuestHistory(
+    characterId: string,
+    questId: string
+  ) {
+    const history = this.historyCharacterQuests[characterId] ?? []
+
+    const existing = history.find(
+      h => h.questId === questId
+    )
+
+    if (existing) {
+      existing.dates.push(Date.now())
+      existing.completedAmount++
+    } else {
+      history.push({
+        characterId,
+        questId,
+        dates: [
+          Date.now()
+        ],
+        completedAmount: 1
+      })
+    }
+
+    this.historyCharacterQuests[characterId] = history
   }
 
   private updateQuestEntities() {
@@ -151,16 +209,30 @@ class QuestRuntimeService {
   }
 
   private flushDirtyCharacterQuests() {
-    if (this.dirtyCharacterQuests.size === 0) {
+    if (
+      this.dirtyCharacterQuests.size === 0 &&
+      this.dirtyCharacterQuestHistory.size === 0
+    ) {
       return
     }
 
-    localStorage.setItem(
-      GAME_STORAGE_KEYS.CHARACTERS_QUEST_GAME,
-      JSON.stringify(this.characterQuestsIds)
-    )
+    if (this.dirtyCharacterQuests.size > 0) {
+      localStorage.setItem(
+        GAME_STORAGE_KEYS.CHARACTERS_QUEST_GAME,
+        JSON.stringify(this.characterQuestsIds)
+      )
 
-    this.dirtyCharacterQuests.clear()
+      this.dirtyCharacterQuests.clear()
+    }
+
+    if (this.dirtyCharacterQuestHistory.size > 0) {
+      localStorage.setItem(
+        GAME_STORAGE_KEYS.CHARACTERS_QUEST_HISTORY_GAME,
+        JSON.stringify(this.historyCharacterQuests)
+      )
+
+      this.dirtyCharacterQuestHistory.clear()
+    }
   }
 }
 

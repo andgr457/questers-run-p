@@ -2,6 +2,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.25em;
+  line-height: 1.5;
+
 }
 
 .word {
@@ -13,7 +15,7 @@
   opacity: 0;
 
   animation-name: letterIn;
-  animation-duration: 400ms;
+  animation-duration: 1000ms;
   animation-fill-mode: forwards;
   animation-timing-function: ease-out;
 }
@@ -26,7 +28,7 @@
 
   70% {
     opacity: 1;
-    transform: translateY(2px);
+    transform: translateY(5px);
   }
 
   85% {

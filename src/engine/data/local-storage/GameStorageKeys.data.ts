@@ -7,10 +7,11 @@ export const GAME_STORAGE_KEYS = {
   CHARACTERS_GAME: 'qr-game-characters',
   CHARACTERS_GOLD_GAME: 'qr-game-characters-gold',
   CHARACTERS_QUEST_GAME: 'qr-game-character-quests',
-
+  CHARACTERS_QUEST_HISTORY_GAME: 'qr-game-history-character-quests',
   CHARACTER_INVENTORIES_GAME: 'qr-game-character-inventories',
-  INVENTORY_ITEMS_GAME: 'qr-game-inventory-items',
   CHARACTER_UPGRADES_GAME: 'qr-game-character-upgrades',
+  CHARACTER_MANAGED_GAME: 'qr-game-character-managed',
+  INVENTORY_ITEMS_GAME: 'qr-game-inventory-items',
 
   PARTIES_GAME: 'qr-game-parties',
 }

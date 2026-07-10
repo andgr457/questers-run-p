@@ -10,7 +10,7 @@ class CharacterRuntimeService {
   private dirtyCharacters = new Set<string>()
   private saveInterval: number | undefined
   private characterGoldTransactions: CharacterGoldTransaction[] = []
-  private characterIdManaging: string | undefined
+  private managedCharacterId: string | undefined
 
   init() {
     if (this.initialized) {
@@ -40,6 +40,14 @@ class CharacterRuntimeService {
       this.characterGoldTransactions = JSON.parse(charactersGoldValue)
     }
 
+    const charactersManagedValue = localStorage.getItem(
+      GAME_STORAGE_KEYS.CHARACTER_MANAGED_GAME
+    )
+    if(charactersManagedValue){
+      const {managedCharacterId} = JSON.parse(charactersManagedValue)
+      this.managedCharacterId = managedCharacterId
+    }
+
     eventBus.subscribe(event => {
       if (event.type === 'character:save') {
         this.save(event)
@@ -51,7 +59,11 @@ class CharacterRuntimeService {
         this.addXP(event)
       }
       if(event.type === 'character:manage'){
-        this.characterIdManaging = event.meta?.characterId
+        this.managedCharacterId = event.meta?.characterId
+        localStorage.setItem(
+          GAME_STORAGE_KEYS.CHARACTER_MANAGED_GAME,
+          JSON.stringify({managedCharacterId: event.meta?.characterId})
+        )
         eventBus.emit({
           id: crypto.randomUUID(),
           parentEventId: event.id,
@@ -100,8 +112,8 @@ class CharacterRuntimeService {
   }
 
   getManagingCharacter(): CharacterEntity | undefined {
-    if(!this.characterIdManaging) return undefined
-    return this.characters[this.characterIdManaging]
+    if(!this.managedCharacterId) return undefined
+    return this.characters[this.managedCharacterId]
   }
 
   getCharacterGoldTransactions(characterId: string){

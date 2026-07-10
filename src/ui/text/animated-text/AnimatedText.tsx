@@ -8,7 +8,7 @@ interface Props {
 }
 
 const START_DELAY = 0
-const END_DELAY = 0
+const END_DELAY = 1500
 
 export default function AnimatedText({
   text,
