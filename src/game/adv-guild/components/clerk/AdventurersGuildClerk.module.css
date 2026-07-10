@@ -9,9 +9,8 @@
 
   border: 1px solid rgba(255,255,255,0.25);
 
-  background: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.80);
 
-  text-align: center;
 }
 
 
@@ -38,15 +37,8 @@
 
   border: 1px solid rgba(255,255,255,0.15);
 
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.65);
 
   line-height: 1.5;
-}
-
-.dialogBoxTextFadeIn {
-  animation: fadeIn 1.5s forwards;
-}
-
-.dialogBoxTextFadeOut {
-  animation: fadeOut 1.5s forwards;
+  
 }

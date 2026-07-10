@@ -2,9 +2,12 @@
   
   height: 100%;
   overflow-y: auto;
-  background-color: var(--bg-dark-1-opaque);
   border-radius: 5px;
 
+}
+
+.game-panel-wrapper.show {
+  background-color: var(--bg-dark-1-opaque);
 }
 
 .game-panel {
@@ -23,12 +26,7 @@
   position: sticky;
   top: 0;
   z-index: 99999;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 5px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  border: solid 1px var(--bg-dark-3);
+  padding: 5px;
   background-color: var(--bg-dark-1);
   border-radius: 5px;
   display: flex;
@@ -36,8 +34,8 @@
   align-items: center;
   justify-content: space-evenly;
   text-transform: uppercase;
-  margin-bottom: 5px;
   filter: brightness(1);
+  cursor: pointer;
   transition: background-color .25s ease-in, filter .25s ease-in;
 }
 

@@ -55,7 +55,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
     hints: [
       {
         title: 'Current Location',
-        description: 'While at the "Town of Oron"...',
+        description: 'Character Manager at the "Town of Oron".',
       },
       {
         title: 'Characters List',
@@ -87,17 +87,21 @@ export const GAME_TUTORIALS: Tutorial[] = [
     hints: [
       {
         title: 'Current Location',
-        description: 'While at the "Oron Adventurer\'s Guild"...',
+        description: 'While at the "Oron Adventurer\'s Guild" in the character manager...',
       },
       {
         title: 'Manage Character',
-        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage.',
+        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage. Alternatively, "✦" to the right brings you there when you have a character that you are managing.',
         uiPath: 'characters:manage'
       },
       {
         title: 'Enter the Guild',
         description: 'Click the action to "Enter the Oron Adventuer\'s Guild" to bring up the guild window.',
         uiPath: 'characters:manage:action:adv_guild',
+      },
+      {
+        title: 'Visit the Quest Board',
+        description: 'Once at the '
       }
     ],
     rewards: [

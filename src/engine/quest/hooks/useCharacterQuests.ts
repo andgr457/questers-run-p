@@ -5,7 +5,7 @@ import { questRuntimeService } from '../QuestRuntimeService'
 import { GAME_EVENT_BUS_QUEST_TYPES } from '../data/QuestEvents.data'
 import type { QuestHistory } from '../types/QuestHistory.types'
 
-export function useQuests() {
+export function useCharacterQuests() {
   const [characterQuests, setCharacterQuests] = useState<Record<string, QuestEntity | undefined>>(
     questRuntimeService.getCharacterQuests()
   )

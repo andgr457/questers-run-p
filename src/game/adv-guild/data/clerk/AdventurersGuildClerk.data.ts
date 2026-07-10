@@ -14,8 +14,10 @@ export const ADVENTURERS_GUILD_CLERKS: Record<string, AdventurersGuildClerkData>
     title: 'Senior Expedition Registrar',
 
     lore: [
-      '"I have served the Oron Adventurers Guild for twenty-three years. I was once the one accepting contracts and walking into the dark. Now I am the one making sure someone knows where you went."',
-      '"My duties are simple: record assignments, verify claims, and update the casualty reports when someone forgets that monsters do not care how brave you are."',
+      '"I have served the Oron Adventurers Guild for over two decades. I spent years in the field before trading my weapon for a ledger. Turns out paperwork is far less likely to bite, stab, or attempt to eat me."',
+      '"I maintain adventurer records, process contracts, and keep track of every soul who leaves through these doors. The list of those who do not return is not for remembrance... it is for accurate accounting."',
+      '"When I am not buried beneath reports and contracts, I tend to my small garden behind the Guild hall. Strange, I know. After years fighting beasts and bandits, I find peace in convincing stubborn plants to survive."',
+      '"I still maintain my old field equipment in my quarters. Not because I intend to return to adventuring... but because a person should never forget what kept them alive."',
     ],
 
     dialog: [

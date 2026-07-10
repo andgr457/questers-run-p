@@ -8,6 +8,7 @@ export type TutorialUIPath = 'characters'
   | 'characters:manage:travel:adv_guild'
   
   | 'characters:manage:action:adv_guild'
+  | 'adv_guild:quest:q_01_gather_berries'
 
 export interface TutorialHint {
   title: string

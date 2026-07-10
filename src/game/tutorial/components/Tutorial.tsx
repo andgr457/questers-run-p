@@ -34,6 +34,7 @@ export default function Tutorial() {
           {tutorial.description}
         </div>
 
+
         <div className={styles.sections}>
           <div className={styles.section}>
             <div className={styles.subtitle}>Rewards</div>
@@ -48,6 +49,10 @@ export default function Tutorial() {
             </div>}
           </div>
         </div>
+        <div className={`${styles.description}`} style={{display: 'flex', gap: '5px'}}>
+          Follow the <div className='tutorial-hint pulse'>GOLD</div>
+        </div>
+
       </div>
     </GamePanel>
   )

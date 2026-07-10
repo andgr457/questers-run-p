@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 interface Props {
   title: string
   currentScreenName: string
+  showBackground?: boolean
   children: React.ReactNode
 }
 
@@ -12,6 +13,7 @@ export default function GamePanel(props: Props) {
     children,
     title,
     currentScreenName,
+    showBackground = true
   } = props
   const [show, setShow] = useState(false)
 
@@ -20,7 +22,7 @@ export default function GamePanel(props: Props) {
       setShow(true)
     }, 50)
   }, [])
-  return <div className='game-panel-wrapper'>
+  return <div className={`game-panel-wrapper ${showBackground === true ? 'show' : ''}`}>
     {show === true && (
       title && <div className='game-panel-title'>
         <div className='game-panel-title-main'>

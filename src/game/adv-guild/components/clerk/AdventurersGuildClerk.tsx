@@ -5,7 +5,7 @@ import GamePanelSection from '../../../../ui/panel/GamePanelSection'
 import AnimatedText from '../../../../ui/text/animated-text/AnimatedText'
 import type { AdventurersGuildMode } from '../AdventurersGuild'
 import styles from './AdventurersGuildClerk.module.css'
-import { ADVENTURERS_GUILD_CLERKS } from './AdventurersGuildClerk.data'
+import { ADVENTURERS_GUILD_CLERKS } from '../../data/clerk/AdventurersGuildClerk.data'
 import DialogOptions from '../../../../ui/dialog/DialogOptions'
 import type { QuestEntity } from '../../../../entity/quest/types/QuestEntity.types'
 
@@ -30,7 +30,7 @@ export default function AdventurersGuildClerk(props: Props){
   )
 
   const [displayDialog, setDisplayDialog] = useState(dialog)
-  const [loreIndex, setLoreIndex] = useState(0)
+  const [loreIndex, setLoreIndex] = useState(-1)
   const [dialogIndex, setDialogIndex] = useState(-1)
 
   const changeDialog = (text: string) => {
@@ -74,7 +74,7 @@ export default function AdventurersGuildClerk(props: Props){
       : []
     ),
     {
-      label: 'Chat',
+      label: 'Ask about adventuring',
       action: () => {
         const nextDialog = clerk.dialog[dialogIndex+1]
         if(!nextDialog){
@@ -91,7 +91,7 @@ export default function AdventurersGuildClerk(props: Props){
       }
     },
     {
-      label: 'Clerk Lore',
+      label: 'Ask about the clerk',
       action: () => {
         const nextLore = clerk.lore[loreIndex+1]
         if(!nextLore){
@@ -108,7 +108,7 @@ export default function AdventurersGuildClerk(props: Props){
     },
 
     {
-      label: 'Quest Board',
+      label: 'Visit the Quest Board',
       action: () => {
         setMode('quest_board')
       }
@@ -118,8 +118,9 @@ export default function AdventurersGuildClerk(props: Props){
 
   return (
     <GamePanel
-      title={`${currentLocation.name} Clerk`}
+      title={`${currentLocation.name}`}
       currentScreenName=''
+      showBackground={false}
     >
 
       <GamePanelSection actions={[]}>
@@ -138,10 +139,11 @@ export default function AdventurersGuildClerk(props: Props){
 
 
           <div className={styles.dialogBox}>
-            <AnimatedText
-              key={displayDialog}
-              text={displayDialog}
-            />
+              <AnimatedText
+                key={displayDialog}
+                text={displayDialog}
+              />
+
           </div>
 
 

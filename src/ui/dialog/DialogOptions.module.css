@@ -8,21 +8,20 @@
 
   padding: 0.65rem 0.75rem;
 
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0,0,0,0.80);
 
-  border: 1px solid rgba(255,255,255,0.15);
-
+  border: 1px solid var(--bg-dark-3);
+  font-size: 0.65rem;
   cursor: pointer;
-
-  font-size: 0.75rem;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   text-align: center;
   text-transform: uppercase;
   color: var(--text);
+  transition: background 0.25s ease-in-out;
 }
 
 .option:hover {
-  background: rgba(255,255,255,0.08);
+  background: var(--bg-dark-3);
 }
 
 .option:disabled {

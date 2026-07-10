@@ -5,7 +5,7 @@ interface Props {
   questWithActions: QuestWithActions
 }
 
-export default function QuestListItem(props: Props){
+export default function QuestListItem(props: Props) {
   const {
     questWithActions
   } = props
@@ -15,26 +15,40 @@ export default function QuestListItem(props: Props){
     actions,
   } = questWithActions
 
-  return <div className={styles.wrapper}>
-    <div className={styles.text}>
-      {quest.title}
-    </div>
+  // Placeholder until requirements are parsed
+  const questLevel = 1
 
-     <div className={styles.actions}>
-      {actions.map(a => {
-        
-        return <div 
-          title={a.title}
-          className={`${styles.action} ${a.isTutorial ? 'tutorial-hint pulse-tutorial' : ''}`}
-          onClick={() => {
-            if(a.fn){
-              a.fn?.(quest)
-            }
-          }}
-        >
-          {a.icon}
-        </div>
-      })}
+  return (
+    <div className={styles.wrapper}>
+
+      <div className={styles.title}>
+        {quest.title}
+      </div>
+
+      <div className={styles.level}>
+        Lv. <span className={styles.levelValue}>{questLevel}</span>
+      </div>
+
+      <div className={styles.actions}>
+        {actions.map(a => {
+
+          return (
+            <div
+              key={a.title}
+              title={a.title}
+              className={`${styles.action} ${a.isTutorial ? 'tutorial-hint pulse-tutorial' : ''}`}
+              onClick={() => {
+                if (a.fn) {
+                  a.fn(quest)
+                }
+              }}
+            >
+              {a.icon}
+            </div>
+          )
+        })}
+      </div>
+
     </div>
-  </div>
+  )
 }
