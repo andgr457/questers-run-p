@@ -23,25 +23,12 @@ import CharacterManage from '../entity/character/components/manage/CharacterMana
 import TravelTransition from './travel/TravelTransition'
 import Background from '../ui/background/Background'
 import AdventurersGuild from './adv-guild/components/AdventurersGuild'
+import Introduction from './introduction/Introduction'
 
 export default function World() {
-  const [overlayMode, setOverlayMode] = useState<OverlayMode>('world')
+  const [overlayMode, setOverlayMode] = useState<OverlayMode>('intro')
   
   const {showConfirm} = useConfirm()
-
-  useEffect(() => {
-    const player = playerRuntimeService.getPlayer()
-    if(!player){
-      setOverlayMode('player_create')
-      return
-    }
-    const characters = characterRuntimeService.getCharacters()
-    if(!characters || characters.length === 0){
-      setOverlayMode('character_create')
-      return
-    }
-
-  }, [])
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
@@ -107,6 +94,9 @@ export default function World() {
             bottomText={`Run`}
           />
         }
+        {overlayMode === 'intro' && (
+          <Introduction setOverlayMode={setOverlayMode} />
+        )}
         {overlayMode === 'adv_guild' && (
           <AdventurersGuild />
         )}

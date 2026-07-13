@@ -9,7 +9,7 @@
   padding-bottom: 15vh; /* pushes content upward */
 
   background: var(--bg-dark-1);
-
+  letter-spacing: 2px;
   opacity: 0;
   pointer-events: none;
 
@@ -27,9 +27,6 @@
 }
 
 .container {
-  max-width: 800px;
-  padding: 20px;
-
   text-align: center;
 
   color: var(--text);
@@ -37,7 +34,9 @@
 }
 
 .continueWrapper {
-  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  margin-top: .4rem;
 }
 
 .continue {
@@ -49,12 +48,12 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   background: var(--bg-dark-3);
-  cursor: pointer;
+  pointer-events: none;
   padding: 1rem;
   padding-right: 1rem;
   padding-bottom: 0.2rem;
   padding-top: 0.2rem;
-
+  max-width: 25%;
   opacity: 0;
   transition: opacity 1s, background 0.5s;
 }
@@ -64,13 +63,15 @@
 }
 
 .continue.show {
+  pointer-events: all;
+  cursor: pointer;
   border-radius: 8px;
   opacity: 1;
   transition: opacity 1s;
-  transition: background 0.5s
+  transition: background 0.5s, opacity 1s;
 }
 
 .continue.show:hover {
   background: var(--bg-dark-2);
-  transition: background 0.5s
+  transition: background 0.5s;
 }

@@ -1,4 +1,5 @@
 export type OverlayMode =
+  | 'intro'
   | 'world'
   | 'transition'
   | 'notifications'
