@@ -1,6 +1,7 @@
 import { GAME_TUTORIALS } from '../../game/tutorial/data/Tutorial.data'
 import type { Tutorial, TutorialProgress } from '../../game/tutorial/types/Tutorial.types'
 import { characterRuntimeService } from '../character/CharacterRuntimeService'
+import { clockRuntimeService } from '../clock/ClockRuntimeService'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { GameEvent } from '../event/types/EventBus.types'
@@ -9,7 +10,7 @@ class TutorialRuntimeService {
   private initialized = false
 
   private progress: TutorialProgress = {
-    completedTutorialIds: [],
+    playerTutorialProgress: [],
   }
 
   init() {
@@ -28,6 +29,9 @@ class TutorialRuntimeService {
 
       if (event.type === 'tutorial:complete') {
         this.completeTutorial(event)
+      }
+      if(event.type === 'tutorial:collect'){
+        this.collectTutorialRewards(event)
       }
     })
   }
@@ -59,36 +63,56 @@ class TutorialRuntimeService {
 
   completeTutorial(event: GameEvent) {
     const tutorialId = event.meta?.tutorialId
-    if(!tutorialId){
-      return
-    }
-    
-    if (this.progress.completedTutorialIds.includes(tutorialId)) {
+    if(!tutorialId || this.isCompleted(tutorialId)){
       return
     }
 
-    this.progress.completedTutorialIds.push(tutorialId)
+    this.progress.playerTutorialProgress.push({
+      tutorialId,
+      collected: false,
+      completed: true,
+      dateCompleted: clockRuntimeService.getNow()
+    })
 
     const tutorial = GAME_TUTORIALS.find(t => t.id === tutorialId)
     if(!tutorial) return
-
-    if (tutorial.rewards.length > 0) {
-      eventBus.emit({
-        id: crypto.randomUUID(),
-        type: 'rewards:start',
-        meta: {
-          tutorialRewards: tutorial.rewards,
-          characterId: characterRuntimeService.getManagingCharacter()?.id
-        },
-      })
-    }
 
     this.saveProgress()
     this.emitCompleted(event, tutorial)
   }
 
-  isComplete(tutorialId: string) {
-    return this.progress.completedTutorialIds?.includes(tutorialId) ?? false
+  collectTutorialRewards(event: GameEvent){
+    const tutorialId = event.meta?.tutorialId
+    if(!tutorialId || this.isCollected(tutorialId)){
+      return
+    }
+    
+    const existingProgress = this.progress.playerTutorialProgress.find(t => 
+      t.tutorialId === tutorialId
+    )
+    if(existingProgress?.collected === true){
+      return
+    }
+
+    const tutorial = GAME_TUTORIALS.find(t => t.id === tutorialId)
+    if(!tutorial) return
+
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: 'rewards:start',
+      meta: {
+        tutorialRewards: tutorial.rewards,
+        characterId: characterRuntimeService.getManagingCharacter()?.id
+      },
+    })
+  }
+
+  isCompleted(tutorialId: string) {
+    return this.progress.playerTutorialProgress?.find(t => t.tutorialId === tutorialId)?.completed === true
+  }
+
+  isCollected(tutorialId: string){
+    return this.progress.playerTutorialProgress?.find(t => t.tutorialId === tutorialId)?.collected === true
   }
 
   getProgress() {
@@ -99,7 +123,7 @@ class TutorialRuntimeService {
 
   getCurrentTutorial() {
     return GAME_TUTORIALS.find(
-      tutorial => !this.isComplete(tutorial.id)
+      tutorial => !this.isCompleted(tutorial.id)
     )
   }
 }

@@ -17,3 +17,4 @@ export type ContextMenuIconName =
   | 'eye'
   | 'prohibited'
   | 'adv_guild'
+  | 'check'

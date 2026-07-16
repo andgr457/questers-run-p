@@ -1,0 +1,21 @@
+
+.completedDate {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  opacity: .7;
+  padding: 5px;
+}
+
+.allCharacterAmount {
+ text-align: center;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  opacity: .7;
+  padding: 5px; 
+}
+
+.section {
+  border-bottom: solid 1px var(--bg-dark-3);
+  padding: 5px;
+}

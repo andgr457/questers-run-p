@@ -21,6 +21,9 @@ export function useTutorial(){
 
   return {
     tutorial,
-    tutorialProgress
+    tutorialProgress,
+    completedTutorials: tutorialProgress?.playerTutorialProgress?.filter(t => 
+      t.completed === true
+    )
   }
 }

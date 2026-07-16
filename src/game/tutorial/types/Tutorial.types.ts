@@ -1,5 +1,15 @@
+
+
+export interface TutorialProgressMeta {
+  tutorialId: string
+  completed: boolean
+  dateCompleted: number
+  collected?: boolean
+  dateCollected?: number
+}
+
 export interface TutorialProgress {
-  completedTutorialIds: string[]
+  playerTutorialProgress: TutorialProgressMeta[]
 }
 
 export type TutorialUIPath = 'characters'
@@ -20,13 +30,13 @@ export interface Tutorial {
   id: string
   title: string
   description: string
+  requirement: string
   hints: TutorialHint[]
   rewards: TutorialReward[]
 }
 
 export type TutorialRewardType = 'player'
   | 'character'
-  | 'characters'
   
 export interface TutorialReward {
   type: TutorialRewardType

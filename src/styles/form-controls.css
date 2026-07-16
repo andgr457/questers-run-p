@@ -166,6 +166,13 @@ textarea:disabled {
   font-weight: 600;
 }
 
+.button.success-alt {
+  border-color: var(--success-dark);
+  text-shadow: var(--dark-text-shadow);
+  color: var(--success);
+  font-weight: 600;
+}
+
 .game-code {
   font-size: 0.75em;
   font-weight: 500;

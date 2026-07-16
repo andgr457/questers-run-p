@@ -22,8 +22,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   {
     id: TUTORIAL_IDS.TRAVEL_TO_TOWN,
     title: 'Travel to Town',
-    description:
-      'The road ahead leads toward the nearby town of Oron. Travel there using Character actions.',
+    description: 'The road ahead leads toward the nearby town of Oron. Travel there using Character actions.',
     hints: [
       {
         title: 'Characters List',
@@ -45,13 +44,13 @@ export const GAME_TUTORIALS: Tutorial[] = [
       getBaseTutorialRewards('player'),
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Any character is at the "Town of Oron" location.'
   },
 
   {
     id: TUTORIAL_IDS.VISIT_ADV_GUILD,
     title: "Adventurer's Guild",
-    description:
-      "Visit the local Adventurer's Guild in town to take a quest.",
+    description: "Visit the local Adventurer's Guild in town to take a quest.",
     hints: [
       {
         title: 'Current Location',
@@ -77,13 +76,13 @@ export const GAME_TUTORIALS: Tutorial[] = [
       getBaseTutorialRewards('player'),
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Any character is at the "Oron Adventurer\'s Guild" location.'
   },
 
   {
     id: TUTORIAL_IDS.ACCEPT_FIRST_QUEST,
     title: 'Quest Accepted',
-    description:
-      "Take your first quest at the Adventurer's Guild.",
+    description: "Take your first quest at the Adventurer's Guild.",
     hints: [
       {
         title: 'Current Location',
@@ -108,13 +107,13 @@ export const GAME_TUTORIALS: Tutorial[] = [
       getBaseTutorialRewards('player'),
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Any character has taken any quest.'
   },
 
   {
     id: TUTORIAL_IDS.COMPLETE_FIRST_QUEST,
     title: 'Quest Complete',
-    description:
-      "Turn in your first quest at the Adventurer's Guild.",
+    description: "Turn in your first quest at the Adventurer's Guild.",
     hints: [],
     rewards: [
       {
@@ -123,18 +122,19 @@ export const GAME_TUTORIALS: Tutorial[] = [
       },
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Any character has completed a quest.'
   },
 
   {
     id: TUTORIAL_IDS.CREATE_SECOND_CHARACTER,
     title: 'Battle Buddy',
-    description:
-      'Create a second character with your new character token.',
+    description: 'Create a second character with your new character token.',
     hints: [],
     rewards: [
       getBaseTutorialRewards('player'),
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Have two total characters.'
   },
 
   {
@@ -146,25 +146,25 @@ export const GAME_TUTORIALS: Tutorial[] = [
       getBaseTutorialRewards('player'),
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Any character has created a party.'
   },
 
   {
     id: TUTORIAL_IDS.JOIN_PARTY,
     title: 'Party on Garth',
-    description:
-      "Have another character join an existing character's party.",
+    description: "Have another character join an existing character's party.",
     hints: [],
     rewards: [
       getBaseTutorialRewards('player'),
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Two, or more, characters are in a party together.'
   },
 
   {
     id: TUTORIAL_IDS.PARTY_ROLES,
     title: 'Party Hardy',
-    description:
-      'Assign a party role to a party member.',
+    description: 'Assign a party role to a party member.',
     hints: [],
     rewards: [
       {
@@ -173,17 +173,18 @@ export const GAME_TUTORIALS: Tutorial[] = [
       },
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Any character in a party has a role assigned.'
   },
 
   {
     id: TUTORIAL_IDS.FULL_PARTY,
     title: 'No Occupancy',
-    description:
-      'Create 3 more characters and have them join your party. A tank, healer, and 3 damage dealers are required for dungeons and raids.',
+    description: 'Create 3 more characters and have them join your party. A tank, healer, and 3 damage dealers are required for dungeons and raids.',
     hints: [],
     rewards: [
       getBaseTutorialRewards('player'),
       getBaseTutorialRewards('character'),
     ],
+    requirement: 'Five characters are in a party together.'
   },
 ]

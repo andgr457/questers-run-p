@@ -33,19 +33,27 @@ interface GameEvent_CharacterGold extends GameEvent {
 }
 
 interface GameEvent_CharacterGoldAdded extends GameEvent {
-  type: 'character:gold:added'
+  type: 'character:gold:added',
+  meta: {
+    characterId: string
+    gold: number
+  }
 }
 
 interface GameEvent_CharacterXP extends GameEvent {
   type: 'character:xp'
   meta: {
-    xp: number
     characterId: string
+    xp: number
   }
 }
 
 interface GameEvent_CharacterXPAdded extends GameEvent {
   type: 'character:xp:added'
+  meta: {
+    characterId: string
+    xp: number
+  }
 }
 
 interface GameEvent_CharacterLevel extends GameEvent {

@@ -1,0 +1,38 @@
+.text {
+  position: fixed;
+  pointer-events: none;
+
+  transform: translate(-50%, 0);
+  
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: gold;
+  white-space: nowrap;
+  text-shadow: var(--dark-text-shadow);
+
+  opacity: 0;
+
+  animation: floatUp 1.2s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -20px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -40px);
+  }
+}

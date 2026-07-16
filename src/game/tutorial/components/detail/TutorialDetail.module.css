@@ -1,0 +1,78 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 12px;
+  font-size: 14px;
+  background: var(--bg-dark-2);
+  border-radius: 5px;
+}
+
+.title {
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  width: 100%;
+  padding: 5px;
+}
+
+.subtitle {
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  background-color: var(--bg-dark-2);
+}
+
+.description {
+  font-size: 0.9em;
+  opacity: .8;
+  padding: 5px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+
+  height: fit-content;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  justify-content: space-between;
+}
+
+.itemTitle {
+  font-size: 0.9em;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.items {
+  width: 80%;
+}
+
+.rewardGroup {
+  font-size: 0.9em;
+  font-weight: 400;
+  text-transform: uppercase;
+  padding: 5px;
+}
+
+.sections {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 5px;
+}
+
+.collected {
+  color: var(--success);
+}

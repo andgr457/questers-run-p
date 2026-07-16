@@ -19,4 +19,5 @@ export const ContextMenuIcon: Record<ContextMenuIconName, string> = {
   party_manage: 'pm',
   prohibited: '🛇',
   adv_guild: '✦',
+  check: '✓',
 }
