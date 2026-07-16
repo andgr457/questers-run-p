@@ -31,7 +31,17 @@ export default function World() {
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
       if(event.type === 'world:mode:change'){
-        setOverlayMode(event.meta?.worldMode ?? 'world')
+        eventBus.emit({
+          id: crypto.randomUUID(),
+          type: 'world:mode:changing',
+          meta: {
+            worldMode: event.meta?.worldMode,
+            worldModePrevious: overlayMode
+          }
+        })
+        setTimeout(() => {
+          setOverlayMode(event.meta?.worldMode ?? 'world')
+        }, 250)
       }
       if(event.type === 'player:level'){
         const player = playerRuntimeService.getPlayer()

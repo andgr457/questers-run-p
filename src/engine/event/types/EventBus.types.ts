@@ -32,6 +32,7 @@ export type GameEventType = PlayerEventTypes
   | QuestEventTypes
 
   | 'world:mode:change'
+  | 'world:mode:changing'
 
   | 'transition:start'
   | 'transition:started'
@@ -82,6 +83,14 @@ export interface GameEvent_WorldModeChange extends GameEvent {
   type: 'world:mode:change'
   meta: {
     worldMode: OverlayMode
+  }
+}
+
+export interface GameEvent_WorldModeChanging extends GameEvent {
+  type: 'world:mode:changing'
+  meta: {
+    worldMode: OverlayMode
+    worldModePrevious: OverlayMode
   }
 }
 
@@ -157,6 +166,7 @@ export type GameEvents = GameEvent_ActivityStart
   | GameEvent_ActivityComplete
   | GameEvent_ActivityCancel
   | GameEvent_WorldModeChange
+  | GameEvent_WorldModeChanging
   | GameEvent_EventTransitionStart
   | GameEvent_EventTransitionStarted
   | GameEvent_EventTransitionStop
@@ -188,6 +198,7 @@ export interface EventBusLog {
 export type EventMeta = {
   isDebugMode?: boolean
   worldMode?: OverlayMode
+  worldModePrevious?: OverlayMode
   transition?: Transition
   destination?: LocationEntity
   departure?: LocationEntity
