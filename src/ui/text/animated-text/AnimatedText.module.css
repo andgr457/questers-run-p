@@ -2,12 +2,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.25em;
-  line-height: 1.5;
+  justify-content: center;
+  line-height: 20px;
+  padding: 1rem;
+}
 
+.originalText {
+  line-height: 25px;
 }
 
 .word {
-  white-space: nowrap;
+  white-space: inherit;
 }
 
 .letter {

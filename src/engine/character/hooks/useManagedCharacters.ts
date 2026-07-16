@@ -3,6 +3,7 @@ import { eventBus } from '../../event/EventBus';
 import type { CharacterEntity } from '../../../entity/character/types/CharacterEntity.types';
 import { characterRuntimeService } from '../CharacterRuntimeService';
 import { GAME_EVENT_BUS_CHARACTER_TYPES } from '../data/CharacterEvents.data';
+import { GAME_LOCATIONS } from '../../../entity/location/data/Location.data';
 
 export function useManagedCharacter(){
   const [managedCharacter, setManagedCharacter] = useState<CharacterEntity | undefined>(
@@ -25,6 +26,7 @@ export function useManagedCharacter(){
   }, [])
 
   return {
-    managedCharacter
+    managedCharacter,
+    location: GAME_LOCATIONS.find(l => l.id === managedCharacter?.locationId)
   }
 }

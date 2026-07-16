@@ -1,9 +1,9 @@
 import styles from './LocationDetail.module.css'
-import type { Location } from '../../types/Location.types';
+import type { LocationEntity } from '../../types/LocationEntity.types';
 import { GAME_LOCATIONS } from '../../data/Location.data';
 
 interface Props {
-  entity: Location
+  entity: LocationEntity
 }
 
 export default function LocationDetail(props: Props){

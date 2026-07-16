@@ -44,7 +44,7 @@ export default function TransitionDetail(props: Props) {
     >
       <div className={`${styles.container} unselectable`}>
         <AnimatedText
-          text={transition.title}
+          text={transition.title ?? ''}
           delay={transition.delay ?? 3000}
           onPrintingChange={(value) => {
             if (!value && canComplete) {

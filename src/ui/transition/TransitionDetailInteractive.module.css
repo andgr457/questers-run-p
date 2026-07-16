@@ -3,15 +3,15 @@
   inset: 0;
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
   padding-bottom: 15vh; /* pushes content upward */
 
   background: var(--bg-dark-1);
-  letter-spacing: 2px;
   opacity: 0;
-  pointer-events: none;
+  user-select: none;
 
   z-index: 9999;
   transition: opacity 500ms ease;
@@ -20,6 +20,7 @@
 .show {
   opacity: 1;
   pointer-events: all;
+  transition: opacity 500ms ease;
 }
 
 .hide {
@@ -27,16 +28,18 @@
 }
 
 .container {
+  max-width: 800px;
+  padding: 20px;
+
   text-align: center;
 
   color: var(--text);
-  font-size: 1.2rem;
+  font-size: 0.9rem;
 }
 
 .continueWrapper {
   display: flex;
   justify-content: center;
-  margin-top: .4rem;
 }
 
 .continue {
@@ -44,22 +47,19 @@
   letter-spacing: 2px;
   justify-content: space-between;
   gap: 1rem;
-
   font-size: 0.75rem;
   text-transform: uppercase;
   background: var(--bg-dark-3);
   pointer-events: none;
-  padding: 1rem;
+  margin: 5px;
   padding-right: 1rem;
-  padding-bottom: 0.2rem;
-  padding-top: 0.2rem;
+  padding-left: 1rem;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
   max-width: 25%;
   opacity: 0;
+  border: outset 1px var(--gold);
   transition: opacity 1s, background 0.5s;
-}
-
-.wrapper.interactive {
-  background: var(--cool-bg);
 }
 
 .continue.show {
@@ -67,11 +67,14 @@
   cursor: pointer;
   border-radius: 8px;
   opacity: 1;
-  transition: opacity 1s;
-  transition: background 0.5s, opacity 1s;
+  transition: filter 0.5s, opacity 1s 250ms;
 }
 
 .continue.show:hover {
-  background: var(--bg-dark-2);
-  transition: background 0.5s;
+  filter: brightness(1.2);
+  transition: filter 0.5s;
+}
+
+.continue.show:active {
+  border-style: inset;
 }

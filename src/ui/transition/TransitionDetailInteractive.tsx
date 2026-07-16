@@ -3,22 +3,22 @@ import type { Transition } from './types/Transition.types'
 import styles from './TransitionDetailInteractive.module.css'
 import AnimatedText from '../text/animated-text/AnimatedText'
 import { eventBus } from '../../engine/event/EventBus'
-import { ContextMenuIcon } from '../../game/context-menu/data/ContextMenuIcon.data'
 import LeftRightText from '../text/left-right-text/LeftRightText'
+import TextWithColor from '../text/text-color/TextWithColor'
 
 export interface TransitionDetailInteractiveProps {
   transition: Transition
-  continueText?: string
   className?: string
+  continueText?: string
   onComplete?: () => void
 }
 
 export default function TransitionDetailInteractive(props: TransitionDetailInteractiveProps) {
   const { 
     transition, 
-    className, 
     onComplete,
-    continueText = 'continue',
+    continueText = '',
+    className = ''
   } = props
 
   const leftRightMeta = transition.leftRightMeta
@@ -35,19 +35,38 @@ export default function TransitionDetailInteractive(props: TransitionDetailInter
     return () => clearTimeout(enterTimer)
   }, [])
 
+  useEffect(() => {
+    if(continueText || !canComplete) return
+    let exitTimer
+    if(onComplete){
+      exitTimer = setTimeout(() => {
+        onComplete()
+      }, transition.delay ?? 1500)
+    }
+    if(exitTimer) 
+      return () => clearTimeout(exitTimer)
+  }, [canComplete, continueText, onComplete,])
+
   return (
     <div
+      onClick={() => {
+        if(!canComplete && continueText){
+          setCanComplete(true)
+        }
+      }}
       className={[
         styles.wrapper,
         visible ? styles.show : '',
-        className ?? ''
       ].join(' ')}
     >
       <div className={`${styles.container} unselectable`}>
-        {transition.textType === 'animated' && animatedMeta && <div>          
+        {transition.textType === 'animated' && animatedMeta && <div
+          className={`${className}`}
+        >          
           <AnimatedText
             text={animatedMeta.text}
-            delay={animatedMeta.delay ?? 3000}
+            textFancy={animatedMeta.textFancy}
+            delay={canComplete ? 0 : animatedMeta.delay ?? 3000}
             onPrintingChange={(value) => {
               if (!value) {
                 setCanComplete(true)
@@ -55,18 +74,22 @@ export default function TransitionDetailInteractive(props: TransitionDetailInter
             }}
           />
         </div>}
-        {transition.textType === 'left-right' && leftRightMeta && <div>
+        {transition.textType === 'left-right' && leftRightMeta && <div
+          className={`${className}`}
+        >
           <LeftRightText 
             leftText={leftRightMeta.leftText}
             rightText={leftRightMeta.rightText}
             delayBetween={leftRightMeta.delayBetween}
             leftRightStyle={leftRightMeta.leftRightStyle}
+            text={leftRightMeta.text}
+            textFancy={leftRightMeta.textFancy}
             onComplete={() => {
               setCanComplete(true)
             }}
           />
         </div>}
-        <div className={styles.continueWrapper}>
+        {continueText && (<div className={styles.continueWrapper}>
           <div 
             className={`${styles.continue} ${canComplete === true ? styles.show : ''}`}
             onClick={() => {
@@ -83,14 +106,12 @@ export default function TransitionDetailInteractive(props: TransitionDetailInter
                   })
                   setVisible(true)
                 }
-              }, 1000)
+              }, 1500)
             }}
           >
-            <div>
-              {continueText} 
-            </div>
+            <TextWithColor  text={continueText} pulse />
           </div>
-        </div>
+        </div>)}
       </div>
     </div>
   )

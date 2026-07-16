@@ -1,101 +1,98 @@
-import { useEffect, useMemo, useState } from 'react'
-import TransitionDetailInteractive, { type TransitionDetailInteractiveProps } from '../../ui/transition/TransitionDetailInteractive'
+import { useState } from 'react'
 import { playerRuntimeService } from '../../engine/player/PlayerRuntimeService'
 import type { OverlayMode } from '../context-menu/types/OverlayMode.types'
-import { getIntroGameTitleTransition } from './utils/Introduction.utils'
-import { characterRuntimeService } from '../../engine/character/CharacterRuntimeService'
 import NewPlayerForm from '../../entity/player/components/new/NewPlayerForm'
+import GameTitleTransition from './components/transitions/GameTitleTransition'
+import NewPlayerTransition01 from './components/transitions/NewPlayerTransition01'
+import NewPlayerTransition02 from './components/transitions/NewPlayerTransition02'
+import NoCharacterTransition from './components/transitions/NoCharacterTransition'
+import NewCharacterForm from '../../entity/character/components/new/NewCharacterForm'
+import NewCharacterTransition01 from '../../entity/character/components/transitions/NewCharacterTransition01'
+import NewCharacterTransition02 from '../../entity/character/components/transitions/NewCharacterTransition02'
+import NewCharacterTransition03 from '../../entity/character/components/transitions/NewCharacterTransition03'
+import type { CharacterEntity } from '../../entity/character/types/CharacterEntity.types'
 
 interface Props {
   setOverlayMode: (worldMode: OverlayMode) => void
 }
 
 export type IntroductionMode = 'title'
-  | 'no_player'
-  | 'new_player'
-  | 'no_character'
-  | 'new_character'
+  | 't_no_player_1'
+  | 't_no_player_2'
+  | 'new_player_form'
+  | 't_no_character_1'
+  | 'new_character_form'
+  | 't_new_character_1'
+  | 't_new_character_2'
+  | 't_new_character_3'
 
 export default function Introduction(props: Props){
   const {
     setOverlayMode
   } = props
-
   const [mode, setMode] = useState<IntroductionMode>('title')
-  const hasPlayer = typeof playerRuntimeService.getPlayer() !== 'undefined'
-  const hasCharacters = characterRuntimeService.getCharacters().length > 0
-  
-  const [currentTransition, setCurrentTransition] = useState<TransitionDetailInteractiveProps>(
-    getIntroGameTitleTransition({
-      hasPlayer,
-      hasCharacters,
-      setOverlayMode,
-      setMode,
-    })
-  )
+  const [newCharacter, setNewCharacter] = useState<CharacterEntity | undefined>(undefined)
 
-  useEffect(() => {
-    if(mode === 'no_player'){
-      setCurrentTransition({
-        transition: {
-          title: `The world comes to light...`,
-          textType: 'animated',
-          delay: 500,
-          animatedMeta: {
-            delay: 1000,
-            text: `The world comes to light...`
-          },
-        },
-        continueText: 'Next',
-        onComplete: () => {
-          setCurrentTransition({
-            transition: {
-              title: `Who are you?`,
-              textType: 'animated',
-              animatedMeta: {
-                delay: 1000,
-                text: `Who are you?`
-              },
-            },
-            continueText: 'Next',
-            onComplete: () => {
-              setMode('new_player')
-            }
-          })
-        }
-      })
-    }
-  }, [mode])
-  
   return <>
     {mode === 'title' && (
-      <TransitionDetailInteractive 
-        transition={currentTransition.transition}
-        onComplete={currentTransition.onComplete}
-        continueText={currentTransition.continueText}
+      <GameTitleTransition 
+        setMode={setMode}
+        setOverlayMode={setOverlayMode}
       />
     )}
-    {mode === 'no_player' && (
-      <TransitionDetailInteractive 
-        transition={currentTransition.transition}
-        onComplete={currentTransition.onComplete}
-        continueText={currentTransition.continueText}
+    {mode === 't_no_player_1' && (
+      <NewPlayerTransition01 
+        setMode={setMode}
       />
     )}
-    {mode === 'no_character' && (
-      <TransitionDetailInteractive 
-        transition={currentTransition.transition}
-        onComplete={currentTransition.onComplete}
-        continueText={currentTransition.continueText}
+    {mode === 't_no_player_2' && (
+      <NewPlayerTransition02 
+        setMode={setMode}
       />
     )}
-    {mode === 'new_player' && (
+    {mode === 'new_player_form' && (
       <NewPlayerForm 
         onComplete={() => {
-          const player = playerRuntimeService.getPlayer()
-          if(player){
-            setMode('no_character')
+          if(playerRuntimeService.hasPlayer()){
+            setMode('t_no_character_1')
           }
+        }}
+      />
+    )}
+    {mode === 't_no_character_1' && (
+      <NoCharacterTransition 
+        setMode={setMode}
+      />
+    )}
+    {mode === 't_new_character_1' && (
+      <NewCharacterTransition01
+        onComplete={() => {
+          setMode('new_character_form')
+        }}
+      />
+    )}
+    {mode === 'new_character_form' && (
+      <NewCharacterForm 
+        onComplete={(character: CharacterEntity) => {
+          if(!character) return
+
+          setNewCharacter(character)
+          setMode('t_new_character_2')
+        }}
+      />
+    )}
+    {mode === 't_new_character_2' && (
+      <NewCharacterTransition02
+        onComplete={() => {
+          setMode('t_new_character_3')
+        }}
+      />
+    )}
+    {mode === 't_new_character_3' && newCharacter && (
+      <NewCharacterTransition03
+        characterName={newCharacter.name}
+        onComplete={() => {
+          setOverlayMode('tutorial')
         }}
       />
     )}

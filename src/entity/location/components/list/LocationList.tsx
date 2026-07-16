@@ -1,4 +1,4 @@
-import type { Location } from '../../types/Location.types';
+import type { LocationEntity } from '../../types/LocationEntity.types';
 import LocationListItem from './LocationListItem';
 
 export interface LocationAction {
@@ -6,11 +6,11 @@ export interface LocationAction {
   icon: string
   isTutorial?: boolean
   isDisabled?: boolean
-  fn?: (entity: Location) => void
+  fn?: (entity: LocationEntity) => void
 }
 
 export interface LocationWithActions {
-  location: Location
+  location: LocationEntity
   actions: LocationAction[]
 }
 

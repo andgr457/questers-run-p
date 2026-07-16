@@ -48,7 +48,7 @@ export default function GamePanelSection<T>(props: Props<T>){
         setShowChildren(!showChildren)
       }
     }} className={`game-panel-section-title ${showChildren === true ? 'show' : ''}`}>
-      {title}
+      {title} {!expandable ? '' : show === true ? '▼' : '▶'}
     </div>}
     
       <div className='game-panel-section-actions'>

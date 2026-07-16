@@ -1,0 +1,42 @@
+.wrapper {
+  /* position: absolute; */
+  /* inset: 0; */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* overflow-y: auto; */
+  
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.classSelection {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.classToggle {
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: var(--text);
+  transition: color 500ms;
+}
+
+.classToggle:hover {
+  color: var(--gold);
+  transition: color 500ms;
+}
+
+.classInfo {
+  background: var(--bg-dark-2);
+  border-radius: 7px;
+
+}

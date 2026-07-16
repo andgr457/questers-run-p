@@ -25,10 +25,12 @@ textarea {
   box-shadow: var(--input-shadow);
   margin-left: 5px;
   margin-right: 5px;
+  width: 250px;
+  animation: fadeIn 1s;
 }
 
-input.invalid {
-  border-color: var(--danger);
+.invalid {
+  border: solid 1px var(--danger);
 }
 
 input:focus,
@@ -130,10 +132,13 @@ textarea:disabled {
   background-color: var(--bg-dark-2);
   color: var(--text);
   text-shadow: 0 0 3px var(--text);
+  transition: filter 1s;
+
 }
 
 .button:hover {
   filter: brightness(1.2);
+  transition: filter 1s;
 }
 
 .button.selected {
@@ -154,9 +159,11 @@ textarea:disabled {
 }
 
 .button.success {
-  background-color: var(--success);
+  background-color: var(--success-dark);
   border-color: var(--bg-dark-3);
-  color: var(--text);
+  /* color: var(--bg-dark-1); */
+  text-shadow: var(--dark-text-shadow);
+  font-weight: 600;
 }
 
 .game-code {
@@ -175,6 +182,6 @@ textarea:disabled {
 
 .error-label {
   padding: 5px;
-  color: var(--danger-light);
+  color: var(--danger);
 
 }

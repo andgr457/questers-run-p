@@ -45,14 +45,14 @@ export default function ContextMenuShell(props: Props) {
   }, [])
 
   const selectedBorderColor = 'var(--blue-sd-lighter-2)'
-  const requiresAttentionColor = 'var(--green-success-2)'
+  const requiresAttentionColor = 'var(--success)'
   
   const anyUnviewedNotifications = notifications.some(h => h.viewed === false)
   const anyCharactersIdle = characterRuntimeService.getCharacters().some(c => c.isIdle === true)
   const leftActions = useMemo<ContextMenuAction[]>(() => {
     if(!player) return []
     if(!characters || characters.length === 0) return []
-    if(overlayMode === 'transition') return []
+    if(overlayMode === 'transition' || overlayMode === 'intro') return []
 
     const actions: ContextMenuAction[] = []
     actions.push({
@@ -132,7 +132,7 @@ export default function ContextMenuShell(props: Props) {
   }, [overlayMode, setOverlayMode, player, characters])
 
   const rightActions = useMemo<ContextMenuAction[]>(() => {
-    if(overlayMode === 'transition') return []
+    if(overlayMode === 'transition' || overlayMode === 'intro') return []
 
     const actions: ContextMenuAction[] = []
     if(player && characters.length > 0){

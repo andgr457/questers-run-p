@@ -8,7 +8,7 @@
 
   padding: 0.65rem 0.75rem;
 
-  background: rgba(0,0,0,0.80);
+  background: transparent;
 
   border: 1px solid var(--bg-dark-3);
   font-size: 0.65rem;

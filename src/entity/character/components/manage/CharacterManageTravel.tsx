@@ -5,13 +5,13 @@ import LocationList from '../../../location/components/list/LocationList'
 import type { CharacterEntity } from '../../types/CharacterEntity.types'
 import type { CharacterManageMode } from './CharacterManage'
 import styles from './CharacterManage.module.css'
-import type { Location } from '../../../location/types/Location.types';
+import type { LocationEntity } from '../../../location/types/LocationEntity.types';
 import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial'
 
 interface Props {
-  travelToLocations: Location[]
+  travelToLocations: LocationEntity[]
   character: CharacterEntity
-  setViewLocation: (location: Location) => void
+  setViewLocation: (location: LocationEntity) => void
   setMode: (mode: CharacterManageMode) => void
 }
 

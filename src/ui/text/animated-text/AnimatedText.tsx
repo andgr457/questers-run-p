@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './AnimatedText.module.css'
 
 interface Props {
   text: string
+  textFancy?: React.ReactNode
   delay?: number
   onPrintingChange?: (printing: boolean) => void
 }
@@ -13,8 +14,11 @@ const END_DELAY = 1500
 export default function AnimatedText({
   text,
   delay = 500,
+  textFancy,
   onPrintingChange,
 }: Props) {
+  const [isComplete, setIsComplete] = useState(false)
+
   const characterCount = Math.max(
     1,
     text.replace(/\s/g, '').length,
@@ -27,6 +31,7 @@ export default function AnimatedText({
 
     const timer = setTimeout(() => {
       onPrintingChange?.(false)
+      setIsComplete(true)
     }, START_DELAY + delay + END_DELAY)
 
     return () => clearTimeout(timer)
@@ -35,8 +40,11 @@ export default function AnimatedText({
   let letterIndex = 0
 
   return (
-    <div className={styles.container}>
-      {text.split(' ').map((word, wordIndex) => (
+    <div className={styles.container} onClick={() => {setIsComplete(true)}}>
+      {isComplete && (<div className={styles.originalText}>
+        {textFancy ?? text}
+      </div>)}
+      {!isComplete && text.split(' ').map((word, wordIndex) => (
         <span key={wordIndex} className={styles.word}>
           {word.split('').map((letter, letterIdx) => {
             const currentIndex = letterIndex++

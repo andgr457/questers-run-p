@@ -1,5 +1,5 @@
 import { GAME_QUESTS_ORON_IDS } from '../../quest/data/Quest.Oron.data'
-import type { Location } from '../types/Location.types'
+import type { LocationEntity } from '../types/LocationEntity.types'
 
 export const GAME_LOCATION_IDS = {
   //Each char starts in the unnamed woods
@@ -18,7 +18,7 @@ const DISTANCES = {
   IN_TOWN: 500
 }
 
-export const GAME_LOCATIONS: Location[] = [
+export const GAME_LOCATIONS: LocationEntity[] = [
   {
     id: GAME_LOCATION_IDS.ORON_WOODS_1,
     name: 'Oron Woods',

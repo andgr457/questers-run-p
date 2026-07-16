@@ -15,9 +15,7 @@ export default function QuestListItem(props: Props) {
     actions,
   } = questWithActions
 
-  // Placeholder until requirements are parsed
-  const questLevel = 1
-
+  const levelRequirement = quest.requirements.start.find(r => r.level)
   return (
     <div className={styles.wrapper}>
 
@@ -25,9 +23,9 @@ export default function QuestListItem(props: Props) {
         {quest.title}
       </div>
 
-      <div className={styles.level}>
-        Lv. <span className={styles.levelValue}>{questLevel}</span>
-      </div>
+      {levelRequirement && <div className={styles.level}>
+        Lv. <span className={styles.levelValue}>{levelRequirement.level}</span>
+      </div>}
 
       <div className={styles.actions}>
         {actions.map(a => {

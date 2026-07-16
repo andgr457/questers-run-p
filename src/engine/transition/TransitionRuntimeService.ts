@@ -1,5 +1,5 @@
 import { GAME_LOCATIONS } from '../../entity/location/data/Location.data'
-import type { Location } from '../../entity/location/types/Location.types'
+import type { LocationEntity } from '../../entity/location/types/LocationEntity.types'
 import { TUTORIAL_IDS } from '../../game/tutorial/data/Tutorial.data'
 import type { Transition } from '../../ui/transition/types/Transition.types'
 import { characterRuntimeService } from '../character/CharacterRuntimeService'
@@ -9,7 +9,7 @@ import { partyRuntimeService } from '../party/PartyRuntimeService'
 class TransitionRuntimeService {
   private initialized = false
   private transition: Transition | undefined
-  private destination: Location | undefined
+  private destination: LocationEntity | undefined
 
   init() {
     if (this.initialized) {

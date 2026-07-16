@@ -17,9 +17,10 @@
   text-align: center;
   cursor: pointer;
   text-transform: uppercase;
-  border-radius: 3px;
-  margin-top: 5px;
+  border-radius: 5px;
+  padding: 5px;
   filter: brightness(1);
+  min-height: fit-content;
   transition: background-color .25s ease-in, filter .25s ease-in;
 }
 
@@ -27,16 +28,6 @@
   filter: brightness(1.2);
   background-color: var(--bg-dark-2);
   transition: background-color .25s ease-in, filter .25s ease-in;
-}
-
-.game-panel-section-title:after {
-  content: ' ▶'
-
-}
-
-.game-panel-section-title.show:after {
-  content: ' ▼';
-
 }
 
 .game-panel-section-children-wrapper {

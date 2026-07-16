@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Location } from '../../../../entity/location/types/Location.types'
+import type { LocationEntity } from '../../../../entity/location/types/LocationEntity.types'
 import GamePanel from '../../../../ui/panel/GamePanel'
 import GamePanelSection from '../../../../ui/panel/GamePanelSection'
 import AnimatedText from '../../../../ui/text/animated-text/AnimatedText'
@@ -10,7 +10,7 @@ import DialogOptions from '../../../../ui/dialog/DialogOptions'
 import type { QuestEntity } from '../../../../entity/quest/types/QuestEntity.types'
 
 interface Props {
-  currentLocation: Location
+  currentLocation: LocationEntity
   setMode: (mode: AdventurersGuildMode) => void
   activeQuest?: QuestEntity
 }
@@ -120,7 +120,6 @@ export default function AdventurersGuildClerk(props: Props){
     <GamePanel
       title={`${currentLocation.name}`}
       currentScreenName=''
-      showBackground={false}
     >
 
       <GamePanelSection actions={[]}>
@@ -147,9 +146,11 @@ export default function AdventurersGuildClerk(props: Props){
           </div>
 
 
-          <DialogOptions
-            options={options}
-          />
+          <div className={styles.options}>
+            <DialogOptions
+              options={options}
+            />
+          </div>
 
         </div>
 

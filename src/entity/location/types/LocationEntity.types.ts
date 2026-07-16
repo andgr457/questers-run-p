@@ -1,4 +1,4 @@
-export type LocationTypes = 'woods'
+export type LocationEntityTypes = 'woods'
   | 'plains'
   | 'mine'
   | 'city'
@@ -10,9 +10,10 @@ export type LocationTypes = 'woods'
   | 'alchemist'
   | 'shop'
 
-export interface Location {
+export interface LocationEntity {
   id: string
-  type: LocationTypes
+  settlementId?: string
+  type: LocationEntityTypes
   name: string
   travelMs: number
   description: string

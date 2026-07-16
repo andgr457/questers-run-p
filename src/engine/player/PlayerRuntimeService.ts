@@ -52,6 +52,10 @@ class PlayerRuntimeService {
     return this.player
   }
 
+  hasPlayer() {
+    return !!this.player
+  }
+
   getPlayerGoldTransactions() {
     return this.playerGoldTransactions
   }

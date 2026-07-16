@@ -1,8 +1,7 @@
-import { useCharacters } from '../../../../engine/character/hooks/useCharacters';
 import { useManagedCharacter } from '../../../../engine/character/hooks/useManagedCharacters';
 import { useCharacterQuests } from '../../../../engine/quest/hooks/useCharacterQuests';
 import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial';
-import type { Location } from '../../../../entity/location/types/Location.types';
+import type { LocationEntity } from '../../../../entity/location/types/LocationEntity.types';
 import QuestList, { type QuestWithActions } from '../../../../entity/quest/components/list/QuestList';
 import type { QuestEntity } from '../../../../entity/quest/types/QuestEntity.types';
 import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider';
@@ -12,7 +11,7 @@ import { ContextMenuIcon } from '../../../context-menu/data/ContextMenuIcon.data
 import type { AdventurersGuildMode } from '../AdventurersGuild';
 
 interface Props {
-  currentLocation: Location
+  currentLocation: LocationEntity
   guildQuests: QuestEntity[]
   setViewQuest: (quest: QuestEntity | undefined) => void
   setMode: (mode: AdventurersGuildMode) => void

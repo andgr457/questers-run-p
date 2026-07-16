@@ -18,8 +18,8 @@
   opacity: 0;
 
   transition:
-    transform 500ms cubic-bezier(.22, 1, .36, 1),
-    opacity 500ms ease;
+    transform 1500ms cubic-bezier(.22, 1, .36, 1),
+    opacity 1500ms ease;
 }
 
 .leftText {

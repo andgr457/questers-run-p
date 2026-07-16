@@ -10,6 +10,8 @@ export interface LeftRightTextProps {
   leftText: string
   rightText: string
   leftRightStyle: LeftRightStyle
+  text?: string
+  textFancy?: React.ReactNode
   delayBetween?: number
   onComplete?: () => void
 }
@@ -19,12 +21,15 @@ export default function LeftRightText(props: LeftRightTextProps) {
     leftText,
     rightText,
     leftRightStyle,
-    delayBetween = 500,
+    delayBetween = 1000,
     onComplete,
+    text,
+    textFancy,
   } = props
 
   const [canStartLeft, setCanStartLeft] = useState(false)
   const [canStartRight, setCanStartRight] = useState(false)
+  const [isComplete, setIsComplete] = useState(false)
 
   useEffect(() => {
     setCanStartLeft(false)
@@ -68,18 +73,17 @@ export default function LeftRightText(props: LeftRightTextProps) {
 
     const timer = setTimeout(() => {
       onComplete()
+      setIsComplete(true)
     }, total)
 
     return () => clearTimeout(timer)
   }, [delayBetween, leftRightStyle, onComplete])
-
-  if (!leftText && !rightText) {
-    return null
-  }
-
   return (
     <div className={styles.wrapper}>
-      <div className={styles.container}>
+      {isComplete && (<div className={styles.container}>
+        {textFancy ?? text}
+      </div>)}
+      {!isComplete && <div className={styles.container}>
         {leftText && (
           <div
             className={`${styles.leftText} ${
@@ -99,7 +103,7 @@ export default function LeftRightText(props: LeftRightTextProps) {
             {rightText}
           </div>
         )}
-      </div>
+      </div>}
     </div>
   )
 }

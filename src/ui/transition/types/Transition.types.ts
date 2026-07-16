@@ -4,7 +4,7 @@ export type TransitionTextType = 'animated'
   | 'left-right'
 
 export interface Transition {
-  title: string
+  title?: string
   sourceLocationId?: string
   destinationLocationId?: string
   delay?: number
@@ -14,6 +14,7 @@ export interface Transition {
   leftRightMeta?: LeftRightTextProps
   animatedMeta?: {
     text: string
-    delay: number
+    delay?: number
+    textFancy?: React.ReactNode
   }
 }

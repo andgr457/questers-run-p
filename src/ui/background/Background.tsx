@@ -1,3 +1,5 @@
+import { useManagedCharacter } from '../../engine/character/hooks/useManagedCharacters'
+import { GAME_LOCATIONS } from '../../entity/location/data/Location.data'
 import AnimatedText from '../text/animated-text/AnimatedText'
 import styles from './Background.module.css'
 
@@ -10,8 +12,13 @@ export default function Background({
   topText,
   bottomText
 }: Props) {
+  const {managedCharacter, location} = useManagedCharacter()
+
   return (
     <div className={styles.background}>
+      {managedCharacter && <div className={styles.character}>
+        {managedCharacter.name} - Lv. {managedCharacter.level} - {location?.name}
+      </div>}
       <div className={styles.line} />
 
       <div className={styles.text}>

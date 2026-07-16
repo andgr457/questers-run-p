@@ -2,7 +2,7 @@ import { useState } from 'react';
 import GamePanel from '../../../../ui/panel/GamePanel';
 import { GAME_LOCATIONS } from '../../../location/data/Location.data';
 import GamePanelSection from '../../../../ui/panel/GamePanelSection';
-import type { Location } from '../../../location/types/Location.types';
+import type { LocationEntity } from '../../../location/types/LocationEntity.types';
 import LocationDetail from '../../../location/components/detail/LocationDetail';
 import { useManagedCharacter } from '../../../../engine/character/hooks/useManagedCharacters';
 import styles from './CharacterManage.module.css'
@@ -17,7 +17,7 @@ export type CharacterManageMode = 'main'
 export default function CharacterManage() {
   const {managedCharacter} = useManagedCharacter()
   const [mode, setMode] = useState<CharacterManageMode>('main')
-  const [viewLocation, setViewLocation] = useState<Location | undefined>(undefined)
+  const [viewLocation, setViewLocation] = useState<LocationEntity | undefined>(undefined)
   const {tutorial} = useTutorial()
   const currentLocation = GAME_LOCATIONS.find(l => l.id === managedCharacter?.locationId)
 

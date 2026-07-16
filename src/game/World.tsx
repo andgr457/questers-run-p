@@ -12,9 +12,7 @@ import GamePanel from '../ui/panel/GamePanel'
 import DebugEventRecording from './settings/debug-event/components/event-recording/DebugEventRecording'
 import { useConfirm } from '../ui/modal/providers/ConfirmProvider'
 import { characterRuntimeService } from '../engine/character/CharacterRuntimeService'
-import NewPlayer from '../entity/player/components/new/NewPlayer'
 import PlayerDetail from '../entity/player/components/detail/PlayerDetail'
-import NewCharacter from '../entity/character/components/new/NewCharacter'
 import NotificationList from './notification/components/list/NotificationList'
 import Dashboard from './dashboard/components/Dashboard'
 import CharacterList from '../entity/character/components/list/CharacterList'
@@ -32,12 +30,6 @@ export default function World() {
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
-      if(event.type === 'player:save'){
-        const characters = characterRuntimeService.getCharacters()
-        if(!characters || characters.length === 0){
-          setOverlayMode('character_create')
-        }
-      }
       if(event.type === 'world:mode:change'){
         setOverlayMode(event.meta?.worldMode ?? 'world')
       }
@@ -54,29 +46,6 @@ export default function World() {
       }      
     })
     return unsub
-  }, [])
-
-  useEffect(() => {
-    return eventBus.subscribe(event => {
-      switch (event.type) {
-        case 'player:saved': {
-          // const characters =
-          //   characterRuntimeService.getCharacters()
-
-          // setOverlayMode(
-          //   characters.length === 0
-          //     ? 'character_create'
-          //     : 'world'
-          // )
-
-          break
-        }
-
-        case 'character:saved':
-          setOverlayMode('world')
-          break
-      }
-    })
   }, [])
 
   return (
@@ -115,12 +84,7 @@ export default function World() {
         {overlayMode === 'notifications' && (
           <NotificationList />
         )}
-        {overlayMode === 'player_create' && (
-          <NewPlayer />
-        )}
-        {overlayMode === 'character_create' && (
-          <NewCharacter />
-        )}
+
         {overlayMode === 'settings_debug_logs' && (
           <GamePanel
             title='Recorded Debug Events'

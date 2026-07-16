@@ -9,11 +9,10 @@
   --gold: rgb(207, 176, 0);
   --gold-opaque: rgba(207, 176, 0, 0.322);
 
-  --danger: #8b1e1e;
-  --danger-light: #f02828;
+  --danger: #f02828;
   
-  --success: #1e8119;
-  --green-success-2: #39eb2f;
+  --success: #31f426;
+  --success-dark: #14a30d;
   --danger-opaque: #8b1e1e34;
   --red: #580707;
   --orange-dark: rgb(171, 111, 0);
@@ -64,11 +63,11 @@
       transparent 60%
     ),
     radial-gradient(circle at 20% 20%,
-      var(--green-success-2),
+      var(--success),
       transparent 40%
     ),
     radial-gradient(circle at 80% 80%,
-      var(--green-success-2),
+      var(--success),
       transparent 40%
     ),
     linear-gradient(135deg, var(--blue-sd-light), var(--blue-sd-dark));
@@ -107,6 +106,12 @@
   ,0 0 2px gold
   ,0 0 1px gold
   ,0 0 1px gold;
+  --text-shadow-title: 
+  0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text)
+  ,0 0 1px var(--text);
 }
 
 html, body, #root {
@@ -170,7 +175,7 @@ html, body, #root {
   opacity: 0.75;
   pointer-events: none;
   content: '🛇';
-  color: var(--danger-light);
+  color: var(--danger);
 }
 
 @keyframes pulse {
