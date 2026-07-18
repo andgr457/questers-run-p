@@ -1,0 +1,33 @@
+.wrapper {
+  
+}
+
+
+.namePlate {
+  padding: 0.75rem;
+
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+
+.name {
+  font-size: 1.25rem;
+  font-weight: bold;
+
+  letter-spacing: 0.1rem;
+}
+
+
+.title {
+
+  font-size: 0.8rem;
+
+  opacity: 0.7;
+}
+
+
+.dialogBox {
+  text-align: center;
+  align-content: center;
+  min-height: 150px;
+}

@@ -1,0 +1,36 @@
+.wrapper {
+  width: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+
+  overflow: hidden;
+}
+
+.leftText,
+.rightText {
+  white-space: nowrap;
+  opacity: 0;
+
+  transition:
+    transform 1500ms cubic-bezier(.22, 1, .36, 1),
+    opacity 1500ms ease;
+}
+
+.leftText {
+  transform: translateX(-150%);
+}
+
+.rightText {
+  transform: translateX(125%);
+}
+
+.slide {
+  transform: translateX(0);
+  opacity: 1;
+}

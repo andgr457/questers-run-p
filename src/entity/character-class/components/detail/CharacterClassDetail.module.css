@@ -1,0 +1,83 @@
+.wrapper {
+  padding: 1rem;
+}
+
+.description {
+  font-size: 0.7rem;
+  text-align: center;
+  padding: 5px;
+}
+
+.fields {
+  display: flex;
+  grid-template-columns: auto;
+  justify-content: space-around;
+  
+}
+
+.field {
+  padding: 5px;
+  font-weight: 300;
+}
+
+.fieldTitle {
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 400;
+
+}
+
+.fieldValue {
+  text-align: center;
+}
+
+.stats {
+  display: flex;
+  grid-template-columns: auto;
+  justify-content: space-around;
+  
+}
+
+.stat {
+  padding: 5px;
+  font-weight: 300;
+
+}
+
+.statTitle {
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 500;
+
+}
+
+.statValue {
+  text-align: center;
+
+}
+
+
+.classRoles {
+  display: flex;
+  grid-template-columns: auto;
+  justify-content: space-around;
+  
+}
+
+.classRole {
+  padding: 5px;
+  font-weight: 300;
+
+}
+
+.classRoleTitle {
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 500;
+
+}
+
+.classRoleDescription {
+  text-align: center;
+
+}

@@ -1,0 +1,61 @@
+.game-panel-wrapper {
+  
+  height: 100%;
+  overflow-y: auto;
+  border-radius: 5px;
+
+}
+
+.game-panel-wrapper.show {
+  background-color: var(--bg-dark-1-opaque);
+}
+
+.game-panel {
+  opacity: 0;
+  transition: opacity .5s ease-out;
+  
+}
+
+.game-panel.show {
+  opacity: 1;
+  
+  transition: opacity .5s ease-in;
+}
+
+.game-panel-title {
+  position: sticky;
+  top: 0;
+  z-index: 99999;
+  padding: 5px;
+  background-color: var(--bg-dark-1);
+  border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  text-transform: uppercase;
+  filter: brightness(1);
+  cursor: pointer;
+  transition: background-color .25s ease-in, filter .25s ease-in;
+}
+
+.game-panel-title:hover {
+  filter: brightness(1.2);
+  background-color: var(--bg-dark-2);
+  transition: background-color .25s ease-in, filter .25s ease-in;
+}
+
+.game-panel-title-main {
+  letter-spacing: 3px;
+}
+
+.game-panel-title-current-screen {
+  font-size: 1em;
+  letter-spacing: 2px;
+}
+
+
+.game-panel-title-back-button button {
+  border-color: var(--gold);
+}
+

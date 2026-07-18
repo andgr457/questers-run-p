@@ -1,0 +1,41 @@
+.row {
+  display: flex;
+  align-items: center;
+
+
+  padding: 10px;
+
+  height: 70px;
+  box-sizing: border-box;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  letter-spacing: 2px;
+  justify-content: space-between;
+}
+
+.title {
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+.description {
+  font-size: 0.9em;
+  font-weight: 200;
+  opacity: .8;
+  text-align: left;
+}
+
+.action {
+  color: var(--text);
+  background-color: var(--bg-dark-4);
+  border: unset;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
