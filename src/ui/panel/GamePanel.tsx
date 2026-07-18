@@ -18,12 +18,12 @@ export default function GamePanel(props: Props) {
     showBackground = true
   } = props
 
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState<'' | 'in' | 'show' | 'out'>('')
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setShow(true)
-    }, 250)
+      setShow('in')
+    }, 50)
     return () => clearTimeout(timeout)
   }, [])
 
@@ -33,14 +33,15 @@ export default function GamePanel(props: Props) {
       if(event.type !== 'world:mode:changing') return
       if(event.meta?.worldModePrevious && event.meta?.worldMode){
         if(event.meta.worldModePrevious !== event.meta.worldMode){
-          setShow(false)
+          setShow('out')
         }
       }
     })
 
     return unsub
   }, [])
-  return <div className={`${styles.wrapper} ${show === true ? styles.show : ''} ${showBackground === true ? styles.showBackground : ''}`}>
+  return <div className={
+    `${styles.wrapper} ${show === 'in' ? styles.in : show === 'out' ? styles.out : ''} ${showBackground === true ? styles.showBackground : ''}`}>
    {title && <div className='game-panel-title'>
       <div className='game-panel-title-main'>
         {title}
@@ -50,7 +51,7 @@ export default function GamePanel(props: Props) {
       </div>}
     </div>}
 
-    <div className={`game-panel-children ${show === true ? 'show' : ''}`}>
+    <div className={`game-panel-children `}>
       {children}
     </div>
 
