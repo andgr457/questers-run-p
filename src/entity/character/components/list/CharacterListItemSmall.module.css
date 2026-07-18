@@ -1,0 +1,71 @@
+.wrapper {
+  display: flex;
+  grid-template-columns: auto auto auto auto auto;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.name {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  letter-spacing: 2px;
+}
+
+.level {
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
+.infoRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 0.82rem;
+  opacity: 0.9;
+}
+
+.gold {
+  justify-self: end;
+}
+
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 6px;
+
+  background: var(--bg-dark-4);
+
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+.action:hover {
+  transform: rotate(90deg);
+}
+
+.rotate {
+  transition: transform 0.3s ease;
+}
+
+.rewardAmount {
+  opacity: .6;
+  text-align: right;
+}
+
+.rewardAmount.success {
+  color: var(--success);
+}

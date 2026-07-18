@@ -1,0 +1,35 @@
+.text {
+  color: var(--text);
+}
+
+.transition {
+  animation: transitionColor 2s ease forwards;
+}
+
+.pulse {
+  animation: pulseColor 2s ease-in-out infinite;
+}
+
+@keyframes transitionColor {
+  from {
+    color: var(--text);
+  }
+
+  to {
+    color: var(--target-color);
+  }
+}
+
+@keyframes pulseColor {
+  0% {
+    color: var(--text);
+  }
+
+  50% {
+    color: var(--target-color);
+  }
+
+  100% {
+    color: var(--text);
+  }
+}

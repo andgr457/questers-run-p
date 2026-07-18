@@ -1,0 +1,91 @@
+.game-panel-section {
+  transition: opacity .5s ease-out;
+  font-size: 14px;
+
+  opacity: 0;
+
+}
+
+.game-panel-section.show {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.game-panel-section-title {
+  font-size: 1.2em;
+  letter-spacing: 2px;
+  text-align: center;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-radius: 5px;
+  padding: 5px;
+  filter: brightness(1);
+  min-height: fit-content;
+  transition: background-color .25s ease-in, filter .25s ease-in;
+}
+
+.game-panel-section-title:hover {
+  filter: brightness(1.2);
+  background-color: var(--bg-dark-2);
+  transition: background-color .25s ease-in, filter .25s ease-in;
+}
+
+.game-panel-section-children-wrapper {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+   transition:
+    max-height 0.3s ease-out,
+    opacity 0.5s ease-out;
+}
+
+.game-panel-section-children-wrapper.show {
+  opacity: 1;
+  max-height: fit-content;
+  pointer-events: all;
+  transition:
+    max-height 0.3s ease-in,
+    opacity 0.5s ease-in;
+}
+
+.game-panel-section-description {
+  text-align: center;
+  opacity: .8;
+  letter-spacing: 1px;
+  padding: 5px;
+}
+
+.game-panel-section-children {
+  letter-spacing: 1px;
+  
+}
+
+.game-panel-section-actions {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.game-panel-section-action {
+  min-width: 100px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  
+}
+
+.game-panel-section-action button {
+  width: 100%;
+}
+
+.game-panel-section-back {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.game-panel-section-back button {
+  width: 100%;
+}

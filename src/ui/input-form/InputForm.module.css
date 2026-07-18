@@ -1,0 +1,57 @@
+.wrapper {
+  position: absolute;
+  inset: 0;
+
+  overflow-y: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  background: var(--bg-dark-1);
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+
+  padding: 40px 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  opacity: 0;
+  transition: opacity 500ms ease-in 500ms;
+}
+
+.show {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.title {
+  font-size: 1.2em;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.content {
+  font-size: 0.8em;
+  opacity: .8;
+  padding: 5px;
+  text-align: center;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

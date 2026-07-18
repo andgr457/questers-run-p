@@ -1,0 +1,17 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 10px;
+  font-size: 14px;
+}
+
+.completeCount {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 300;
+  opacity: 0.7;
+}

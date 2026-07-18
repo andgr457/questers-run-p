@@ -1,0 +1,30 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.option {
+  width: 100%;
+
+  padding: 0.65rem 0.75rem;
+
+  background: transparent;
+
+  border: 1px solid var(--bg-dark-3);
+  font-size: 0.65rem;
+  cursor: pointer;
+  letter-spacing: 2px;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--text);
+  transition: background 0.25s ease-in-out;
+}
+
+.option:hover {
+  background: var(--bg-dark-3);
+}
+
+.option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

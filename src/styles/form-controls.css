@@ -1,0 +1,194 @@
+/* =========================
+   BASE INPUT SYSTEM
+   ========================= */
+
+:root {
+  --input-radius: 8px;
+  --input-padding: 8px 10px;
+  --input-border: 1px solid rgba(255, 255, 255, 0.08);
+  --input-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --input-focus: 0 0 0 1px var(--text);
+}
+
+/* Shared input base */
+input,
+select,
+textarea {
+  font: inherit;
+  color: var(--input-text);
+  background-color: var(--bg-dark-3);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  padding: var(--input-padding);
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--input-shadow);
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 250px;
+  animation: fadeIn 1s;
+}
+
+.invalid {
+  border: solid 1px var(--danger);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: var(--input-focus);
+  border-color: rgba(80, 140, 255, 0.6);
+}
+
+input[type='text'],
+input[type='search'],
+input[type='email'],
+input[type='password'] {
+  font-size: 0.9em;
+  letter-spacing: 0.5px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75em;
+}
+
+input[type='number'] {
+  font-size: 0.9em;
+  text-align: left;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text) 50%),
+    linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+
+  padding-right: 32px;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+}
+
+/* Hover effect for select */
+select:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.form-label {
+  color: var(--text);
+  letter-spacing: 1px;
+  display: inline-block;
+  opacity: 0.9;
+  margin-left: 5px;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.button {
+  all: unset;
+  text-align: center;
+  padding: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  border: solid var(--bg-dark-3) 2px;
+  background-color: var(--bg-dark-2);
+  color: var(--text);
+  text-shadow: 0 0 3px var(--text);
+  transition: filter 1s;
+
+}
+
+.button:hover {
+  filter: brightness(1.2);
+  transition: filter 1s;
+}
+
+.button.selected {
+  border-color: var(--blue-sd-lighter-2);
+  color: var(--text);
+}
+
+.button.gold {
+  background-color: var(--bg-dark-2);
+  border-color: var(--gold);
+  color: var(--text);
+}
+
+.button.danger {
+  background-color: var(--danger);
+  border-color: var(--bg-dark-3);
+  color: var(--text);
+}
+
+.button.success {
+  background-color: var(--success-dark);
+  border-color: var(--bg-dark-3);
+  /* color: var(--bg-dark-1); */
+  text-shadow: var(--dark-text-shadow);
+  font-weight: 600;
+}
+
+.button.success-alt {
+  border-color: var(--success-dark);
+  text-shadow: var(--dark-text-shadow);
+  color: var(--success);
+  font-weight: 600;
+}
+
+.game-code {
+  font-size: 0.75em;
+  font-weight: 500;
+  letter-spacing: 1px;
+  background-color: var(--text);
+  color: var(--bg-dark-1);
+  padding: 3px;
+  border-radius: 3px;
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-top: 10px;
+  min-width: fit-content;
+}
+
+.error-label {
+  padding: 5px;
+  color: var(--danger);
+
+}

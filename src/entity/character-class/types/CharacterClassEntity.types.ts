@@ -1,0 +1,17 @@
+import type { PartyRole } from '../../party/types/PartyRole.types'
+
+export interface CharacterClassEntity {
+  id: CharacterClassId
+  name: string
+  description: string
+  strength: number
+  intellect: number
+  agility: number
+  roles: PartyRole[]
+}
+
+export type CharacterClassId = 'cc_warrior'
+  | 'cc_hunter'
+  | 'cc_rogue'
+  | 'cc_mage'
+  | 'cc_priest'
