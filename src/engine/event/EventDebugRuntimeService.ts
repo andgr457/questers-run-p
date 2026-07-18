@@ -6,10 +6,10 @@ import { GAME_EVENT_BUS_DEBUG_RECORDING_TYPES } from './utils/EventBus.utils'
 class EventDebugRuntimeService {
   private initialized = false
   private history: EventBusLog[] = []
-  private isRecording = true
+  private isRecording = false
   private lastStartDate: number | undefined
   private lastEndDate: number | undefined
-  private isDebugMode = true
+  private isDebugMode = false
 
   init() {
     if (this.initialized) {

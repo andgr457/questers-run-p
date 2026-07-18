@@ -52,7 +52,7 @@ export default function ContextMenuShell(props: Props) {
   const leftActions = useMemo<ContextMenuAction[]>(() => {
     if(!player) return []
     if(!characters || characters.length === 0) return []
-    if(overlayMode === 'transition') return []
+    if(overlayMode === 'transition' || overlayMode === 'intro' ) return []
 
     const actions: ContextMenuAction[] = []
     actions.push({
@@ -167,7 +167,7 @@ export default function ContextMenuShell(props: Props) {
   }, [overlayMode, setOverlayMode, player, characters])
 
   const rightActions = useMemo<ContextMenuAction[]>(() => {
-    if(overlayMode === 'transition' ) return []
+    if(overlayMode === 'transition' || overlayMode === 'intro' ) return []
 
     const actions: ContextMenuAction[] = []
     if(player && characters.length > 0){
@@ -266,49 +266,49 @@ export default function ContextMenuShell(props: Props) {
           })
         },
       })
+      if(recordingDetail.isDebugMode){
+        actions.push({
+          id: 'debug-event-recording',
+          label: 'Debug Event Recording',
+          iconName: recordingDetail.isRecording ? 'stop' : 'start',
+          iconRotate: false,
+          borderColor: recordingDetail.isRecording ? 'var(--danger)' : '',
+          color: recordingDetail.isRecording ? 'var(--danger)' : 'var(--success)',
+          onClick: () => {
+            if(recordingDetail.isRecording){
+              eventBus.emit({
+                id: crypto.randomUUID(),
+                type: 'event:debug:recording:stop'
+              })
+            } else {
+              eventBus.emit({
+                id: crypto.randomUUID(),
+                type: 'event:debug:recording:start'
+              })
+            }
+          },
+        },
+        {
+          id: 'debug-event-recording-logs',
+          label: 'Debug Event Recording Logs',
+          iconName: 'recordLogs',
+          iconRotate: false,
+          color: overlayMode === 'settings_debug_logs' ? selectedBorderColor : '',
+          borderColor: overlayMode === 'settings_debug_logs' ? selectedBorderColor : '',
+          onClick: () => {
+            if(overlayMode === 'settings_debug_logs') return
+            eventBus.emit({
+              id: crypto.randomUUID(),
+              type: 'world:mode:change',
+              meta: {
+                worldMode: 'settings_debug_logs'
+              }
+            })
+          },
+        })
+      }
     }
     
-    if(recordingDetail.isDebugMode){
-      actions.push({
-        id: 'debug-event-recording',
-        label: 'Debug Event Recording',
-        iconName: recordingDetail.isRecording ? 'stop' : 'start',
-        iconRotate: false,
-        borderColor: recordingDetail.isRecording ? 'var(--danger)' : '',
-        color: recordingDetail.isRecording ? 'var(--danger)' : 'var(--success)',
-        onClick: () => {
-          if(recordingDetail.isRecording){
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: 'event:debug:recording:stop'
-            })
-          } else {
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: 'event:debug:recording:start'
-            })
-          }
-        },
-      },
-      {
-        id: 'debug-event-recording-logs',
-        label: 'Debug Event Recording Logs',
-        iconName: 'recordLogs',
-        iconRotate: false,
-        color: overlayMode === 'settings_debug_logs' ? selectedBorderColor : '',
-        borderColor: overlayMode === 'settings_debug_logs' ? selectedBorderColor : '',
-        onClick: () => {
-          if(overlayMode === 'settings_debug_logs') return
-          eventBus.emit({
-            id: crypto.randomUUID(),
-            type: 'world:mode:change',
-            meta: {
-              worldMode: 'settings_debug_logs'
-            }
-          })
-        },
-      })
-    }
 
     return actions
   }, [
