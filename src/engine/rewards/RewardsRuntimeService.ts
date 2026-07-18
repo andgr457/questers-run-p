@@ -1,6 +1,5 @@
 import { eventBus } from '../event/EventBus'
 import { clockRuntimeService } from '../clock/ClockRuntimeService'
-import { characterRuntimeService } from '../character/CharacterRuntimeService'
 import type { GameEvent } from '../event/types/EventBus.types'
 import type { TutorialReward } from '../../game/tutorial/types/Tutorial.types'
 
@@ -47,7 +46,7 @@ class RewardsRuntimeService {
   }
 
   private applyTutorialReward(reward: TutorialReward, event: GameEvent) {
-    console.log('applying reward', reward)
+    console.log('applying reward', reward, JSON.stringify(event.meta))
     const now = clockRuntimeService.getNow()
 
     switch (reward.type) {
@@ -120,40 +119,6 @@ class RewardsRuntimeService {
               xp: reward.xp,
             },
           })
-        }
-
-        break
-      }
-
-      case 'characters': {
-        const characters = characterRuntimeService.getCharacters()
-
-        for (const character of characters) {
-          if (reward.gold) {
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: 'character:gold',
-              meta: {
-                characterGoldTransaction: {
-                  id: crypto.randomUUID(),
-                  characterId: character.id,
-                  amount: reward.gold,
-                  date: now,
-                },
-              },
-            })
-          }
-
-          if (reward.xp) {
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: 'character:xp',
-              meta: {
-                characterId: character.id,
-                xp: reward.xp,
-              },
-            })
-          }
         }
 
         break

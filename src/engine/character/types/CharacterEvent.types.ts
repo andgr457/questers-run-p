@@ -60,6 +60,7 @@ interface GameEvent_CharacterLevel extends GameEvent {
   type: 'character:level'
   meta: {
     characterId: string
+    level: number
   }
 }
 

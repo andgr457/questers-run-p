@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type RefObject } from 'react'
 import styles from './GamePanel.module.css'
 import { eventBus } from '../../engine/event/EventBus'
 
@@ -6,6 +6,7 @@ interface Props {
   title: string
   currentScreenName: string
   showBackground?: boolean
+  scrollTopRef?: RefObject<HTMLDivElement | null>
   children: React.ReactNode
 }
 

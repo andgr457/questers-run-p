@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { playerRuntimeService } from '../engine/player/PlayerRuntimeService'
 import { eventBus } from '../engine/event/EventBus'
 
 import ContextMenuShell from './context-menu/components/ContextMenuShell'
@@ -10,7 +9,6 @@ import type { OverlayMode } from './context-menu/types/OverlayMode.types'
 import SettingsPanel from './settings/SettingsPanel'
 import GamePanel from '../ui/panel/GamePanel'
 import DebugEventRecording from './settings/debug-event/components/event-recording/DebugEventRecording'
-import { useConfirm } from '../ui/modal/providers/ConfirmProvider'
 import { characterRuntimeService } from '../engine/character/CharacterRuntimeService'
 import NotificationList from './notification/components/list/NotificationList'
 import Dashboard from './dashboard/components/Dashboard'
@@ -25,8 +23,6 @@ import PlayerManage from '../entity/player/components/manage/PlayerManage'
 
 export default function World() {
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('intro')
-  
-  const {showConfirm} = useConfirm()
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
@@ -43,17 +39,7 @@ export default function World() {
           setOverlayMode(event.meta?.worldMode ?? 'world')
         }, 250)
       }
-      if(event.type === 'player:level'){
-        const player = playerRuntimeService.getPlayer()
-        const fn = async () => {
-          await showConfirm({
-            title: 'Player Level Up!',
-            message: `Congratulations! You are now level ${player?.level}!`,
-            isYesNo: false,
-          })
-        }
-        fn()
-      }      
+         
     })
     return unsub
   }, [])

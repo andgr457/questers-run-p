@@ -5,7 +5,6 @@ import DebugEventListActionItem from './DebugEventListActionItem'
 import DebugEventRecording from '../event-recording/DebugEventRecording'
 import GamePanelSection from '../../../../../ui/panel/GamePanelSection'
 import type { SettingsMode } from '../../../types/SettingsPanel.types'
-import DebugPlayerEntityEvents from '../entity-events/DebugPlayerEntityEvents'
 
 interface Props {
   setSettingsMode: (mode: SettingsMode) => void
@@ -27,16 +26,6 @@ export default function DebugEventList(props: Props) {
           description: <>While recording has started, all game events will be tracked here until you leave, or refresh the site.</>,
           mode: 'global_event_recording'
         },
-        {
-          title: 'player events',
-          description: <>View various player related events and trigger them for debugging.</>,
-          mode: 'player_events'
-        },
-        {
-          title: 'character events',
-          description: <>View various character related events and trigger them for debugging.</>,
-          mode: 'character_events'
-        }
       ]
     }
   ]
@@ -71,18 +60,6 @@ export default function DebugEventList(props: Props) {
             <DebugEventRecording 
               setMode={setMode}
             />
-          </>
-        )}
-        {mode === 'player_events' && (
-          <>
-            <DebugPlayerEntityEvents 
-              setMode={setMode}
-            />
-          </>
-        )}
-        {mode === 'character_events' && (
-          <>
-            
           </>
         )}
       </GamePanelSection>

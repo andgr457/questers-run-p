@@ -76,3 +76,12 @@
 .collected {
   color: var(--success);
 }
+
+
+.completedDate {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  opacity: .7;
+  padding: 5px;
+}

@@ -52,9 +52,9 @@ export default function GamePanelSection<T>(props: Props<T>){
     </div>}
     
       <div className='game-panel-section-actions'>
-        {actions.map(action => {
+        {actions.map((action, idx) => {
 
-          return <div className='game-panel-section-action'>
+          return <div key={`action-div-${idx}`} className='game-panel-section-action'>
             <button
               onClick={() => {action.fn()}}
               className={action.className ?? 'button'}

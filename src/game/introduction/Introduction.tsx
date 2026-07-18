@@ -92,7 +92,7 @@ export default function Introduction(props: Props){
       <NewCharacterTransition03
         characterName={newCharacter.name}
         onComplete={() => {
-          setOverlayMode('tutorial')
+          setOverlayMode('character_manage')
         }}
       />
     )}

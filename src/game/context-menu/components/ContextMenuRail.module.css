@@ -3,23 +3,36 @@
   z-index: 1000;
 
   display: flex;
+  flex-direction: column;
   gap: 10px;
 
   pointer-events: none;
+
+  opacity: 0;
+
+  transition:
+    transform 1500ms cubic-bezier(.22, 1, .36, 1)  ,
+    opacity 1500ms ease;
 }
 
 .left {
   top: 10px;
   left: 10px;
 
-  flex-direction: column;
+  transform: translateX(-150%);
+  
 }
 
 .right {
   top: 10px;
   right: 10px;
 
-  flex-direction: column;
+  transform: translateX(150%);
+}
+
+.show {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .contextButton {
@@ -35,19 +48,19 @@
   cursor: pointer;
 
   pointer-events: all;
+
   filter: brightness(1);
-  transition: filter 0.25s ease-in;
+
+  transition: filter 250ms ease-in;
 }
 
 .contextButton:hover {
   filter: brightness(1.2);
-  transition: filter 0.25s ease-in;
 }
 
 .contextButton:hover .icon {
   transform: rotate(90deg);
 }
-
 
 .icon {
   display: inline-flex;
@@ -67,8 +80,6 @@
 
   font-size: 20px;
   margin-bottom: 3px;
-
-  transition: transform 1s ease;
 }
 
 @media (max-width: 768px) {

@@ -24,9 +24,10 @@ export default function LocationListItem(props: Props) {
       </div>
       
       <div className={styles.actions}>
-        {actions.map(a => {
+        {actions.map((a, idx) => {
           
           return <div 
+            key={`location-action-${idx}`}
             title={a.title}
             className={`${styles.action} ${a.isTutorial ? 'tutorial-hint pulse-tutorial' : ''}`}
             onClick={() => {

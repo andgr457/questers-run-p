@@ -8,6 +8,9 @@ import GamePanelSection from '../../../ui/panel/GamePanelSection';
 import type { QuestEntity } from '../../../entity/quest/types/QuestEntity.types';
 import AdventurersGuildClerk from './clerk/AdventurersGuildClerk';
 import AdventurersGuildQuestBoard from './quest-board/AdventurersGuildQuestBoard';
+import styles from './AdventurersGuild.module.css'
+import { characterRuntimeService } from '../../../engine/character/CharacterRuntimeService';
+import { eventBus } from '../../../engine/event/EventBus';
 
 export type AdventurersGuildMode = 'main'
   | 'quest_board'
@@ -20,10 +23,38 @@ export default function AdventurersGuild(){
   const {managedCharacter} = useManagedCharacter()
   const {characterQuests} = useCharacterQuests()
   const currentLocation = GAME_LOCATIONS.find(l => l.id === managedCharacter?.locationId)
-  const guildQuests = GAME_QUESTS.filter(q => currentLocation?.questIds.includes(q.id))
+  const guildQuests = GAME_QUESTS.filter(q => currentLocation?.questIds?.includes(q.id))
   
-  if(!currentLocation || !managedCharacter){
-    return null
+  if(currentLocation?.type !== 'adv_guild' || !managedCharacter){
+    return <GamePanel
+      title={currentLocation?.name ?? ''}
+      currentScreenName=''
+    >
+      <GamePanelSection
+        actions={[
+          {
+            name: 'Character Manager',
+            fn: () => {
+              eventBus.emit({
+                id: crypto.randomUUID(),
+                type: 'world:mode:change',
+                meta: {
+                  worldMode: 'character_manage',
+                  worldModePrevious: 'adv_guild'
+                }
+              })
+            }
+          }
+        ]}
+        actionsLocation='top'
+      >
+        <div className={styles.wrapper}>
+          <div className={styles.title}>
+            {characterRuntimeService.getManagingCharacter()?.name} is not currently at an Adventurer's Guild...
+          </div>
+        </div>
+      </GamePanelSection>
+    </GamePanel>
   }
 
   return <>

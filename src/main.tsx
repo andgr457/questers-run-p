@@ -3,7 +3,6 @@ import App from './App.tsx'
 
 import React from 'react'
 import { clockRuntimeService } from './engine/clock/ClockRuntimeService.ts'
-import { activityRuntimeService } from './engine/activity/ActivityRuntimeService.ts'
 import { characterRuntimeService } from './engine/character/CharacterRuntimeService.ts'
 import { playerRuntimeService } from './engine/player/PlayerRuntimeService.ts'
 import { eventDebugRuntimeService } from './engine/event/EventDebugRuntimeService.ts'
@@ -16,7 +15,6 @@ import { questRuntimeService } from './engine/quest/QuestRuntimeService.ts'
 clockRuntimeService.start()
 eventDebugRuntimeService.init()
 transitionRuntimeService.init()
-activityRuntimeService.init()
 rewardsRuntimeService.init()
 playerRuntimeService.init()
 characterRuntimeService.init()

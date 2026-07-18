@@ -37,6 +37,10 @@ export function getIntroductionNewPlayer01Transition(
     continueText: 'Next',
     onComplete: () => {
       setMode('t_no_player_2')
+    },
+    skippable: true,
+    onSkip: () => {
+      setMode('new_player_form')
     }
   }
 }

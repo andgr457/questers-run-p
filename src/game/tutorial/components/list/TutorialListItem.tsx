@@ -21,8 +21,8 @@ export default function TutorialListItem(props: Props){
 
   const isCompleted = progress?.completed === true
   const isCollected = progress?.collected === true
-  
-  return <div className={styles.wrapper}>
+  const isCurrent = typeof progress != 'undefined'
+  return <div className={`${styles.wrapper} ${isCurrent ? styles.gold : ''}`}>
     <div>
       {index+1}.
     </div>
@@ -45,9 +45,14 @@ export default function TutorialListItem(props: Props){
           Collect
         </button>}
       </div>}
-      <div className={styles.action} onClick={() => {onDetail(tutorial)}}>
+      <div 
+        title='View Tutorial Details'
+        className={styles.action} 
+        onClick={() => {onDetail(tutorial)}}
+      >
         {ContextMenuIcon.eye}
       </div>
+
     </div>
   </div>
 }

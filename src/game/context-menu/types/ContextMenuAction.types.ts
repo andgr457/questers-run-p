@@ -1,3 +1,4 @@
+import type { RefObject } from 'react'
 import type { ContextMenuIconName } from './ContextMenuIcon.types'
 
 export interface ContextMenuAction {
@@ -9,4 +10,5 @@ export interface ContextMenuAction {
   color?: string
   borderColor?: string
   pulse?: boolean
+  ref?: RefObject<HTMLDivElement | null>
 }

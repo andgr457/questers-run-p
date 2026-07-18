@@ -5,12 +5,15 @@ import AnimatedText from '../text/animated-text/AnimatedText'
 import { eventBus } from '../../engine/event/EventBus'
 import LeftRightText from '../text/left-right-text/LeftRightText'
 import TextWithColor from '../text/text-color/TextWithColor'
+import { ContextMenuIcon } from '../../game/context-menu/data/ContextMenuIcon.data'
 
 export interface TransitionDetailInteractiveProps {
   transition: Transition
   className?: string
   continueText?: string
+  skippable?: boolean
   onComplete?: () => void
+  onSkip?: () => void
 }
 
 export default function TransitionDetailInteractive(props: TransitionDetailInteractiveProps) {
@@ -18,7 +21,9 @@ export default function TransitionDetailInteractive(props: TransitionDetailInter
     transition, 
     onComplete,
     continueText = '',
-    className = ''
+    className = '',
+    skippable = false,
+    onSkip,
   } = props
 
   const leftRightMeta = transition.leftRightMeta
@@ -89,7 +94,7 @@ export default function TransitionDetailInteractive(props: TransitionDetailInter
             }}
           />
         </div>}
-        {continueText && (<div className={styles.continueWrapper}>
+        <div className={styles.continueWrapper}>
           <div 
             className={`${styles.continue} ${canComplete === true ? styles.show : ''}`}
             onClick={() => {
@@ -111,7 +116,31 @@ export default function TransitionDetailInteractive(props: TransitionDetailInter
           >
             <TextWithColor  text={continueText} pulse />
           </div>
-        </div>)}
+          {skippable && (
+            <div 
+              className={`${styles.continue} ${canComplete === true ? styles.show : ''}`}
+              title='Skip'
+              onClick={() => {
+                setVisible(false)
+                setTimeout(() => {
+                  onSkip?.()
+                  if(transition){
+                    eventBus.emit({
+                      id: crypto.randomUUID(),
+                      type: 'transition:stop',
+                      meta: {
+                        transition,
+                      }
+                    })
+                    // setVisible(true)
+                  }
+                }, 1500)
+              }}
+            >
+              {ContextMenuIcon.fast_forward}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

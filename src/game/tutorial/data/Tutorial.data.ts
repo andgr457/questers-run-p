@@ -1,3 +1,4 @@
+import { ContextMenuIcon } from '../../context-menu/data/ContextMenuIcon.data'
 import type { Tutorial } from '../types/Tutorial.types'
 import { getBaseTutorialRewards } from '../utils/Tutorial.utils'
 
@@ -22,22 +23,36 @@ export const GAME_TUTORIALS: Tutorial[] = [
   {
     id: TUTORIAL_IDS.TRAVEL_TO_TOWN,
     title: 'Travel to Town',
-    description: 'The road ahead leads toward the nearby town of Oron. Travel there using Character actions.',
+    description: 'The road from the wood ahead leads toward the nearby town of Oron. Travel there using Character actions.',
     hints: [
       {
         title: 'Characters List',
-        description: 'Click the "c" circle on the left to access your character list.',
-        uiPath: 'characters'
+        description: `Click the "${ContextMenuIcon.characters}" circle on the left to access your character list.`,
+        uiPath: 'characters',
+        quickOverlayMode: 'characters',
+        quickOverlayModeDescription: 'to Character List',
+        alternate: {
+          description: `Click the "${ContextMenuIcon.character_manage}", to view the character manager and bypass the character list and "${ContextMenuIcon.settings}" click steps.`,
+          quickOverlayMode: 'character_manage',
+          quickOverlayModeDescription: 'to Character Manager'
+        }
       },
       {
         title: 'Manage Character',
-        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage.',
-        uiPath: 'characters:manage'
+        description: `Click the "${ContextMenuIcon.settings}" on the right of the character you wish to manage.`,
+        uiPath: 'characters:manage',
+        quickOverlayMode: 'character_manage',
+        quickOverlayModeDescription: 'to Character Manager',
+        alternate: {
+          description: `Click the "${ContextMenuIcon.character_manage}", to view the character manager and bypass the character list and "${ContextMenuIcon.settings}" click steps.`,
+          quickOverlayMode: 'character_manage',
+          quickOverlayModeDescription: 'to Character Manager',
+        }
       },
       {
         title: 'Travel Actions',
-        description: 'Click "Travel" on the "Town of Oron" travel action.',
-        uiPath: 'characters:manage:travel:town'
+        description: `Click "${ContextMenuIcon.start}" on the "Town of Oron" travel action.`,
+        uiPath: 'characters:manage:travel:town',
       },
     ],
     rewards: [
@@ -54,22 +69,38 @@ export const GAME_TUTORIALS: Tutorial[] = [
     hints: [
       {
         title: 'Current Location',
-        description: 'Character Manager at the "Town of Oron".',
+        description: 'Managed character is at the "Town of Oron".',
+        quickOverlayMode: 'character_manage',
+        quickOverlayModeDescription: 'to Character Manage',
       },
       {
         title: 'Characters List',
-        description: 'Click the "c" circle on the left to access your character list. Alternatively, "cm" brings you directly to the last managed character.',
-        uiPath: 'characters'
+        description: `Click the "${ContextMenuIcon.characters}" circle on the left to access your character list.`,
+        uiPath: 'characters',
+        quickOverlayMode: 'characters',
+        quickOverlayModeDescription: 'to Character List',
+        alternate: {
+          description: `Click the "${ContextMenuIcon.character_manage}", to view the character manager and bypass the character list and "${ContextMenuIcon.settings}" click steps.`,
+          quickOverlayMode: 'character_manage',
+          quickOverlayModeDescription: 'to Character Manager',
+        }
       },
       {
         title: 'Manage Character',
-        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage.',
-        uiPath: 'characters:manage'
+        description: `Click the "${ContextMenuIcon.settings}" on the right of the character you wish to manage.`,
+        uiPath: 'characters:manage',
+        quickOverlayMode: 'character_manage',
+        quickOverlayModeDescription: 'to Character Manager',
+        alternate: {
+          description: `Click the "${ContextMenuIcon.character_manage}", to view the character manager and bypass the character list and "${ContextMenuIcon.settings}" click steps.`,
+          quickOverlayMode: 'character_manage',
+          quickOverlayModeDescription: 'to Character Manager',
+        }
       },
       {
         title: 'Travel Actions',
-        description: "Click \"Travel\" on the \"Oron Adventurer's Guild\" travel action.",
-        uiPath: 'characters:manage:travel:adv_guild'
+        description: `Click "${ContextMenuIcon.start}" on the "Oron Adventurer's Guild" travel action.`,
+        uiPath: 'characters:manage:travel:adv_guild',
       },
     ],
     rewards: [
@@ -81,7 +112,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
 
   {
     id: TUTORIAL_IDS.ACCEPT_FIRST_QUEST,
-    title: 'Quest Accepted',
+    title: 'Run a Quest',
     description: "Take your first quest at the Adventurer's Guild.",
     hints: [
       {
@@ -89,18 +120,20 @@ export const GAME_TUTORIALS: Tutorial[] = [
         description: 'While at the "Oron Adventurer\'s Guild" in the character manager...',
       },
       {
-        title: 'Manage Character',
-        description: 'Click the cog wheel "⚙" on the right of the character you wish to manage. Alternatively, "✦" to the right brings you there when you have a character that you are managing.',
-        uiPath: 'characters:manage'
-      },
-      {
         title: 'Enter the Guild',
         description: 'Click the action to "Enter the Oron Adventuer\'s Guild" to bring up the guild window.',
         uiPath: 'characters:manage:action:adv_guild',
+        quickOverlayMode: 'character_manage',
+        alternate: {
+          description: `Click the "${ContextMenuIcon.adv_guild}", to view the current Adventurer\'s Guild management window to bypass character list, management, and the enter guild button action.`,
+          quickOverlayMode: 'adv_guild',
+          quickOverlayModeDescription: 'to Adventurer\'s Guild',
+        }
       },
       {
         title: 'Visit the Quest Board',
-        description: 'Once at the '
+        description: 'Once at the guild clerk select the quest board, view and accept a quest. There are time, mob kill, item gathering, and profession quests avaiable. Some may be restricted due to various requirements.',
+        quickOverlayMode: 'adv_guild',
       }
     ],
     rewards: [

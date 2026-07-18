@@ -102,7 +102,10 @@ class PlayerRuntimeService {
     )
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'player:gold:added'
+      type: 'player:gold:added',
+      meta: {
+        gold: txn.amount
+      }
     })
   }
 
@@ -126,13 +129,21 @@ class PlayerRuntimeService {
       this.player.level += 1
       eventBus.emit({
         id: crypto.randomUUID(),
-        type: 'player:level'
+        type: 'player:level',
+        meta: {
+          level: this.player.level
+        }
       })
-      // notificationRuntimeService.notify({
-      //   text: `Player Level Up ${this.player.level}`,
-      //   type: "info",
-      //   lifetime: 5000
-      // })
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: 'notification:save',
+        meta: {
+          notification: {
+            title: `Player Event`,
+            description: `You are now level ${this.player.level}!`
+          }
+        }
+      })
     } else {
       this.player.xp += xp
     }
@@ -140,7 +151,10 @@ class PlayerRuntimeService {
     eventBus.emit({
       id: crypto.randomUUID(),
       parentEventId: event.id,
-      type: 'player:xp:added'
+      type: 'player:xp:added',
+      meta: {
+        xp: xp
+      }
     })
     eventBus.emit({
       id: crypto.randomUUID(),

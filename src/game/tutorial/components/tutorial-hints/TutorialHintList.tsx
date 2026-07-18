@@ -4,17 +4,24 @@ import styles from './TutorialHintList.module.css'
 
 interface Props {
   hints: TutorialHint[]
+  tutorialIsComplete: boolean
+  isTutorialCurrentTutorial: boolean
 }
 
 export default function TutorialHintList(props: Props){
   const {
-    hints
+    hints,
+    tutorialIsComplete,
+    isTutorialCurrentTutorial,
   } = props
+
   return <div className={styles.wrapper}>
-    {hints.map(hint => {
+    {hints.map((hint, index) => {
       return <TutorialHintListItem
-        title={hint.title}
-        value={hint.description}
+        index={index}
+        hint={hint}
+        isCurrentTutorialComplete={tutorialIsComplete}
+        isTutorialCurrentTutorial={isTutorialCurrentTutorial}
       />
     })}
   </div>

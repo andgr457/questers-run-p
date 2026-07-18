@@ -1,5 +1,4 @@
 import { useManagedCharacter } from '../../engine/character/hooks/useManagedCharacters'
-import { GAME_LOCATIONS } from '../../entity/location/data/Location.data'
 import AnimatedText from '../text/animated-text/AnimatedText'
 import styles from './Background.module.css'
 

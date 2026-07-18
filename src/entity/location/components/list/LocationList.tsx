@@ -25,9 +25,10 @@ export default function LocationList(props: Props){
   
   return (
     <div>
-      {locationsWithActions.map(l => {
+      {locationsWithActions.map((l, idx) => {
 
         return <LocationListItem 
+          key={`location-${idx}`}
           locationWithActions={l}
         />
       })}

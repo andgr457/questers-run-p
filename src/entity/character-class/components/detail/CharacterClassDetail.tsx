@@ -1,5 +1,4 @@
 import { characterRuntimeService } from '../../../../engine/character/CharacterRuntimeService'
-import DetailRow from '../../../../game/detail/DetailRow'
 import GamePanelSection from '../../../../ui/panel/GamePanelSection'
 import { GAME_PARTY_ROLE_DESCRIPTIONS, GAME_PARTY_ROLE_NAMES } from '../../../party/data/PartyRole.data'
 import type { CharacterClassEntity } from '../../types/CharacterClassEntity.types'

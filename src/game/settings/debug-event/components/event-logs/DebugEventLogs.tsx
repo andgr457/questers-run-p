@@ -72,8 +72,8 @@ export default function DebugEventLogs(props: Props){
       </div>
 
       <div className='filter-list'>
-        {uniqueTypes.map(t => {
-          return <div>
+        {uniqueTypes.map((t, idx) => {
+          return <div key={`debug=filter-list-item-${idx}`}>
             <button
               className={`button ${filterType === t ? 'gold' : 'dark'}`}
               onClick={() => {

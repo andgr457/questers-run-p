@@ -1,3 +1,4 @@
+import type { OverlayMode } from '../../context-menu/types/OverlayMode.types'
 
 
 export interface TutorialProgressMeta {
@@ -23,7 +24,14 @@ export type TutorialUIPath = 'characters'
 export interface TutorialHint {
   title: string
   description: string
+  quickOverlayMode?: OverlayMode
+  quickOverlayModeDescription?: string
   uiPath?: TutorialUIPath
+  alternate?: {
+    description: string
+    quickOverlayMode?: OverlayMode
+    quickOverlayModeDescription?: string
+  }
 }
 
 export interface Tutorial {

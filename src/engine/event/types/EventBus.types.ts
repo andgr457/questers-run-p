@@ -1,6 +1,5 @@
 import type { OverlayMode } from '../../../game/context-menu/types/OverlayMode.types'
 import type { Transition } from '../../../ui/transition/types/Transition.types'
-import type { ActivityType } from '../../activity/types/Activity.types'
 import type { CharacterEvents, CharacterEventTypes } from '../../character/types/CharacterEvent.types'
 import type { DebugEvents, DebugEventTypes } from './EventBusDebug.types'
 import type { PartyEvents, PartyEventTypes } from '../../party/types/PartyEvent.types'
@@ -74,11 +73,6 @@ export interface GameEvent {
   meta?: EventMeta
 }
 
-export interface ActivityGameEvent extends GameEvent {
-  activityId: string
-  activityType: ActivityType
-}
-
 export interface GameEvent_WorldModeChange extends GameEvent {
   type: 'world:mode:change'
   meta: {
@@ -92,23 +86,6 @@ export interface GameEvent_WorldModeChanging extends GameEvent {
     worldMode: OverlayMode
     worldModePrevious: OverlayMode
   }
-}
-
-export interface GameEvent_ActivityStart extends ActivityGameEvent {
-  type: 'activity:start'
-}
-
-export interface GameEvent_ActivityProgress extends ActivityGameEvent {
-  type: 'activity:progress'
-  progress: number
-}
-
-export interface GameEvent_ActivityComplete extends ActivityGameEvent {
-  type: 'activity:complete'
-}
-
-export interface GameEvent_ActivityCancel extends ActivityGameEvent {
-  type: 'activity:cancel'
 }
 
 export interface GameEvent_QuestStart extends GameEvent {
@@ -161,11 +138,7 @@ export interface GameEvent_EventTransitionStop extends GameEvent {
   }
 }
 
-export type GameEvents = GameEvent_ActivityStart
-  | GameEvent_ActivityProgress
-  | GameEvent_ActivityComplete
-  | GameEvent_ActivityCancel
-  | GameEvent_WorldModeChange
+export type GameEvents = GameEvent_WorldModeChange
   | GameEvent_WorldModeChanging
   | GameEvent_EventTransitionStart
   | GameEvent_EventTransitionStarted
@@ -206,6 +179,7 @@ export type EventMeta = {
   xp?: number
   characterTokens?: number
   gold?: number
+  level?: number
 
   player?: PlayerEntity
   playerGoldTransaction?: PlayerGoldTransaction

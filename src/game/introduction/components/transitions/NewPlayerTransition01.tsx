@@ -17,5 +17,7 @@ export default function NewPlayerTransition01(props: Props){
     transition={tsn.transition}
     onComplete={tsn.onComplete}
     continueText={tsn.continueText}
+    skippable={tsn.skippable}
+    onSkip={tsn.onSkip}
   />
 }

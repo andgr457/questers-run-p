@@ -20,4 +20,7 @@ export const ContextMenuIcon: Record<ContextMenuIconName, string> = {
   prohibited: '🛇',
   adv_guild: '✦',
   check: '✓',
+  fast_forward: '⏩︎',
+  inbox: '✉',
+  quest: '🗎',
 }

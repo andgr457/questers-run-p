@@ -31,7 +31,10 @@ interface GameEvent_PlayerGold extends GameEvent {
 }
 
 interface GameEvent_PlayerGoldAdded extends GameEvent {
-  type: 'player:gold:added'
+  type: 'player:gold:added',
+  meta: {
+    gold: number
+  }
 }
 
 interface GameEvent_PlayerXP extends GameEvent {
@@ -43,6 +46,9 @@ interface GameEvent_PlayerXP extends GameEvent {
 
 interface GameEvent_PlayerXPAdded extends GameEvent {
   type: 'player:xp:added'
+  meta: {
+    xp: number
+  }
 }
 
 interface GameEvent_PlayerToken extends GameEvent {
@@ -54,10 +60,16 @@ interface GameEvent_PlayerToken extends GameEvent {
 
 interface GameEvent_PlayerTokenAdded extends GameEvent {
   type: 'player:token:added'
+  meta: {
+    characterTokens: number
+  }
 }
 
 interface GameEvent_PlayerLevel extends GameEvent {
-  type: 'player:level'
+  type: 'player:level',
+  meta: {
+    level: number
+  }
 }
 
 export type PlayerEvents = GameEvent_PlayerSave

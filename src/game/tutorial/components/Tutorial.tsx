@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useTutorial } from '../../../engine/tutorial/hooks/useTutorial'
 import GamePanel from '../../../ui/panel/GamePanel'
 import { GAME_TUTORIALS } from '../data/Tutorial.data'
@@ -8,6 +8,9 @@ import TutorialDetail from './detail/TutorialDetail'
 import type { Tutorial, TutorialProgressMeta } from '../types/Tutorial.types'
 import GamePanelSection from '../../../ui/panel/GamePanelSection'
 import TutorialRewardsCollect from './collect/TutorialRewardsCollect'
+import type { ItemAction } from '../../../ui/item-action/types/ItemAction.types'
+import { eventBus } from '../../../engine/event/EventBus'
+import { characterRuntimeService } from '../../../engine/character/CharacterRuntimeService'
 
 export type TutorialMode = 'main'
   | 'detail'
@@ -18,34 +21,54 @@ export default function Tutorial() {
     tutorial,
     completedTutorials
   } = useTutorial()
-
-  const targetRef = useRef<HTMLDivElement>(null);
   
   const [mode, setMode] = useState<TutorialMode>('main')
   const [tutorialDetail, setTutorialDetail] = useState<Tutorial | undefined>(tutorial)
   const completedAmount = completedTutorials?.length ?? 0
 
-  useEffect(() => {
-    scrollToSection()
-  }, [mode])
-
-  const scrollToSection = () => {
-    if (targetRef.current) {
-      window.location.hash = 'top';
-      targetRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
+  const tutorialDetailProgress = completedTutorials?.find(t => t.tutorialId === tutorialDetail?.id)
+  const detailActions: ItemAction<TutorialProgressMeta>[] = []
+  if(tutorialDetailProgress?.completed === true && tutorialDetailProgress?.collected === false){
+    detailActions.push({
+      name: 'Collect',
+      fn: () => {
+        if(!tutorialDetailProgress?.completed){
+          return
+        }
+        if(tutorialDetailProgress?.collected === true){
+          return
+        }
+        setMode('collect')
+      },
+      className: 'button success'
+    })
+  }
   return (
     <GamePanel
       title={`Tutorials`}
       currentScreenName={mode === 'collect' ? 'Collect Rewards' : mode === 'detail' ? `Tutorial Detail` : ''}
     >
-      <div ref={targetRef} className={styles.wrapper}>
+      <div className={styles.wrapper}>
         {tutorialDetail && mode === 'collect' && (
-          <GamePanelSection
+          <GamePanelSection<Tutorial>
             expandable={false}
-            actions={[]}
+            actions={[
+              {
+                name: 'Confirm & Collect',
+                fn: () => {
+                  eventBus.emit({
+                    id: crypto.randomUUID(),
+                    type: 'rewards:start',
+                    meta: {
+                      characterId: characterRuntimeService.getManagingCharacter()?.id,
+                      tutorialId: tutorialDetail.id,
+                      tutorialRewards: tutorialDetail.rewards  
+                    }
+                  })
+                },
+                className: 'button success'
+              }
+            ]}
             onBack={() => {
               setMode('main')
               setTutorialDetail(undefined)
@@ -60,14 +83,20 @@ export default function Tutorial() {
         )}
         {tutorialDetail && mode === 'detail' && (
          <GamePanelSection
-          actions={[]}
+          actions={detailActions}
+          actionsLocation='top'
           onBack={() => {
             setMode('main')
             setTutorialDetail(undefined)
           }}
           onBackLabel='Tutorials'
          >  
-           <TutorialDetail tutorial={tutorialDetail}  />
+          <TutorialDetail 
+            tutorial={tutorialDetail}
+            tutorialProgress={tutorialDetailProgress}
+            isTutorialComplete={tutorialDetailProgress?.completed === true}
+            isTutorialCurrentTutorial={tutorialDetail.id === tutorial?.id}
+          />
          </GamePanelSection>
         )}
         {tutorial && mode === 'main' && (
@@ -75,19 +104,16 @@ export default function Tutorial() {
             <div className={styles.completeCount}>
               {completedAmount}/{GAME_TUTORIALS.length} complete
             </div>
-            <GamePanelSection
-              actions={[]}
-              title={'Current Tutorial'}
-              expandable={false}
-            >
-              <TutorialDetail index={completedAmount} tutorial={tutorial as Tutorial} />
-            </GamePanelSection>
+
             <GamePanelSection
               actions={[]}
               title={'All Tutorials'}
               expandable={false}
             >
-              <TutorialList setMode={setMode} setTutorialDetail={setTutorialDetail} />
+              <TutorialList 
+                setMode={setMode} 
+                setTutorialDetail={setTutorialDetail} 
+              />
             </GamePanelSection>
           </>
         )}

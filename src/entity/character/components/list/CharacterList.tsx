@@ -49,24 +49,29 @@ export default function CharacterList() {
         </button>
       </div>
     </div>
-    {characters.map((c, index) => {
+    {characters.map((c, idx) => {
       
-      return <CharacterListItem showTutorial={showTutorialHint && index === 0}  entity={c} onClick={(entity) => {
-        eventBus.emit({
-          id: crypto.randomUUID(),
-          type: 'character:manage',
-          meta: {
-            characterId: entity.id
-          }
-        })
-        eventBus.emit({
-          id: crypto.randomUUID(),
-          type: 'world:mode:change',
-          meta: {
-            worldMode: 'character_manage'
-          }
-        })
-      }} />
+      return <CharacterListItem 
+        key={`character-${idx}`}
+        showTutorial={showTutorialHint && idx === 0}  
+        entity={c} 
+        onClick={(entity) => {
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'character:manage',
+            meta: {
+              characterId: entity.id
+            }
+          })
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'world:mode:change',
+            meta: {
+              worldMode: 'character_manage'
+            }
+          })
+        }} 
+      />
     })}
   </GamePanel>
 }

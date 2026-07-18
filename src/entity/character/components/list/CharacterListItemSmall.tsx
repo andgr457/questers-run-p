@@ -9,11 +9,15 @@ import { getProgress } from '../../../../ui/progress-bar/utils/ProgressBar.utils
 import GoldDetail from '../../../../ui/gold/GoldDetail'
 
 import styles from './CharacterListItemSmall.module.css'
+import { formatPrimitiveValueToString } from '../../../../game/utils/Game.utils'
 
 interface Props {
   entity: CharacterEntity
   xpRef?: RefObject<HTMLDivElement | null>
   goldRef?: RefObject<HTMLDivElement | null>
+  levelRef?: RefObject<HTMLDivElement | null>
+  rewardGold?: number
+  rewardXp?: number
 }
 
 export default function CharacterListItemSmall(props: Props) {
@@ -21,8 +25,11 @@ export default function CharacterListItemSmall(props: Props) {
     entity,
     goldRef,
     xpRef,
+    levelRef,
+    rewardGold = 0,
+    rewardXp = 0,
   } = props
-
+  
   const [gold, setGold] = useState(getCharacterGold(entity.id))
   
   useEffect(() => {
@@ -47,7 +54,7 @@ export default function CharacterListItemSmall(props: Props) {
       <div className={styles.name}>
         {entity.name}
       </div>
-      <div className={styles.level}>
+      <div ref={levelRef} className={styles.level}>
         Lv. {entity.level}
       </div>
 
@@ -56,7 +63,12 @@ export default function CharacterListItemSmall(props: Props) {
       </div>
 
       <div ref={goldRef} className={styles.gold}>
-        <GoldDetail gold={gold} />
+        <div>
+          <GoldDetail gold={gold} />
+        </div>
+        <div className={`${styles.rewardAmount} ${rewardGold > 0 ? styles.success : ''}`}>
+          +{formatPrimitiveValueToString(rewardGold)}g
+        </div>
       </div>
       
       <div ref={xpRef} className={styles.bars}>
@@ -70,6 +82,9 @@ export default function CharacterListItemSmall(props: Props) {
           label="XP"
           showValues={false}
         />
+        <div className={`${styles.rewardAmount} ${rewardXp > 0 ? styles.success : ''}`}>
+          +{formatPrimitiveValueToString(rewardXp)}
+        </div>
       </div>
     </div>
   )

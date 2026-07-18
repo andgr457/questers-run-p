@@ -19,6 +19,7 @@ export function getIntroductionGameTitleTransition(
   } = props;
   return {
     className: 'title',
+    skippable: false,
     transition: {
       textType: 'left-right',
       leftRightMeta: {
@@ -41,7 +42,9 @@ export function getIntroductionGameTitleTransition(
         return;
       }
       //all good
-      setOverlayMode('characters');
+      const overlayMode = characterRuntimeService.getManagingCharacter() ? 
+        'character_manage' : 'characters'
+      setOverlayMode(overlayMode);
     },
   };
 }

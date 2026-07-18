@@ -16,14 +16,15 @@ export default function TutorialList(props: Props){
     setTutorialDetail
   } = props
   return <div>
-    {GAME_TUTORIALS.map((t, index) => {
+    {GAME_TUTORIALS.map((t, idx) => {
       const progress = tutorialProgress?.playerTutorialProgress?.find(tp => 
         tp.tutorialId === t.id
       )
       return <TutorialListItem 
+        key={`tutorial-${idx}`}
         progress={progress as TutorialProgressMeta}
         tutorial={t}
-        index={index}
+        index={idx}
         onDetail={(tutorial) => {
           setTutorialDetail(tutorial)
           setMode('detail')

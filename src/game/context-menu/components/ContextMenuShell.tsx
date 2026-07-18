@@ -52,7 +52,7 @@ export default function ContextMenuShell(props: Props) {
   const leftActions = useMemo<ContextMenuAction[]>(() => {
     if(!player) return []
     if(!characters || characters.length === 0) return []
-    if(overlayMode === 'transition' || overlayMode === 'intro') return []
+    if(overlayMode === 'transition') return []
 
     const actions: ContextMenuAction[] = []
     actions.push({
@@ -60,6 +60,7 @@ export default function ContextMenuShell(props: Props) {
       label: 'World',
       iconName: 'world',
       iconRotate: false,
+      color: overlayMode === 'world' ? selectedBorderColor : '',
       borderColor: overlayMode === 'world' ? selectedBorderColor : '',
       onClick: () => {
         if(overlayMode === 'world') return
@@ -72,33 +73,14 @@ export default function ContextMenuShell(props: Props) {
         })
       },
     })
-    const notificationsCanPulse = checkForPulse(() => {
-      return anyUnviewedNotifications
-    }, overlayMode, 'notifications')
-    actions.push({
-      id: 'notifications',
-      label: 'Notifications',
-      iconName: 'notifications',
-      iconRotate: notificationsCanPulse ?? false,
-      pulse: notificationsCanPulse,
-      color: notificationsCanPulse ? requiresAttentionColor : '',
-      borderColor: notificationsCanPulse ? requiresAttentionColor : overlayMode === 'notifications' ? selectedBorderColor : '',
-      onClick: () => {
-        if(overlayMode === 'notifications') return
-        eventBus.emit({
-          id: crypto.randomUUID(),
-          type: 'world:mode:change',
-          meta: {
-            worldMode: 'notifications'
-          }
-        })
-      },
-    })
+
     actions.push({
       id: 'player',
       label: 'Player',
       iconName: 'player',
       iconRotate: false,
+      pulse: false,
+      color: overlayMode === 'player' ? selectedBorderColor : '',
       borderColor: overlayMode === 'player' ? selectedBorderColor : '',
       onClick: () => {
         if(overlayMode === 'player') return
@@ -117,10 +99,8 @@ export default function ContextMenuShell(props: Props) {
     }, overlayMode, 'characters')
     let charactersTutorialHint = false
     if(tutorial){
-      if(overlayMode !== 'characters'){
-        if(tutorial.hints.some(h => h.uiPath === 'characters')){
-          charactersTutorialHint = true
-        }
+      if(tutorial.hints.some(h => h.uiPath === 'characters')){
+        charactersTutorialHint = true
       }
     }
     actions.push({
@@ -129,8 +109,8 @@ export default function ContextMenuShell(props: Props) {
       iconName: 'characters',
       iconRotate: canCharactersListPulse ?? false,
       pulse: charactersTutorialHint || canCharactersListPulse,
-      color: charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor : '',
-      borderColor: charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor  : overlayMode === 'characters' ? selectedBorderColor : '',
+      color: overlayMode === 'characters' ? selectedBorderColor : charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor : '',
+      borderColor: overlayMode === 'characters' ? selectedBorderColor : charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor  : '',
       onClick: () => {
         if(overlayMode === 'characters') return
         eventBus.emit({
@@ -148,7 +128,8 @@ export default function ContextMenuShell(props: Props) {
         label: 'Manage Character',
         iconName: 'character_manage',
         iconRotate: false,
-        pulse: false,
+        pulse: charactersTutorialHint || canCharactersListPulse,
+        color: overlayMode === 'character_manage' ? selectedBorderColor : charactersTutorialHint ? 'gold' : canCharactersListPulse ? requiresAttentionColor : '',
         borderColor: overlayMode === 'character_manage' ? selectedBorderColor : '',
         onClick: () => {
           if(overlayMode === 'character_manage') return
@@ -168,7 +149,7 @@ export default function ContextMenuShell(props: Props) {
       iconName: 'parties',
       iconRotate: false,
       pulse: false,
-      color: '',
+      color: overlayMode === 'party_list' ? selectedBorderColor : '',
       borderColor: overlayMode === 'party_list' ? selectedBorderColor : '',
       onClick: () => {
         if(overlayMode === 'party_list') return
@@ -186,35 +167,51 @@ export default function ContextMenuShell(props: Props) {
   }, [overlayMode, setOverlayMode, player, characters])
 
   const rightActions = useMemo<ContextMenuAction[]>(() => {
-    if(overlayMode === 'transition' || overlayMode === 'intro') return []
+    if(overlayMode === 'transition' ) return []
 
     const actions: ContextMenuAction[] = []
     if(player && characters.length > 0){
       actions.push({
-      id: 'settings',
-      label: 'Settings',
-      iconName: overlayMode === 'settings' ? 'close' : 'settings',
-      iconRotate: overlayMode === 'settings' ? false : true,
-      borderColor: overlayMode === 'settings' ? selectedBorderColor : '',
-      onClick: () => {
-        if(overlayMode === 'settings') return
-        eventBus.emit({
-          id: crypto.randomUUID(),
-          type: 'world:mode:change',
-          meta: {
-            worldMode: 'settings'
-          }
-        })
-      },
-    })
-      // actions.push({
-      //   id: 'dashboard',
-      //   label: 'Dashboard',
-      //   iconName: 'dashboard',
-      //   iconRotate: false,
-      //   borderColor: overlayMode === 'dashboard' ? selectedBorderColor : '',
-      //   onClick: () => overlayMode === 'dashboard' ? setOverlayMode('world') : setOverlayMode('dashboard'),
-      // })
+        id: 'settings',
+        label: 'Settings',
+        iconName: 'settings',
+        iconRotate: overlayMode === 'settings' ? false : true,
+        color: overlayMode === 'settings' ? selectedBorderColor : '',
+        borderColor: overlayMode === 'settings' ? selectedBorderColor : '',
+        onClick: () => {
+          if(overlayMode === 'settings') return
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'world:mode:change',
+            meta: {
+              worldMode: 'settings'
+            }
+          })
+        },
+      })
+
+      const notificationsCanPulse = checkForPulse(() => {
+        return anyUnviewedNotifications
+      }, overlayMode, 'notifications')
+      actions.push({
+        id: 'inbox',
+        label: 'Inbox',
+        iconName: 'inbox',
+        iconRotate: notificationsCanPulse ?? false,
+        pulse: notificationsCanPulse,
+        color: overlayMode === 'notifications' ? selectedBorderColor : notificationsCanPulse ? requiresAttentionColor : '',
+        borderColor: overlayMode === 'notifications' ? selectedBorderColor :  notificationsCanPulse ? requiresAttentionColor : '',
+        onClick: () => {
+          if(overlayMode === 'notifications') return
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'world:mode:change',
+            meta: {
+              worldMode: 'notifications'
+            }
+          })
+        },
+      })
 
       const tutorialCanPulse = checkForPulse(() => {
         return typeof tutorial !== 'undefined'
@@ -224,9 +221,9 @@ export default function ContextMenuShell(props: Props) {
         label: 'Tutorial',
         iconName: 'tutorial',
         iconRotate: false,
-        pulse: tutorialCanPulse,
-        color: tutorialCanPulse ? requiresAttentionColor : '',
-        borderColor: tutorialCanPulse ? requiresAttentionColor : overlayMode === 'tutorial' ? selectedBorderColor : '',
+        pulse: overlayMode === 'tutorial' ? false : tutorialCanPulse,
+        color: overlayMode === 'tutorial' ? selectedBorderColor : tutorialCanPulse ? requiresAttentionColor : '',
+        borderColor: overlayMode === 'tutorial' ? selectedBorderColor : tutorialCanPulse ? requiresAttentionColor : '',
         onClick: () => {
           if(overlayMode === 'tutorial') return
           eventBus.emit({
@@ -238,38 +235,37 @@ export default function ContextMenuShell(props: Props) {
           })
         },
       })
-      if(managedCharacter && currentLocation && currentLocation.type === 'adv_guild'){
-        let advGuildTutorialHint = false
-        if(tutorial){
-          if(overlayMode !== 'adv_guild'){
-            if(tutorial.hints.some(h => h.uiPath?.endsWith('adv_guild'))){
-              advGuildTutorialHint = true
-            }
+      let advGuildTutorialHint = false
+      if(tutorial){
+        if(overlayMode !== 'adv_guild'){
+          if(tutorial.hints.some(h => h.uiPath?.endsWith('adv_guild'))){
+            advGuildTutorialHint = true
           }
         }
-        const advGuildCanPulse = checkForPulse(() => {
-          return advGuildTutorialHint === true
-        }, overlayMode, 'adv_guild')
-        actions.push({
-          id: 'advguild',
-          label: `${currentLocation.name}`,
-          iconName: 'adv_guild',
-          iconRotate: true,
-          pulse: advGuildCanPulse,
-          color: advGuildTutorialHint ? 'gold' : '',
-          borderColor: advGuildTutorialHint ? 'gold' : overlayMode === 'adv_guild' ? selectedBorderColor : '',
-          onClick: () => {
-            if(overlayMode === 'adv_guild') return
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: 'world:mode:change',
-              meta: {
-                worldMode: 'adv_guild'
-              }
-            })
-          },
-        })
       }
+      const advGuildCanPulse = checkForPulse(() => {
+        return advGuildTutorialHint === true
+      }, overlayMode, 'adv_guild')
+      const atAdvGuild = currentLocation?.type === 'adv_guild'
+      actions.push({
+        id: 'advguild',
+        label: `${currentLocation?.name ?? 'Adventurer\'s Guild'}`,
+        iconName: 'adv_guild',
+        iconRotate: true,
+        pulse: !atAdvGuild ? false : overlayMode === 'adv_guild' ? false :  advGuildCanPulse,
+        color: !atAdvGuild ? '' : overlayMode === 'adv_guild' ? selectedBorderColor : advGuildTutorialHint ? 'gold' : '',
+        borderColor: !atAdvGuild ? '' : overlayMode === 'adv_guild' ? selectedBorderColor :  advGuildTutorialHint ? 'gold' : '',
+        onClick: () => {
+          if(overlayMode === 'adv_guild') return
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'world:mode:change',
+            meta: {
+              worldMode: 'adv_guild'
+            }
+          })
+        },
+      })
     }
     
     if(recordingDetail.isDebugMode){
@@ -299,6 +295,8 @@ export default function ContextMenuShell(props: Props) {
         label: 'Debug Event Recording Logs',
         iconName: 'recordLogs',
         iconRotate: false,
+        color: overlayMode === 'settings_debug_logs' ? selectedBorderColor : '',
+        borderColor: overlayMode === 'settings_debug_logs' ? selectedBorderColor : '',
         onClick: () => {
           if(overlayMode === 'settings_debug_logs') return
           eventBus.emit({

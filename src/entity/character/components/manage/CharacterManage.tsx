@@ -80,9 +80,6 @@ export default function CharacterManage() {
             >
               {ContextMenuIcon.adv_guild} Enter the {currentLocation.name}
             </div>}
-            <div className={styles.action}>
-              Test Action
-            </div>
           </div>
         </div>
       </div>

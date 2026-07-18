@@ -1,20 +1,25 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useManagedCharacter } from '../../../../engine/character/hooks/useManagedCharacters';
-import { formatDateFromMillis } from '../../../../engine/clock/utils/formatTimeRemaining';
 import type { CharacterEntity } from '../../../../entity/character/types/CharacterEntity.types';
 import GamePanelSection from '../../../../ui/panel/GamePanelSection';
 import type { Tutorial, TutorialProgressMeta } from '../../types/Tutorial.types';
 import TutorialDetail from '../detail/TutorialDetail';
-import TutorialRewardList from '../tutorial-rewards/TutorialRewardList';
 import styles from './TutorialRewardsCollect.module.css';
 import FloatingText from '../../../../ui/text/floating-text/FloatingText';
 import CharacterListItemSmall from '../../../../entity/character/components/list/CharacterListItemSmall';
 import PlayerDetailSmall from '../../../../entity/player/components/detail/PlayerDetailSmall';
+import { getTutorialCharacterRewardGold, getTutorialCharacterRewardXP, getTutorialPlayerRewardCharacterTokens, getTutorialPlayerRewardGold, getTutorialPlayerRewardXP } from '../../utils/Tutorial.utils';
+import { eventBus } from '../../../../engine/event/EventBus';
+import { formatPrimitiveValueToString } from '../../../utils/Game.utils';
 
 interface Props {
   tutorial: Tutorial
   tutorialProgress?: TutorialProgressMeta | undefined
 }
+const XP_COLOR = '#d534f2'
+const GOLD_COLOR = 'var(--gold)'
+const TOKEN_COLOR = '#7CC8FF'
+const LEVEL_COLOR = 'var(--success)'
 
 export default function TutorialRewardsCollect(props: Props) {
   const { managedCharacter } = useManagedCharacter();
@@ -27,9 +32,67 @@ export default function TutorialRewardsCollect(props: Props) {
   const playerGoldRef = useRef<HTMLDivElement>(null);
   const playerXpRef = useRef<HTMLDivElement>(null);
   const playerCharacterTokensRef = useRef<HTMLDivElement>(null);
+  const playerLevelRef = useRef<HTMLDivElement>(null);
 
   const managedCharacterGoldRef = useRef<HTMLDivElement>(null);
   const managedCharacterXpRef = useRef<HTMLDivElement>(null);
+  const managedCharacterLevelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const unsub = eventBus.subscribe(event => {
+      if(event.type === 'character:gold:added'){
+        showRewardSequence([{
+          ref: managedCharacterGoldRef,
+          text: `+${event.meta?.gold}g`,
+          color: GOLD_COLOR,
+        }])
+      }
+      if(event.type === 'character:xp:added'){
+        showRewardSequence([{
+          ref: managedCharacterXpRef,
+          text: `+${event.meta?.xp} XP`,
+          color: XP_COLOR,
+        }])
+      }
+      if(event.type === 'character:level'){
+        showRewardSequence([{
+          ref: managedCharacterLevelRef,
+          text: `Level Up: ${event.meta?.level}!`,
+          color: LEVEL_COLOR,
+        }])
+      }
+
+      if(event.type === 'player:gold:added'){
+        showRewardSequence([{
+          ref: playerGoldRef,
+          text: `+${formatPrimitiveValueToString(event.meta?.gold ?? 0)}g`,
+          color: GOLD_COLOR,
+        }])
+      }
+      if(event.type === 'player:xp:added'){
+        showRewardSequence([{
+          ref: playerXpRef,
+          text: `+${formatPrimitiveValueToString(event.meta?.xp ?? 0)} XP`,
+          color: XP_COLOR,
+        }])
+      }
+      if(event.type === 'player:token:added'){
+        showRewardSequence([{
+          ref: playerCharacterTokensRef,
+          text: `+${formatPrimitiveValueToString(event.meta?.characterTokens ?? 0)} Token(s)`,
+          color: TOKEN_COLOR,
+        }])
+      }
+      if(event.type === 'player:level'){
+        showRewardSequence([{
+          ref: playerLevelRef,
+          text: `Level Up: ${event.meta?.level}!`,
+          color: LEVEL_COLOR,
+        }])
+      }
+    })
+    return unsub
+  }, [])
 
   const [floatingTexts, setFloatingTexts] = useState<
     {
@@ -65,58 +128,45 @@ export default function TutorialRewardsCollect(props: Props) {
     ]);
   };
 
-  const showRewardSequence = async (
+  const showRewardSequence = (
     rewards: {
       ref: React.RefObject<HTMLElement | null>
       text: string
       color?: string
     }[],
   ) => {
-    for (const reward of rewards) {
-      showFloatingText(reward.ref, reward.text, reward.color);
-      await wait(1000);
+    const run = async () => {
+      for (const reward of rewards) {
+        showFloatingText(reward.ref, reward.text, reward.color);
+        await wait(1000);
+      }
     }
+    run()
   };
 
-  const showExampleRewardFloatingText = () => {
-    const run = async () => {
-      showRewardSequence([
-        { ref: playerGoldRef, text: '+50 Gold', color: '#FFD700' },
-        { ref: playerXpRef, text: '+100 XP', color: '#7CC8FF' },
-        { ref: playerCharacterTokensRef, text: '+1 Token', color: '#7CC8FF' },
-      ]);
-      showRewardSequence([
-        { ref: managedCharacterGoldRef, text: '+50 Gold', color: '#FFD700' },
-        { ref: managedCharacterXpRef, text: '+500 XP', color: '#7CC8FF' },
-      ])      
-    };
-    run();
-  }
+  const playerXpReward = getTutorialPlayerRewardXP(tutorial.rewards)
+  const playerGoldReward = getTutorialPlayerRewardGold(tutorial.rewards)
+  const playerCharacterTokensReward = getTutorialPlayerRewardCharacterTokens(tutorial.rewards)
 
-  const playerRewards = tutorial.rewards.filter(r => r.type === 'player');
-  const managedCharacterRewards = tutorial.rewards.filter(r => r.type === 'character');
+  const managedCharacterXpReward = getTutorialCharacterRewardXP(tutorial.rewards)
+  const managedCharacterGoldReward = getTutorialCharacterRewardGold(tutorial.rewards)
 
   return (
     <div className={styles.wrapper}>
-      <button
-        className='button'
-        onClick={() => {showExampleRewardFloatingText()}}
-      >
-        Test
-      </button>
+      
       <div className={styles.section}>
         <GamePanelSection
           actions={[]}
           title='Player Rewards'
         >
-          <TutorialRewardList
-            rewards={playerRewards}
-            showTotals={false}
-          />
           <PlayerDetailSmall
             characterTokensRef={playerCharacterTokensRef}
             goldRef={playerGoldRef}
             xpRef={playerXpRef}
+            rewardGold={playerGoldReward}
+            rewardXp={playerXpReward}
+            rewardCharacterTokens={playerCharacterTokensReward}
+            levelRef={playerLevelRef}
           />
         </GamePanelSection>
       </div>
@@ -130,10 +180,9 @@ export default function TutorialRewardsCollect(props: Props) {
             entity={managedCharacter as CharacterEntity} 
             goldRef={managedCharacterGoldRef}
             xpRef={managedCharacterXpRef}
-          />
-          <TutorialRewardList
-            rewards={managedCharacterRewards}
-            showTotals={false}
+            rewardGold={managedCharacterGoldReward}
+            rewardXp={managedCharacterXpReward}
+            levelRef={managedCharacterLevelRef}
           />
         </GamePanelSection>
       </div>
@@ -143,11 +192,12 @@ export default function TutorialRewardsCollect(props: Props) {
           actions={[]}
           expandable={false}
         >
-          <div className={styles.completedDate}>
-            Completed {formatDateFromMillis(tutorialProgress?.dateCompleted as number)}
-          </div>
-
-          <TutorialDetail tutorial={tutorial} />
+          <TutorialDetail 
+            tutorial={tutorial}
+            isTutorialComplete={true} 
+            isTutorialCurrentTutorial={false}
+            tutorialProgress={tutorialProgress}
+          />
         </GamePanelSection>
       </div>
 

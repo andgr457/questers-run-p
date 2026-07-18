@@ -60,3 +60,12 @@
 .rotate {
   transition: transform 0.3s ease;
 }
+
+.rewardAmount {
+  opacity: .6;
+  text-align: right;
+}
+
+.rewardAmount.success {
+  color: var(--success);
+}

@@ -141,7 +141,11 @@ class CharacterRuntimeService {
     )
     eventBus.emit({
       id: crypto.randomUUID(),
-      type: 'character:gold:added'
+      type: 'character:gold:added',
+      meta: {
+        characterId: txn.characterId,
+        gold: txn.amount
+      }
     })
   }
 
@@ -161,7 +165,7 @@ class CharacterRuntimeService {
       character.xp = Math.max(differenceXp, 0)
       console.log('character xp to difference', character.xp)
       console.log('character xp next forumula', 'character.xpNextLevel * 1.7', character.xpNextLevel * 1.7)
-      character.xpNextLevel = character.xpNextLevel * 1.7
+      character.xpNextLevel = character.xpNextLevel * 1.2
       console.log('player xp next set', character.xpNextLevel)
 
       character.level += 1
@@ -169,7 +173,8 @@ class CharacterRuntimeService {
         id: crypto.randomUUID(),
         type: 'character:level',
         meta: {
-          characterId: character.id
+          characterId: character.id,
+          level: character.level
         }
       })
       eventBus.emit({
@@ -178,7 +183,7 @@ class CharacterRuntimeService {
         meta: {
           notification: {
             title: 'Character Event',
-            description: `${character.name} leveled up to ${character.level}!`
+            description: `${character.name} is now level ${character.level}!`
           }
         }
       })
@@ -193,7 +198,11 @@ class CharacterRuntimeService {
     eventBus.emit({
       id: crypto.randomUUID(),
       parentEventId: event.id,
-      type: 'character:xp:added'
+      type: 'character:xp:added',
+      meta: {
+        characterId: character.id,
+        xp
+      }
     })  
   }
 
