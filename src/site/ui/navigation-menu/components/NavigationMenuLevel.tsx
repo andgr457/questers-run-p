@@ -7,7 +7,7 @@ interface NavigationMenuLevelProps {
   selectedNode?: NavigationNode
   menuIndex: number
   layout: 'desktop' | 'vertical'
-  active: boolean
+  position: 'active' | 'previous' | 'next' | 'hidden'
   onActivate: (menuIndex: number) => void
   onSelect: (node: NavigationNode, menuIndex: number) => void
 }
@@ -17,7 +17,7 @@ export default function NavigationMenuLevel({
   selectedNode,
   menuIndex,
   layout,
-  active,
+  position,
   onActivate,
   onSelect
 }: NavigationMenuLevelProps) {
@@ -25,18 +25,10 @@ export default function NavigationMenuLevel({
     return null
   }
 
-  function handleActivate() {
-    onActivate(menuIndex)
-  }
-
   return (
     <div
-      className={`${styles.level} ${styles[layout]} ${
-        active
-          ? styles.active
-          : styles.inactive
-      }`}
-      onClick={handleActivate}
+      className={`${styles.level} ${styles[layout]} ${styles[position]}`}
+      onClick={() => onActivate(menuIndex)}
     >
       {nodes.map(node => (
         <NavigationMenuItem
@@ -44,7 +36,7 @@ export default function NavigationMenuLevel({
           node={node}
           menuIndex={menuIndex}
           selected={selectedNode?.id === node.id}
-          active={active}
+          active={position === 'active'}
           onSelect={onSelect}
         />
       ))}

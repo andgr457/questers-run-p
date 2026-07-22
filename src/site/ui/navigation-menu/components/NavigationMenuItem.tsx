@@ -34,17 +34,7 @@ export default function NavigationMenuItem({
   }
 
   return (
-    <div
-      className={`${styles.item} ${
-        selected
-          ? styles.selected
-          : ''
-      } ${
-        active
-          ? styles.active
-          : styles.inactive
-      }`}
-    >
+    <div className={`${styles.item} ${selected ? styles.selected : ''}`}>
       <button
         className={styles.button}
         title={node.description}
@@ -53,7 +43,7 @@ export default function NavigationMenuItem({
         {node.title}
       </button>
 
-      {(node.navMode || node.filterType) && (
+      {active && (node.navMode || node.filterType) && (
         <button
           className={styles.navButton}
           title={`Navigate to ${node.title}`}

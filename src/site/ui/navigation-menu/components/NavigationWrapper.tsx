@@ -120,6 +120,8 @@ export default function NavigationWrapper({
     })
   }
 
+  const menuOffset = activeMenuIndex * 100
+
   return (
     <div className={`${styles.wrapper} ${styles[layout]}`}>
       <NavigationMenu
@@ -128,6 +130,7 @@ export default function NavigationWrapper({
         layout={layout}
         activeMenuIndex={activeMenuIndex}
         menuLevels={menuLevels}
+        menuOffset={menuOffset}
         onActivate={handleMenuActivate}
         onSelect={handleNodeSelect}
       />

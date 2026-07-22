@@ -3,48 +3,40 @@
   flex-direction: row;
   align-items: center;
   gap: 0.75rem;
-  opacity: 0.75;
-  transition: opacity 300ms ease;
+  transition: opacity 300ms ease, transform 300ms ease;
 }
 
 .selected {
-  opacity: 1;
-}
-
-.inactive {
-  opacity: 0.65;
-}
-
-.active {
-  opacity: 1;
+  transform: scale(1.05);
 }
 
 .button {
   cursor: pointer;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
   border: none;
   background: transparent;
   color: white;
   font-size: 1.1rem;
   font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  opacity: 0.75;
   text-decoration: none;
-  transition: text-decoration 300ms ease;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  transition: opacity 300ms ease, text-decoration 300ms ease;
 }
 
 .selected .button {
+  opacity: 1;
   text-decoration: underline;
-  text-underline-offset: 0.3rem;
 }
 
 .navButton {
   cursor: pointer;
-  padding: 0.35rem 0.75rem;
+  padding: 0.5rem 0.9rem;
   border: 1px solid rgba(255,255,255,0.35);
   border-radius: 0.25rem;
   background: rgba(0,0,0,0.35);
   color: white;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 

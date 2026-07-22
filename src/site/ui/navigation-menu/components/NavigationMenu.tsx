@@ -12,6 +12,7 @@ interface NavigationMenuProps {
   description: string
   layout: 'desktop' | 'vertical'
   activeMenuIndex: number
+  menuOffset: number
   menuLevels: NavigationMenuLevel[]
   onActivate: (menuIndex: number) => void
   onSelect: (node: NavigationNode, menuIndex: number) => void
@@ -22,6 +23,7 @@ export default function NavigationMenu({
   description,
   layout,
   activeMenuIndex,
+  menuOffset,
   menuLevels,
   onActivate,
   onSelect
@@ -41,19 +43,38 @@ export default function NavigationMenu({
         </div>
       )}
 
-      <div className={styles.levels}>
-        {menuLevels.map((menuLevel, menuIndex) => (
-          <NavigationMenuLevel
-            key={menuIndex}
-            nodes={menuLevel.nodes}
-            selectedNode={menuLevel.selectedNode}
-            menuIndex={menuIndex}
-            layout={layout}
-            active={activeMenuIndex === menuIndex}
-            onActivate={onActivate}
-            onSelect={onSelect}
-          />
-        ))}
+      <div
+        className={styles.levels}
+        style={{
+          transform: layout === 'desktop'
+            ? `translateY(-${menuOffset}px)`
+            : `translateX(-${menuOffset}px)`
+        }}
+      >
+        {menuLevels.map((menuLevel, menuIndex) => {
+          let position: 'active' | 'previous' | 'next' | 'hidden' = 'hidden'
+
+          if(menuIndex === activeMenuIndex){
+            position = 'active'
+          } else if(menuIndex < activeMenuIndex){
+            position = 'previous'
+          } else if(menuIndex > activeMenuIndex){
+            position = 'next'
+          }
+
+          return (
+            <NavigationMenuLevel
+              key={menuIndex}
+              nodes={menuLevel.nodes}
+              selectedNode={menuLevel.selectedNode}
+              menuIndex={menuIndex}
+              layout={layout}
+              position={position}
+              onActivate={onActivate}
+              onSelect={onSelect}
+            />
+          )
+        })}
       </div>
     </div>
   )
