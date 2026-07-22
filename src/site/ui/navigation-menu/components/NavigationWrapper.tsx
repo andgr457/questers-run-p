@@ -15,9 +15,13 @@ interface NavigationWrapperProps {
 export default function NavigationWrapper({
   nodes
 }: NavigationWrapperProps) {
+  const layout = 'desktop'
+
   const rootNodes = nodes
     .filter(node => !node.parentId)
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+
+  const [activeMenuIndex, setActiveMenuIndex] = useState(0)
 
   const [menuLevels, setMenuLevels] = useState<NavigationMenuLevel[]>([
     {
@@ -41,38 +45,47 @@ export default function NavigationWrapper({
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
   }
 
-  const getNavigationTitle = () => {
-    const selectedPath = menuLevels
+  const getSelectedPath = () => {
+    return menuLevels
       .map(level => level.selectedNode)
       .filter(Boolean) as NavigationNode[]
+  }
 
-    const selectedNode = selectedPath[selectedPath.length - 1]
+  const getNavigationTitle = () => {
+    const path = getSelectedPath()
+    const selected = path[path.length - 1]
 
-    if(!selectedNode){
+    if(!selected){
       return ''
     }
 
-    const parentNode = selectedPath[selectedPath.length - 2]
+    const parent = path[path.length - 2]
 
-    if(parentNode){
-      return `${parentNode.title} · ${selectedNode.title}`
+    if(parent){
+      return `${parent.title} · ${selected.title}`
     }
 
-    return selectedNode.title
+    return selected.title
   }
 
   const getNavigationDescription = () => {
-    const selectedPath = menuLevels
-      .map(level => level.selectedNode)
-      .filter(Boolean) as NavigationNode[]
+    const path = getSelectedPath()
 
-    return selectedPath[selectedPath.length - 1]?.description ?? ''
+    return path[path.length - 1]?.description ?? ''
   }
 
   const handleNodeSelect = (
     node: NavigationNode,
     menuIndex: number
   ) => {
+    const children = getChildren(node.id)
+
+    setActiveMenuIndex(
+      children.length > 0
+        ? menuIndex + 1
+        : menuIndex
+    )
+
     setMenuLevels(current => {
       const updated = current.map(level => ({
         nodes: [...level.nodes],
@@ -91,12 +104,7 @@ export default function NavigationWrapper({
         }
       }
 
-      const children = getChildren(node.id)
-
-      if(
-        children.length > 0 &&
-        menuIndex + 1 < updated.length
-      ){
+      if(children.length > 0){
         updated[menuIndex + 1] = {
           nodes: children,
           selectedNode: children[0]
@@ -108,10 +116,12 @@ export default function NavigationWrapper({
   }
 
   return (
-    <div className={`${styles.wrapper} ${styles.desktop}`}>
+    <div className={`${styles.wrapper} ${styles[layout]}`}>
       <NavigationMenu
         title={getNavigationTitle()}
         description={getNavigationDescription()}
+        layout={layout}
+        activeMenuIndex={activeMenuIndex}
         menuLevels={menuLevels}
         onSelect={handleNodeSelect}
       />
