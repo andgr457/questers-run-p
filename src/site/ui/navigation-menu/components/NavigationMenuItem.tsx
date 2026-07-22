@@ -18,10 +18,20 @@ export default function NavigationMenuItem({
   onSelect
 }: NavigationMenuItemProps) {
   function handleClick() {
+    if(!active){
+      return
+    }
+
     onSelect(node, menuIndex)
   }
 
-  function handleNav() {
+  function handleNav(event: React.MouseEvent) {
+    event.stopPropagation()
+
+    if(!active){
+      return
+    }
+
     eventBus.emit({
       id: crypto.randomUUID(),
       type: 'site:navigation:start',
@@ -43,7 +53,7 @@ export default function NavigationMenuItem({
         {node.title}
       </button>
 
-      {active && (node.navMode || node.filterType) && (
+      {(node.navMode || node.filterType) && (
         <button
           className={styles.navButton}
           title={`Navigate to ${node.title}`}

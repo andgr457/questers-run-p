@@ -5,7 +5,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  gap: 2rem;
+  gap: 0.5rem;
 }
 
 .header {
@@ -14,7 +14,8 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 80px;
+  min-height: 0;
+  margin-bottom: 0.5rem;
 }
 
 .title {
@@ -23,32 +24,56 @@
 }
 
 .description {
-  margin-top: 0.5rem;
+  margin-top: 0.15rem;
   font-size: 0.9rem;
   opacity: 0.8;
   max-width: 600px;
 }
 
-.levels {
+.navigation {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3rem;
-  transition: transform 500ms ease;
+  gap: 0.25rem;
+}
+
+.levels {
+  position: relative;
+  width: 320px;
+  height: 200px;
+  overflow: hidden;
+}
+
+button {
+  cursor: pointer;
+}
+
+.previousButton,
+.nextButton {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.25);
+  color: white;
+  font-size: 1.2rem;
 }
 
 .desktop {
   flex-direction: column;
 }
 
-.desktop .levels {
+.desktop .navigation {
   flex-direction: column;
+  gap: 0.25rem;
 }
 
 .vertical {
   flex-direction: row;
 }
 
-.vertical .levels {
+.vertical .navigation {
   flex-direction: row;
+  gap: 0.25rem;
 }

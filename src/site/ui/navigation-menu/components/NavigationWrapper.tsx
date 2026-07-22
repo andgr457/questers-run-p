@@ -85,12 +85,6 @@ export default function NavigationWrapper({
   ) => {
     const children = getChildren(node.id)
 
-    setActiveMenuIndex(
-      children.length > 0
-        ? menuIndex + 1
-        : menuIndex
-    )
-
     setMenuLevels(current => {
       const updated = current.map(level => ({
         nodes: [...level.nodes],
@@ -120,8 +114,6 @@ export default function NavigationWrapper({
     })
   }
 
-  const menuOffset = activeMenuIndex * 100
-
   return (
     <div className={`${styles.wrapper} ${styles[layout]}`}>
       <NavigationMenu
@@ -130,7 +122,6 @@ export default function NavigationWrapper({
         layout={layout}
         activeMenuIndex={activeMenuIndex}
         menuLevels={menuLevels}
-        menuOffset={menuOffset}
         onActivate={handleMenuActivate}
         onSelect={handleNodeSelect}
       />

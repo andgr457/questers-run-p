@@ -12,7 +12,6 @@ interface NavigationMenuProps {
   description: string
   layout: 'desktop' | 'vertical'
   activeMenuIndex: number
-  menuOffset: number
   menuLevels: NavigationMenuLevel[]
   onActivate: (menuIndex: number) => void
   onSelect: (node: NavigationNode, menuIndex: number) => void
@@ -23,11 +22,16 @@ export default function NavigationMenu({
   description,
   layout,
   activeMenuIndex,
-  menuOffset,
   menuLevels,
   onActivate,
   onSelect
 }: NavigationMenuProps) {
+  const hasPrevious = activeMenuIndex > 0 &&
+    menuLevels[activeMenuIndex - 1].nodes.length > 0
+
+  const hasNext = activeMenuIndex < menuLevels.length - 1 &&
+    menuLevels[activeMenuIndex + 1].nodes.length > 0
+
   return (
     <div className={`${styles.menu} ${styles[layout]}`}>
       {title && (
@@ -43,38 +47,52 @@ export default function NavigationMenu({
         </div>
       )}
 
-      <div
-        className={styles.levels}
-        style={{
-          transform: layout === 'desktop'
-            ? `translateY(-${menuOffset}px)`
-            : `translateX(-${menuOffset}px)`
-        }}
-      >
-        {menuLevels.map((menuLevel, menuIndex) => {
-          let position: 'active' | 'previous' | 'next' | 'hidden' = 'hidden'
+      <div className={styles.navigation}>
+        {hasPrevious && (
+          <button
+            className={styles.previousButton}
+            onClick={() => onActivate(activeMenuIndex - 1)}
+          >
+            {layout === 'desktop' ? '▲' : '◀'}
+          </button>
+        )}
 
-          if(menuIndex === activeMenuIndex){
-            position = 'active'
-          } else if(menuIndex < activeMenuIndex){
-            position = 'previous'
-          } else if(menuIndex > activeMenuIndex){
-            position = 'next'
-          }
+        <div className={styles.levels}>
+          {menuLevels.map((menuLevel, menuIndex) => {
+            let position: 'active' | 'previous' | 'next' | 'hidden' = 'hidden'
 
-          return (
-            <NavigationMenuLevel
-              key={menuIndex}
-              nodes={menuLevel.nodes}
-              selectedNode={menuLevel.selectedNode}
-              menuIndex={menuIndex}
-              layout={layout}
-              position={position}
-              onActivate={onActivate}
-              onSelect={onSelect}
-            />
-          )
-        })}
+            if(menuIndex === activeMenuIndex){
+              position = 'active'
+            } else if(menuIndex < activeMenuIndex){
+              position = 'previous'
+            } else if(menuIndex > activeMenuIndex){
+              position = 'next'
+            }
+
+            return (
+              <NavigationMenuLevel
+                key={menuIndex}
+                nodes={menuLevel.nodes}
+                selectedNode={menuLevel.selectedNode}
+                activeMenuIndex={activeMenuIndex}
+                menuIndex={menuIndex}
+                layout={layout}
+                position={position}
+                onActivate={onActivate}
+                onSelect={onSelect}
+              />
+            )
+          })}
+        </div>
+
+        {hasNext && (
+          <button
+            className={styles.nextButton}
+            onClick={() => onActivate(activeMenuIndex + 1)}
+          >
+            {layout === 'desktop' ? '▼' : '▶'}
+          </button>
+        )}
       </div>
     </div>
   )
