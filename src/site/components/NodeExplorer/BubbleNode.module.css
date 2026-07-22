@@ -1,0 +1,50 @@
+.node {
+    width: 180px;
+    height: 180px;
+
+    border-radius: 50%;
+
+    border: 2px solid rgba(255,255,255,.25);
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #4f89ff,
+            #2c4d92 70%,
+            #1b2d56
+        );
+
+    color: white;
+
+    font-size: 1.25rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+
+    box-shadow:
+        0 0 30px rgba(0,0,0,.45);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.node:hover {
+
+    transform:scale(1.08);
+
+    border-color:#79b4ff;
+
+    box-shadow:
+        0 0 20px rgba(121,180,255,.35),
+        0 0 50px rgba(121,180,255,.15);
+}
+
+.node:active{
+    transform:scale(.98);
+}
