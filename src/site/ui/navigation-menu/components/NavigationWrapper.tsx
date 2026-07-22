@@ -108,7 +108,7 @@ export default function NavigationWrapper({
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${styles.desktop}`}>
       <NavigationMenu
         title={getNavigationTitle()}
         description={getNavigationDescription()}

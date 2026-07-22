@@ -1,0 +1,19 @@
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}

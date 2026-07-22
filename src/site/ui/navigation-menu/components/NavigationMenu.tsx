@@ -21,7 +21,7 @@ export default function NavigationMenu({
   onSelect
 }: NavigationMenuProps) {
   return (
-    <div className={styles.menu}>
+    <div className={`${styles.menu} ${styles.desktop}`}>
       {title && (
         <div className={styles.header}>
           <div className={styles.title}>
@@ -35,15 +35,15 @@ export default function NavigationMenu({
         </div>
       )}
 
-      {menuLevels.map((menuLevel, menuIndex) => {
-        if(menuLevel.nodes.length === 0){
-          return null
-        }
-
-        return (
+      <div className={styles.levels}>
+        {menuLevels.map((menuLevel, menuIndex) => (
           <div
             key={menuIndex}
-            className={styles.primaryRow}
+            className={`${styles.level} ${
+              menuLevel.nodes.length === 0
+                ? styles.hidden
+                : ''
+            }`}
           >
             {menuLevel.nodes.map(node => (
               <NavigationMenuItem
@@ -55,8 +55,8 @@ export default function NavigationMenu({
               />
             ))}
           </div>
-        )
-      })}
+        ))}
+      </div>
     </div>
   )
 }

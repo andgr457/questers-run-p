@@ -1,0 +1,46 @@
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('/images/questers-run-bg.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+@media (max-width: 1024px) {
+  body::before {
+    top: -19%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+  }
+}
+
+@media (max-width: 600px) {
+  body::before {
+    top: -19%;
+    left: -20%;
+    width: 140%;
+    height: 120%;
+    background-position: 25% bottom;
+  }
+}
