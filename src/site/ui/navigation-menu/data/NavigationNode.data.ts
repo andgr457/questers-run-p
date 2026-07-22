@@ -12,7 +12,7 @@ const ABOUT_NODES: NavigationNode[] = [
     parentId: 'about',
     title: 'Development',
     description: 'Explore the development process behind Quester\'s Run.',
-    navMode: 'development',
+    navMode: 'about-development',
     order: 1
   },
   {
@@ -37,6 +37,7 @@ const CONTACT_NODES: NavigationNode[] = [
     parentId: 'contact',
     title: 'Support',
     description: 'Get help with questions or issues.',
+    navMode: 'contact-support',
     order: 1
   },
   {
@@ -44,6 +45,7 @@ const CONTACT_NODES: NavigationNode[] = [
     parentId: 'contact',
     title: 'Marketing',
     description: 'Business and partnership inquiries.',
+    navMode: 'contact-marketing',
     order: 2
   }
 ]

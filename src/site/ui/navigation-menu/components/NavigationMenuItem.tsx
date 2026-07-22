@@ -6,6 +6,7 @@ interface NavigationMenuItemProps {
   node: NavigationNode
   menuIndex: number
   selected: boolean
+  active: boolean
   onSelect: (node: NavigationNode, menuIndex: number) => void
 }
 
@@ -13,6 +14,7 @@ export default function NavigationMenuItem({
   node,
   menuIndex,
   selected,
+  active,
   onSelect
 }: NavigationMenuItemProps) {
   function handleClick() {
@@ -32,7 +34,17 @@ export default function NavigationMenuItem({
   }
 
   return (
-    <div className={`${styles.item} ${selected ? styles.selected : ''}`}>
+    <div
+      className={`${styles.item} ${
+        selected
+          ? styles.selected
+          : ''
+      } ${
+        active
+          ? styles.active
+          : styles.inactive
+      }`}
+    >
       <button
         className={styles.button}
         title={node.description}
@@ -40,6 +52,7 @@ export default function NavigationMenuItem({
       >
         {node.title}
       </button>
+
       {(node.navMode || node.filterType) && (
         <button
           className={styles.navButton}

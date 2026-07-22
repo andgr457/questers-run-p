@@ -11,6 +11,14 @@
   opacity: 1;
 }
 
+.inactive {
+  opacity: 0.65;
+}
+
+.active {
+  opacity: 1;
+}
+
 .button {
   cursor: pointer;
   padding: 0.5rem 0.75rem;
@@ -38,16 +46,11 @@
   color: white;
   font-size: 0.8rem;
   font-weight: 600;
-  transition: background 300ms ease, opacity 300ms ease;
 }
 
 .button:hover,
 .navButton:hover {
   opacity: 0.85;
-}
-
-.navButton:hover {
-  background: rgba(255,255,255,0.15);
 }
 
 .desktop {

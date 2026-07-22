@@ -1,14 +1,15 @@
 export type NavigationNodeId = string
 
 export type NavigationMode =
-  | 'about'
   | 'about-game'
-  | 'about-developer'
+  | 'about-development'
   | 'lore'
   | 'development'
   | 'encyclopedia'
   | 'locations'
-  | 'contact'
+  | 'contact-support'
+  | 'contact-marketing'
+
 
 export type NavigationFilterType =
   | 'beastiary'

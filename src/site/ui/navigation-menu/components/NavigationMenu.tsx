@@ -2,7 +2,7 @@ import styles from './NavigationMenu.module.css'
 import NavigationMenuLevel from './NavigationMenuLevel'
 import type { NavigationNode } from '../types/NavigationNode.types'
 
-interface NavigationMenuLevelData {
+interface NavigationMenuLevel {
   nodes: NavigationNode[]
   selectedNode?: NavigationNode
 }
@@ -12,7 +12,8 @@ interface NavigationMenuProps {
   description: string
   layout: 'desktop' | 'vertical'
   activeMenuIndex: number
-  menuLevels: NavigationMenuLevelData[]
+  menuLevels: NavigationMenuLevel[]
+  onActivate: (menuIndex: number) => void
   onSelect: (node: NavigationNode, menuIndex: number) => void
 }
 
@@ -22,10 +23,9 @@ export default function NavigationMenu({
   layout,
   activeMenuIndex,
   menuLevels,
+  onActivate,
   onSelect
 }: NavigationMenuProps) {
-  const levelOffset = activeMenuIndex * 120
-
   return (
     <div className={`${styles.menu} ${styles[layout]}`}>
       {title && (
@@ -41,14 +41,7 @@ export default function NavigationMenu({
         </div>
       )}
 
-      <div
-        className={styles.levels}
-        style={{
-          transform: layout === 'desktop'
-            ? `translateY(-${levelOffset}px)`
-            : `translateX(-${levelOffset}px)`
-        }}
-      >
+      <div className={styles.levels}>
         {menuLevels.map((menuLevel, menuIndex) => (
           <NavigationMenuLevel
             key={menuIndex}
@@ -57,6 +50,7 @@ export default function NavigationMenu({
             menuIndex={menuIndex}
             layout={layout}
             active={activeMenuIndex === menuIndex}
+            onActivate={onActivate}
             onSelect={onSelect}
           />
         ))}

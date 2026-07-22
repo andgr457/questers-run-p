@@ -45,33 +45,38 @@ export default function NavigationWrapper({
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
   }
 
-  const getSelectedPath = () => {
-    return menuLevels
+  const getNavigationTitle = () => {
+    const selectedPath = menuLevels
       .map(level => level.selectedNode)
       .filter(Boolean) as NavigationNode[]
-  }
 
-  const getNavigationTitle = () => {
-    const path = getSelectedPath()
-    const selected = path[path.length - 1]
+    const selectedNode = selectedPath[selectedPath.length - 1]
 
-    if(!selected){
+    if(!selectedNode){
       return ''
     }
 
-    const parent = path[path.length - 2]
+    const parentNode = selectedPath[selectedPath.length - 2]
 
-    if(parent){
-      return `${parent.title} · ${selected.title}`
+    if(parentNode){
+      return `${parentNode.title} · ${selectedNode.title}`
     }
 
-    return selected.title
+    return selectedNode.title
   }
 
   const getNavigationDescription = () => {
-    const path = getSelectedPath()
+    const selectedPath = menuLevels
+      .map(level => level.selectedNode)
+      .filter(Boolean) as NavigationNode[]
 
-    return path[path.length - 1]?.description ?? ''
+    return selectedPath[selectedPath.length - 1]?.description ?? ''
+  }
+
+  const handleMenuActivate = (
+    menuIndex: number
+  ) => {
+    setActiveMenuIndex(menuIndex)
   }
 
   const handleNodeSelect = (
@@ -123,6 +128,7 @@ export default function NavigationWrapper({
         layout={layout}
         activeMenuIndex={activeMenuIndex}
         menuLevels={menuLevels}
+        onActivate={handleMenuActivate}
         onSelect={handleNodeSelect}
       />
     </div>
