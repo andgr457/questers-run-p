@@ -68,14 +68,17 @@ class PlayerRuntimeService {
     eventBus.emit({
       id: crypto.randomUUID(),
       parentEventId: event.id,
-      type: 'player:token:added'
+      type: 'player:token:added',
+      meta: {
+        characterTokens: event.meta.characterTokens
+      }
     })
     eventBus.emit({
       id: crypto.randomUUID(),
       type: 'player:save',
       parentEventId: event.id,
       meta: {
-        player: this.player
+        player: this.player,
       }
     })
   }

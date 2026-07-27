@@ -1,0 +1,86 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding: 14px 18px;
+
+  border-radius: 8px;
+
+  letter-spacing: 1px;
+  transition: background 0.2s ease;
+}
+
+.topRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.name {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  letter-spacing: 2px;
+}
+
+.className {
+  margin-top: 2px;
+
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.level {
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.infoRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 0.82rem;
+  opacity: 0.9;
+}
+
+.gold {
+  justify-self: end;
+}
+
+.bars {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+.bars > * {
+  width: 100%;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 6px;
+
+  background: var(--bg-dark-4);
+
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+.action:hover {
+  transform: rotate(90deg);
+}
+
+.rotate {
+  transition: transform 0.3s ease;
+}

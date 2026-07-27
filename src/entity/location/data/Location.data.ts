@@ -18,6 +18,23 @@ const DISTANCES = {
   IN_TOWN: 500
 }
 
+export const GAME_LOCATION_ORON_ADVENTURERS_GUILD: LocationEntity = {
+  id: GAME_LOCATION_IDS.ORON_ADV_GUILD,
+  name: 'Oron Adventurer\'s Guild',
+  description: 'Oron\'s own Adventurers Guild where you first sign up to accept quests.',
+  linkedLocationIds: [
+    GAME_LOCATION_IDS.ORON_TOWN,
+  ],
+  type: 'adv_guild',
+  mobIds: [],
+  itemIds: [],
+  level: 1,
+  travelMs: DISTANCES.IN_TOWN,
+  questIds: [
+    ...Object.values(GAME_QUESTS_ORON_IDS)
+  ]
+}
+
 export const GAME_LOCATIONS: LocationEntity[] = [
   {
     id: GAME_LOCATION_IDS.ORON_WOODS_1,
@@ -51,22 +68,7 @@ export const GAME_LOCATIONS: LocationEntity[] = [
       
     ]
   },
-  {
-    id: GAME_LOCATION_IDS.ORON_ADV_GUILD,
-    name: 'Oron Adventurer\'s Guild',
-    description: 'Oron\'s own Adventurers Guild where you first sign up to accept quests.',
-    linkedLocationIds: [
-      GAME_LOCATION_IDS.ORON_TOWN,
-    ],
-    type: 'adv_guild',
-    mobIds: [],
-    itemIds: [],
-    level: 1,
-    travelMs: DISTANCES.IN_TOWN,
-    questIds: [
-      ...Object.values(GAME_QUESTS_ORON_IDS)
-    ]
-  },
+  GAME_LOCATION_ORON_ADVENTURERS_GUILD,
   {
     id: GAME_LOCATION_IDS.ORON_PLAINS,
     name: 'Oron Plains',

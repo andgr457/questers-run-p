@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 
-import React from 'react'
+// import React from 'react'
 import { clockRuntimeService } from './engine/clock/ClockRuntimeService.ts'
 import { characterRuntimeService } from './engine/character/CharacterRuntimeService.ts'
 import { playerRuntimeService } from './engine/player/PlayerRuntimeService.ts'
@@ -12,6 +12,8 @@ import { transitionRuntimeService } from './engine/transition/TransitionRuntimeS
 import { partyRuntimeService } from './engine/party/PartyRuntimeService.ts'
 import { rewardsRuntimeService } from './engine/rewards/RewardsRuntimeService.ts'
 import { questRuntimeService } from './engine/quest/QuestRuntimeService.ts'
+
+console.log('main start')
 clockRuntimeService.start()
 eventDebugRuntimeService.init()
 transitionRuntimeService.init()
@@ -24,10 +26,9 @@ notificationRuntimeService.init()
 tutorialRuntimeService.init()
 questRuntimeService.init()
 questRuntimeService.start()
+console.log('main runtime services initialized')
 
 createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <App />
 )
 

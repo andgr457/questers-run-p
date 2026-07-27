@@ -1,7 +1,7 @@
 import { eventBus } from '../../../../engine/event/EventBus'
 import GamePanel from '../../../../ui/panel/GamePanel'
 import CharacterListItem from './CharacterListItem'
-import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider'
+// import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider'
 import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial'
 import { useCharacters } from '../../../../engine/character/hooks/useCharacters'
 import { usePlayer } from '../../../../engine/player/hooks/usePlayer'
@@ -10,17 +10,17 @@ export type CharacterListMode = 'list'
   | 'detail'
 
 export default function CharacterList() {
-  const {showConfirm} = useConfirm()
+  // const {showConfirm} = useConfirm()
   const {characters} = useCharacters()
   const {player} = usePlayer()
   const {tutorial} = useTutorial()
 
   const newCharacterBtnFn = !player?.characterTokens ? async () => {
-    await showConfirm({
-      isYesNo: false,
-      message: `Complete tutorials, gain achievements, and level your player to earn more character tokens.`,
-      title: 'Not Enough Character Tokens'
-    })
+    // await showConfirm({
+    //   isYesNo: false,
+    //   message: `Complete tutorials, gain achievements, and level your player to earn more character tokens.`,
+    //   title: 'Not Enough Character Tokens'
+    // })
   } : () => {
     eventBus.emit({
       id: crypto.randomUUID(),

@@ -1,6 +1,6 @@
 import { eventBus } from '../../../../engine/event/EventBus'
 import { ContextMenuIcon } from '../../../../game/context-menu/data/ContextMenuIcon.data'
-import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider'
+// import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider'
 import LocationList from '../../../location/components/list/LocationList'
 import type { CharacterEntity } from '../../types/CharacterEntity.types'
 import type { CharacterManageMode } from './CharacterManage'
@@ -22,7 +22,7 @@ export default function CharacterManageTravel(props: Props){
     setMode,
     setViewLocation
   } = props
-  const {showConfirm} = useConfirm()
+  // const {showConfirm} = useConfirm()
   const {tutorial} = useTutorial()
   return <div className={styles.section}>
     <div className={styles.subtitle}>Travel</div>
@@ -46,11 +46,11 @@ export default function CharacterManageTravel(props: Props){
               isTutorial: characterCanTravelTo && isTutorial,
               fn: async (entity) => {
                 if(!characterCanTravelTo){
-                  await showConfirm({
-                    isYesNo: false,
-                    title: 'Location Locked',
-                    message: `${character.name} (Level ${character.level}) does not meet the required level to travel to ${l.name} (Level ${l.level}).`
-                  })
+                  // await showConfirm({
+                  //   isYesNo: false,
+                  //   title: 'Location Locked',
+                  //   message: `${character.name} (Level ${character.level}) does not meet the required level to travel to ${l.name} (Level ${l.level}).`
+                  // })
                   return
                 }
                 eventBus.emit({

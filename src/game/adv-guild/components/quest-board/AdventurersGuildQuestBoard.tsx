@@ -4,7 +4,7 @@ import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial';
 import type { LocationEntity } from '../../../../entity/location/types/LocationEntity.types';
 import QuestList, { type QuestWithActions } from '../../../../entity/quest/components/list/QuestList';
 import type { QuestEntity } from '../../../../entity/quest/types/QuestEntity.types';
-import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider';
+// import { useConfirm } from '../../../../ui/modal/providers/ConfirmProvider';
 import GamePanel from '../../../../ui/panel/GamePanel';
 import GamePanelSection from '../../../../ui/panel/GamePanelSection';
 import { ContextMenuIcon } from '../../../context-menu/data/ContextMenuIcon.data';
@@ -27,7 +27,7 @@ export default function AdventurersGuildQuestBoard(props: Props) {
   const {tutorial} = useTutorial()
   const {characterQuests} = useCharacterQuests()
   const {managedCharacter} = useManagedCharacter()
-  const {showConfirm} = useConfirm()
+  // const {showConfirm} = useConfirm()
 
   const questsWithActions: QuestWithActions[] = []
   
@@ -71,13 +71,13 @@ export default function AdventurersGuildQuestBoard(props: Props) {
           title: characterCanTakeQuest ? 'Take Quest' : 'Quest Requirements Not Met',
           icon: characterCanTakeQuest ? ContextMenuIcon.start : ContextMenuIcon.prohibited,
           isTutorial: characterCanTakeQuest && isTutorial,
-          fn: async (entity: QuestEntity) => {
+          fn: async () => {
             if(!characterCanTakeQuest){
-              await showConfirm({
-                isYesNo: false,
-                title: 'Quest Locked',
-                message: `${managedCharacter?.name} does not meet the requirements to take the quest "${entity.title}".`,
-              })
+              // await showConfirm({
+              //   isYesNo: false,
+              //   title: 'Quest Locked',
+              //   message: `${managedCharacter?.name} does not meet the requirements to take the quest "${entity.title}".`,
+              // })
               return
             }
           }

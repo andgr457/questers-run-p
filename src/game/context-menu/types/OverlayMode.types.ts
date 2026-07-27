@@ -1,6 +1,10 @@
-export type OverlayMode =
+export type OverlayMode = 'world'
+  | 'character_quest'
+  | 'character_hunt'
+  | 'character_profession'
+  | 'character_upgrade'
+
   | 'intro'
-  | 'world'
   | 'transition'
   | 'notifications'
   | 'dashboard'

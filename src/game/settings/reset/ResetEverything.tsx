@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { characterRuntimeService } from '../../../engine/character/CharacterRuntimeService'
 import { playerRuntimeService } from '../../../engine/player/PlayerRuntimeService'
-import { useConfirm } from '../../../ui/modal/providers/ConfirmProvider'
+// import { useConfirm } from '../../../ui/modal/providers/ConfirmProvider'
 import GamePanelSection from '../../../ui/panel/GamePanelSection'
 import DetailRow from '../../detail/DetailRow'
 import type { SettingsMode } from '../types/SettingsPanel.types'
@@ -11,17 +11,17 @@ interface Props {
 }
 
 export default function ResetEverything(props: Props) {
-  const {showConfirm} = useConfirm()
+  // const {showConfirm} = useConfirm()
   const {
     setSettingsMode
   } = props
   const handleResetEverythingClicked = useCallback(async () => {
-    const confirmResult = await showConfirm({
-      isYesNo: true,
-      title: 'Confirm Full Reset',
-      message: 'Are you absolutely sure you want to do this?'
-    })
-    if(!confirmResult) return
+    // const confirmResult = await showConfirm({
+    //   isYesNo: true,
+    //   title: 'Confirm Full Reset',
+    //   message: 'Are you absolutely sure you want to do this?'
+    // })
+    // if(!confirmResult) return
 
     localStorage.clear()
     window.location.reload()  

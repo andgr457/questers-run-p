@@ -1,5 +1,9 @@
 import { formatDateFromMillis } from '../../engine/clock/utils/formatTimeRemaining';
 
+export const wait = (ms: number) =>
+    new Promise(resolve => setTimeout(resolve, ms));
+
+
 export function formatPrimitiveValueToString(
   value: string | number | boolean,
   isDate: boolean = false,

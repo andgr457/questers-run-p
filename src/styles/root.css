@@ -129,7 +129,6 @@ html, body, #root {
   background: var(--bg-dark-1);
   color: var(--text);
 
-  overflow-x: hidden;
 }
 
 
@@ -176,6 +175,13 @@ html, body, #root {
   pointer-events: none;
   content: '🛇';
   color: var(--danger);
+}
+
+.sticky-player {
+  position: -webkit-sticky; 
+  position: sticky;
+  z-index: 1000;
+  top: 0;
 }
 
 @keyframes pulse {
