@@ -3,6 +3,7 @@ export type OverlayMode = 'world'
   | 'character_hunt'
   | 'character_profession'
   | 'character_upgrade'
+  | 'character_summon'
 
   | 'intro'
   | 'transition'

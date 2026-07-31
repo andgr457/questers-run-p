@@ -9,12 +9,12 @@
 
   z-index: 9999;
   opacity: 0;
-  transition: opacity 500ms ease;
+  transition: opacity 250ms ease;
 }
 
 .backdrop.show {
   opacity: 1;
-  transition: opacity 500ms ease;
+  transition: opacity 250ms ease;
 }
 
 .layout {
@@ -23,13 +23,33 @@
   border-radius: 5px;
 }
 
-.container {
-  border-radius: 10px;
-  max-width: 90%;
-  min-width: 50%;
-  overscroll-behavior-y: contain;
-  box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-  letter-spacing: 1px;
-  font-size: 12px;
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: solid 1px var(--bg-dark-3);
+}
+
+.title {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.subTitle {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  opacity: .8;
+}
+
+.closeButton {
+  cursor: pointer;
+  padding: 10px;
+}
+
+.children hr {
+  opacity: .8;
 }
 

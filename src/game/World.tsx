@@ -9,10 +9,13 @@ import { useCharacters } from '../engine/character/hooks/useCharacters'
 import CharacterList from './character/components/list/CharacterList'
 import PlayerDetail from './player/components/detail/PlayerDetail'
 import CharacterQuestList from './character/components/quest/CharacterQuestList'
+import CharacterNewListItem from './character/components/list/CharacterNewListItem'
+import { clockRuntimeService } from '../engine/clock/ClockRuntimeService'
+import SummonCharacterOverlay from '../ui/overlays/summon-character/SummonCharacterOverlay'
 
 export default function World() {
   console.log('world start')
-  const [overlayMode, setOverlayMode] = useState<OverlayMode>('world')
+  const [overlayMode, setOverlayMode] = useState<OverlayMode>('character_summon')
   const {player} = usePlayer()
   const {characters} = useCharacters()
   console.log('world player', player)
@@ -67,59 +70,89 @@ export default function World() {
             characterTokens: 1
           }
         })
-        setTimeout(() => {
-          const warrior = GAME_CHARACTER_CLASSES.cc_warrior
-          eventBus.emit({
-            id: crypto.randomUUID(),
-            type: 'character:save',
-            meta: {
-              character: {
-                id:  crypto.randomUUID(),
-                name: 'Marcus Oron',
-                agility: warrior.agility,
-                intellect: warrior.intellect,
-                strength: warrior.strength,
-                classId: warrior.id,
-                hp: 100,
-                hpMax: 100,
-                mana: 10,
-                manaMax: 10,
-                stamina: 100,
-                staminaMax: 100,
-                isIdle: true,
-                level: 1,
-                locationId: GAME_LOCATION_IDS.ORON_ADV_GUILD,
-                playerId: playerId,
-                xp: 0,
-                xpNextLevel: 100,
-                partyId: undefined
-              }
-            }
-          })
-          setTimeout(() => {
-            eventBus.emit({
+        eventBus.emit({
+          id: crypto.randomUUID(),
+          type: 'player:gold',
+          meta: {
+            playerGoldTransaction: {
+              amount: 100,
+              date: clockRuntimeService.getNow(),
               id: crypto.randomUUID(),
-              type: 'player:token',
-              meta: {
-                characterTokens: -1
-              }
-            })
-          }, 100)
-        }, 1000)
+            }
+          }
+        })
+        // setTimeout(() => {
+        //   const warrior = GAME_CHARACTER_CLASSES.cc_warrior
+        //   eventBus.emit({
+        //     id: crypto.randomUUID(),
+        //     type: 'character:save',
+        //     meta: {
+        //       character: {
+        //         id:  crypto.randomUUID(),
+        //         name: 'Marcus Oron',
+        //         agility: warrior.agility,
+        //         intellect: warrior.intellect,
+        //         strength: warrior.strength,
+        //         classId: warrior.id,
+        //         hp: 100,
+        //         hpMax: 100,
+        //         mana: 10,
+        //         manaMax: 10,
+        //         stamina: 100,
+        //         staminaMax: 100,
+        //         isIdle: true,
+        //         level: 1,
+        //         locationId: GAME_LOCATION_IDS.ORON_ADV_GUILD,
+        //         playerId: playerId,
+        //         xp: 0,
+        //         xpNextLevel: 100,
+        //         partyId: undefined
+        //       }
+        //     }
+        //   })
+        //   setTimeout(() => {
+        //     eventBus.emit({
+        //       id: crypto.randomUUID(),
+        //       type: 'player:token',
+        //       meta: {
+        //         characterTokens: -1
+        //       }
+        //     })
+        //   }, 100)
+        // }, 1000)
       }, 1000)
     }
   }, [])
 
   return (
     <>
+      <SummonCharacterOverlay 
+        active={overlayMode === 'character_summon'}
+        setActive={(value) => {
+          console.log('set active triggered')
+          if(value === false){
+            eventBus.emit({
+              id: crypto.randomUUID(),
+              type: 'world:mode:change',
+              meta: {
+                worldMode: 'world'
+              }
+            })
+          }
+        }} 
+        waitMs={2500}
+      />
+      
       {overlayMode === 'character_quest' && (
         <CharacterQuestList />
       )}
-      <div className='sticky-player'>
-        <PlayerDetail />
+      <div style={overlayMode === 'world' ? {opacity: 1, transition: 'opacity 500ms ease'} : {opacity: 0.2, transition: 'opacity 500ms ease'}}>
+        <div className='sticky-player'>
+          <PlayerDetail />
+        </div>
+        {<CharacterNewListItem />}
+        {<CharacterList />}
       </div>
-      {<CharacterList />}
-
     </>
   )
 }

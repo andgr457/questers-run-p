@@ -31,28 +31,31 @@ export default function PlayerDetail(){
       if(event.type === 'player:gold:added'){
         showFloatingTextSequence([{
           ref: goldRef,
-          text: `+${formatPrimitiveValueToString(event.meta?.gold ?? 0)}g`,
+          text: `+${formatPrimitiveValueToString(event.meta?.gold ?? 0)}`,
           color: GOLD_COLOR,
         }])
       }
       if(event.type === 'player:xp:added'){
         showFloatingTextSequence([{
           ref: xpRef,
-          text: `+${formatPrimitiveValueToString(event.meta?.xp ?? 0)} XP`,
+          text: `+${formatPrimitiveValueToString(event.meta?.xp ?? 0)}`,
           color: XP_COLOR,
         }])
       }
       if(event.type === 'player:token:added'){
+        const token = event.meta?.characterTokens ?? 0
+        const isNegative = token < 0
+
         showFloatingTextSequence([{
           ref: characterTokensRef,
-          text: `${formatPrimitiveValueToString(event.meta?.characterTokens ?? 0)} Token(s)`,
+          text: `${isNegative ? '' : '+'}${formatPrimitiveValueToString(event.meta?.characterTokens ?? 0)}`,
           color: TOKEN_COLOR,
         }])
       }
       if(event.type === 'player:level'){
         showFloatingTextSequence([{
           ref: levelRef,
-          text: `Level Up: ${event.meta?.level}!`,
+          text: `+${event.meta?.level}`,
           color: LEVEL_COLOR,
         }])
       }
@@ -115,15 +118,15 @@ export default function PlayerDetail(){
         </div>
       </div>
 
-      <div ref={levelRef} className={styles.level}>
+      <div ref={levelRef} >
         Lv. {player.level}
       </div>
-      <div ref={characterTokensRef} className={styles.gold}>
+      <div ref={characterTokensRef}>
         <div title='Character Create Tokens'>
           <span style={{color: 'var(--blue-sd-lighter-2)'}}>⌬</span> {player.characterTokens}
         </div>
       </div>
-      <div ref={goldRef} className={styles.gold}>
+      <div ref={goldRef}>
         <GoldDetail gold={playerGold} />
       </div>
     </div>

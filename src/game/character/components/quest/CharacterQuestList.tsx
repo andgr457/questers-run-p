@@ -4,6 +4,8 @@ import { useManagedCharacter } from '../../../../engine/character/hooks/useManag
 import { eventBus } from '../../../../engine/event/EventBus';
 import { getLocationById } from '../../../../entity/location/utils/Location.utils';
 import { GAME_QUESTS } from '../../../../entity/quest/data/Quest.data';
+import CharacterListItem from '../list/CharacterListItem';
+import type { CharacterEntity } from '../../../../entity/character/types/CharacterEntity.types';
 
 export default function CharacterQuestList(){
   const [show, setShow] = useState(false)
@@ -12,7 +14,7 @@ export default function CharacterQuestList(){
   useEffect(() => {
     setTimeout(() => {
       setShow(true)
-    }, 50)
+    }, 5)
   }, [])
 
   const currentLocation = getLocationById(
@@ -25,6 +27,10 @@ export default function CharacterQuestList(){
 
   return <PopUpModal
     show={show}
+    title={<div>Quests</div>}
+    subTitle={<div>
+      {currentLocation.name}
+    </div>}
     onClose={() => {
       setShow(false)
       setTimeout(() => {
@@ -35,20 +41,21 @@ export default function CharacterQuestList(){
             worldMode: 'world'
           }
         })
-      }, 500)
+      }, 5)
     }}
   >
     <div>
-      {currentLocation.name} Quests
+      <CharacterListItem 
+        character={managedCharacter as CharacterEntity} 
+        showActions={false}
+      />
     </div>
-    <hr/>
     <div>
       Selected Quest
     </div>
     <div>
       Quest Info
     </div>
-    <hr/>
     <div>
       {locationQuests.length} Available Quest(s)
     </div>

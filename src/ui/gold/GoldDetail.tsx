@@ -7,7 +7,7 @@ export default function GoldDetail(props: Props){
   const {
     gold,
   } = props
-  return <div title='Gold'>
+  return <>
     <span style={{color: 'gold'}}>◉</span> {gold}g
-  </div>
+  </>
 }

@@ -13,11 +13,13 @@ import { getLocationById } from '../../../../entity/location/utils/Location.util
 
 interface Props {
   character: CharacterEntity
+  showActions?: boolean
 }
 
 export default function CharacterListItem(props: Props) {
   const {
     character,
+    showActions = true
   } = props
 
   const [gold, setGold] = useState(getCharacterGold(character.id))
@@ -53,33 +55,36 @@ export default function CharacterListItem(props: Props) {
             Lv. {character.level} {className}
           </div>
         </div>
-        
-        <button className='action button'
-          onClick={() => {
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: 'character:manage',
-              meta: {
-                characterId: character.id
-              }
-            })
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: 'world:mode:change',
-              meta: {
-                worldMode: 'character_quest'
-              }
-            })
-          }}
-        >
-          Quest
-        </button>
-        <button className='action button'>
-          Hunt
-        </button>
-        <button className='action button'>
-          Profession
-        </button>
+        {showActions && (
+          <div>
+            <button className='action button'
+              onClick={() => {
+                eventBus.emit({
+                  id: crypto.randomUUID(),
+                  type: 'character:manage',
+                  meta: {
+                    characterId: character.id
+                  }
+                })
+                eventBus.emit({
+                  id: crypto.randomUUID(),
+                  type: 'world:mode:change',
+                  meta: {
+                    worldMode: 'character_quest'
+                  }
+                })
+              }}
+            >
+              Quest
+            </button>
+            <button className='action button'>
+              Hunt
+            </button>
+            <button className='action button'>
+              Profession
+            </button>
+          </div>          
+        )}
       </div>
       
       <div className={styles.infoRow}>

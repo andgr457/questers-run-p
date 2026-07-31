@@ -22,7 +22,10 @@ export function usePlayer(){
         return
       }
       
-      if(event.type === 'player:saved'){
+      if(event.type === 'player:saved'
+        || event.type.includes(':added')
+        || event.type === 'player:level'
+      ){
         setPlayer(playerRuntimeService.getPlayer())
         setPlayerGoldTxns(playerRuntimeService.getPlayerGoldTransactions())
         setPlayerGold(getPlayerGold())
