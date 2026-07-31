@@ -77,6 +77,9 @@ export interface GameEvent_WorldModeChange extends GameEvent {
   type: 'world:mode:change'
   meta: {
     worldMode: OverlayMode
+    warpOverlayModeOnComplete?: OverlayMode
+    warpOverlayWaitMs?: number
+    warpOverlayText?: string
   }
 }
 
@@ -172,6 +175,10 @@ export type EventMeta = {
   isDebugMode?: boolean
   worldMode?: OverlayMode
   worldModePrevious?: OverlayMode
+  warpOverlayModeOnComplete?: OverlayMode
+  warpOverlayWaitMs?: number
+  warpOverlayText?: string
+  
   transition?: Transition
   destination?: LocationEntity
   departure?: LocationEntity

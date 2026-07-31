@@ -147,6 +147,16 @@ export default function CharacterListItem(props: Props) {
           showValues={false}
         />
       </div>
+      <ProgressBar
+        value={getProgress(
+          character.stamina,
+          character.staminaMax
+        )}
+        max={character.staminaMax}
+        color="#6d706e"
+        showValues={false}
+        showLabel={false}
+      />
     </div>
   )
 }

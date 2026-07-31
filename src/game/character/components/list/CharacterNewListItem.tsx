@@ -51,8 +51,8 @@ export default function CharacterNewListItem() {
   const reset = () => {
     setSelectedClassRole(undefined)
     setSelectedClassId(undefined)
-    setState('main')
     setExpanded(false)
+    setState('main')
   }
 
   return (
@@ -174,36 +174,51 @@ export default function CharacterNewListItem() {
                         characterTokens: -1
                       }
                     })
+                    reset()
+
                     setTimeout(() => {
                       eventBus.emit({
                         id: crypto.randomUUID(),
-                        type: 'character:save',
+                        type: 'world:mode:change',
                         meta: {
-                          character: {
-                            id: crypto.randomUUID(),
-                            playerId: player.id,
-                            classId: selectedClassId,
-                            hp: 100,
-                            hpMax: 100,
-                            mana: 100,
-                            manaMax: 100,
-                            stamina: 100,
-                            staminaMax: 100,
-                            agility: selectedClass.agility,
-                            intellect: selectedClass.intellect,
-                            strength: selectedClass.strength,
-                            isIdle: true,
-                            level: 1,
-                            locationId: GAME_LOCATION_IDS.ORON_ADV_GUILD,
-                            xp: 0,
-                            xpNextLevel: 100,
-                            partyId: undefined,
-                            name: `Summoned Character #${characters.length + 1}`
-                          }
+                          worldMode: 'warp',
+                          warpOverlayModeOnComplete: 'world',
+                          warpOverlayWaitMs: 2000,
+                          warpOverlayText: 'Summoning Character'
                         }
                       })
-                    }, 500)
-                    reset()
+                      setTimeout(() => {
+                        eventBus.emit({
+                          id: crypto.randomUUID(),
+                          type: 'character:save',
+                          meta: {
+                            character: {
+                              id: crypto.randomUUID(),
+                              playerId: player.id,
+                              classId: selectedClass.id,
+                              hp: 100,
+                              hpMax: 100,
+                              mana: 100,
+                              manaMax: 100,
+                              stamina: 100,
+                              staminaMax: 100,
+                              agility: selectedClass.agility,
+                              intellect: selectedClass.intellect,
+                              strength: selectedClass.strength,
+                              isIdle: true,
+                              level: 1,
+                              locationId: GAME_LOCATION_IDS.ORON_ADV_GUILD,
+                              xp: 0,
+                              xpNextLevel: 100,
+                              partyId: undefined,
+                              name: `Summoned Character #${characters.length + 1}`
+                            }
+                          }
+                        })
+                        
+                      }, 5000)
+
+                    }, 750)
                   }}
                 >
                   Summon

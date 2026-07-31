@@ -127,7 +127,7 @@ export default function PlayerDetail(){
         </div>
       </div>
       <div ref={goldRef}>
-        <GoldDetail gold={playerGold} />
+        <span style={{color: 'gold'}}>◉</span> {playerGold}g
       </div>
     </div>
 

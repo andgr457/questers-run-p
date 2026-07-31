@@ -45,10 +45,7 @@ export default function CharacterQuestList(){
     }}
   >
     <div>
-      <CharacterListItem 
-        character={managedCharacter as CharacterEntity} 
-        showActions={false}
-      />
+      {managedCharacter?.name}
     </div>
     <div>
       Selected Quest

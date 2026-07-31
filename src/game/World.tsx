@@ -3,19 +3,21 @@ import { useEffect, useState } from 'react'
 import { eventBus } from '../engine/event/EventBus'
 import type { OverlayMode } from './context-menu/types/OverlayMode.types'
 import { usePlayer } from '../engine/player/hooks/usePlayer'
-import { GAME_CHARACTER_CLASSES } from '../entity/character-class/data/CharacterClassEntity.data'
-import { GAME_LOCATION_IDS } from '../entity/location/data/Location.data'
 import { useCharacters } from '../engine/character/hooks/useCharacters'
 import CharacterList from './character/components/list/CharacterList'
 import PlayerDetail from './player/components/detail/PlayerDetail'
 import CharacterQuestList from './character/components/quest/CharacterQuestList'
 import CharacterNewListItem from './character/components/list/CharacterNewListItem'
 import { clockRuntimeService } from '../engine/clock/ClockRuntimeService'
-import SummonCharacterOverlay from '../ui/overlays/summon-character/SummonCharacterOverlay'
+import WarpOverlay from '../ui/overlays/warp/WarpOverlay'
 
 export default function World() {
   console.log('world start')
-  const [overlayMode, setOverlayMode] = useState<OverlayMode>('character_summon')
+  const [overlayMode, setOverlayMode] = useState<OverlayMode>('warp')
+  const [warpOverlayText, setWarpOverlayText] = useState<string>('Quester\'s Run')
+  const [warpOverlayModeOnComplete, setWarpOverlayModeOnComplete] = useState<OverlayMode>('world')
+  const [warpOverlayWaitMs, setWarpOverlayWaitMs] = useState<number>(2000)
+
   const {player} = usePlayer()
   const {characters} = useCharacters()
   console.log('world player', player)
@@ -24,17 +26,19 @@ export default function World() {
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
       if(event.type === 'world:mode:change'){
-        eventBus.emit({
-          id: crypto.randomUUID(),
-          type: 'world:mode:changing',
-          meta: {
-            worldMode: event.meta?.worldMode,
-            worldModePrevious: overlayMode
-          }
-        })
+        const worldMode = event.meta?.worldMode
+        if(worldMode === 'warp'){
+          const text = event.meta?.warpOverlayText
+          const onCompleteMode = event.meta?.warpOverlayModeOnComplete
+          const waitMs = event.meta?.warpOverlayWaitMs
+          setWarpOverlayText(text ?? 'Loading')
+          setWarpOverlayModeOnComplete(onCompleteMode ?? 'world')
+          setWarpOverlayWaitMs(waitMs ?? 2000)
+        }
+        
         setTimeout(() => {
           setOverlayMode(event.meta?.worldMode ?? 'world')
-        }, 250)
+        }, 500)
       }
          
     })
@@ -126,27 +130,17 @@ export default function World() {
 
   return (
     <>
-      <SummonCharacterOverlay 
-        active={overlayMode === 'character_summon'}
-        setActive={(value) => {
-          console.log('set active triggered')
-          if(value === false){
-            eventBus.emit({
-              id: crypto.randomUUID(),
-              type: 'world:mode:change',
-              meta: {
-                worldMode: 'world'
-              }
-            })
-          }
-        }} 
-        waitMs={2500}
+      <WarpOverlay 
+        text={warpOverlayText}
+        active={overlayMode === 'warp'}
+        overlayModeOnComplete={warpOverlayModeOnComplete} 
+        waitMs={warpOverlayWaitMs}
       />
       
       {overlayMode === 'character_quest' && (
         <CharacterQuestList />
       )}
-      <div style={overlayMode === 'world' ? {opacity: 1, transition: 'opacity 500ms ease'} : {opacity: 0.2, transition: 'opacity 500ms ease'}}>
+      <div style={overlayMode === 'world' ? {opacity: 1, transition: 'opacity 500ms ease'} : {opacity: 0, transition: 'opacity 500ms ease'}}>
         <div className='sticky-player'>
           <PlayerDetail />
         </div>
