@@ -74,6 +74,10 @@ export default function CharacterListItem(props: Props) {
         }
       })
     } else {
+      const questBase = character?.questSpeed ? BASE_QUEST_MS * (character.questSpeed ?? 1) : 0
+      const goldBase = character?.questGold ? BASE_QUEST_GOLD * (character.questGold ?? 1) : 0
+      const xpBase = character?.questXp ? BASE_QUEST_XP * (character.questXp ?? 1) : 0
+
       eventBus.emit({
         id: crypto.randomUUID(),
         type: 'activity:start',
@@ -81,10 +85,10 @@ export default function CharacterListItem(props: Props) {
           characterId: character.id,
           activityText: 'Questing',
           activityRuns: -1,
-          activityRunTimeMs: BASE_QUEST_MS / (character.questSpeed ?? 1),
+          activityRunTimeMs: BASE_QUEST_MS - questBase,
           activityType: 'questing',
-          gold: BASE_QUEST_GOLD / (character.questGold ?? 1),
-          xp: BASE_QUEST_XP / (character.questXp ?? 1),
+          gold: BASE_QUEST_GOLD - goldBase,
+          xp: BASE_QUEST_XP - xpBase,
         }
       })
     }

@@ -159,7 +159,34 @@ class CharacterRuntimeService {
     if(!character) return
     if(!event.meta || !event.meta.characterUpgrade) return
 
+    const upgrade = event.meta.characterUpgrade
+    if(upgrade.questSpeed){
+      if(!character.questSpeed) character.questSpeed = 1
+      character.questSpeed += upgrade.questSpeed
+    }
+    if(upgrade.questGold){
+      if(!character.questGold) character.questGold = 1
+      character.questGold += upgrade.questGold
+    }
+    if(upgrade.questXp){
+      if(!character.questXp) character.questXp = 1
+      character.questXp += upgrade.questXp
+    }
+
+    this.characters[character.id] = character
+    this.dirtyCharacters.add(character.id)
     
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      parentEventId: event.id,
+      type: 'character:upgrade:added',
+      meta: {
+        ...event.meta,
+        characterUpgrade: {
+          ...event.meta.characterUpgrade
+        }
+      }
+    })
   }
 
   private addXP(event: GameEvent) {

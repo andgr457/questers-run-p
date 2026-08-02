@@ -229,9 +229,9 @@ export default function CharacterNewListItem() {
                             xpNextLevel: 100,
                             partyId: undefined,
                             name: `Summoned Character #${characters.length + 1}`,
-                            questGold: 1,
-                            questSpeed: 1,
-                            questXp: 1
+                            questGold: 0,
+                            questSpeed: 0,
+                            questXp: 0
                           }
                         }
                       })
