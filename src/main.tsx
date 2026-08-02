@@ -12,6 +12,7 @@ import { transitionRuntimeService } from './engine/transition/TransitionRuntimeS
 import { partyRuntimeService } from './engine/party/PartyRuntimeService.ts'
 import { rewardsRuntimeService } from './engine/rewards/RewardsRuntimeService.ts'
 import { questRuntimeService } from './engine/quest/QuestRuntimeService.ts'
+import { activityRuntimeService } from './engine/activity/ActivityRuntimeService.ts'
 
 console.log('main start')
 clockRuntimeService.start()
@@ -26,6 +27,8 @@ notificationRuntimeService.init()
 tutorialRuntimeService.init()
 questRuntimeService.init()
 questRuntimeService.start()
+activityRuntimeService.init()
+activityRuntimeService.start()
 console.log('main runtime services initialized')
 
 createRoot(document.getElementById('root')!).render(

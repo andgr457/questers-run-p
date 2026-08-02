@@ -1,5 +1,11 @@
 import type { PartyRole } from '../types/PartyRole.types'
 
+export const GAME_PARTY_ROLE_IDS: PartyRole[] = [
+  'tank',
+  'healer',
+  'damage'
+]
+
 export const GAME_PARTY_ROLE_NAMES: Record<PartyRole, string> = {
   tank: 'Tank',
   healer: 'Healer',

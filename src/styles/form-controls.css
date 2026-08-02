@@ -136,6 +136,11 @@ textarea:disabled {
 
 }
 
+.button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .button:hover {
   filter: brightness(1.2);
   transition: filter 1s;

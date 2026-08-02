@@ -10,16 +10,20 @@ import CharacterQuestList from './character/components/quest/CharacterQuestList'
 import CharacterNewListItem from './character/components/list/CharacterNewListItem'
 import { clockRuntimeService } from '../engine/clock/ClockRuntimeService'
 import WarpOverlay from '../ui/overlays/warp/WarpOverlay'
+import { useTutorial } from '../engine/tutorial/hooks/useTutorial'
+import TutorialBar from './tutorial/components/bar/TutorialBar'
+import CharacterUpgradeList from './character/upgrade/CharacterUpgradeList'
 
 export default function World() {
   console.log('world start')
-  const [overlayMode, setOverlayMode] = useState<OverlayMode>('warp')
+  const [overlayMode, setOverlayMode] = useState<OverlayMode>('world')
   const [warpOverlayText, setWarpOverlayText] = useState<string>('Quester\'s Run')
   const [warpOverlayModeOnComplete, setWarpOverlayModeOnComplete] = useState<OverlayMode>('world')
   const [warpOverlayWaitMs, setWarpOverlayWaitMs] = useState<number>(2000)
 
   const {player} = usePlayer()
   const {characters} = useCharacters()
+  const {tutorial} = useTutorial()
   console.log('world player', player)
   console.log('world characters', characters)
 
@@ -140,10 +144,16 @@ export default function World() {
       {overlayMode === 'character_quest' && (
         <CharacterQuestList />
       )}
+      {overlayMode === 'character_upgrade' && (
+        <CharacterUpgradeList />
+      )}
       <div style={overlayMode === 'world' ? {opacity: 1, transition: 'opacity 500ms ease'} : {opacity: 0, transition: 'opacity 500ms ease'}}>
         <div className='sticky-player'>
           <PlayerDetail />
         </div>
+        {tutorial && (
+          <TutorialBar />
+        )}
         {<CharacterNewListItem />}
         {<CharacterList />}
       </div>

@@ -37,7 +37,12 @@ export default function PopUpModal(props: Props){
               </div>
             )}
           </div>
-          <div className={styles.closeButton}>
+          <div 
+            className={styles.closeButton}
+            onClick={() => {
+              onClose()
+            }} 
+          >
             X
           </div>
         </div>

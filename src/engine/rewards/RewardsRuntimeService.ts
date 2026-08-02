@@ -43,6 +43,14 @@ class RewardsRuntimeService {
     for (const reward of rewards) {
       this.applyTutorialReward(reward, event)
     }
+    this.emitRewardsComplete(event)
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: 'tutorial:collected',
+      meta: {
+        ...event?.meta
+      }
+    })
   }
 
   private applyTutorialReward(reward: TutorialReward, event: GameEvent) {

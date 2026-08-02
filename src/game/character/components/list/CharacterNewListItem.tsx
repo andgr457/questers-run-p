@@ -10,25 +10,26 @@ import { eventBus } from '../../../../engine/event/EventBus'
 import { GAME_LOCATION_IDS } from '../../../../entity/location/data/Location.data'
 import PlayerCharacterTokens from '../../../../entity/player/components/detail/PlayerCharacterTokens'
 import { clockRuntimeService } from '../../../../engine/clock/ClockRuntimeService'
+import { GAME_PARTY_ROLE_IDS, GAME_PARTY_ROLE_NAMES } from '../../../../entity/party/data/PartyRole.data'
 
-type State = 'main' | 'confirm' | 'class'
+type State = 'main' | 'class'
 
 export default function CharacterNewListItem() {
   const [expanded, setExpanded] = useState(false)
   const [state, setState] = useState<State>('main')
-  const [selectedClassRole, setSelectedClassRole] = useState<PartyRole>()
-  const [selectedClassId, setSelectedClassId] = useState<CharacterClassId>()
+  const [selectedClassRole, setSelectedClassRole] = useState<PartyRole | undefined>(undefined)
+  const [selectedClassId, setSelectedClassId] = useState<CharacterClassId | undefined>(undefined)
 
   const { characters } = useCharacters()
   const { player, playerGold } = usePlayer()
   const playerTokens = player?.characterTokens ?? 0
 
-  const nextGoldRequired = Math.floor(100 * Math.pow(1.35,Math.max(0,characters.length-1)))
+  const nextGoldRequired = Math.floor(100 * Math.pow(1.35,Math.max(0,characters.length)))
   
   const canAfford = playerGold >= nextGoldRequired
   const hasToken = playerTokens > 0
 
-  const allowedClasses = useMemo<PartyRole[]>(()=>{
+  const allowedRoles = useMemo<PartyRole[]>(()=>{
     const tankClassIds = GAME_CLASSES.filter(c => c.roles.includes('tank')).map(c => c.id)
     const healerClassIds = GAME_CLASSES.filter(c => c.roles.includes('healer')).map(c => c.id)
     const damageClassIds = GAME_CLASSES.filter(c => c.roles.includes('damage')).map(c => c.id)
@@ -61,7 +62,7 @@ export default function CharacterNewListItem() {
         className={styles.header}
         onClick={() => setExpanded(v => !v)}
       >
-        <span>＋ Summon New Character</span>
+        <span>＋ Summon New Hero</span>
         <span>{expanded ? '▲' : '▼'}</span>
       </button>
 
@@ -69,92 +70,119 @@ export default function CharacterNewListItem() {
         <div className={styles.content}>
           {state === 'main' && (
             <>
-              <div className={styles.cost}>
-                Cost: <GoldDetail gold={nextGoldRequired} />
-              </div>
+              <div className={styles.section}>
+                <div className={styles.sectionTitle}>
+                  SUMMON COST
+                </div>
+                <div>
 
-              <div className={styles.requirements}>
-                {hasToken ? '✓ Character Token Available' : '✕ Character Token Required'}
-              </div>
+                </div>
+                <div className={styles.sectionContent}>
+                  <div className={styles.costSection}>
+                    <div style={{fontSize: 'smaller', padding: '0'}} className={styles.costSectionContent}>
+                      <div>
+                        HAVE
+                      </div>
+                      <div>
+                        /
+                      </div>
+                      <div>
+                        REQUIRED
+                      </div>
+                    </div>
 
-              <button
-                className={styles.button}
-                disabled={!canAfford || !hasToken}
-                onClick={() => setState('confirm')}
-              >
-                Begin Summoning
-              </button>
-            </>
-          )}
+                    <div className={styles.costSectionContent} >
+                      <div style={{color: canAfford ? 'var(--success)' : 'var(--danger)'}}>
+                        <GoldDetail gold={playerGold} />
+                      </div>
+                      <div>
+                        /
+                      </div>
+                      <div>
+                        <GoldDetail gold={nextGoldRequired} />  
+                      </div>
+                    </div>
 
-          {state === 'confirm' && (
-            <>
-              <div className={styles.confirm}>
-                Spend <GoldDetail gold={nextGoldRequired} /> and consume <PlayerCharacterTokens tokens={1} />?
-              </div>
-
-              <div className={styles.actions}>
+                    <div className={styles.costSectionContent}>
+                      <div style={{color: hasToken ? 'var(--success)' : 'var(--danger)'}}>
+                        <PlayerCharacterTokens tokens={player?.characterTokens ?? 0} />
+                      </div>
+                      <div>
+                        /
+                      </div>
+                      <div>
+                        <PlayerCharacterTokens tokens={1} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <button
                   className={styles.button}
+                  disabled={!canAfford || !hasToken}
                   onClick={() => setState('class')}
                 >
-                  Yes
-                </button>
-
-                <button
-                  className={styles.buttonSecondary}
-                  onClick={() => setState('main')}
-                >
-                  Cancel
+                  START SUMMONING
                 </button>
               </div>
+
             </>
           )}
 
           {state === 'class' && (
             <>
-              <div className={styles.title}>
-                Select {!selectedClassRole ? 'Class Role' : 'Class'}
+              <div className={styles.section}>
+                <div className={styles.sectionTitle}>
+                  SELECT ROLE
+                </div>
+                <div className={styles.sectionContent}>
+                  <div className={styles.classList}>
+                    {GAME_PARTY_ROLE_IDS.map(roleId => {
+                      const roleName = GAME_PARTY_ROLE_NAMES[roleId]
+                      let disabled = false
+                      if(!allowedRoles.includes(roleId)){
+                        disabled = true
+                      }
+                      return <button
+                        key={roleId}
+                        disabled={disabled}
+                        className={`${styles.button} ${selectedClassRole === roleId ? styles.selected : ''}`}
+                        onClick={() => setSelectedClassRole(roleId)}
+                      >
+                        {roleName}
+                      </button>
+                    })}
+                    
+                  </div>
+                  
+                </div>
+
               </div>
 
-              <div className={styles.classList}>
-                {allowedClasses.map(type => (
-                  <button
-                    key={type}
-                    className={`${styles.classButton} ${selectedClassRole === type ? styles.selected : ''}`}
-                    onClick={() => setSelectedClassRole(type)}
-                  >
-                    {type.toUpperCase()}
-                  </button>
-                ))}
-                {selectedClassRole && (
+              <div className={styles.section}>
+                <div className={styles.sectionTitle}>
+                  SELECT CLASS
+                </div>
+                <div className={styles.sectionContent}>
                   <select onChange={(e) => {
                     if(e.currentTarget.value){
                       setSelectedClassId(e.currentTarget.value as CharacterClassId)
                     }
                   }}>
-                    <option>{selectedClassRole.toUpperCase()} CLASSES</option>
-                    {GAME_CLASSES.filter(c => c.roles.includes(selectedClassRole)).map(c => (
-                      <option value={c.id}>{c.name}</option>
-                    ))}
+                    <option value=''>{!selectedClassRole ? 'SELECT ROLE FIRST...' : `SELECT ${selectedClassRole.toUpperCase()} CLASS...`}</option>
+                    {selectedClassRole && GAME_CLASSES.map(c => {
+                      const disabled = !c.roles.includes(selectedClassRole)
+                      return <option disabled={disabled} value={c.id}>{c.name.toUpperCase()} - {c.roles.join(' / ')}</option>
+                    })}
                   </select>
-                )}
+                </div>
               </div>
-              <div className={styles.actions}>
-                <button
-                  className={styles.buttonSecondary}
-                  onClick={() => {
-                    reset()
-                  }}
-                >
-                  Cancel
-                </button>
+
+              <div className={styles.section}>
                 <button
                   className={styles.button}
                   disabled={!selectedClassId}
                   onClick={() => {
                     if(!selectedClassId || !player) return
-                    //todo get class id from selected class
                     const selectedClass = GAME_CHARACTER_CLASSES[selectedClassId]
                     eventBus.emit({
                       id: crypto.randomUUID(),
@@ -179,49 +207,46 @@ export default function CharacterNewListItem() {
                     setTimeout(() => {
                       eventBus.emit({
                         id: crypto.randomUUID(),
-                        type: 'world:mode:change',
+                        type: 'character:save',
                         meta: {
-                          worldMode: 'warp',
-                          warpOverlayModeOnComplete: 'world',
-                          warpOverlayWaitMs: 2000,
-                          warpOverlayText: 'Summoning Character'
+                          character: {
+                            id: crypto.randomUUID(),
+                            playerId: player.id,
+                            classId: selectedClass.id,
+                            hp: 100,
+                            hpMax: 100,
+                            mana: 100,
+                            manaMax: 100,
+                            stamina: 100,
+                            staminaMax: 100,
+                            agility: selectedClass.agility,
+                            intellect: selectedClass.intellect,
+                            strength: selectedClass.strength,
+                            isIdle: true,
+                            level: 1,
+                            locationId: GAME_LOCATION_IDS.ORON_ADV_GUILD,
+                            xp: 0,
+                            xpNextLevel: 100,
+                            partyId: undefined,
+                            name: `Summoned Character #${characters.length + 1}`,
+                            questGold: 1,
+                            questSpeed: 1,
+                            questXp: 1
+                          }
                         }
                       })
-                      setTimeout(() => {
-                        eventBus.emit({
-                          id: crypto.randomUUID(),
-                          type: 'character:save',
-                          meta: {
-                            character: {
-                              id: crypto.randomUUID(),
-                              playerId: player.id,
-                              classId: selectedClass.id,
-                              hp: 100,
-                              hpMax: 100,
-                              mana: 100,
-                              manaMax: 100,
-                              stamina: 100,
-                              staminaMax: 100,
-                              agility: selectedClass.agility,
-                              intellect: selectedClass.intellect,
-                              strength: selectedClass.strength,
-                              isIdle: true,
-                              level: 1,
-                              locationId: GAME_LOCATION_IDS.ORON_ADV_GUILD,
-                              xp: 0,
-                              xpNextLevel: 100,
-                              partyId: undefined,
-                              name: `Summoned Character #${characters.length + 1}`
-                            }
-                          }
-                        })
-                        
-                      }, 5000)
-
                     }, 750)
                   }}
                 >
                   Summon
+                </button>
+                <button
+                  className={styles.buttonSecondary}
+                  onClick={() => {
+                    reset()
+                  }}
+                >
+                  Cancel
                 </button>
               </div>
             </>

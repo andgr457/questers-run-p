@@ -15,7 +15,6 @@
   display: grid;
   grid-template-columns: 1fr auto auto auto;
   align-items: center;
-  gap: 12px;
 }
 
 .name {
@@ -83,4 +82,46 @@
 
 .rotate {
   transition: transform 0.3s ease;
+}
+
+.activities {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.activity {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: 1px solid var(--bg-dark-2);
+  padding-left: 7px;
+  padding-right: 7px;
+
+  border-radius: 10px;
+}
+
+.activity:hover {
+  border: 1px solid var(--bg-dark-3);
+
+}
+
+.activityName {
+  font-size: 0.7rem;
+}
+
+.activity.running {
+  color: var(--gold);
+}
+
+.edit {
+  cursor: pointer;
+}
+
+.activity.disabled {
+  opacity: .5;
+  pointer-events: none;
 }

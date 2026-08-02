@@ -19,7 +19,7 @@ export type TutorialMode = 'main'
 export default function Tutorial() {
   const {
     tutorial,
-    completedTutorials
+    completedTutorialsProgress: completedTutorials
   } = useTutorial()
   
   const [mode, setMode] = useState<TutorialMode>('main')

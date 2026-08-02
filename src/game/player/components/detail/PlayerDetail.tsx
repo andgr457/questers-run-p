@@ -1,7 +1,6 @@
 import styles from './PlayerDetail.module.css'
 import ProgressBar from '../../../../ui/progress-bar/ProgressBar'
 import { getProgress } from '../../../../ui/progress-bar/utils/ProgressBar.utils'
-import GoldDetail from '../../../../ui/gold/GoldDetail'
 import { usePlayer } from '../../../../engine/player/hooks/usePlayer'
 import { useEffect, useRef, useState } from 'react'
 import { formatPrimitiveValueToString, wait } from '../../../utils/Game.utils'
@@ -114,29 +113,39 @@ export default function PlayerDetail(){
     <div className={styles.topRow}>
       <div>
         <div className={styles.name}>
-          {player.name}
+          {player.name} <span title={'Change your player name.'}>✎</span>
         </div>
       </div>
-
-      <div ref={levelRef} >
-        Lv. {player.level}
+      <div ref={goldRef}>
+        <span style={{color: 'gold'}}>◉</span> {playerGold}g
       </div>
       <div ref={characterTokensRef}>
         <div title='Character Create Tokens'>
           <span style={{color: 'var(--blue-sd-lighter-2)'}}>⌬</span> {player.characterTokens}
         </div>
       </div>
-      <div ref={goldRef}>
-        <span style={{color: 'gold'}}>◉</span> {playerGold}g
+      <div ref={levelRef} >
+        Lv. {player.level}
+      </div>
+      
+      <div title={'Notifications'}>
+        ✉
+      </div>
+      <div title={'Achievements'}>
+        🎖
+      </div>
+      <div title={'Player Upgrades'} style={{color: 'var(--success)'}}>
+        ⇧
       </div>
     </div>
 
-    <div ref={xpRef}>
+    <div>
       <ProgressBar
         value={getProgress(player.xp, player.xpNextLevel)}
         max={player.xpNextLevel}
         color='#a855f7'
         label='XP'
+        floatingTextref={xpRef}
       />
       
     </div>

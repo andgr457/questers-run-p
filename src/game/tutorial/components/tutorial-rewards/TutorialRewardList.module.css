@@ -1,5 +1,15 @@
 .wrapper {
-  padding: 5px;
+  padding: 2px;
+}
+
+.title {
+  letter-spacing: 2px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.groups {
+  display: flex;
 }
 
 .group {

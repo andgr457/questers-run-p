@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { eventBus } from '../../../../engine/event/EventBus'
 import ProgressBar from '../../../../ui/progress-bar/ProgressBar'
 import { getProgress } from '../../../../ui/progress-bar/utils/ProgressBar.utils'
@@ -10,17 +10,31 @@ import { getCharacterGold } from '../../../../entity/character/utils/Character.u
 import { GAME_CHARACTER_CLASSES } from '../../../../entity/character-class/data/CharacterClassEntity.data'
 import type { CharacterClassId } from '../../../../entity/character-class/types/CharacterClassEntity.types'
 import { getLocationById } from '../../../../entity/location/utils/Location.utils'
+import type { ActivityRuntimeEntity } from '../../../../engine/activity/ActivityRuntimeService'
+import { ContextMenuIcon } from '../../../context-menu/data/ContextMenuIcon.data'
+import { useTutorial } from '../../../../engine/tutorial/hooks/useTutorial'
+import { GAME_TUTORIAL_IDS } from '../../../tutorial/data/Tutorial.data'
 
 interface Props {
   character: CharacterEntity
   showActions?: boolean
+  activity?: ActivityRuntimeEntity
 }
 
 export default function CharacterListItem(props: Props) {
   const {
     character,
-    showActions = true
+    showActions = true,
+    activity
   } = props
+  const BASE_QUEST_MS = 30000
+  const BASE_QUEST_GOLD = 1
+  const BASE_QUEST_XP = 1
+
+  const {completedTutorialsProgress} = useTutorial()
+
+  const [isNameChanging, setIsNameChanging] = useState(false)
+  const [characterNewName, setCharacterNewName] = useState('')
 
   const [gold, setGold] = useState(getCharacterGold(character.id))
 
@@ -43,12 +57,100 @@ export default function CharacterListItem(props: Props) {
       character.classId as CharacterClassId
     ]?.name
 
+  const handleQuestClicked = useCallback(() => {
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: 'character:manage',
+      meta: {
+        characterId: character.id
+      }
+    })
+    if(activity){
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: 'activity:stop',
+        meta: {
+          characterId: character.id
+        }
+      })
+    } else {
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        type: 'activity:start',
+        meta: {
+          characterId: character.id,
+          activityText: 'Questing',
+          activityRuns: -1,
+          activityRunTimeMs: BASE_QUEST_MS / (character.questSpeed ?? 1),
+          activityType: 'questing',
+          gold: BASE_QUEST_GOLD / (character.questGold ?? 1),
+          xp: BASE_QUEST_XP / (character.questXp ?? 1),
+        }
+      })
+    }
+  }, [])
+
+  const firstTutorialCollected = completedTutorialsProgress?.find(
+    p => p.tutorialId === GAME_TUTORIAL_IDS.TUTORIAL_001_CHARACTER_FIRST_CREATE
+    && p.completed === true
+    && p.collected === true
+  )
+  const secondTutorialCollected = completedTutorialsProgress?.find(
+    p => p.tutorialId === GAME_TUTORIAL_IDS.TUTORIAL_002_CHARACTER_FIRST_QUEST
+    && p.completed === true
+    && p.collected === true
+  )
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.topRow}>
         <div>
           <div className={styles.name}>
-            {character.name}
+            {!isNameChanging && (
+              <>
+                {character.name} <span onClick={() => {setIsNameChanging(true)}} className={styles.edit} title={'Change this character\'s name.'}>✎</span>
+              </>
+            )}
+            {isNameChanging && (
+              <>
+                <input 
+                  type={'text'}
+                  value={!characterNewName ? character.name : characterNewName}
+                  maxLength={128}
+                  onChange={(e) => {setCharacterNewName(e.target.value)}}
+                />
+                &nbsp;
+                <span onClick={() => {
+                  setCharacterNewName('')
+                  setIsNameChanging(false)
+                }} 
+                className={styles.edit} 
+                style={{color: 'var(--danger)'}}
+                title={'Cancel the name change.'}>
+                  {ContextMenuIcon.close}
+                </span>
+                &nbsp;&nbsp;
+                <span onClick={() => {
+                  eventBus.emit({
+                    id: crypto.randomUUID(),
+                    type: 'character:save',
+                    meta: {
+                      character: {
+                        ...character,
+                        name: characterNewName
+                      }
+                    }
+                  })
+                  setCharacterNewName('')
+                  setIsNameChanging(false)
+                }} 
+                className={styles.edit} 
+                style={{color: 'var(--success)'}}
+                title={'Confirm the name change.'}>
+                  {ContextMenuIcon.check}
+                </span>
+              </>
+            )}
           </div>
 
           <div className={styles.className}>
@@ -56,33 +158,43 @@ export default function CharacterListItem(props: Props) {
           </div>
         </div>
         {showActions && (
-          <div>
-            <button className='action button'
+          <div className={styles.activities}>
+            <div 
+              className={`${styles.activity} ${activity?.activityType === 'questing' ? styles.running : ''} ${!firstTutorialCollected ? styles.disabled : ''}`}
+              
+              onClick={handleQuestClicked}
+            >
+              🗎 <span className={styles.activityName}>Quest</span>
+            </div>
+
+            <div 
+              className={`${styles.activity} ${!secondTutorialCollected ? styles.disabled : ''}`}
+              
               onClick={() => {
                 eventBus.emit({
                   id: crypto.randomUUID(),
                   type: 'character:manage',
                   meta: {
-                    characterId: character.id
+                    characterId: character.id,
                   }
                 })
-                eventBus.emit({
-                  id: crypto.randomUUID(),
-                  type: 'world:mode:change',
-                  meta: {
-                    worldMode: 'character_quest'
-                  }
-                })
+                setTimeout(() => {
+                  eventBus.emit({
+                    id: crypto.randomUUID(),
+                    type: 'world:mode:change',
+                    meta: {
+                      worldMode: 'character_upgrade'
+                    }
+                  })
+                }, 50)
               }}
             >
-              Quest
-            </button>
-            <button className='action button'>
-              Hunt
-            </button>
-            <button className='action button'>
-              Profession
-            </button>
+              ⇧ <span className={styles.activityName}>Upgrade</span>
+            </div>
+
+            <div className={`${styles.activity} ${styles.disabled}`}>
+              ⚔ <span className={styles.activityName}>Hunt</span>
+            </div>
           </div>          
         )}
       </div>
@@ -90,7 +202,7 @@ export default function CharacterListItem(props: Props) {
       <div className={styles.infoRow}>
 
         <div>
-          {character.isIdle ? 'Idle' : 'Busy'}
+          {character.isIdle ? 'Idle' : 'Busy'} {character.isIdle ? '' : `- ${activity?.activityText}`}
         </div>
 
         <div>
@@ -148,11 +260,8 @@ export default function CharacterListItem(props: Props) {
         />
       </div>
       <ProgressBar
-        value={getProgress(
-          character.stamina,
-          character.staminaMax
-        )}
-        max={character.staminaMax}
+        value={activity?.activityProgressPercent ?? 0}
+        max={100}
         color="#6d706e"
         showValues={false}
         showLabel={false}

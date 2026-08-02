@@ -1,3 +1,4 @@
+import type { Ref } from 'react'
 import styles from './ProgressBar.module.css'
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
   showLabel?: boolean
   showValues?: boolean
   invert?: boolean   // ONLY meaning-based flag now
+  floatingTextref?: Ref<HTMLDivElement>
 }
 
 export default function ProgressBar({
@@ -18,6 +20,7 @@ export default function ProgressBar({
   showLabel = true,
   showValues = true,
   invert = false,
+  floatingTextref
 }: Props) {
 
   const safeValue = Number(value) || 0
@@ -41,6 +44,7 @@ export default function ProgressBar({
       <div className={styles.bar}>
 
         <div
+          ref={floatingTextref}
           className={styles.fill}
           style={{
             width: `${percent * 100}%`,

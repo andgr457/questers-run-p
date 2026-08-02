@@ -12,6 +12,8 @@ export type CharacterEventTypes = 'character:save'
   | 'character:stats:changed'
   | 'character:manage'
   | 'character:manage:added'
+  | 'character:upgrade'
+  | 'character:upgrade:added'
 
 
 interface GameEvent_CharacterSave extends GameEvent {
@@ -78,6 +80,28 @@ interface GameEvent_CharacterManageAdded extends GameEvent {
   }
 }
 
+interface GameEvent_CharacterUpgrade extends GameEvent {
+  type: 'character:upgrade'
+  meta: {
+    characterId: string
+    characterUpgrade: {
+      upgradeId: string
+      upgradeLevel: number
+      questSpeed?: number
+      questGold?: number
+      questXp?: number
+    }
+
+  }
+}
+
+interface GameEvent_CharacterUpgradeAdded extends GameEvent {
+  type: 'character:upgrade:added'
+  meta: {
+    characterId: string
+  }
+}
+
 export type CharacterEvents = GameEvent_CharacterSave
   | GameEvent_CharacterSaved
   | GameEvent_CharacterGold
@@ -87,3 +111,5 @@ export type CharacterEvents = GameEvent_CharacterSave
   | GameEvent_CharacterLevel
   | GameEvent_CharacterManage
   | GameEvent_CharacterManageAdded
+  | GameEvent_CharacterUpgrade
+  | GameEvent_CharacterUpgradeAdded

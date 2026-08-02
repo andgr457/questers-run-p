@@ -75,7 +75,6 @@
   font: inherit;
   cursor: pointer;
   transition: 0.15s;
-  text-transform: uppercase;
 }
 
 .button:hover:not(:disabled),
@@ -106,7 +105,8 @@
 .section {
   width: 100%;
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
+  gap: 8px;
 }
 
 .sectionTitle {
@@ -123,9 +123,10 @@
 
 .sectionContent {
   display: flex;
+  text-align: center;
   justify-content: center;
   letter-spacing: 1px;
-  padding: 3px;
+  padding: 5px;
   font-size: 0.7rem;
   
 }
@@ -133,25 +134,4 @@
 .reward {
   display: flex;
   gap: 1rem;
-}
-
-.costSection {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  letter-spacing: 2px;
-
-}
-
-.costSectionContent {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 5px;
-  width: 100%;
-
 }

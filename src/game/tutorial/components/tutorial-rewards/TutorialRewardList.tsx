@@ -32,44 +32,49 @@ export default function TutorialRewardList(props: Props){
   }
 
   return <div className={styles.wrapper}>
+    <div className={styles.title}>
+      REWARDS
+    </div>
     {rewards.length === 0 && <div className={styles.group}>
-      No rewards found
+      <div>No rewards found</div>
     </div>}
-    {rewards.map((r, i) => {
-      const entries = [
-        r.gold !== undefined ? { title: 'Gold', value: r.gold } : null,
-        r.xp !== undefined ? { title: 'XP', value: r.xp } : null,
-        r.characterTokens !== undefined
-          ? { title: 'Character Tokens', value: r.characterTokens }
-          : null,
-      ].filter(Boolean)
+    <div className={styles.groups}>
+      {rewards.map((r, i) => {
+        const entries = [
+          r.gold !== undefined ? { title: 'Gold', value: r.gold } : null,
+          r.xp !== undefined ? { title: 'XP', value: r.xp } : null,
+          r.characterTokens !== undefined
+            ? { title: 'Character Tokens', value: r.characterTokens }
+            : null,
+        ].filter(Boolean)
 
-      return (
-        <div key={i} className={styles.group}>
-          <div>{r.type}</div>
+        return (
+          <div key={i} className={styles.group}>
+            <div>{r.type}</div>
 
-          {entries.map((e, idx) => {
-            if(!e?.title || !e?.value) return
-            return (
-              <TutorialRewardListItem
-                key={idx}
-                title={e!.title}
-                value={e!.value}
-              />
-          )})}
-        </div>
-      )
-    })}
-    {showTotals && <div className={styles.group}>
-      <div>Total</div>
-      {Object.getOwnPropertyNames(totals).map((t, idx) => {
-        const value = totals[t]
-        return <TutorialRewardListItem 
-          key={idx}
-          title={t}
-          value={formatPrimitiveValueToString(value) as string}
-        />
+            {entries.map((e, idx) => {
+              if(!e?.title || !e?.value) return
+              return (
+                <TutorialRewardListItem
+                  key={idx}
+                  title={e!.title}
+                  value={e!.value}
+                />
+            )})}
+          </div>
+        )
       })}
-    </div>}
+      {showTotals && <div className={styles.group}>
+        <div>Total</div>
+        {Object.getOwnPropertyNames(totals).map((t, idx) => {
+          const value = totals[t]
+          return <TutorialRewardListItem 
+            key={idx}
+            title={t}
+            value={formatPrimitiveValueToString(value) as string}
+          />
+        })}
+      </div>}
+    </div>
   </div>
 }

@@ -8,6 +8,7 @@ export type RewardsEventTypes =
 export interface GameEvent_RewardsStart extends GameEvent {
   type: 'rewards:start'
   meta: {
+    tutorialId?: string
     tutorialRewards?: TutorialReward[]
     characterId?: string
   }

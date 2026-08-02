@@ -24,6 +24,11 @@ export interface CharacterEntity {
   agility: number
 
   locationId: string
+
+  //upgrades
+  questSpeed?: number
+  questGold?: number
+  questXp?: number
 }
 
 export interface CharacterGoldTransaction {

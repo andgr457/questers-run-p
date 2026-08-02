@@ -11,10 +11,13 @@ export function useTutorial(){
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
-      if(event.type === 'tutorial:completed'){
+      if(event.type === 'tutorial:completed'
+        || event.type === 'tutorial:collected'
+      ){
         setTutorial(tutorialRuntimeService.getCurrentTutorial())
         setTutorialProgress(tutorialRuntimeService.getProgress())
       }
+
     })
     return unsub
   }, [])
@@ -22,8 +25,8 @@ export function useTutorial(){
   return {
     tutorial,
     tutorialProgress,
-    completedTutorials: tutorialProgress?.playerTutorialProgress?.filter(t => 
-      t.completed === true
+    completedTutorialsProgress: tutorialProgress?.playerTutorialProgress?.filter(t => 
+      t.completed === true && t.collected === true
     )
   }
 }

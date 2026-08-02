@@ -1,6 +1,5 @@
 import { GAME_TUTORIALS } from '../../game/tutorial/data/Tutorial.data'
 import type { Tutorial, TutorialProgress } from '../../game/tutorial/types/Tutorial.types'
-import { characterRuntimeService } from '../character/CharacterRuntimeService'
 import { clockRuntimeService } from '../clock/ClockRuntimeService'
 import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
@@ -25,6 +24,11 @@ class TutorialRuntimeService {
     this.progress = !progressValue ? this.progress : JSON.parse(progressValue)
 
     eventBus.subscribe(event => {
+      if(event.type === 'rewards:completed'){
+        if(event.meta?.tutorialId){
+          this.markCollected(event)
+        }
+      }
       if(!event.type.includes('tutorial:')) return
 
       if (event.type === 'tutorial:complete') {
@@ -81,6 +85,31 @@ class TutorialRuntimeService {
     this.emitCompleted(event, tutorial)
   }
 
+  markCollected(event: GameEvent){
+    const tutorialId = event.meta?.tutorialId
+    if(!tutorialId || this.isCollected(tutorialId)){
+      return
+    }
+    
+    const existingProgress = this.progress.playerTutorialProgress.find(t => 
+      t.tutorialId === tutorialId
+    )
+    if(existingProgress && existingProgress.collected === false){
+      existingProgress.collected = true
+      existingProgress.dateCollected = clockRuntimeService.getNow()
+      this.saveProgress()
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        parentEventId: event.id,
+        type: 'tutorial:collected',
+        meta: {
+          ...event.meta
+        }
+      })
+    }
+
+  }
+
   collectTutorialRewards(event: GameEvent){
     const tutorialId = event.meta?.tutorialId
     if(!tutorialId || this.isCollected(tutorialId)){
@@ -101,8 +130,8 @@ class TutorialRuntimeService {
       id: crypto.randomUUID(),
       type: 'rewards:start',
       meta: {
+        tutorialId: tutorialId,
         tutorialRewards: tutorial.rewards,
-        characterId: characterRuntimeService.getManagingCharacter()?.id
       },
     })
   }
@@ -122,9 +151,15 @@ class TutorialRuntimeService {
   }
 
   getCurrentTutorial() {
-    return GAME_TUTORIALS.find(
-      tutorial => !this.isCompleted(tutorial.id)
-    )
+
+    return GAME_TUTORIALS.find(t => {
+      if(!this.isCompleted(t.id) && !this.isCollected(t.id)){
+        return t
+      }
+      if(this.isCompleted(t.id) && !this.isCollected(t.id)){
+        return t
+      }
+    })
   }
 }
 

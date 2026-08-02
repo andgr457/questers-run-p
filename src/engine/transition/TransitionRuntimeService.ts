@@ -1,6 +1,6 @@
 import { GAME_LOCATIONS } from '../../entity/location/data/Location.data'
 import type { LocationEntity } from '../../entity/location/types/LocationEntity.types'
-import { TUTORIAL_IDS } from '../../game/tutorial/data/Tutorial.data'
+import { LEGACY_TUTORIAL_IDS } from '../../game/tutorial/data/Tutorial.data'
 import type { Transition } from '../../ui/transition/types/Transition.types'
 import { characterRuntimeService } from '../character/CharacterRuntimeService'
 import { eventBus } from '../event/EventBus'
@@ -103,7 +103,7 @@ class TransitionRuntimeService {
               id: crypto.randomUUID(),
               type: 'tutorial:complete',
               meta: {
-                tutorialId: TUTORIAL_IDS.TRAVEL_TO_TOWN,
+                tutorialId: LEGACY_TUTORIAL_IDS.TRAVEL_TO_TOWN,
               },
             })
 
@@ -143,7 +143,7 @@ class TransitionRuntimeService {
               id: crypto.randomUUID(),
               type: 'tutorial:complete',
               meta: {
-                tutorialId: TUTORIAL_IDS.VISIT_ADV_GUILD,
+                tutorialId: LEGACY_TUTORIAL_IDS.VISIT_ADV_GUILD,
               },
             })
           }

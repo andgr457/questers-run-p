@@ -2,7 +2,7 @@ import { ContextMenuIcon } from '../../context-menu/data/ContextMenuIcon.data'
 import type { Tutorial } from '../types/Tutorial.types'
 import { getBaseTutorialRewards } from '../utils/Tutorial.utils'
 
-export const TUTORIAL_IDS = {
+export const LEGACY_TUTORIAL_IDS = {
   TRAVEL_TO_TOWN: 'travel_to_town',
   VISIT_ADV_GUILD: 'visit_adv_guild',
   ACCEPT_FIRST_QUEST: 'accept_first_quest',
@@ -14,6 +14,13 @@ export const TUTORIAL_IDS = {
   FULL_PARTY: 'full_party',
 } as const
 
+export const GAME_TUTORIAL_IDS = {
+  TUTORIAL_001_CHARACTER_FIRST_CREATE: 't_001_character_first_create',
+  TUTORIAL_002_CHARACTER_FIRST_QUEST: 't_002_character_first_quest',
+  TUTORIAL_003_CHARACTER_FIRST_UPGRADE: 't_003_character_first_upgrade',
+  TUTORIAL_004_PLAYER_FIRST_UPGRADE: 't_004_player_first_upgrade',
+}
+
 export const BASE_TUTORIAL_REWARDS = {
   xp: 5,
   gold: 5,
@@ -21,7 +28,50 @@ export const BASE_TUTORIAL_REWARDS = {
 
 export const GAME_TUTORIALS: Tutorial[] = [
   {
-    id: TUTORIAL_IDS.TRAVEL_TO_TOWN,
+    id: GAME_TUTORIAL_IDS.TUTORIAL_001_CHARACTER_FIRST_CREATE,
+    title: 'Summon a Hero',
+    description: 'Use the Summon New Hero section below to summon your first hero. A tank is required first, then a healer, then three damage heroes then it repeats from tank.',
+    requirement: 'At least 1 hero summoned and tutorial collected to unlock the Quest button.',
+    hints: [],
+    rewards: [
+      {
+        type: 'player',
+        xp: 10,
+      }
+    ]
+  },
+  {
+    id: GAME_TUTORIAL_IDS.TUTORIAL_002_CHARACTER_FIRST_QUEST,
+    title: 'Run Hero Quests',
+    description: 'Click the Quest button on the hero item to start gaining gold and XP.',
+    requirement: 'At least 1 character questing and tutorial collected to unlock the Upgrade button.',
+    hints: [],
+    rewards: [
+      {
+        type: 'player',
+        xp: 10,
+      }
+    ]
+  },
+  {
+    id: GAME_TUTORIAL_IDS.TUTORIAL_003_CHARACTER_FIRST_UPGRADE,
+    title: 'Upgrade a Hero',
+    description: 'Click the Upgrade button on the hero item to display hero upgrades.',
+    requirement: 'At least 1 character upgrade purchased and tutorial collected to unlock.',
+    hints: [],
+    rewards: [
+      {
+        type: 'player',
+        gold: 10,
+        xp: 10,
+      }
+    ]
+  }
+]
+
+export const LEGACY_GAME_TUTORIALS: Tutorial[] = [
+  {
+    id: LEGACY_TUTORIAL_IDS.TRAVEL_TO_TOWN,
     title: 'Travel to Town',
     description: 'The road from the wood ahead leads toward the nearby town of Oron. Travel there using Character actions.',
     hints: [
@@ -63,7 +113,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   },
 
   {
-    id: TUTORIAL_IDS.VISIT_ADV_GUILD,
+    id: LEGACY_TUTORIAL_IDS.VISIT_ADV_GUILD,
     title: "Adventurer's Guild",
     description: "Visit the local Adventurer's Guild in town to take a quest.",
     hints: [
@@ -111,7 +161,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   },
 
   {
-    id: TUTORIAL_IDS.ACCEPT_FIRST_QUEST,
+    id: LEGACY_TUTORIAL_IDS.ACCEPT_FIRST_QUEST,
     title: 'Run a Quest',
     description: "Take your first quest at the Adventurer's Guild.",
     hints: [
@@ -144,7 +194,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   },
 
   {
-    id: TUTORIAL_IDS.COMPLETE_FIRST_QUEST,
+    id: LEGACY_TUTORIAL_IDS.COMPLETE_FIRST_QUEST,
     title: 'Quest Complete',
     description: "Turn in your first quest at the Adventurer's Guild.",
     hints: [],
@@ -159,7 +209,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   },
 
   {
-    id: TUTORIAL_IDS.CREATE_SECOND_CHARACTER,
+    id: LEGACY_TUTORIAL_IDS.CREATE_SECOND_CHARACTER,
     title: 'Battle Buddy',
     description: 'Create a second character with your new character token.',
     hints: [],
@@ -171,7 +221,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   },
 
   {
-    id: TUTORIAL_IDS.CREATE_FIRST_PARTY,
+    id: LEGACY_TUTORIAL_IDS.CREATE_FIRST_PARTY,
     title: 'Party Hardy',
     description: 'Create a party with a character.',
     hints: [],
@@ -183,7 +233,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   },
 
   {
-    id: TUTORIAL_IDS.JOIN_PARTY,
+    id: LEGACY_TUTORIAL_IDS.JOIN_PARTY,
     title: 'Party on Garth',
     description: "Have another character join an existing character's party.",
     hints: [],
@@ -195,7 +245,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   },
 
   {
-    id: TUTORIAL_IDS.PARTY_ROLES,
+    id: LEGACY_TUTORIAL_IDS.PARTY_ROLES,
     title: 'Party Hardy',
     description: 'Assign a party role to a party member.',
     hints: [],
@@ -210,7 +260,7 @@ export const GAME_TUTORIALS: Tutorial[] = [
   },
 
   {
-    id: TUTORIAL_IDS.FULL_PARTY,
+    id: LEGACY_TUTORIAL_IDS.FULL_PARTY,
     title: 'No Occupancy',
     description: 'Create 3 more characters and have them join your party. A tank, healer, and 3 damage dealers are required for dungeons and raids.',
     hints: [],

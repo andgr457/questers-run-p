@@ -15,6 +15,7 @@ import type { TutorialReward } from '../../../game/tutorial/types/Tutorial.types
 import type { NotificationEventAddMeta } from '../../../game/notification/types/Notification.types'
 import type { QuestEntity } from '../../../entity/quest/types/QuestEntity.types'
 import type { QuestEvents, QuestEventTypes } from '../../quest/types/QuestEvents.types'
+import type { ActivityEvents, ActivityEventTypes, ActivityType } from '../../activity/types/ActivityEvents.types'
 
 export interface EventSession {
   event: Partial<GameEvents>
@@ -29,6 +30,7 @@ export type GameEventType = PlayerEventTypes
   | TutorialEventTypes
   | NotificationEventTypes
   | QuestEventTypes
+  | ActivityEventTypes
 
   | 'world:mode:change'
   | 'world:mode:changing'
@@ -156,6 +158,7 @@ export type GameEvents = GameEvent_WorldModeChange
   | TutorialEvents
   | NotificationEvents
   | QuestEvents
+  | ActivityEvents
 
   | GameEvent_QuestStart 
   | GameEvent_QuestCancel 
@@ -178,7 +181,13 @@ export type EventMeta = {
   warpOverlayModeOnComplete?: OverlayMode
   warpOverlayWaitMs?: number
   warpOverlayText?: string
-  
+
+  activityText?: string
+  activityRunTimeMs?: number
+  activityRuns?: number
+  activityProgressPercent?: number
+  activityType?: ActivityType
+
   transition?: Transition
   destination?: LocationEntity
   departure?: LocationEntity
@@ -208,4 +217,14 @@ export type EventMeta = {
 
   questId?: string
   quest?: QuestEntity
+
+  //upgrades
+  characterUpgrade?: {
+    upgradeId: string
+    upgradeLevel: number
+
+    questSpeed?: number
+    questXp?: number
+    questGold?: number
+  }
 }

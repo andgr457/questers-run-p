@@ -3,6 +3,8 @@ import { GAME_STORAGE_KEYS } from '../data/local-storage/GameStorageKeys.data'
 import { eventBus } from '../event/EventBus'
 import type { GameEvent } from '../event/types/EventBus.types'
 import { getCharacterGold } from '../../entity/character/utils/Character.utils'
+import { tutorialRuntimeService } from '../tutorial/TutorialRuntimeService'
+import { GAME_TUTORIAL_IDS } from '../../game/tutorial/data/Tutorial.data'
 
 class CharacterRuntimeService {
   private initialized = false
@@ -57,6 +59,9 @@ class CharacterRuntimeService {
       }
       if(event.type === 'character:xp'){
         this.addXP(event)
+      }
+      if(event.type === 'character:upgrade'){
+        this.addUpgrade(event)
       }
       if(event.type === 'character:manage'){
         this.managedCharacterId = event.meta?.characterId
@@ -149,6 +154,14 @@ class CharacterRuntimeService {
     })
   }
 
+  private addUpgrade(event: GameEvent){
+    const character = this.characters[event.meta?.characterId as string]
+    if(!character) return
+    if(!event.meta || !event.meta.characterUpgrade) return
+
+    
+  }
+
   private addXP(event: GameEvent) {
     const character = this.characters[event.meta?.characterId as string]
     if(!character) return
@@ -217,8 +230,28 @@ class CharacterRuntimeService {
 
     this.dirtyCharacters.add(character.id)
 
+    //check tutorial completion
+    const currentTutorial = tutorialRuntimeService.getCurrentTutorial()
+    if(currentTutorial?.id === GAME_TUTORIAL_IDS.TUTORIAL_001_CHARACTER_FIRST_CREATE){
+      if(Object.getOwnPropertyNames(this.characters).length >= 1){
+        const allProgress = tutorialRuntimeService.getProgress()
+        const currentTutorialProgress = allProgress.playerTutorialProgress.find(p => 
+          p.tutorialId === currentTutorial.id
+        )
+        if(!currentTutorialProgress?.completed === true){
+          eventBus.emit({
+            id: crypto.randomUUID(),
+            type: 'tutorial:complete',
+            meta: {
+              tutorialId: currentTutorial.id,
+            }
+          })
+        }
+      }
+    }
     eventBus.emit({
-      ...event,
+      id: crypto.randomUUID(),
+      parentEventId: event.id,
       type: 'character:saved',
       meta: {
         ...event.meta,
