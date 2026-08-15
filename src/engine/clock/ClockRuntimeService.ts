@@ -55,12 +55,10 @@ class ClockRuntimeService {
   }
 
   private tick() {
-    // if paused AND not stepping → do nothing
     if (this.paused && !this.stepMode) return
 
     const now = Date.now()
 
-    // FIXED: proper delta calculation
     const deltaReal = now - this.lastTick
     const delta = deltaReal * this.speed
 

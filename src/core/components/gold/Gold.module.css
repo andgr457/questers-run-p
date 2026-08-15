@@ -1,0 +1,14 @@
+.wrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon {
+  font-size: 1rem;
+  color: gold;
+}
+
+.value {
+  font-weight: 200;
+  letter-spacing: 1px;
+}
