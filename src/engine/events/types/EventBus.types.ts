@@ -1,8 +1,8 @@
-import type { FloatingTextEventMap } from './FloatingTextEvents.types'
 import type { PlayerEventMap } from './PlayerEvents.types'
+import type { WorldModeEventMap } from './WorldModeEvents.types'
 
 export interface EventMaps extends 
-  FloatingTextEventMap,
+  WorldModeEventMap,
   PlayerEventMap
   {}
 export type GameEventType = keyof EventMaps

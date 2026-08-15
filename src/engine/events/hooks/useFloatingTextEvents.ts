@@ -1,6 +1,4 @@
-import { useEffect, useState, type RefObject } from 'react'
-import { eventBus } from '../EventBus'
-import { wait } from '../../clock/utils/ClockRuntime.util'
+import { useState, type RefObject } from 'react'
 
 export interface FloatingText {
   id: string

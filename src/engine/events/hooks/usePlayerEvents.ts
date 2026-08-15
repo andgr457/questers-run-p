@@ -2,7 +2,6 @@ import { useEffect, useState, type RefObject } from 'react';
 import type { Player } from '../../../entities/player/types/Player.types';
 import { playerEventService } from '../services/PlayerEventService';
 import { eventBus } from '../EventBus';
-import type { GameEventType } from '../types/EventBus.types';
 import { useFloatingTextEvents } from './useFloatingTextEvents';
 
 const EVENT_TYPE_INCLUDES = 'player:'
@@ -34,7 +33,7 @@ export function usePlayerEvents(props: UsePlayerEventsProps){
       }
 
       if(event.type === 'player:gold:added'){
-        const positiveOrNegative = event.meta.amount < 0 ? '-' : event.meta.amount > 0 ? '+' : ''
+        const positiveOrNegative = event.meta.amount < 0 ? '' : event.meta.amount > 0 ? '+' : ''
 
         playerAddFloatingText({
           id: crypto.randomUUID(),
