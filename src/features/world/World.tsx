@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import FeatureBase from '../../core/components/feature-base/FeatureBase'
+import FeatureBase from '../../core/components/feature/components/base/FeatureBase'
 import { useWorldModeEvents } from '../../engine/events/hooks/useWorldModeEvents'
 import GuildHall from '../guild-hall/GuildHall'
 import styles from './World.module.css'
@@ -16,7 +16,7 @@ export default function World() {
   } = useWorldModeEvents()
 
   const [displayedMode, setDisplayedMode] = useState(worldModeMain)
-  const [modeChangeText, setModeChangeText] = useState(`Quester's Run`)
+  const [modeChangeText, setModeChangeText] = useState(`Guild Hall`)
   const [modeChangeTo, setModeChangeTo] = useState<WorldModeMain>('guild')
 
   useEffect(() => {
@@ -54,26 +54,26 @@ export default function World() {
       >
         {displayedMode !== 'none' && (
           <div>
-            <button
-              onClick={() => {
-                if(worldModeMain === 'guild') return
-                setModeChangeText('Guild Hall')
-                setModeChangeTo('guild')
-                triggerTransitionMode()
-              }}
-            >
-              GUILD HALL
-            </button>
-            <button
-              onClick={() => {
-                if(worldModeMain === 'tavern') return
-                setModeChangeText('Tavern')
-                setModeChangeTo('tavern')
-                triggerTransitionMode()
-              }}
-            >
-              TAVERN
-            </button>
+              <button
+                onClick={() => {
+                  if(worldModeMain === 'guild') return
+                  setModeChangeText('Guild Hall')
+                  setModeChangeTo('guild')
+                  triggerTransitionMode()
+                }}
+              >
+                GUILD HALL
+              </button>
+              <button
+                onClick={() => {
+                  if(worldModeMain === 'tavern') return
+                  setModeChangeText('Tavern')
+                  setModeChangeTo('tavern')
+                  triggerTransitionMode()
+                }}
+              >
+                TAVERN
+              </button>
           </div>
         )}
         {displayedMode === 'guild' && (
