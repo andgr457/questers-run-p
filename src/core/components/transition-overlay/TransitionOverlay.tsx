@@ -29,13 +29,13 @@ export default function TransitionOverlay(props: Props) {
 
       timer = setTimeout(() => {
         setMode('wait')
-      }, 900)
+      }, 300)
     }
 
     if(mode === 'wait'){
       timer = setTimeout(() => {
         setMode('complete')
-      }, 1400)
+      }, 750)
     }
 
     if(mode === 'complete'){
@@ -50,7 +50,7 @@ export default function TransitionOverlay(props: Props) {
             mode: 'none'
           }
         })
-        
+
         eventBus.emit({
           id: crypto.randomUUID(),
           type: 'world:mode:main:change',
@@ -59,7 +59,7 @@ export default function TransitionOverlay(props: Props) {
             mode: onCompleteModeMainChangeTo
           }
         })
-      }, 900)
+      }, 250)
     }
 
     return () => {

@@ -1,0 +1,12 @@
+.wrapper {
+  opacity: 0;
+  transition: opacity var(--duration) ease;
+}
+
+.wrapper.show {
+  opacity: 1;
+}
+
+.wrapper.hide {
+  opacity: 0;
+}

@@ -1,6 +1,6 @@
 
-export type WorldModeMain = 'none' | 'guild'
-export type WorldModeOverlay = 'none' | 'intro' 
+export type WorldModeMain = 'none' | 'guild' | 'tavern'
+export type WorldModeOverlay = 'none' | 'intro' | 'mode-change'
 
 export interface WorldModeMainChangeEventMeta {
   mode: WorldModeMain
