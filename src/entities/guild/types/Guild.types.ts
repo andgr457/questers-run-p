@@ -24,7 +24,6 @@ export interface GuildUpgrade {
   requirements: {
     gold: number
     level: number
-    parentUpgradeId: string | null
   }
 }
 

@@ -43,7 +43,30 @@ export function getBaseGuildUpgrades(): GuildUpgrades {
         levelMax: 100,
         levelMultiplier: 1.5,
         requirements: {
-          gold:
+          gold: 20,
+          level: 1,
+        }
+      },
+      storage: {
+        title: 'Guild Bank Item Storage Limit',
+        value: 100,
+        levelMax: 100,
+        levelMultiplier: 1.5,
+        requirements: {
+          gold: 50,
+          level: 1,
+        }
+      }
+    },
+    gold: {
+      dungeon: {
+        title: 'Guild Dungeon Gold Increase',
+        value: ,
+        levelMax: 100,
+        levelMultiplier: 1.5,
+        requirements: {
+          gold: 20,
+          level: 1,
         }
       }
     }
