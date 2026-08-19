@@ -8,6 +8,7 @@ import type { WorldModeMain } from '../../engine/events/types/WorldModeEvents.ty
 import Tavern from '../tavern/Tavern'
 import { eventBus } from '../../engine/events/EventBus'
 import { clockRuntimeService } from '../../engine/clock/ClockRuntimeService'
+import Version from '../version/Version'
 
 export default function World() {
   const {
@@ -54,26 +55,26 @@ export default function World() {
       >
         {displayedMode !== 'none' && (
           <div>
-              <button
-                onClick={() => {
-                  if(worldModeMain === 'guild') return
-                  setModeChangeText('Guild Hall')
-                  setModeChangeTo('guild')
-                  triggerTransitionMode()
-                }}
-              >
-                GUILD HALL
-              </button>
-              <button
-                onClick={() => {
-                  if(worldModeMain === 'tavern') return
-                  setModeChangeText('Tavern')
-                  setModeChangeTo('tavern')
-                  triggerTransitionMode()
-                }}
-              >
-                TAVERN
-              </button>
+            <button
+              onClick={() => {
+                if(worldModeMain === 'guild') return
+                setModeChangeText('Guild Hall')
+                setModeChangeTo('guild')
+                triggerTransitionMode()
+              }}
+            >
+              GUILD HALL
+            </button>
+            <button
+              onClick={() => {
+                if(worldModeMain === 'tavern') return
+                setModeChangeText('Tavern')
+                setModeChangeTo('tavern')
+                triggerTransitionMode()
+              }}
+            >
+              TAVERN
+            </button>
           </div>
         )}
         {displayedMode === 'guild' && (
@@ -96,6 +97,8 @@ export default function World() {
           onCompleteModeMainChangeTo={modeChangeTo}
         />
       )}
+      <Version />
     </div>
+
   )
 }
