@@ -1,9 +1,9 @@
-import type { PlayerEventMap } from './PlayerEvents.types'
+import type { GuildMasterEventMap } from './GuildMasterEvents.types'
 import type { WorldModeEventMap } from './WorldModeEvents.types'
 
 export interface EventMaps extends 
   WorldModeEventMap,
-  PlayerEventMap
+  GuildMasterEventMap
   {}
 export type GameEventType = keyof EventMaps
 

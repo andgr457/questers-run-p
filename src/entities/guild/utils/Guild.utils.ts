@@ -1,45 +1,49 @@
-import type { Guild } from '../types/Guild.types';
+import { getBaseEntityAttributes, getBaseEntityStats, getBaseEntityTalents } from '../../entity/utils/Entity.utils';
+import { GAME_RANK_SORT } from '../../rank/data/Rank.data';
+import { getNewGuildRankRequirements } from '../../rank/utils/Rank.utils';
+import type { Guild, GuildUpgrades } from '../types/Guild.types';
 
-export function getNewGuild(): Guild {
+
+export function getBaseGuild(
+  title = `Unnamed Guild`,
+  description = 'A brand new guild.'
+): Guild {
   return {
     id: `guild_${crypto.randomUUID()}`,
-    name: 'My Guild',
+    title,
+    description,
+    attributes: getBaseEntityAttributes(),
+    createdDate: 0,
+    gold: 0,
+    rankLevel: 'F',
+    stats: getBaseEntityStats(),
+    talents: getBaseEntityTalents(),
     level: 1,
-    gold: 100,
     xp: 0,
     xpNextLevel: 100,
+    guildId: '',
+    tokens: 0,
+    professions: [],
     upgrades: {
-      maxCharacters: {
-        title: 'Guild Max Characters',
-        description: 'Increases the max amount of characters the guild can hire.',
-        level: 1,
-        maxLevel: 10,
-        value: 1,
-        cost: {
-          base: 150,
-          levelMultiplier: 1.75
+      bank: {
+        gold: {
+
         }
-      },
-      maxGold: {
-        title: 'Guild Max Gold',
-        description: 'Increases the max amount of gold the guild can have at one time.',
-        level: 1,
-        maxLevel: 10,
-        value: 150,
-        cost: {
-          base: 25,
-          levelMultiplier: 1.5
-        }
-      },
-      maxLevel: {
-        title: 'Guild Max Level',
-        description: 'Increases the max level the guild can achieve.',
-        level: 1,
-        maxLevel: 10,
-        value: 1,
-        cost: {
-          base: 200,
-          levelMultiplier: 1.5
+      }
+    }
+  }
+}
+
+export function getBaseGuildUpgrades(): GuildUpgrades {
+  return {
+    bank: {
+      gold: {
+        title: 'Guild Bank Gold Limit',
+        value: 100,
+        levelMax: 100,
+        levelMultiplier: 1.5,
+        requirements: {
+          gold:
         }
       }
     }

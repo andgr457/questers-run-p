@@ -1,10 +1,17 @@
 import styles from './GuildHall.module.css'
 import FeatureBody from '../../core/components/feature/components/body/FeatureBody';
 import FeatureHeader from '../../core/components/feature/components/header/FeatureHeader';
-import PlayerDetail from '../../entities/player/components/detail/PlayerDetail';
+import GuildMasterDetail from '../../entities/guild-master/components/detail/GuildMasterDetail';
 
-export default function GuildHall() {
+interface Props{
+  guildId: string
+}
 
+export default function GuildHall(props: Props) {
+  const {
+    guildId
+  } = props
+  
   return <div className={styles.wrapper}>
               
     <FeatureHeader
@@ -12,7 +19,7 @@ export default function GuildHall() {
     />
 
     <FeatureBody>
-      <PlayerDetail />
+      <GuildMasterDetail />
     </FeatureBody>
 
   </div>

@@ -1,21 +1,14 @@
+import type { EntityBase } from '../../entity/types/Entity.types'
 import type { Upgrade } from '../../upgrade/types/Upgrade.types'
 
-export interface Player {
-  id: string
-  name: string
-  level: number
-  xp: number
-  xpNextLevel: number
-  gold: number
-  tokens: number
-  stamina: number
-  staminaMax: number
+export interface GuildMaster extends EntityBase {
+
 
   //applies onto characters as well (guild + player + character upgrades = guild, player, and character gains)
-  upgrades: PlayerUpgrades
+  upgrades: GuildMasterUpgrades
 }
 
-export interface PlayerUpgrades {
+export interface GuildMasterUpgrades {
   xpPerQuest: Upgrade
   goldPerQuest: Upgrade
   speedPerQuest: Upgrade
