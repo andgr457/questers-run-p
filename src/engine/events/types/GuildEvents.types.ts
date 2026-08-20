@@ -1,5 +1,5 @@
 import type { Guild } from '../../../entities/guild/types/Guild.types'
-import type { GuildMaster, PlayerSkills } from '../../../entities/guild-master/types/GuildMaster.types'
+import type { GuildMaster, PlayerSkills } from '../../../entities/character/types/Character.types'
 
 export interface GuildCreateEventMeta {
   guild: Guild

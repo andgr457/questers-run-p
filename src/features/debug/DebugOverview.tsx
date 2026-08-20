@@ -1,10 +1,10 @@
-import GuildMasterDetail from '../../entities/guild-master/components/detail/GuildMasterDetail';
+import CharacterDetail from '../../entities/character/components/detail/CharacterDetail';
 
 export default function DebugOverview() {
 
   return (
     <div>
-      <GuildMasterDetail />
+      <CharacterDetail />
     </div>
   )
 }

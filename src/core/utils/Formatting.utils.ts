@@ -26,3 +26,8 @@ export function formatPrimitiveValueToString(
     return  numberValueFixedLocale
   }
 }
+
+export function formatNumberValueToStringWithPlus(value: number){
+  const plus = value > 0 ? '+' : ''
+  return `${plus}${formatPrimitiveValueToString(value)}`
+}

@@ -8,8 +8,8 @@ interface Props {
 
 export default function TransitionModeMainScreen(props: Props) {
   const {
-    onCompleteModeMainChangeTo = 'guild',
-    text = '...'
+    onCompleteModeMainChangeTo,
+    text
   } = props
   return (
     <TransitionOverlay 

@@ -5,6 +5,7 @@ export default function Intro() {
   return (
     <TransitionOverlay 
       text={`Quester's Run`}
+
     />
   )
 }

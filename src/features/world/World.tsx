@@ -1,49 +1,33 @@
 import { useEffect, useState } from 'react'
 import FeatureBase from '../../core/components/feature/components/base/FeatureBase'
 import { useWorldModeEvents } from '../../engine/events/hooks/useWorldModeEvents'
-import GuildHall from '../guild-hall/GuildHall'
+import GuildHall from '../guild/hall/GuildHall'
 import styles from './World.module.css'
 import TransitionModeMainScreen from '../transition/TransitionModeMainScreen'
-import type { WorldModeMain } from '../../engine/events/types/WorldModeEvents.types'
-import Tavern from '../tavern/Tavern'
-import { eventBus } from '../../engine/events/EventBus'
-import { clockRuntimeService } from '../../engine/clock/ClockRuntimeService'
+import TavernHall from '../tavern/hall/TavernHall'
 import Version from '../version/Version'
+import TownHall from '../town/hall/TownHall'
+import WorldNav from './nav/WorldNav'
+import Wiki from '../wiki/Wiki'
+import TownMap from '../town/map/TownMap'
+import { characterEventService } from '../../engine/events/services/CharacterEventService'
+import CharacterCreate from '../character-create/CharacterCreate'
 
 export default function World() {
   const {
     worldModeMain,
-    worldModeOverlay
+    worldModeOverlay,
+    transitionOnCompleteMode,
+    transitionText
   } = useWorldModeEvents()
 
   const [displayedMode, setDisplayedMode] = useState(worldModeMain)
-  const [modeChangeText, setModeChangeText] = useState(`Guild Hall`)
-  const [modeChangeTo, setModeChangeTo] = useState<WorldModeMain>('guild')
 
   useEffect(() => {
     if(worldModeMain === displayedMode){
       return
     }
   }, [worldModeMain, displayedMode])
-
-  const triggerTransitionMode = () => {
-    eventBus.emit({
-      id: crypto.randomUUID(),
-      type: 'world:mode:main:change',
-      created: clockRuntimeService.getNow(),
-      meta: {
-        mode: 'none'
-      }
-    })
-    eventBus.emit({
-      id: crypto.randomUUID(),
-      type: 'world:mode:overlay:change',
-      created: clockRuntimeService.getNow(),
-      meta: {
-        mode: 'mode-change'
-      }
-    })
-  }
 
   return (
     <div className={styles.world}>
@@ -53,48 +37,41 @@ export default function World() {
           setDisplayedMode(worldModeMain)
         }}
       >
-        {displayedMode !== 'none' && (
-          <div>
-            <button
-              onClick={() => {
-                if(worldModeMain === 'guild') return
-                setModeChangeText('Guild Hall')
-                setModeChangeTo('guild')
-                triggerTransitionMode()
-              }}
-            >
-              GUILD HALL
-            </button>
-            <button
-              onClick={() => {
-                if(worldModeMain === 'tavern') return
-                setModeChangeText('Tavern')
-                setModeChangeTo('tavern')
-                triggerTransitionMode()
-              }}
-            >
-              TAVERN
-            </button>
-          </div>
+        {displayedMode !== 'none' && !displayedMode.includes(':create') && (
+          <WorldNav />
         )}
-        {displayedMode === 'guild' && (
+        
+        {displayedMode === 'character:create' && (
+          <CharacterCreate />
+        )}
+        {displayedMode === 'wiki' && (
+          <Wiki />
+        )}
+        {displayedMode === 'town:map' && (
+          <TownMap />
+        )}
+        {displayedMode === 'town:hall' && (
+          <TownHall />
+        )}
+        {displayedMode === 'tavern:hall' && (
+          <TavernHall />
+        )}
+        {displayedMode === 'guild:hall' && (
           <GuildHall />
         )}
-        {displayedMode === 'tavern' && (
-          <Tavern />
-        )}
+        
       </FeatureBase>
 
       {worldModeOverlay === 'intro' && (
         <TransitionModeMainScreen 
-          onCompleteModeMainChangeTo='guild'
+          onCompleteModeMainChangeTo={`${characterEventService.getCharacters().length === 0 ? 'character:create' : 'town:map'}`}
           text={`Quester's Run`}
         />
       )}
       {worldModeOverlay === 'mode-change' && (
         <TransitionModeMainScreen
-          text={modeChangeText}
-          onCompleteModeMainChangeTo={modeChangeTo}
+          text={transitionText}
+          onCompleteModeMainChangeTo={transitionOnCompleteMode}
         />
       )}
       <Version />

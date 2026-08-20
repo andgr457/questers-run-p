@@ -9,6 +9,12 @@ export function useWorldModeEvents(){
   const [worldModeOverlay, setWorldModeOverlay] = useState(
     worldModeEventService.getWorldModeOverlay()
   )
+  const [transitionText, setTranstionText] = useState(
+    worldModeEventService.getTransitionText()
+  )
+  const [transitionOnCompleteMode, setTransitionOnCompleteMode] = useState(
+    worldModeEventService.getTransitionOnCompleteMode()
+  )
 
   useEffect(() => {
     const unsub = eventBus.subscribe(event => {
@@ -19,15 +25,24 @@ export function useWorldModeEvents(){
         )
       }
       if(event.type === 'world:mode:overlay:changed'){
+        setTranstionText(
+          worldModeEventService.getTransitionText()
+        )
+        setTransitionOnCompleteMode(
+          worldModeEventService.getTransitionOnCompleteMode()
+        )
         setWorldModeOverlay(
           worldModeEventService.getWorldModeOverlay()
         )
       }
     })
+    return unsub
   }, [])
 
   return {
     worldModeMain,
-    worldModeOverlay
+    worldModeOverlay,
+    transitionText,
+    transitionOnCompleteMode
   }
 }

@@ -1,11 +1,21 @@
+import FeatureBody from '../../core/components/feature/components/body/FeatureBody'
+import FeatureHeader from '../../core/components/feature/components/header/FeatureHeader'
 import styles from './Wiki.module.css'
+
 export default function Wiki(){
 
   return (
-    <div
+    <div 
       className={styles.wrapper}
     >
-      WIKI
+      <FeatureHeader
+        text={'Wiki'}
+      />
+
+      <FeatureBody>
+        BODY
+      </FeatureBody>
+
     </div>
   )
 }
