@@ -1,0 +1,7 @@
+.label {
+  color: var(--text);
+  letter-spacing: 1px;
+  display: inline-block;
+  opacity: 0.9;
+  margin-left: 5px;
+}

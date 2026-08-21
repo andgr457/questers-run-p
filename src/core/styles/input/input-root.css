@@ -1,0 +1,63 @@
+@import './input.css';
+@import './textarea.css';
+@import './input.css';
+@import './select.css';
+@import './button.css';
+
+
+:root {
+  --input-radius: 8px;
+  --input-padding: 8px 10px;
+  --input-border: 1px solid rgba(255, 255, 255, 0.08);
+  --input-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --input-focus: 0 0 0 1px var(--text);
+}
+
+/** SHARED INPUT BASE */
+input,
+select,
+textarea {
+  font: inherit;
+  color: var(--input-text);
+  background-color: var(--bg-dark-3);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  padding: var(--input-padding);
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--input-shadow);
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 95%;
+  animation: fadeIn 1s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: var(--input-focus);
+  border-color: rgba(80, 140, 255, 0.6);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75em;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-invalid {
+  border: solid 1px var(--danger);
+}

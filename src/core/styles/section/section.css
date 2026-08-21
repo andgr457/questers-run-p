@@ -1,0 +1,24 @@
+.section {
+  padding: 10px;
+  background: var(--bg-dark-2);
+  border: solid var(--bg-dark-3) 1px;
+  border-radius: var(--input-radius);
+}
+
+.section-label-header {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  height: 25px;
+}
+
+.section-label {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.section.col2 {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 2rem;
+}

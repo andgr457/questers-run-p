@@ -10,11 +10,8 @@ export default function FeatureHeader(props: Props){
   } = props
 
   return (
-    <div className={styles.wrapper}>
-
-      <div className={styles.text}>
-        {text}
-      </div>
+    <div className={styles.text}>
+      {text}
     </div>
   )
 }

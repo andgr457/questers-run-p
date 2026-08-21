@@ -1,1 +1,4 @@
 @import './root.css';
+@import './input/input-root.css';
+@import './text/text-root.css';
+@import './section/section-root.css'

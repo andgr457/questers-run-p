@@ -1,0 +1,54 @@
+.button {
+  all: unset;
+  text-align: center;
+  padding: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  border: solid var(--bg-dark-3) 2px;
+  background-color: var(--bg-dark-2);
+  color: var(--text);
+  text-shadow: 0 0 3px var(--text);
+  transition: filter 1s;
+
+}
+
+.button:hover {
+  filter: brightness(1.2);
+  transition: filter 1s;
+}
+
+.button.selected {
+  border-color: var(--blue-sd-lighter-2);
+  color: var(--text);
+}
+
+.button.gold {
+  background-color: var(--bg-dark-2);
+  border-color: var(--gold);
+  color: var(--text);
+}
+
+.button.danger {
+  background-color: var(--danger);
+  border-color: var(--bg-dark-3);
+  color: var(--text);
+}
+
+.button.success {
+  background-color: var(--success-dark);
+  border-color: var(--bg-dark-3);
+  /* color: var(--bg-dark-1); */
+  text-shadow: var(--dark-text-shadow);
+  font-weight: 600;
+}
+
+.button.success-alt {
+  border-color: var(--success-dark);
+  text-shadow: var(--dark-text-shadow);
+  color: var(--success);
+  font-weight: 600;
+}

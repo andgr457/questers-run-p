@@ -1,0 +1,12 @@
+.input-error {
+  color: var(--danger);
+  margin-left: 5px;
+  font-size: 0.7rem;
+  padding-top: 5px;
+  letter-spacing: 1px;
+}
+
+.input-length-text {
+  opacity: 0.3;
+  font-size: 0.7rem;
+}
