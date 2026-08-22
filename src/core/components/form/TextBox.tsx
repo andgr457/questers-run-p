@@ -23,9 +23,7 @@ export default function TextBox(props: Props){
   const [rules, setRules] = useState<ValidationRule[]>(
     validationRules
   )
-  const invalidRules = rules.filter(r => !r.isValid)
   const validRules = rules.filter(r => r.isValid === true)
-  const someRulesFailed = invalidRules.length > 0
   
   return (
     <div className={`section ${validationRules.length > 0 ? 'col2' : ''}`}>
@@ -41,7 +39,6 @@ export default function TextBox(props: Props){
         <div>
           <input 
             type='text'
-            className={someRulesFailed ? 'invalid' : ''}
             maxLength={inputMaxLength}
             placeholder={inputPlaceholderText}
             value={inputValue}
@@ -56,9 +53,6 @@ export default function TextBox(props: Props){
                   ...prev
                 ]
               })
-              for(const rule of rules){
-                rule.isValid = rule.isValidFn(value)
-              }
               
               inputOnChange(value)
             }}

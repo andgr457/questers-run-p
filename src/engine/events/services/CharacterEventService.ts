@@ -46,7 +46,6 @@ class CharacterEventService extends BaseEventService {
   getCharacters(): Character[] {
     const all = Object.values(this.characters)
     if(!all || all.length === 0) {
-      console.warn('Character Runtime Service', 'getCharacters', 'No characters.')
       return []
     }
 

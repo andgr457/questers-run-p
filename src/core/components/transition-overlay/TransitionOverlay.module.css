@@ -11,7 +11,7 @@
   top: 0;
   bottom: 0;
   width: 50%;
-  transition: transform 250ms cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform 350ms cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .leftPanel {
@@ -20,7 +20,11 @@
   clip-path: polygon(
     0 0,
     100% 0,
-    92% 50%,
+    86% 38%,
+    39% 38%,
+    76% 62%,
+    62% 100%,
+    100% 80%,
     100% 100%,
     0 100%
   );
@@ -33,10 +37,14 @@
   background: var(--bg-dark-3);
   clip-path: polygon(
     0 0,
-    100% 0,
-    100% 100%,
+    14% 38%,
+    61% 38%,
+    24% 62%,
+    38% 100%,
+    0 80%,
     0 100%,
-    8% 50%
+    100% 100%,
+    100% 0
   );
   z-index: 2;
 }

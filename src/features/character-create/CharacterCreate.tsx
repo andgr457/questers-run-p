@@ -7,6 +7,10 @@ import { getCharacterForCreate } from '../../entities/character/utils/Character.
 import type { Character } from '../../interfaces/Character.types'
 import type { ValidationRule } from '../../core/components/form/ValidationRules'
 import TextBox from '../../core/components/form/TextBox'
+import Selections from '../../core/components/form/Selections'
+import { GAME_CLASSES } from '../../data/Classes.data'
+import type { ClassIds } from '../../interfaces/Classes.types'
+import { GAME_ICONS } from '../../core/data/Icons.data'
 
 export default function CharacterCreate() {
   const [newCharacter, setNewCharacter] = useState<Character | undefined>(
@@ -27,6 +31,7 @@ export default function CharacterCreate() {
         Fill out this form and submit it to the town hall to register them in this world.
       </div>
     
+      {/* CHARACTER NAME/TITLE */}
       <FeatureBody>
         <TextBox 
           validationRules={[
@@ -53,6 +58,7 @@ export default function CharacterCreate() {
           labelText='Character Name'
         />
       </FeatureBody>
+      {/* DESCRIPTION */}
        <FeatureBody>
         <TextBox 
           validationRules={[
@@ -76,6 +82,54 @@ export default function CharacterCreate() {
           inputPlaceholderText='Optional background lore...'
           inputValue={newCharacter?.description ?? ''}
           labelText='Description'
+        />
+      </FeatureBody>
+      {/* CLASS SELECTIONS */}
+      <FeatureBody>
+        <Selections 
+          labelText='Class'
+          selectionDetails={Object.getOwnPropertyNames(GAME_CLASSES).map(classId => {
+            const newClass = GAME_CLASSES[classId as ClassIds]
+
+            return {
+              text: newClass.title,
+              icon: '',
+              inactive: false,
+              inactiveText: '',
+              selected: false,
+              value: newClass.id
+            }
+          })}
+          selectionMode='one'
+          selectionOnChange={(value: string, selected: boolean) => {
+            console.log(value, selected)
+            let newClassId = value
+            if(newCharacter?.classId === newClassId){
+              if(!selected){
+                newCharacter.classId = ''
+              }
+            }
+            console.log(newCharacter?.classId)
+            
+            setNewCharacter(prev => {
+              if(!prev) return prev
+
+              return {
+                ...newCharacter as Character,
+                classId: newClassId
+              }
+            })
+          }}
+          validationRules={[
+            {
+              validationText: '1 Class Selected',
+              isValid: false,
+              isValidFn: (value: string) => {
+                console.log('rule check',newCharacter?.classId, value)
+                return newCharacter?.classId === value
+              }
+            }
+          ]}
         />
       </FeatureBody>
 

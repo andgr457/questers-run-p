@@ -2,12 +2,12 @@ import type { CharacterClass, ClassIds } from '../interfaces/Classes.types';
 import { GAME_SKILL_WARRIOR_IDS } from './class-skills/WarriorSkill.data';
 export const GAME_CLASS_IDS: Record<ClassIds, ClassIds> = {
   class_warrior: 'class_warrior',
-  class_paladin: 'class_warrior',
-  class_mage: 'class_warrior',
-  class_druid: 'class_warrior',
-  class_rogue: 'class_warrior',
-  class_hunter: 'class_warrior',
-  class_priest: 'class_warrior'
+  class_paladin: 'class_paladin',
+  class_mage: 'class_mage',
+  class_druid: 'class_druid',
+  class_rogue: 'class_rogue',
+  class_hunter: 'class_hunter',
+  class_priest: 'class_priest'
 } 
 
 export const GAME_CLASSES: Record<ClassIds, CharacterClass> = {

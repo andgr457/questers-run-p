@@ -1,6 +1,8 @@
+import { GAME_CREDITS_SFX_LOCAL_URLS } from '../../../data/credits/CreditsSFX.data'
 import { clockRuntimeService } from '../../../engine/clock/ClockRuntimeService'
 import { eventBus } from '../../../engine/events/EventBus'
 import type { WorldModeMain } from '../../../engine/events/types/WorldModeEvents.types'
+import useAudioPlayer from '../../hooks/useAudioPlayer'
 import styles from './TransitionOverlay.module.css'
 import { useEffect, useState } from 'react'
 
@@ -16,14 +18,20 @@ export default function TransitionOverlay(props: Props) {
   const [showPanels, setShowPanels] = useState(false)
   const {
     text,
-    onCompleteModeMainChangeTo = 'guild'
+    onCompleteModeMainChangeTo = 'town:map'
   } = props
-
+  const { 
+    play
+  } = useAudioPlayer({
+    audioUrl: GAME_CREDITS_SFX_LOCAL_URLS.sfx_mixit_transition
+  })
+  
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | undefined
 
     if(mode === 'start'){
       requestAnimationFrame(() => {
+        play()
         setShowPanels(true)
       })
 
@@ -31,7 +39,7 @@ export default function TransitionOverlay(props: Props) {
         setMode('wait')
       }, 300)
     }
-
+    
     if(mode === 'wait'){
       timer = setTimeout(() => {
         setMode('complete')
@@ -47,7 +55,9 @@ export default function TransitionOverlay(props: Props) {
           type: 'world:mode:overlay:change',
           created: clockRuntimeService.getNow(),
           meta: {
-            mode: 'none'
+            mode: 'none',
+            transitionOnCompleteMode: 'none',
+            transitionText: ''
           }
         })
 

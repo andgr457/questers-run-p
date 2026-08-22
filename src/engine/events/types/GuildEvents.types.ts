@@ -1,5 +1,4 @@
 import type { Guild } from '../../../entities/guild/types/Guild.types'
-import type { GuildMaster, PlayerSkills } from '../../../entities/character/types/Character.types'
 
 export interface GuildCreateEventMeta {
   guild: Guild
@@ -44,12 +43,10 @@ export interface GuildLevelAddedEventMeta {
 
 export interface GuildUpgradeAddEventMeta {
   guildId: string
-  upgrades: 
 }
 
 export interface GuildUpgradeAddedEventMeta {
   guildId: string
-  upgrades: Partial<GuildUpgrades>
 }
 
 export interface GuildEventMap {
