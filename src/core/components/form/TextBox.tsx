@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { ValidationRule } from './ValidationRules'
 
 interface Props {
@@ -8,6 +7,7 @@ interface Props {
   inputMaxLength: number
   validationRules: ValidationRule[]
   inputOnChange: (value: string) => void
+  isTextArea?: boolean
 }
 
 export default function TextBox(props: Props){
@@ -17,16 +17,14 @@ export default function TextBox(props: Props){
     inputPlaceholderText = '...',
     inputValue,
     labelText,
-    validationRules,
-
+    validationRules: rules,
+    isTextArea = false
   } = props
-  const [rules, setRules] = useState<ValidationRule[]>(
-    validationRules
-  )
+
   const validRules = rules.filter(r => r.isValid === true)
   
   return (
-    <div className={`section ${validationRules.length > 0 ? 'col2' : ''}`}>
+    <div className={`section ${rules.length > 0 ? 'col1' : ''}`}>
       <div>
         <div className='section-label-header'>
           <div className='section-label'>
@@ -37,26 +35,30 @@ export default function TextBox(props: Props){
           </div>
         </div>
         <div>
-          <input 
-            type='text'
-            maxLength={inputMaxLength}
-            placeholder={inputPlaceholderText}
-            value={inputValue}
-            onChange={(e) => {
-              const value = e.target?.value?.trim()
-              setRules(prev => {
-                if(!prev) return prev
-                for(const rule of prev){
-                  rule.isValid = rule.isValidFn(value)
-                }
-                return [
-                  ...prev
-                ]
-              })
-              
-              inputOnChange(value)
-            }}
-          />
+          {isTextArea && (
+            <textarea 
+              value={inputValue}
+              placeholder={inputPlaceholderText}
+              maxLength={inputMaxLength}
+              onChange={(e) => {
+                const value = e.target?.value?.trim()             
+                inputOnChange(value)
+              }}
+            />
+          )}
+          {!isTextArea && (
+            <input 
+              type='text'
+              maxLength={inputMaxLength}
+              placeholder={inputPlaceholderText}
+              value={inputValue}
+              onChange={(e) => {
+                const value = e.target?.value?.trim()             
+                inputOnChange(value)
+              }}
+            />
+          )}
+          
         </div>
 
       </div>
@@ -65,7 +67,7 @@ export default function TextBox(props: Props){
           <div className='validation-label'>
             Validation
           </div>
-          <div className='input-length-text'>
+          <div className='validation-length-text'>
             {validRules.length}/{rules.length}
           </div>
         </div>
@@ -74,7 +76,7 @@ export default function TextBox(props: Props){
               
               return (
                 <div
-                  id={crypto.randomUUID()}
+                  key={crypto.randomUUID()}
                   className={`validation-section-rule ${rule.isValid ? 'valid' : 'invalid'}`}
                 >
                   {rule.validationText}

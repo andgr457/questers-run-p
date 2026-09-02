@@ -12,7 +12,6 @@ export default function ValidationRules(props: Props) {
   const {
     rules
   } = props
-  console.log(rules)
   const validRules = rules.filter(r => r.isValid === true)
   return (
     <div>

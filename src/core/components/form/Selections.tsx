@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { GAME_CREDITS_SFX_LOCAL_URLS } from '../../../data/credits/CreditsSFX.data'
+import useAudioPlayer from '../../hooks/useAudioPlayer'
 import type { ValidationRule } from './ValidationRules'
 
 export interface SelectionDetail {
@@ -10,34 +11,31 @@ export interface SelectionDetail {
   selected: boolean
 }
 
-type SelectionMode = 'one' | 'many'
-
 interface Props {
   labelText: string
-  selectionMode: SelectionMode
   selectionDetails: SelectionDetail[]
   validationRules: ValidationRule[]
   selectionOnChange: (value: string, selected: boolean) => void
+  setRules: (rules: ValidationRule[]) => void
 }
 
 export default function Selections(props: Props) {
   const {
     labelText,
     selectionDetails,
-    validationRules,
-    selectionMode,
+    validationRules: rules,
     selectionOnChange,
   } = props
-  const [rules, setRules] = useState<ValidationRule[]>(
-    validationRules
-  )
-  const [selections, setSelections] = useState<SelectionDetail[]>(
-    selectionDetails
-  )
+  const { 
+    play
+  } = useAudioPlayer({
+    audioUrl: GAME_CREDITS_SFX_LOCAL_URLS.sfx_mixit_click
+  })
+
   const validRules = rules.filter(r => r.isValid === true)
   
   return (
-    <div className={`section ${validationRules.length > 0 ? 'col2' : ''}`}>
+    <div className={`section ${rules.length > 0 ? 'col1' : ''}`}>
       <div>
         <div className='section-label-header'>
           <div className='section-label'>
@@ -45,46 +43,23 @@ export default function Selections(props: Props) {
           </div>
         </div>
         <div>
-          <div className='selections'>
-            {selections.map(selection => {
+          <div className='button-selection-list'>
+            {selectionDetails.map(selection => {
 
               return <button
+                key={crypto.randomUUID()}
                 className={`button-selection ${selection.inactive ? 'inactive' : ''} ${selection.selected ? 'selected' : ''}`}
+                disabled={selection.inactive}
                 onClick={() => {
-                  if(selection.inactive) return
+                  const setTo = !selection.selected  
 
-                  const setTo = !selection.selected
-
-                  setSelections(prev => {
-                    if(!prev) return prev
-                    for(const prevSelection of prev){
-                      if(prevSelection.value === selection.value){
-                        //flip the value
-                        prevSelection.selected = setTo
-                      } else {
-                        //not clicked selection
-                        if(selectionMode === 'one'){
-                          //set others to false
-                          prevSelection.selected = false
-                        } 
-                      }
-                    }
-                    return [
-                      ...prev
-                    ]
-                  })
-                  selectionOnChange(selection.value, setTo)
-                  
-                  setRules(prev => {
-                    if(!prev) return prev
-                    for(const rule of prev){
-                      rule.isValid = rule.isValidFn(selection.value)
-                      console.log(rule, selection.value)
-                    }
-                    return [
-                      ...prev
-                    ]
-                  })
+                  play()
+                  const timer = setTimeout(() => {
+                    selectionOnChange(selection.value, setTo)
+                  }, 50)
+                  return () => {
+                    if(timer) clearTimeout(timer)
+                  }
                 }}
               >
                 {selection.text}
@@ -99,16 +74,15 @@ export default function Selections(props: Props) {
           <div className='validation-label'>
             Validation
           </div>
-          <div className='input-length-text'>
+          <div className='validation-length-text'>
             {validRules.length}/{rules.length}
           </div>
         </div>
         <div className='validation-section-rule-list'>
             {rules.map(rule => {
-              
               return (
                 <div
-                  id={crypto.randomUUID()}
+                  key={crypto.randomUUID()}
                   className={`validation-section-rule ${rule.isValid ? 'valid' : 'invalid'}`}
                 >
                   {rule.validationText}

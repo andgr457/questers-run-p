@@ -5,15 +5,18 @@
 
   --text: #e6e2d3;
   --danger: #f02828;
-
+  --success: rgb(11, 198, 11);
+  --success-dark: rgb(9, 142, 9);
 }
 
 html, body, #root {
   margin: 0;
   padding: 0;
+  margin-left: 0.2rem;
+  margin-right: 0.2rem;
 
-  min-height: 100vh;
-  width: 100%;
+  /* min-height: 100vh; */
+  /* width: 100%; */
 
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;

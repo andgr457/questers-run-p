@@ -1,21 +1,68 @@
-import { useState } from 'react'
-import FeatureBody from '../../core/components/feature/components/body/FeatureBody'
+import { useEffect, useState } from 'react'
 import FeatureHeader from '../../core/components/feature/components/header/FeatureHeader'
 import { characterEventService } from '../../engine/events/services/CharacterEventService'
 import styles from './CharacterCreate.module.css'
 import { getCharacterForCreate } from '../../entities/character/utils/Character.utils'
 import type { Character } from '../../interfaces/Character.types'
-import type { ValidationRule } from '../../core/components/form/ValidationRules'
-import TextBox from '../../core/components/form/TextBox'
-import Selections from '../../core/components/form/Selections'
-import { GAME_CLASSES } from '../../data/Classes.data'
-import type { ClassIds } from '../../interfaces/Classes.types'
-import { GAME_ICONS } from '../../core/data/Icons.data'
+import { type ClassIds } from '../../interfaces/Classes.types'
+import CharacterCreateClassSelections from './form-sections/CharacterCreateClassSelections'
+import CharacterCreateNameInput from './form-sections/CharacterCreateNameInput'
+import FeatureDescription from '../../core/components/feature/components/description/FeatureDescription'
+import CharacterCreateDescriptionInput from './form-sections/CharacterCreateDescriptionInput'
+import Actions, { type ActionDetail } from '../../core/components/form/Actions'
+import DialogConfirm from '../../core/components/dialog/DialogConfirm'
 
 export default function CharacterCreate() {
   const [newCharacter, setNewCharacter] = useState<Character | undefined>(
     getCharacterForCreate()
   )
+  const [resetDialogVisible, setResetDialogVisible] = useState(false)
+
+  const getFormActionsDefault = (canSubmit: boolean): ActionDetail[] => {
+    return [
+      {
+        text: 'Submit',
+        icon: '',
+        inactive: canSubmit === false,
+        inactiveText: 'Initializing',
+        value: 'character_create_submit',
+        onClick: () => {
+          console.log('submit clicked')
+        },
+        isSubmit: true,
+      },
+      {
+        text: 'Clear',
+        icon: '',
+        inactive: false,
+        inactiveText: '',
+        value: 'character_create_clear',
+        onClick: () => {
+          setResetDialogVisible(true)
+        },
+      },
+    ]
+  }
+  const [formActions, setFormActions] = useState<ActionDetail[]>(
+    getFormActionsDefault(false)
+  )
+
+  useEffect(() => {
+    if(!newCharacter) return
+
+    const name = newCharacter.title.trim()
+    const nameValid = name.length >= 3
+    const classSelected = newCharacter.classId.length > 0
+    let canSubmit = false
+    if(nameValid && classSelected){
+      canSubmit = true
+    } else {
+      canSubmit = false
+    }
+    setFormActions(
+      getFormActionsDefault(canSubmit)
+    )
+  }, [newCharacter])
 
   const noMainCharacter = characterEventService.getCharacters().length === 0
   
@@ -24,115 +71,60 @@ export default function CharacterCreate() {
       className={styles.wrapper}
     >
       <FeatureHeader
-        text={`${noMainCharacter ? 'Summon Main Character' : 'Summon New Character'}`}
+        text={`Summon Resident`}
       />
 
-      <div className={styles.description}>
-        Fill out this form and submit it to the town hall to register them in this world.
-      </div>
+      {noMainCharacter && (
+        <FeatureDescription isAlert={true}>
+          <div>
+            First character detected! After creation, this character will 
+            act as your main and guide you through 
+            managing your guild.
+          </div>
+        </FeatureDescription>
+      )}
+      <FeatureDescription>
+        Fill this out and submit it to notify the Town Hall of the new resident.
+      </FeatureDescription>
     
       {/* CHARACTER NAME/TITLE */}
-      <FeatureBody>
-        <TextBox 
-          validationRules={[
-            {
-              validationText: '3-32 Characters Long',
-              isValid: false,
-              isValidFn: (value: string) => {
-                if(!value || !value.length) return false
-                return value.length >=3 && value.length <= 32
-              }
-            },
-          ]}
-          inputMaxLength={32}
-          inputOnChange={(value) => {
-            setNewCharacter(prev => {
-              return {
-                ...prev as Character,
-                title: value
-              }
-            })
-          }}
-          inputPlaceholderText='Character name...'
-          inputValue={newCharacter?.title ?? ''}
-          labelText='Character Name'
-        />
-      </FeatureBody>
-      {/* DESCRIPTION */}
-       <FeatureBody>
-        <TextBox 
-          validationRules={[
-            {
-              validationText: '0-64 Characters Long',
-              isValid: true,
-              isValidFn: (value: string) => {
-                return value.length >=0 && value.length <= 32
-              }
-            },
-          ]}
-          inputMaxLength={64}
-          inputOnChange={(value) => {
-            setNewCharacter(prev => {
-              return {
-                ...prev as Character,
-                description: value
-              }
-            })
-          }}
-          inputPlaceholderText='Optional background lore...'
-          inputValue={newCharacter?.description ?? ''}
-          labelText='Description'
-        />
-      </FeatureBody>
+      <CharacterCreateNameInput 
+        characterName={newCharacter?.title ?? ''}
+        setNewCharacter={setNewCharacter}
+      />
+      {/* CHARACTER DESCRIPTION/LORE */}
+      <CharacterCreateDescriptionInput 
+        characterDescription={newCharacter?.description ?? ''}
+        setNewCharacter={setNewCharacter}
+      />
       {/* CLASS SELECTIONS */}
-      <FeatureBody>
-        <Selections 
-          labelText='Class'
-          selectionDetails={Object.getOwnPropertyNames(GAME_CLASSES).map(classId => {
-            const newClass = GAME_CLASSES[classId as ClassIds]
-
-            return {
-              text: newClass.title,
-              icon: '',
-              inactive: false,
-              inactiveText: '',
-              selected: false,
-              value: newClass.id
-            }
-          })}
-          selectionMode='one'
-          selectionOnChange={(value: string, selected: boolean) => {
-            console.log(value, selected)
-            let newClassId = value
-            if(newCharacter?.classId === newClassId){
-              if(!selected){
-                newCharacter.classId = ''
-              }
-            }
-            console.log(newCharacter?.classId)
-            
-            setNewCharacter(prev => {
-              if(!prev) return prev
-
-              return {
-                ...newCharacter as Character,
-                classId: newClassId
-              }
-            })
-          }}
-          validationRules={[
-            {
-              validationText: '1 Class Selected',
-              isValid: false,
-              isValidFn: (value: string) => {
-                console.log('rule check',newCharacter?.classId, value)
-                return newCharacter?.classId === value
-              }
-            }
-          ]}
-        />
-      </FeatureBody>
-
+      <CharacterCreateClassSelections 
+        selectedClassId={newCharacter?.classId as ClassIds}
+        setNewCharacter={setNewCharacter}
+      />
+      {/* FORM ACTIONS */}
+      <Actions 
+        actions={formActions}
+      />
+      <DialogConfirm 
+        title='Summon Reset'
+        cancelText='Cancel'
+        confirmText='Confirm'
+        descriptions={[
+          'This will reset all fields to their default values.',
+          'Are you sure?'
+        ]}
+        onCancel={() => {
+          setResetDialogVisible(false)
+        }}
+        onConfirm={() => {
+          setNewCharacter(
+            getCharacterForCreate()
+          )
+        }}
+        visible={resetDialogVisible}
+        setVisible={setResetDialogVisible}
+      />
     </div>
   )
 }

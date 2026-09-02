@@ -2,11 +2,14 @@ import type { Credit } from '../../interfaces/credits/Credits.types';
 import type { CreditsSFXIds } from '../../interfaces/credits/CreditsSFX.types';
 
 export const GAME_CREDITS_SFX_IDS: Record<CreditsSFXIds, CreditsSFXIds> = {
-  sfx_mixit_transition: 'sfx_mixit_transition'
+  sfx_mixit_transition: 'sfx_mixit_transition',
+  sfx_mixit_click: 'sfx_mixit_click'
 }
 
 export const GAME_CREDITS_SFX_LOCAL_URLS: Record<CreditsSFXIds, string> = {
-  sfx_mixit_transition: '/sfx/transition-20260821.wav'
+  sfx_mixit_transition: '/sfx/transition-20260821.wav',
+  sfx_mixit_click: '/sfx/click-20260821.wav'
+
 }
 
 export const GAME_CREDITS_SFX: Credit[] = [

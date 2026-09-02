@@ -1,0 +1,24 @@
+.wrapper {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1000;
+  cursor: progress;
+  pointer-events: none;
+  background-color: var(--bg-dark-1);
+  opacity: 0.25;
+}
+
+.wrapper.show {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+
+.wrapper.hide {
+  opacity: 0;
+  transition: opacity 250s ease-out;
+}
+
+.modal {
+
+}

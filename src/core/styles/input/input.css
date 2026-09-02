@@ -1,13 +1,5 @@
-input[type='text'],
-input[type='search'],
-input[type='email'],
-input[type='password'] {
-  font-size: 0.9em;
-  letter-spacing: 0.5px;
-}
 
 input[type='number'] {
-  font-size: 0.9em;
   text-align: left;
 }
 

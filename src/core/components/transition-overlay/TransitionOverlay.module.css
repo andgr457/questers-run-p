@@ -3,6 +3,13 @@
   inset: 0;
   overflow: hidden;
   z-index: 1000;
+  cursor: progress;
+  pointer-events: none;
+}
+
+.wrapper.clickable {
+  cursor: pointer;
+  pointer-events: all;
 }
 
 .leftPanel,
@@ -65,14 +72,22 @@
   transform: translateX(0);
 }
 
-.text {
+.textWrapper {
+  display: flex;
+  flex-direction: column;
   position: absolute;
   inset: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.text {
+  /* position: absolute; */
+  /* inset: 0; */
   z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
   opacity: 0;
   transform: scale(1.05);
   transition:
@@ -83,10 +98,12 @@
 .text span {
   color: var(--text);
   text-shadow: var(--bg-dark-1);
-  font-size: clamp(2rem, 5vw, 5rem);
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: 1.1rem;
+  font-weight: 300;
+  letter-spacing: 10px;
   white-space: nowrap;
+  text-shadow: 0 0 3px var(--text);
+
 }
 
 .text.show {
@@ -95,6 +112,57 @@
 }
 
 .text.hide {
+  opacity: 0;
+  transform: scale(1.05);
+}
+
+.continue {
+  /* position: absolute; */
+  /* inset: 0; */
+  
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(1.05);
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+}
+
+.continue span {
+  color: var(--text);
+  text-shadow: var(--bg-dark-1);
+  font-size: 0.5rem;
+  font-weight: 300;
+  letter-spacing: 10px;
+  white-space: nowrap;
+  text-shadow: 0 0 3px var(--text);
+  text-transform: uppercase;
+  animation: infinite 1s blinkSlow;
+}
+
+@keyframes blinkSlow {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.continue.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.continue.hide {
   opacity: 0;
   transform: scale(1.05);
 }

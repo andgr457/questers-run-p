@@ -1,0 +1,26 @@
+.button-selection-list {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.25rem;
+}
+
+.button-selection {
+  all: unset;
+  text-align: center;
+  padding: 2px;
+  font-weight: 200;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 3px;
+  border: solid var(--bg-dark-3) 1px;
+  background-color: var(--bg-dark-2);
+  color: var(--text);
+  text-shadow: 0 0 3px var(--text);
+  transition: filter 1s;
+}
+
+.button-selection.selected {
+  border: solid var(--success) 1px;
+}

@@ -1,16 +1,28 @@
 .validation-label-header {
+  padding-top: 5px;
   display: flex;
   justify-content: space-between;
+
+  flex-wrap: wrap;
+  opacity: 0.6;
+  gap: 5px;
 }
 
 .validation-label {
-  font-size: 0.85rem;
-  opacity: 0.6;
+  font-size: 0.6rem;
+  align-content: center;
+}
+
+.validation-length-text {
+  font-size: 0.5rem;
+  align-content: center;
 }
 
 .validation-section-rule-list {
-  font-size: 0.8rem;
-  margin: 10px;
+  font-size: 0.5rem;
+  padding-top: 5px;
+  display: flex;
+  justify-content: space-around;
 }
 
 .validation-section-rule {
@@ -24,7 +36,7 @@
 }
 
 .validation-section-rule.valid {
-  color: rgb(11, 198, 11);
+  color: var(--success);
   opacity: 1;
   transition: opacity 250ms ease-in-out,
   color 250ms ease-in-out;

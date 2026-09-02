@@ -11,9 +11,7 @@ export default function FeatureBody(props: Props){
 
   return (
     <div className={styles.wrapper}>
-      <div >
-        {children}
-      </div>
+      {children}
     </div>
   )
 }

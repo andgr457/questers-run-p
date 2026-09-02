@@ -10,4 +10,5 @@ export const GAME_ICONS = {
   HEXAGON: '⬡',
   BUILDING: '⌂',
   PLANT: '𓆰',
+  X: 'X'
 }

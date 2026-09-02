@@ -1,9 +1,9 @@
 @import './input.css';
-@import './textarea.css';
 @import './input.css';
 @import './select.css';
 @import './button.css';
-
+@import './button-selection.css';
+@import './button-action.css';
 
 :root {
   --input-radius: 8px;
@@ -17,19 +17,20 @@
 input,
 select,
 textarea {
-  font: inherit;
+  font-family: inherit;
+  font-size: 0.5rem;
+  letter-spacing: 1px;
   color: var(--input-text);
   background-color: var(--bg-dark-3);
   border: var(--input-border);
   border-radius: var(--input-radius);
   padding: var(--input-padding);
   outline: none;
-  transition: all 0.2s ease;
   box-shadow: var(--input-shadow);
-  margin-left: 5px;
-  margin-right: 5px;
-  width: 95%;
-  animation: fadeIn 1s;
+  width: 94%;
+  max-width: 94%;
+  max-height: 61px;
+  min-height: 12px;
 }
 
 input:focus,
@@ -42,12 +43,12 @@ textarea:focus {
 input::placeholder,
 textarea::placeholder {
   color: rgba(255, 255, 255, 0.4);
-  font-size: 0.75em;
 }
 
 input:disabled,
 select:disabled,
-textarea:disabled {
+textarea:disabled,
+button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

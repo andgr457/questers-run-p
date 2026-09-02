@@ -11,6 +11,7 @@ type IntroMode = 'start' | 'wait' | 'complete'
 interface Props {
   text: string
   onCompleteModeMainChangeTo?: WorldModeMain
+  waitForUserClick?: boolean
 }
 
 export default function TransitionOverlay(props: Props) {
@@ -18,8 +19,11 @@ export default function TransitionOverlay(props: Props) {
   const [showPanels, setShowPanels] = useState(false)
   const {
     text,
-    onCompleteModeMainChangeTo = 'town:map'
+    onCompleteModeMainChangeTo = 'town:map',
+    waitForUserClick = true
   } = props
+  const [userClicked, setUserClicked] = useState(false)
+
   const { 
     play
   } = useAudioPlayer({
@@ -31,7 +35,6 @@ export default function TransitionOverlay(props: Props) {
 
     if(mode === 'start'){
       requestAnimationFrame(() => {
-        play()
         setShowPanels(true)
       })
 
@@ -41,12 +44,20 @@ export default function TransitionOverlay(props: Props) {
     }
     
     if(mode === 'wait'){
-      timer = setTimeout(() => {
-        setMode('complete')
-      }, 750)
+      if(waitForUserClick && userClicked === true){
+        timer = setTimeout(() => {
+          setMode('complete')
+        }, 750)
+      } else if(!waitForUserClick){
+        timer = setTimeout(() => {
+          setMode('complete')
+        }, 750)
+      }
     }
 
     if(mode === 'complete'){
+      play()
+
       setShowPanels(false)
 
       timer = setTimeout(() => {
@@ -69,23 +80,38 @@ export default function TransitionOverlay(props: Props) {
             mode: onCompleteModeMainChangeTo
           }
         })
-      }, 250)
+      }, 750)
     }
 
     return () => {
       if(timer) clearTimeout(timer)
     }
-  }, [mode])
+  }, [mode, waitForUserClick, userClicked])
 
   const showText = mode === 'wait'
 
   return (
-    <div className={styles.wrapper}>
+    <div 
+      className={`${styles.wrapper} ${waitForUserClick ? styles.clickable : ''}`} 
+      onClick={() => {
+        setUserClicked(true)
+      }}
+    >
       <div className={`${styles.leftPanel} ${showPanels ? styles.show : styles.hide}`} />
       <div className={`${styles.rightPanel} ${showPanels ? styles.show : styles.hide}`} />
 
+      <div className={styles.textWrapper}>
+
       <div className={`${styles.text} ${showText ? styles.show : styles.hide}`}>
         <span>{text}</span>
+      </div>
+      {waitForUserClick && (
+        <div 
+          className={`${styles.continue} ${userClicked ? styles.hide : showText ? styles.show : styles.hide}`}
+        >
+          <span>Tap to Continue</span>
+        </div>
+      )}
       </div>
     </div>
   )
