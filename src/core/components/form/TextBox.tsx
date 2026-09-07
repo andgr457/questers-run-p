@@ -41,7 +41,7 @@ export default function TextBox(props: Props){
               placeholder={inputPlaceholderText}
               maxLength={inputMaxLength}
               onChange={(e) => {
-                const value = e.target?.value?.trim()             
+                const value = e.target?.value           
                 inputOnChange(value)
               }}
             />
@@ -53,7 +53,7 @@ export default function TextBox(props: Props){
               placeholder={inputPlaceholderText}
               value={inputValue}
               onChange={(e) => {
-                const value = e.target?.value?.trim()             
+                const value = e.target?.value
                 inputOnChange(value)
               }}
             />

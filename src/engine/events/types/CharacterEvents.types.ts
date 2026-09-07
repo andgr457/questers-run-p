@@ -53,16 +53,6 @@ export interface CharacterLevelAddedEventMeta {
   level: number
 }
 
-export interface CharacterRoleAddEventMeta {
-  characterId: string
-  role: GuildRoleType
-}
-
-export interface CharacterRoleAddedEventMeta {
-  characterId: string
-  role: GuildRoleType
-}
-
 export interface CharacterHPAddedEventMeta {
   characterId: string
   value: number
@@ -78,6 +68,17 @@ export interface CharacterStaminaAddedEventMeta {
   value: number
 }
 
+export interface CharacterGuildAddEventMeta {
+  characterId: string
+  guildId: string
+  guildRole: GuildRoleType
+}
+
+export interface CharacterGuildAddedEventMeta {
+  characterId: string
+  guildId: string
+  guildRole: GuildRoleType
+}
 
 export interface CharacterEventMap {
   'character:create': CharacterCreateEventMeta,
@@ -101,8 +102,8 @@ export interface CharacterEventMap {
 
   'character:level:added': CharacterLevelAddedEventMeta
 
-  'character:role:add': CharacterRoleAddEventMeta
-  'character:role:added': CharacterRoleAddedEventMeta
+  'character:guild:add': CharacterGuildAddEventMeta
+  'character:guild:added': CharacterGuildAddedEventMeta
 }
 
 

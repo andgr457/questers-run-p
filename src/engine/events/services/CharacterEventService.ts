@@ -76,6 +76,9 @@ class CharacterEventService extends BaseEventService {
     if(event.type === 'character:xp:add'){
       this.handleXPAdd(event)
     }
+    if(event.type === 'character:guild:add'){
+      this.handleGuildAdd(event)
+    }
   }
 
   private handleCreate(event: GameEventOf<'character:create'>){
@@ -182,6 +185,28 @@ class CharacterEventService extends BaseEventService {
       meta: {
         characterId: character.id,
         value: value
+      }
+    })
+  }
+
+  private handleGuildAdd(event: GameEventOf<'character:guild:add'>){
+    const character = this.characters[event.meta.characterId]
+    if(!character) return
+    const guildId = event.meta.guildId
+    if(!guildId) return
+    const guildRole = event.meta.guildRole
+    if(!guildRole) return
+
+    character.guildId = guildId
+    character.guildRole = guildRole
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      type: 'character:guild:added',
+      created: clockRuntimeService.getNow(),
+      meta: {
+        characterId: character.id,
+        guildId: character.guildId,
+        guildRole: character.guildRole
       }
     })
   }

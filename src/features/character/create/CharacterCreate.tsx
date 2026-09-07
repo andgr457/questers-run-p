@@ -35,7 +35,7 @@ export default function CharacterCreate() {
             {
               inactive: false,
               onClick: () => {
-                const nameValid = newCharacter.title.length >= 3
+                const nameValid = newCharacter.title.trim().length >= 3
                 const classSelected = newCharacter.classId.length > 0
                 if(nameValid && classSelected){
                   eventBus.emit({
@@ -43,7 +43,10 @@ export default function CharacterCreate() {
                     type: 'character:create',
                     created: clockRuntimeService.getNow(),
                     meta: {
-                      character: newCharacter
+                      character: {
+                        ...newCharacter,
+                        title: newCharacter.title.trim()
+                      }
                     }
                   })
                   eventBus.emit({

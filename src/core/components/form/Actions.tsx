@@ -10,6 +10,7 @@ export interface ActionDetail {
   onClick: (value?: string) => void
   isSubmit?: boolean
   colorScheme?: 'success' | 'danger'
+  cols?: 'col1' | 'col2' | 'col3'
 }
 
 interface Props {

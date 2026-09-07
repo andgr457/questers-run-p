@@ -1,0 +1,48 @@
+
+.header {
+  flex: 0 0 auto;
+  text-align: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
+}
+
+.eyebrow {
+  display: block;
+  color: var(--text);
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(240px, 65%);
+  gap: 10px;
+  margin: 0.5rem auto 0;
+}
+
+.ornament span:not(.diamond) {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    gold
+  );
+}
+
+.ornament span:last-child {
+  transform: rotate(180deg);
+}
+
+.diamond {
+  color: #fcba12;
+  font-size: 8px;
+  line-height: 1;
+  text-shadow: 0 0 7px rgba(252, 186, 18, 0.4);
+  animation: diamondGlow 4s ease-in-out infinite;
+}

@@ -1,21 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
+import type { Guild } from '../../../interfaces/Guild.types'
 import FeatureBody from '../../../core/components/feature/components/body/FeatureBody'
 import TextBox from '../../../core/components/form/TextBox'
-import type { Character } from '../../../interfaces/Character.types'
 import type { ValidationRule } from '../../../core/components/form/ValidationRules'
 
 interface Props {
-  characterName: string
-  setNewCharacter: React.Dispatch<React.SetStateAction<Character>>
+  guildName: string
+  setNewGuild: React.Dispatch<React.SetStateAction<Guild>>
 }
 
-export default function CharacterCreateNameInput(props: Props){
-  const {
-    characterName,
-    setNewCharacter
+export default function GuildCreateNameInput(props: Props){
+const {
+    guildName,
+    setNewGuild
   } = props
-  const [newCharacterName, setNewCharacterName] = useState(characterName)
-
+  const [newGuildName, setNewGuildName] = useState(guildName)
 
   const getNameRulesBase = (): ValidationRule[]  => {
     return [
@@ -36,18 +35,18 @@ export default function CharacterCreateNameInput(props: Props){
   )
   
   useEffect(() => {
-    setNewCharacterName(characterName)
-    if(!characterName){
+    setNewGuildName(guildName)
+    if(!guildName){
       setNameRules([
         ...getNameRulesBase()
       ])
     }
-  }, [characterName])
+  }, [guildName])
 
   const handleNameChanged = useCallback((name: string) => {
     const newName = name
-    setNewCharacterName(newName)
-    setNewCharacter(prev => {
+    setNewGuildName(newName)
+    setNewGuild(prev => {
       if(!prev) return prev
 
       return {
@@ -65,7 +64,7 @@ export default function CharacterCreateNameInput(props: Props){
         })
       ]
     })
-  }, [setNewCharacter])
+  }, [setNewGuild])
 
   return (
     <FeatureBody>
@@ -73,9 +72,9 @@ export default function CharacterCreateNameInput(props: Props){
         validationRules={nameRules}
         inputMaxLength={32}
         inputOnChange={handleNameChanged}
-        inputPlaceholderText='Enter character name...'
-        inputValue={newCharacterName ?? ''}
-        labelText='Character Name'
+        inputPlaceholderText='Enter guild name...'
+        inputValue={newGuildName ?? ''}
+        labelText='Guild Name'
       />
     </FeatureBody>
   )

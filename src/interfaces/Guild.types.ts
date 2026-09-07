@@ -1,6 +1,7 @@
 import type { EntityBase, EntityXpProperties } from './EntityBase.types';
 
 export interface Guild extends EntityBase, EntityXpProperties {
+  guildMasterId: string
   gold: number
   level: number
   // infractions: GuildInfraction[]

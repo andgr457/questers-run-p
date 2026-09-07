@@ -12,6 +12,12 @@ export function getCharacterForCreate(): Character {
     level: 1,
     partyId: '',
     professions: [],
+    xp: {
+      progressBarType: 'fill',
+      title: 'XP',
+      value: 0,
+      valueMax: 100,
+    },
     attributes: {
       hp: {
         title: 'HP',
@@ -31,12 +37,6 @@ export function getCharacterForCreate(): Character {
         valueMax: 100,
         progressBarType: 'drain'
       },
-      xp: {
-        title: 'HP',
-        value: 0,
-        valueMax: 100,
-        progressBarType: 'fill'
-      }
     }
   }
 }
