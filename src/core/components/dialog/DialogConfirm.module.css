@@ -2,9 +2,6 @@
   position: fixed;
   inset: 0;
   overflow: hidden;
-  z-index: 1000;
-  cursor: progress;
-  pointer-events: none;
   background-color: var(--bg-dark-1);
   opacity: 0.25;
 }

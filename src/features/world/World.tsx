@@ -5,7 +5,7 @@ import GuildHall from '../guild/hall/GuildHall'
 import styles from './World.module.css'
 import TransitionModeMainScreen from '../transition/TransitionModeMainScreen'
 import TavernHall from '../tavern/hall/TavernHall'
-import Version from '../version/Version'
+// import Version from '../version/Version'
 import TownHall from '../town/hall/TownHall'
 import WorldNav from './nav/WorldNav'
 import Wiki from '../wiki/Wiki'
@@ -74,7 +74,7 @@ export default function World() {
           onCompleteModeMainChangeTo={transitionOnCompleteMode}
         />
       )}
-      <Version />
+      {/* <Version /> */}
     </div>
 
   )

@@ -62,29 +62,31 @@ export default function TextBox(props: Props){
         </div>
 
       </div>
-      <div>
-        <div className='validation-label-header'>
-          <div className='validation-label'>
-            Validation
+      {rules.length > 0 && (
+        <div>
+          <div className='validation-label-header'>
+            <div className='validation-label'>
+              Validation
+            </div>
+            <div className='validation-length-text'>
+              {validRules.length}/{rules.length}
+            </div>
           </div>
-          <div className='validation-length-text'>
-            {validRules.length}/{rules.length}
+          <div className='validation-section-rule-list'>
+              {rules.map(rule => {
+                
+                return (
+                  <div
+                    key={crypto.randomUUID()}
+                    className={`validation-section-rule ${rule.isValid ? 'valid' : 'invalid'}`}
+                  >
+                    {rule.validationText}
+                  </div>
+                )
+              })}
           </div>
         </div>
-        <div className='validation-section-rule-list'>
-            {rules.map(rule => {
-              
-              return (
-                <div
-                  key={crypto.randomUUID()}
-                  className={`validation-section-rule ${rule.isValid ? 'valid' : 'invalid'}`}
-                >
-                  {rule.validationText}
-                </div>
-              )
-            })}
-        </div>
-      </div>
+      )}
     </div>
   )
 }

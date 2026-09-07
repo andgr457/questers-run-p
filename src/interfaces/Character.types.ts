@@ -1,7 +1,7 @@
-import type { EntityAttributeProperty, EntityAttributes, EntityBase } from './EntityBase.types';
+import type { EntityAttributeProperty, EntityAttributes, EntityBase, EntityXpProperties } from './EntityBase.types';
 import type { GuildRoleType } from './GuildRole.types';
 
-export interface Character extends EntityBase {
+export interface Character extends EntityBase, EntityXpProperties {
   classId: string
   
   guildId: string

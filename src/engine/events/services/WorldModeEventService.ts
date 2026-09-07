@@ -6,7 +6,7 @@ import { BaseEventService } from './BaseEventService'
 
 class WorldModeEventService extends BaseEventService {
   private worldModeMain: WorldModeMain = 'none'
-  private worldModeOverlay: WorldModeOverlay = 'intro'
+  private worldModeOverlay: WorldModeOverlay = 'none'
   private transitionText = `Quester's Run`
   private transitionOnCompleteMode: WorldModeMain = 'none'
 

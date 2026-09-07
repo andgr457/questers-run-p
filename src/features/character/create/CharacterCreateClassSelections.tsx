@@ -9,7 +9,7 @@ import Selections from '../../../core/components/form/Selections'
 
 interface Props {
   selectedClassId: ClassIds | ''
-  setNewCharacter: React.Dispatch<React.SetStateAction<Character | undefined>>
+  setNewCharacter: React.Dispatch<React.SetStateAction<Character>>
 }
 
 export default function CharacterCreateClassSelections(props: Props){
@@ -34,12 +34,6 @@ export default function CharacterCreateClassSelections(props: Props){
   }
   
   const [classSelections, setClassSelections] = useState<SelectionDetail[]>([])
-  
-  useEffect(() => {
-    setClassSelections(
-      buildSelectionDetails(selectedClassId as ClassIds)
-    )
-  }, [selectedClassId])
 
   const handleIsClassSelected = useCallback(() => {
     return typeof selectedClassId === 'string' && selectedClassId.length > 0
@@ -57,10 +51,23 @@ export default function CharacterCreateClassSelections(props: Props){
     ]
   }
   const [classSelectionRules, setClassSelectionRules] = useState<ValidationRule[]>(
-    getClassSelectionRulesBase()
+    [
+      ...getClassSelectionRulesBase()
+    ]
   )
+  
+  useEffect(() => {
+    setClassSelections(
+      buildSelectionDetails(selectedClassId as ClassIds)
+    )
+    if(!selectedClassId){
+      setClassSelectionRules([
+        ...getClassSelectionRulesBase()
+      ])
+    }
+  }, [selectedClassId])
 
-  const handleClassSelectionClicked = useCallback((value: string, selected: boolean) => {
+  const handleClassSelectionClicked = useCallback((value: string) => {
     let newClassId = value
     if(selectedClassId === newClassId){
       newClassId = ''

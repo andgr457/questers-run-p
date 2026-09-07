@@ -3,16 +3,13 @@ import type { Character } from '../../../interfaces/Character.types'
 import { clockRuntimeService } from '../../clock/ClockRuntimeService'
 import { eventBus } from '../EventBus'
 import type { GameEvent, GameEventOf } from '../types/EventBus.types'
-import type { WorldModeMain } from '../types/WorldModeEvents.types'
 import { BaseEventService } from './BaseEventService'
 
 class CharacterEventService extends BaseEventService {
   private characters: Record<string, Character> = {}
 
   protected onInit() {
-    if(!this.characters){
-      this.load()
-    }
+    this.load()
 
     this.startSaveTimer(() => {
       localStorage.setItem(
@@ -71,14 +68,13 @@ class CharacterEventService extends BaseEventService {
       this.handleCreate(event)
     }
     if(event.type === 'character:gold:add'){
-      this.handleGoldAdd(
-        event.id,
-        this.characters[event.meta.characterId],
-        event.meta.value
-      )
+      this.handleGoldAdd(event)
     }
     if(event.type === 'character:attributes:add'){
       this.handleAttributesAdd(event)
+    }
+    if(event.type === 'character:xp:add'){
+      this.handleXPAdd(event)
     }
   }
 
@@ -114,46 +110,38 @@ class CharacterEventService extends BaseEventService {
     if(attributes.stamina){
 
     }
-    if(attributes.xp.value){
-      this.handleXPAdd(event.id, character, attributes.xp.value, emissions)
-    }
     if(emissions.length){
       emissions.forEach(fn => fn());
     }
   }
 
-  private handleGoldAdd(
-    parentEventId: string,
-    character: Character,
-    gold: number,
-  ){
-    if(!gold) return
+  private handleGoldAdd(event: GameEventOf<'character:gold:add'>){
+    const character = this.characters[event.meta.characterId]
+    if(!character) return
+    const value = event.meta.value
+    if(!value) return
 
-    character.gold += gold
+    character.gold += value
     eventBus.emit({
       id: crypto.randomUUID(),
       type: 'character:gold:added',
-      parentEventId: parentEventId,
+      parentEventId: event.id,
       created: clockRuntimeService.getNow(),
       meta: {
         characterId: character.id,
-        value: gold
+        value: value
       }
     })
   }
 
-  private handleXPAdd(
-    parentEventId: string,
-    character: Character,
-    xp: number,
-    emissions: (() => void)[]
-  ){
-    if(xp <= 0){
-      return
-    }
+  private handleXPAdd(event: GameEventOf<'character:xp:add'>){
+    const character = this.characters[event.meta.characterId]
+    if(!character) return
+    const value = event.meta.value
+    if(!value) return
 
-    const xpWithNew = character.attributes.xp.value + xp
-    const xpNextLevel = character.attributes.xp.valueMax
+    const xpWithNew = character.xp.value + value
+    const xpNextLevel = character.xp.valueMax
     if(xpWithNew >= xpNextLevel){
       //level up
       console.log('character leveling up', character.id, character.title)
@@ -164,46 +152,38 @@ class CharacterEventService extends BaseEventService {
       console.log('character leftover xp', leftoverXp)
       
       //add extra xp to new level
-      character.attributes.xp.value = Math.max(leftoverXp, 0)
+      character.xp.value = Math.max(leftoverXp, 0)
       
       //set new xpNextLevel eg = 100 * 1.3 = 130
-      character.attributes.xp.valueMax = character.attributes.xp.valueMax * 1.3
+      character.xp.valueMax = character.xp.valueMax * 1.3
 
-      console.log('new xpNextLevel', character.attributes.xp.valueMax)
+      console.log('new xpNextLevel', character.xp.valueMax)
       character.level += 1
       console.log('new level', character.level)
-      emissions.push(
-        () => {
-          eventBus.emit({
-            id: crypto.randomUUID(),
-            parentEventId: parentEventId,
-            type: 'character:level:added',
-            created: clockRuntimeService.getNow(),
-            meta: {
-              characterId: character.id,
-              level: character.level
-            }
-          })
+      eventBus.emit({
+        id: crypto.randomUUID(),
+        parentEventId: event.id,
+        type: 'character:level:added',
+        created: clockRuntimeService.getNow(),
+        meta: {
+          characterId: character.id,
+          level: character.level
         }
-      )
+      })
     } else {
       //no level up, just add xp
-      character.attributes.xp.value += xp
+      character.xp.value += value
     }
-    emissions.push(
-      () => {
-        eventBus.emit({
-          id: crypto.randomUUID(),
-          parentEventId: parentEventId,
-          type: 'character:xp:added',
-          created: clockRuntimeService.getNow(),
-          meta: {
-            characterId: character.id,
-            value: xp
-          }
-        })
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      parentEventId: event.id,
+      type: 'character:xp:added',
+      created: clockRuntimeService.getNow(),
+      meta: {
+        characterId: character.id,
+        value: value
       }
-    )
+    })
   }
 }
 

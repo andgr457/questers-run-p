@@ -1,6 +1,6 @@
 import styles from './CharacterDetail.module.css'
 import { useRef } from 'react';
-import { useCharacterEvents } from '../../../../engine/events/hooks/useCharacterEvents'
+import { useCharacterEvents } from '../../../../engine/events/hooks/characters/useCharacterEvents'
 import { eventBus } from '../../../../engine/events/EventBus';
 import { clockRuntimeService } from '../../../../engine/clock/ClockRuntimeService';
 import FloatingText from '../../../../core/components/floating-text/FloatingText';

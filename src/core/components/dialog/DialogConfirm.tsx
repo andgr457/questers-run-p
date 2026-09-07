@@ -70,6 +70,7 @@ export default function DialogConfirm(props: Props){
               inactive: false,
               inactiveText: '',
               onClick: () => {
+                console.log('confirm')
                 onConfirm()
               },
               text: confirmText,

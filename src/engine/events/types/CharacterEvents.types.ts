@@ -28,6 +28,16 @@ export interface CharacterGoldAddedEventMeta {
   value: number
 }
 
+export interface CharacterXpAddEventMeta {
+  characterId: string
+  value: number
+}
+
+export interface CharacterXpAddedEventMeta {
+  characterId: string
+  value: number
+}
+
 export interface CharacterAttributesAddEventMeta {
   characterId: string
   attributes: EntityAttributes
@@ -68,10 +78,6 @@ export interface CharacterStaminaAddedEventMeta {
   value: number
 }
 
-export interface CharacterXPAddedEventMeta {
-  characterId: string
-  value: number
-}
 
 export interface CharacterEventMap {
   'character:create': CharacterCreateEventMeta,
@@ -89,7 +95,9 @@ export interface CharacterEventMap {
   'character:hp:added': CharacterHPAddedEventMeta
   'character:mana:added': CharacterManaAddedEventMeta
   'character:stamina:added': CharacterStaminaAddedEventMeta
-  'character:xp:added': CharacterXPAddedEventMeta
+
+  'character:xp:add': CharacterXpAddEventMeta
+  'character:xp:added': CharacterXpAddedEventMeta
 
   'character:level:added': CharacterLevelAddedEventMeta
 

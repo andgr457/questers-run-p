@@ -5,8 +5,9 @@
 
   --text: #e6e2d3;
   --danger: #f02828;
+  --danger-dark: #a51b1b;
   --success: rgb(11, 198, 11);
-  --success-dark: rgb(9, 142, 9);
+  --success-dark: rgb(9, 116, 9);
 }
 
 html, body, #root {

@@ -17,7 +17,9 @@
   border: solid var(--bg-dark-3) 1px;
   background-color: var(--bg-dark-2);
   color: var(--text);
-  text-shadow: 0 0 3px var(--text);
+  text-shadow: 0 0 3px var(--text),
+  0 0 3px var(--text),
+  0 0 3px var(--text);
   transition: filter 1s;
 }
 
@@ -30,5 +32,6 @@
 }
 
 .button-action.danger {
+  background: var(--danger-dark);
 
 }

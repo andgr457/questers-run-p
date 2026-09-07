@@ -1,4 +1,3 @@
-import type { EntityBase } from '../../entity/types/Entity.types'
 import type { RankLevel } from '../../rank/types/Rank.types'
 
 export interface GuildRankRequirements {
@@ -11,7 +10,7 @@ export interface GuildRankRequirements {
   raids: number
 }
 
-export interface Guild extends EntityBase {
+export interface Guild {
   rankLevel: RankLevel
   upgrades: GuildUpgrades
 }

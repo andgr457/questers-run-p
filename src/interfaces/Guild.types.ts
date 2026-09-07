@@ -1,7 +1,9 @@
-import type { EntityBase } from './EntityBase.types';
+import type { EntityBase, EntityXpProperties } from './EntityBase.types';
 
-export interface Guild extends EntityBase {
-  infractions: GuildInfraction[]
+export interface Guild extends EntityBase, EntityXpProperties {
+  gold: number
+  level: number
+  // infractions: GuildInfraction[]
 }
 
 export type GuildInfractionStatusType = 

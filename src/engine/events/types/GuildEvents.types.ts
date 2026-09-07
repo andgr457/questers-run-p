@@ -1,4 +1,4 @@
-import type { Guild } from '../../../entities/guild/types/Guild.types'
+import type { Guild } from '../../../interfaces/Guild.types'
 
 export interface GuildCreateEventMeta {
   guild: Guild
@@ -18,22 +18,22 @@ export interface GuildSavedEventMeta {
 
 export interface GuildGoldAddEventMeta {
   guildId: string
-  amount: number
+  value: number
 }
 
 export interface GuildGoldAddedEventMeta {
   guildId: string
-  amount: number
+  value: number
 }
 
 export interface GuildXPAddEventMeta {
   guildId: string
-  amount: number
+  value: number
 }
 
 export interface GuildXPAddedEventMeta {
   guildId: string
-  amount: number
+  value: number
 }
 
 export interface GuildLevelAddedEventMeta {

@@ -1,9 +1,9 @@
 import { useEffect, useState, type RefObject } from 'react';
-import { characterEventService } from '../services/CharacterEventService';
-import { eventBus } from '../EventBus';
-import { useFloatingTextEvents } from './useFloatingTextEvents';
-import type { Character } from '../../../interfaces/Character.types';
-import { formatNumberValueToStringWithPlus } from '../../../core/utils/Formatting.utils';
+import { characterEventService } from '../../services/CharacterEventService';
+import { eventBus } from '../../EventBus';
+import { useFloatingTextEvents } from '../useFloatingTextEvents';
+import type { Character } from '../../../../interfaces/Character.types';
+import { formatNumberValueToStringWithPlus } from '../../../../core/utils/Formatting.utils';
 
 const EVENT_TYPE_INCLUDES = 'character:'
 

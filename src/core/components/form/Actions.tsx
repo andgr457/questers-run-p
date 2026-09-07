@@ -3,12 +3,13 @@ import useAudioPlayer from '../../hooks/useAudioPlayer'
 
 export interface ActionDetail {
   text: string
-  value: string
-  icon: string
+  value?: string
+  icon?: string
   inactive: boolean
-  inactiveText: string
+  inactiveText?: string
   onClick: (value?: string) => void
   isSubmit?: boolean
+  colorScheme?: 'success' | 'danger'
 }
 
 interface Props {
@@ -35,7 +36,7 @@ export default function Actions(props: Props){
       {actions.map(a => {
         return <button
           key={crypto.randomUUID()}
-          className={`button-action ${a.isSubmit === true ? 'success' : ''} ${a.inactive ? 'inactive' : ''}`}
+          className={`button-action ${a.colorScheme ?? ''}`}
           disabled={a.inactive}
           onClick={() => {
             play()

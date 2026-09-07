@@ -6,7 +6,7 @@ import type { ValidationRule } from '../../../core/components/form/ValidationRul
 
 interface Props {
   characterName: string
-  setNewCharacter: React.Dispatch<React.SetStateAction<Character | undefined>>
+  setNewCharacter: React.Dispatch<React.SetStateAction<Character>>
 }
 
 export default function CharacterCreateNameInput(props: Props){
@@ -15,10 +15,7 @@ export default function CharacterCreateNameInput(props: Props){
     setNewCharacter
   } = props
   const [newCharacterName, setNewCharacterName] = useState(characterName)
-  
-  useEffect(() => {
-    setNewCharacterName(characterName)
-  }, [characterName])
+
 
   const getNameRulesBase = (): ValidationRule[]  => {
     return [
@@ -33,8 +30,19 @@ export default function CharacterCreateNameInput(props: Props){
     ]
   }
   const [nameRules, setNameRules] = useState<ValidationRule[]>(
-    getNameRulesBase()
+    [
+      ...getNameRulesBase()
+    ]
   )
+  
+  useEffect(() => {
+    setNewCharacterName(characterName)
+    if(!characterName){
+      setNameRules([
+        ...getNameRulesBase()
+      ])
+    }
+  }, [characterName])
 
   const handleNameChanged = useCallback((name: string) => {
     const newName = name.trim()

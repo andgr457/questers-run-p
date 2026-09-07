@@ -15,5 +15,8 @@ export interface EntityAttributes {
   hp: EntityAttributeProperty
   stamina: EntityAttributeProperty
   mana: EntityAttributeProperty
+}
+
+export interface EntityXpProperties {
   xp: EntityAttributeProperty
 }
