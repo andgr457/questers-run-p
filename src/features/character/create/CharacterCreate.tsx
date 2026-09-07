@@ -7,6 +7,9 @@ import CharacterCreateNameInput from './CharacterCreateNameInput';
 import { eventBus } from '../../../engine/events/EventBus';
 import { clockRuntimeService } from '../../../engine/clock/ClockRuntimeService';
 import type { ClassIds } from '../../../interfaces/Classes.types';
+import HeaderFancy from '../../../core/components/header/fancy/HeaderFancy';
+import FeatureDescription from '../../../core/components/feature/components/description/FeatureDescription';
+import FeatureBase from '../../../core/components/feature/components/base/FeatureBase';
 
 export default function CharacterCreate() {
   const [newCharacter, setNewCharacter] = useState<Character>(
@@ -15,12 +18,11 @@ export default function CharacterCreate() {
 
   return (
     <div>
-      <div>
-        Summon Circle
-      </div>
-      <div>
-        Summon isekai'd adventurers from another world.
-      </div>
+      <HeaderFancy 
+        text='Summon Adventurer' 
+        type='sub'
+      />
+
       <div>
         <CharacterCreateNameInput 
           characterName={newCharacter.title}

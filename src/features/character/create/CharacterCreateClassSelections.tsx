@@ -110,7 +110,7 @@ export default function CharacterCreateClassSelections(props: Props){
     <FeatureBody>
       <Selections 
         validationRules={classSelectionRules}
-        labelText='Class'
+        labelText='Class Selection'
         selectionDetails={classSelections ?? []}
         selectionOnChange={handleClassSelectionClicked}
         setRules={setClassSelectionRules}

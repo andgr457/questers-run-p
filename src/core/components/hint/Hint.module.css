@@ -1,19 +1,17 @@
 .wrapper {
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
   font-size: 0.6rem;
   margin-bottom: 0.5rem;
+  letter-spacing: 2px;
 }
 
 .header {
   color: gold;
-  letter-spacing: 3px;
 }
 
 .text {
   color: var(--text);
   opacity: 0.8;
-  letter-spacing: 2px;
 }

@@ -1,5 +1,26 @@
 .wrapper {
+  padding: 0;
+}
+
+.header {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  justify-content: space-between;
+  letter-spacing: 1px;
+  font-size: 0.7rem;
+}
+
+.title {
+  align-items: center;
+}
+
+.guildMaster {
+  text-align: center;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  letter-spacing: 2px;
+}
+
+.memberListItem {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
 }

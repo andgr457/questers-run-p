@@ -1,4 +1,4 @@
-import Actions from '../../core/components/form/Actions'
+import Actions, { type ActionDetail } from '../../core/components/form/Actions'
 import HeaderFancy from '../../core/components/header/fancy/HeaderFancy'
 import Hint from '../../core/components/hint/Hint'
 import { clockRuntimeService } from '../../engine/clock/ClockRuntimeService'
@@ -9,6 +9,9 @@ import { useGuilds } from '../../engine/events/hooks/guild/useGuilds'
 import { useWorldModeEvents } from '../../engine/events/hooks/useWorldModeEvents'
 import CharacterCreate from '../character/create/CharacterCreate'
 import GuildCreate from '../guild/create/GuildCreate'
+import GuildHall from '../guild/hall/GuildHall'
+import Settings from '../settings/Settings'
+import { WORLD_ACTION_GUILD_HALL, WORLD_ACTION_REGISTER_GUILD, WORLD_ACTION_SETTINGS, WORLD_ACTION_SUMMON_CHARACTER } from './actions/WorldActions'
 
 export default function WorldSimple() {
 
@@ -28,6 +31,8 @@ export default function WorldSimple() {
   const hasCharacters = characters.length > 0
   const hasGuild = guilds.length > 0
 
+
+
   let hint = ''
   if(!hasCharacters){
     hint = 'Summon your first character!'
@@ -35,74 +40,40 @@ export default function WorldSimple() {
     hint = 'Register your first guild!'
   }
 
+  const actions: ActionDetail[] = []
+  if(!hasCharacters){
+    actions.push(WORLD_ACTION_SUMMON_CHARACTER)
+  } else if(!hasGuild){
+    actions.push(WORLD_ACTION_REGISTER_GUILD)
+  } else {
+    actions.push(WORLD_ACTION_GUILD_HALL)
+    actions.push(WORLD_ACTION_SETTINGS)
+  }
+
+  //setting main character for now
+  const mainCharacter = characters.find(c => c.guildId.length > 0)
+  //setting main guild for now
+  const mainGuild = guilds.find(g => g.id === mainCharacter?.guildId)
+
   return (
     <div>
       <HeaderFancy 
         text={`Quester's Run`}
+        type='main'
       />
       {hint && (
         <Hint text={hint} />
       )}
       <div>
         <Actions 
-          actions={[
-            {
-              inactive: characters.length === 0 || guilds.length === 0,
-              onClick: () => {
-                eventBus.emit({
-                  id: crypto.randomUUID(),
-                  type: 'world:mode:main:change',
-                  created: clockRuntimeService.getNow(),
-                  meta: {
-                    mode: 'none'
-                  }
-                })
-              },
-              text: 'Guild',
-            },
-            {
-              inactive: false,
-              onClick: () => {
-                if(confirm('This will RESET ALL DATA! Are you sure?')){
-                  localStorage.clear()
-                  location.reload()
-                }    
-              },
-              text: 'Settings',
-            },
-            {
-              inactive: characters.length > 0 || (characters.length > 0 && guilds.length === 0),
-              onClick: () => {
-                eventBus.emit({
-                  id: crypto.randomUUID(),
-                  type: 'world:mode:main:change',
-                  created: clockRuntimeService.getNow(),
-                  meta: {
-                    mode: 'character:create'
-                  }
-                })
-              },
-              text: 'Summon Character',
-            },
-            {
-              inactive: guilds.length === 1 || characters.length === 0 ,
-              onClick: () => {
-                eventBus.emit({
-                  id: crypto.randomUUID(),
-                  type: 'world:mode:main:change',
-                  created: clockRuntimeService.getNow(),
-                  meta: {
-                    mode: 'guild:create'
-                  }
-                })
-              },
-              text: 'Register Guild',
-            }
-          ]}
+          actions={actions}
         />
       </div>
       
       <div>
+        {worldModeMain === 'settings' && (
+          <Settings />
+        )}
         {worldModeMain === 'character:create' && (
           <CharacterCreate />
         )}
@@ -110,6 +81,9 @@ export default function WorldSimple() {
           <GuildCreate 
             characters={characters}
           />
+        )}
+        {worldModeMain === 'guild:hall' && (
+          <GuildHall guildId={mainGuild?.id ?? ''} />
         )}
       </div>
     </div>

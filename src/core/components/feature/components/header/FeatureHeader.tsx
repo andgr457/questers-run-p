@@ -1,17 +1,21 @@
+import HeaderFancy from '../../../header/fancy/HeaderFancy'
 import styles from './FeatureHeader.module.css'
 
 interface Props {
   text: string
+  type?: 'main' | 'sub'
 }
 
 export default function FeatureHeader(props: Props){
   const {
-    text
+    text,
+    type = 'sub',
   } = props
 
   return (
-    <div className={styles.text}>
-      {text}
-    </div>
+    <HeaderFancy 
+      text={text}
+      type={type}
+    />
   )
 }

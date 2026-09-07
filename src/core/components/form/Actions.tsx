@@ -10,7 +10,6 @@ export interface ActionDetail {
   onClick: (value?: string) => void
   isSubmit?: boolean
   colorScheme?: 'success' | 'danger'
-  cols?: 'col1' | 'col2' | 'col3'
 }
 
 interface Props {
@@ -19,8 +18,16 @@ interface Props {
 
 export default function Actions(props: Props){
   const {
-    actions
+    actions,
   } = props
+
+  let cols = 'col1'
+  if(actions.length > 1){
+    cols = 'col2'
+  }
+  if(actions.length > 2){
+    cols = 'col3'
+  }
 
   const { 
     play
@@ -33,7 +40,7 @@ export default function Actions(props: Props){
   }
 
   return (
-    <div className={'button-action-list'}>
+    <div className={`button-action-list ${cols}`}>
       {actions.map(a => {
         return <button
           key={crypto.randomUUID()}

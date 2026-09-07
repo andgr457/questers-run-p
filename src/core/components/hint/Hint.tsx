@@ -10,7 +10,7 @@ export default function Hint(props: Props){
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        {GAME_ICONS.STAR} Hint
+        HINT {GAME_ICONS.STAR} 
       </div>
       <div className={styles.text}>
         {props.text}

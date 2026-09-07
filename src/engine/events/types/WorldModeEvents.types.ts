@@ -3,7 +3,7 @@ export type WorldModeMain =
   'none' 
   | 'start' //checks for existing main character and goes through initial setup with the player to create a character.
   | 'wiki'
-  
+  | 'settings'
   
   | 'character:detail' //character field values, statistics, and other things. A character sheet.
   | 'character:create' //where you can summon isekai'd heroes, name them and set their class, to become members in the guild.

@@ -7,6 +7,7 @@ import FeatureBody from '../../../core/components/feature/components/body/Featur
 import Actions from '../../../core/components/form/Actions';
 import { eventBus } from '../../../engine/events/EventBus';
 import { clockRuntimeService } from '../../../engine/clock/ClockRuntimeService';
+import HeaderFancy from '../../../core/components/header/fancy/HeaderFancy';
 
 interface Props {
   characters: Character[]
@@ -25,12 +26,10 @@ export default function GuildCreate(props: Props) {
 
   return (
     <div>
-      <div>
-        Guild Register
-      </div>
-      <div>
-        Register a new guild.
-      </div>
+      <HeaderFancy 
+        text='Register Guild' 
+        type='sub'
+      />
       <div>
         <GuildCreateNameInput 
           guildName={newGuild.title}
@@ -103,6 +102,7 @@ export default function GuildCreate(props: Props) {
                       type: 'guild:create',
                       created: clockRuntimeService.getNow(),
                       meta: {
+                        guildId: newGuild.id,
                         guild: {
                           ...newGuild,
                           title: newGuild.title.trim()

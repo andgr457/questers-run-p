@@ -77,6 +77,7 @@ class GuildEventService extends BaseEventService {
       parentEventId: event.id,
       created: clockRuntimeService.getNow(),
       meta: {
+        guildId: event.meta.guildId,
         guild: event.meta.guild
       }
     })

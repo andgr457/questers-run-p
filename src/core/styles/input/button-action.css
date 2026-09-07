@@ -1,7 +1,15 @@
 .button-action-list {
   display: grid;
-  grid-template-columns: auto auto;
   gap: 0.25rem;
+  grid-template-columns: auto;
+}
+
+.button-action-list.col2 {
+  grid-template-columns: auto auto;
+}
+
+.button-action-list.col3 {
+  grid-template-columns: auto auto auto;
 }
 
 .button-action {

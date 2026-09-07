@@ -1,52 +1,51 @@
 import type { Guild } from '../../../interfaces/Guild.types'
 
-export interface GuildCreateEventMeta {
+export interface GuildBaseEventMeta {
+  guildId: string
+}
+
+export interface GuildCreateEventMeta extends GuildBaseEventMeta {
   guild: Guild
 }
 
-export interface GuildCreatedEventMeta {
+export interface GuildCreatedEventMeta extends GuildBaseEventMeta {
   guild: Guild
 }
 
-export interface GuildSaveEventMeta {
+export interface GuildSaveEventMeta extends GuildBaseEventMeta {
   guild: Guild
 }
 
-export interface GuildSavedEventMeta {
+export interface GuildSavedEventMeta extends GuildBaseEventMeta {
   guild: Guild
 }
 
-export interface GuildGoldAddEventMeta {
-  guildId: string
+export interface GuildGoldAddEventMeta extends GuildBaseEventMeta {
   value: number
 }
 
-export interface GuildGoldAddedEventMeta {
-  guildId: string
+export interface GuildGoldAddedEventMeta extends GuildBaseEventMeta {
   value: number
 }
 
-export interface GuildXPAddEventMeta {
-  guildId: string
+export interface GuildXPAddEventMeta  extends GuildBaseEventMeta {
   value: number
 }
 
-export interface GuildXPAddedEventMeta {
-  guildId: string
+export interface GuildXPAddedEventMeta extends GuildBaseEventMeta {
   value: number
 }
 
-export interface GuildLevelAddedEventMeta {
-  guildId: string
+export interface GuildLevelAddedEventMeta extends GuildBaseEventMeta {
   level: number
 }
 
-export interface GuildUpgradeAddEventMeta {
-  guildId: string
+export interface GuildUpgradeAddEventMeta extends GuildBaseEventMeta {
+
 }
 
 export interface GuildUpgradeAddedEventMeta {
-  guildId: string
+
 }
 
 export interface GuildEventMap {
