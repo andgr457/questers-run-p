@@ -1,7 +1,10 @@
 import { GAME_CREDITS_SFX_LOCAL_URLS } from '../../../data/credits/CreditsSFX.data'
+import type { WorldModeMain } from '../../../engine/events/types/WorldModeEvents.types'
 import useAudioPlayer from '../../hooks/useAudioPlayer'
 
 export interface ActionDetail {
+  id: string
+  mode?: WorldModeMain
   text: string
   value?: string
   icon?: string
@@ -10,6 +13,7 @@ export interface ActionDetail {
   onClick: (value?: string) => void
   isSubmit?: boolean
   colorScheme?: 'success' | 'danger'
+  selected?: boolean
 }
 
 interface Props {
@@ -40,18 +44,18 @@ export default function Actions(props: Props){
   }
 
   return (
-    <div className={`button-action-list ${cols}`}>
+    <div className={`button-action-list ${cols} `}>
       {actions.map(a => {
         return <button
           key={crypto.randomUUID()}
-          className={`button-action ${a.colorScheme ?? ''}`}
+          className={`button-action ${a.colorScheme ?? ''} ${a.selected === true ? 'selected' : ''}`}
           disabled={a.inactive}
           onClick={() => {
             play()
             const timer = setTimeout(() => {
               if(a.inactive) return
               a.onClick()
-            }, 250)
+            }, 50)
             return () => {
               if(timer) clearTimeout(timer)
             }

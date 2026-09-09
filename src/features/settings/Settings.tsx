@@ -10,13 +10,15 @@ export default function Settings() {
       className={styles.wrapper}
     >
       <FeatureHeader
-        text={'Tavern Hall'}
+        text={'Settings'}
+        type='sub'
       />
 
       <FeatureBody>
         <Actions 
           actions={[
             {
+              id: 'setting_reset_action',
               inactive: false,
               text: 'RESET',
               colorScheme: 'danger',

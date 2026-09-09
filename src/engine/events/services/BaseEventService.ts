@@ -1,5 +1,3 @@
-import { clockRuntimeService } from '../../clock/ClockRuntimeService'
-import type { GameEvent } from '../types/EventBus.types'
 import { GAME_EVENT_SERVICE_IDS, GAME_EVENT_SERVICES } from './data/EventService.data'
 import type { GameEventLog, SystemEventLog } from './types/EventLog.types'
 import type { EventServiceIds, GameEventService } from './types/EventService.types'

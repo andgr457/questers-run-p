@@ -1,15 +1,27 @@
 .button-action-list {
   display: grid;
-  gap: 0.25rem;
   grid-template-columns: auto;
 }
 
 .button-action-list.col2 {
-  grid-template-columns: auto auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .button-action-list.col3 {
-  grid-template-columns: auto auto auto;
+  grid-template-columns:  repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 600px) {
+  .button-action-list {
+    gap: 0.20rem;
+  }
+  .button-action-list.col2 {
+    grid-template-columns: auto;
+  }
+
+  .button-action-list.col3 {
+    grid-template-columns: auto;
+  }
 }
 
 .button-action {
@@ -18,8 +30,8 @@
   padding: 2px;
   font-weight: 200;
   cursor: pointer;
-  font-size: 12px;
-  letter-spacing: 2px;
+  font-size: 10px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   border-radius: 3px;
   border: solid var(--bg-dark-3) 1px;
@@ -42,4 +54,12 @@
 .button-action.danger {
   background: var(--danger-dark);
 
+}
+
+.button-action:hover {
+  border: solid var(--bg-dark-2) 1px;
+}
+
+.button-action.selected {
+  border: solid var(--success) 1px;
 }

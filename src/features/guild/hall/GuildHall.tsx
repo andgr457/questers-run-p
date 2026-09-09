@@ -1,15 +1,16 @@
+import { useState } from 'react';
 import FeatureBody from '../../../core/components/feature/components/body/FeatureBody';
 import FeatureHeader from '../../../core/components/feature/components/header/FeatureHeader';
 import Actions from '../../../core/components/form/Actions';
 import Gold from '../../../core/components/gold/Gold';
 import HeaderFancy from '../../../core/components/header/fancy/HeaderFancy';
 import ProgressBar from '../../../core/components/progress-bar/ProgressBar';
-import { formatNumberValueToStringWithPlus, formatPrimitiveValueToString } from '../../../core/utils/Formatting.utils';
-import { useCharacterEvents } from '../../../engine/events/hooks/characters/useCharacterEvents';
+import { formatPrimitiveValueToString } from '../../../core/utils/Formatting.utils';
 import { useCharacters } from '../../../engine/events/hooks/characters/useCharacters';
 import { useGuild } from '../../../engine/events/hooks/guild/useGuild';
 import { GUILD_MEMBER_ROLES } from '../../../interfaces/GuildRole.types';
 import styles from './GuildHall.module.css'
+import GuildMemberList from './members/GuildMemberList';
 
 interface Props {
   guildId: string
@@ -27,7 +28,8 @@ export default function GuildHall(props: Props) {
   const {
     characters
   } = useCharacters()
-
+  const [guildHallMode, setGuildHallMode] = useState('members')
+  
   const guildMembers = characters.filter(c => c.guildId === guildId)
   const guildMaster = guildMembers.find(gms => gms.guildRole === 'guild_master')
 
@@ -39,6 +41,7 @@ export default function GuildHall(props: Props) {
     >
       <FeatureHeader
         text={'Guild Hall'}
+        type='sub'
       />
 
       <FeatureBody>
@@ -69,38 +72,9 @@ export default function GuildHall(props: Props) {
           </div>
         </div>
       </FeatureBody>
-      <HeaderFancy 
-        text='Members'
-        type='sub'
-      />
-      <FeatureBody>
-        {guildMembers.map(m => {
-          return <div className={styles.memberListItem}>
-            <div>
-              {m.title}
-            </div>
-            <div>
-              Lv. {m.level}
-            </div>
-            <div>
-              {GUILD_MEMBER_ROLES[m.guildRole].title}
-            </div>
-            <div >
-              <Actions 
-                actions={[
-                  {
-                    inactive: false,
-                    text: 'Manage',
-                    onClick: () => {
-
-                    }
-                  }
-                ]}
-              />
-            </div>
-          </div>
-        })}
-      </FeatureBody>
+      {guildHallMode === 'members' && (
+        <GuildMemberList members={guildMembers} />
+      )}
     </div>
   )
 }

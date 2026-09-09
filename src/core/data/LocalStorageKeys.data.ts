@@ -1,6 +1,6 @@
 
 export const GAME_LOCAL_STORAGE_KEYS = {
   CHARACTERS: 'qr-spa-characters',
-  MANAGED_ENTITY_IDS: 'qr-spa-managed-entity-ids',
+  WORLD_CONTEXT: 'qr-spa-world-context',
   GUILDS: 'qr-spa-guilds',
 }

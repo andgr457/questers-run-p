@@ -5,6 +5,14 @@
   border-radius: var(--input-radius);
 }
 
+.section.clickable {
+  cursor: pointer;
+}
+
+.section:hover {
+  border: solid var(--bg-dark-2) 1px;
+}
+
 .section-label-header {
   display: flex;
   justify-content: space-between;

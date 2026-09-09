@@ -1,6 +1,7 @@
 
 export type EventServiceIds = 'unkown_event_service'
   | 'world_mode_event_service'
+  | 'world_context_event_service'
   | 'character_event_service'
   | 'guild_event_service'
 

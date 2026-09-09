@@ -5,6 +5,7 @@ export const GAME_EVENT_SERVICE_IDS: Record<EventServiceIds, EventServiceIds> = 
   world_mode_event_service: 'world_mode_event_service',
   character_event_service: 'character_event_service',
   guild_event_service: 'guild_event_service',
+  world_context_event_service: 'world_context_event_service'
 }
 
 export const GAME_EVENT_SERVICES: Record<EventServiceIds, GameEventService> = {
@@ -27,6 +28,11 @@ export const GAME_EVENT_SERVICES: Record<EventServiceIds, GameEventService> = {
     id: 'guild_event_service',
     title: 'Guild Event Service',
     description: 'Handle events to create, modify, save, and load guilds.'
+  },
+  world_context_event_service: {
+    id: 'world_context_event_service',
+    title: 'World Context Event Service',
+    description: 'Handles events to store the player\'s current character id and guild id as context for use in many singular entity components like upgrades or halls.'
   }
 }
 

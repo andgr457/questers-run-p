@@ -5,6 +5,8 @@ export type WorldModeMain =
   | 'wiki'
   | 'settings'
   
+  | 'character:upgrades' //where you can purchase upgrades for current context character
+  | 'character:list' //list all characters
   | 'character:detail' //character field values, statistics, and other things. A character sheet.
   | 'character:create' //where you can summon isekai'd heroes, name them and set their class, to become members in the guild.
 
@@ -14,6 +16,8 @@ export type WorldModeMain =
   | 'town:hall:rentals' //where you can rent an establishment to house your first guild
   | 'town:hall:registrar' //where you can register a new guild, apply for licenses, and register new members for tax purposes of course
 
+  | 'guild:upgrades' //where you can purchase upgrades for current context guild
+  | 'guild:list' //where you can view a list of your guilds
   | 'guild:create' //where you will create your first guild and other "may" follow if you wish and have the funds for upkeep of many guilds in your management.
   | 'guild:detail' //selected guild field values, statistics, and other things
   | 'guild:hall' //where you, as the guild master, can manage various members, their roles, queue up guild hall tasks, and other things.
