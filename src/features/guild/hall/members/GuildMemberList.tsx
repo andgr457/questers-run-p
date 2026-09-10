@@ -5,14 +5,17 @@ import GuildMemberListItem from './GuildMemberListItem'
 
 interface Props {
   members: Character[]
+  guildMaster: Character
 }
 
 export default function GuildMemberList(props: Props){
   const {
-    members
+    members,
+    guildMaster
   } = props
 
   if(!members) return null
+  if(!guildMaster) return null
 
   return (
     <div className={styles.wrapper}>
@@ -20,7 +23,11 @@ export default function GuildMemberList(props: Props){
         text='Members'
         type='sub'
       />
+      <GuildMemberListItem 
+        member={guildMaster}
+      />
       {members.map(m => {
+        if(m.id === guildMaster.id) return null
 
         return <GuildMemberListItem 
           member={m}

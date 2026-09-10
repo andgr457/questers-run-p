@@ -1,0 +1,28 @@
+.wrapper {
+  width: 100%;
+}
+
+.header {
+  cursor: pointer;
+  text-align: center;
+  background: var(--bg-dark-2);
+  border: solid var(--bg-dark-3) 1px;
+}
+
+.header:hover {
+  border: solid var(--bg-dark-4) 1px;
+}
+
+.body {
+  overflow: hidden;
+  max-height: 1000px;
+  transition: max-height 0.25s ease;
+}
+
+.body.close {
+  max-height: 0;
+}
+
+.body.open {
+  max-height: 1000px;
+}

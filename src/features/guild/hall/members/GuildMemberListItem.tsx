@@ -1,6 +1,9 @@
 import ProgressBar from '../../../../core/components/progress-bar/ProgressBar'
+import { clockRuntimeService } from '../../../../engine/clock/ClockRuntimeService'
+import { eventBus } from '../../../../engine/events/EventBus'
 import type { Character } from '../../../../interfaces/Character.types'
 import { GUILD_MEMBER_ROLES } from '../../../../interfaces/GuildRole.types'
+import { getWorldModeMainChangeEvent } from '../../../world/actions/utils/WorldActions.utils'
 import styles from './GuildMemberListItem.module.css'
 
 interface Props {
@@ -16,7 +19,22 @@ export default function GuildMemberListItem(props: Props){
 
   return (
     <div
-      className={styles.wrapper}
+      className={`${styles.wrapper} section clickable`}
+      onClick={() => {
+        eventBus.emit({
+          id: crypto.randomUUID(),
+          type: 'world:context:character:add',
+          created: clockRuntimeService.getNow(),
+          meta: {
+            characterId: member.id
+          }
+        })
+        eventBus.emit(
+          getWorldModeMainChangeEvent(
+            'character:detail'
+          )
+        )
+      }}
     >
       <div className={styles.title}>
         {member.title}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import GuildCreateNameInput from './GuildCreateNameInput';
 import type { Guild } from '../../../interfaces/Guild.types';
-import { getGuildForCreate } from '../../../entities/guild/utils/Guild.utils';
+import { getGuildForCreate } from '../../../utils/guild/Guild.utils';
 import type { Character } from '../../../interfaces/Character.types';
 import FeatureBody from '../../../core/components/feature/components/body/FeatureBody';
 import Actions from '../../../core/components/form/Actions';
@@ -93,6 +93,7 @@ export default function GuildCreate(props: Props) {
             actions={[
               {
                 inactive: false,
+                id: 'guild_create_save_action',
                 onClick: () => {
                   const nameValid = newGuild.title.trim().length >= 3
                   const classSelected = newGuild.guildMasterId.length > 0
@@ -133,6 +134,7 @@ export default function GuildCreate(props: Props) {
                 colorScheme: 'success'
               },
               {
+                id: 'guild_create_clear_action',
                 inactive: false,
                 onClick: () => {
                   setNewGuild(prev => {

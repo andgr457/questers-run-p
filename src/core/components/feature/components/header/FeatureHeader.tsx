@@ -1,5 +1,4 @@
 import HeaderFancy from '../../../header/fancy/HeaderFancy'
-import styles from './FeatureHeader.module.css'
 
 interface Props {
   text: string

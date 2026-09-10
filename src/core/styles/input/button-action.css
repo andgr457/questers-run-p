@@ -12,9 +12,7 @@
 }
 
 @media (max-width: 600px) {
-  .button-action-list {
-    gap: 0.20rem;
-  }
+
   .button-action-list.col2 {
     grid-template-columns: auto;
   }
@@ -29,6 +27,7 @@
   text-align: center;
   padding: 2px;
   font-weight: 200;
+  min-height: 20px;
   cursor: pointer;
   font-size: 10px;
   letter-spacing: 1px;

@@ -1,4 +1,4 @@
-import type { Character } from '../../../interfaces/Character.types';
+import type { Character } from '../../interfaces/Character.types';
 
 export function getCharacterForCreate(): Character {
   return {

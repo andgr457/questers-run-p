@@ -1,4 +1,3 @@
-import FeatureBase from '../../../core/components/feature/components/base/FeatureBase'
 import ProgressBar from '../../../core/components/progress-bar/ProgressBar'
 import { formatPrimitiveValueToString } from '../../../core/utils/Formatting.utils'
 import { clockRuntimeService } from '../../../engine/clock/ClockRuntimeService'

@@ -10,7 +10,7 @@
 }
 
 .section:hover {
-  border: solid var(--bg-dark-2) 1px;
+  border: solid var(--bg-dark-4) 1px;
 }
 
 .section-label-header {
@@ -23,6 +23,8 @@
 .section-label {
   font-size: 0.6rem;
   opacity: 0.8;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .section.col2 {

@@ -14,7 +14,7 @@ export const WORLD_ACTION_SUMMON_CHARACTER: ActionDetail = {
       )
     )
   },
-  text: 'Member Summon',
+  text: 'Summon',
 }
 
 export const WORLD_ACTION_CHARACTER_LIST: ActionDetail = {

@@ -14,7 +14,7 @@ export const WORLD_ACTION_REGISTER_GUILD: ActionDetail = {
       )
     )
   },
-  text: 'Guild Registration',
+  text: 'Registration',
 }
 
 export const WORLD_ACTION_GUILD_LIST: ActionDetail = {

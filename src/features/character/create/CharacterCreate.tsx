@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getCharacterForCreate } from '../../../entities/character/utils/Character.utils';
+import { getCharacterForCreate } from '../../../utils/character/Character.utils';
 import Actions from '../../../core/components/form/Actions';
 import CharacterCreateClassSelections from './CharacterCreateClassSelections';
 import type { Character } from '../../../interfaces/Character.types';
@@ -8,8 +8,6 @@ import { eventBus } from '../../../engine/events/EventBus';
 import { clockRuntimeService } from '../../../engine/clock/ClockRuntimeService';
 import type { ClassIds } from '../../../interfaces/Classes.types';
 import HeaderFancy from '../../../core/components/header/fancy/HeaderFancy';
-import FeatureDescription from '../../../core/components/feature/components/description/FeatureDescription';
-import FeatureBase from '../../../core/components/feature/components/base/FeatureBase';
 
 export default function CharacterCreate() {
   const [newCharacter, setNewCharacter] = useState<Character>(
@@ -35,6 +33,7 @@ export default function CharacterCreate() {
         <Actions 
           actions={[
             {
+              id: 'character_create_save_action',
               inactive: false,
               onClick: () => {
                 const nameValid = newCharacter.title.trim().length >= 3
@@ -65,6 +64,7 @@ export default function CharacterCreate() {
               colorScheme: 'success'
             },
             {
+              id: 'character_create_clear_action',
               inactive: false,
               onClick: () => {
                 setNewCharacter(prev => {

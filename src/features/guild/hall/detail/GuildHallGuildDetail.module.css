@@ -1,0 +1,24 @@
+.wrapper {
+
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  letter-spacing: 1px;
+  font-size: 0.7rem;
+}
+
+.title {
+  align-items: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.guildMaster {
+  text-align: center;
+  font-size: 0.75rem;
+  margin-top: 6px;
+  letter-spacing: 2px;
+}

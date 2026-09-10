@@ -1,5 +1,5 @@
 import { clockRuntimeService } from '../../../../engine/clock/ClockRuntimeService';
-import type { GameEvent, GameEventType } from '../../../../engine/events/types/EventBus.types';
+import type { GameEvent } from '../../../../engine/events/types/EventBus.types';
 import type { WorldModeMain } from '../../../../engine/events/types/WorldModeEvents.types';
 
 export function getWorldModeMainChangeEvent(

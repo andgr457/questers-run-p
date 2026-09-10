@@ -1,4 +1,4 @@
-import type { Guild } from '../../../interfaces/Guild.types';
+import type { Guild } from '../../interfaces/Guild.types';
 
 export function getGuildForCreate(): Guild {
   return {

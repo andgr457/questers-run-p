@@ -1,7 +1,6 @@
 import '../core/styles/globals.css'
-// import World from './world/World'
-import WorldSimple from './world/WorldSimple'
+import World from './world/World'
 
 export default function App() {
-  return <WorldSimple />
+  return <World />
 }
