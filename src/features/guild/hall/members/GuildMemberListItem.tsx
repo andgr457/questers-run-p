@@ -1,7 +1,9 @@
 import ProgressBar from '../../../../core/components/progress-bar/ProgressBar'
+import { GAME_CLASSES } from '../../../../data/Classes.data'
 import { clockRuntimeService } from '../../../../engine/clock/ClockRuntimeService'
 import { eventBus } from '../../../../engine/events/EventBus'
 import type { Character } from '../../../../interfaces/Character.types'
+import type { ClassIds } from '../../../../interfaces/Classes.types'
 import { GUILD_MEMBER_ROLES } from '../../../../interfaces/GuildRole.types'
 import { getWorldModeMainChangeEvent } from '../../../world/actions/utils/WorldActions.utils'
 import styles from './GuildMemberListItem.module.css'
@@ -39,23 +41,20 @@ export default function GuildMemberListItem(props: Props){
       <div className={styles.title}>
         {member.title}
       </div>
+      <div>
+        {GAME_CLASSES[member.classId as ClassIds].title} Lv. {member.level}
+      </div>
       <div className={styles.role}>
         {GUILD_MEMBER_ROLES[member.guildRole].title}
       </div>
-      <div className={styles.xpWrapper}>
-        <div className={styles.xpNumbers}>
-          {member.xp.value}/{member.xp.valueMax} XP
-        </div>
-        <div className={styles.xpProgress}>
+        <div>
           <ProgressBar 
             color='purple'
             max={member.xp.valueMax}
             value={member.xp.value}
-            showLabel={false}
-            showValues={false}
+            label='XP'
           />
         </div>
-      </div>
     </div>
   )
 }

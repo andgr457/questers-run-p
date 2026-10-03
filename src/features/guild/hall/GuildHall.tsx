@@ -46,6 +46,15 @@ export default function GuildHall(props: Props) {
       text: `Upgrades`,
       selected: guildHallMode === 'upgrades'
     },
+    {
+      id: 'guild_hall_action_bank',
+      inactive: false,
+      onClick: () => {
+        setGuildHallMode(guildHallMode === 'bank' ? '' : 'bank')
+      },
+      text: `Bank`,
+      selected: guildHallMode === 'bank'
+    },
   ]
 
 

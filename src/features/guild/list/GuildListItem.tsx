@@ -37,23 +37,17 @@ export default function GuildListItem(props: Props){
       }}
     >
 
-      <div className={styles.title}>
-        {guild.title}
-      </div>
-      <div className={styles.members}>
-        {formatPrimitiveValueToString(membersAmount)} member(s)
-      </div>
+      <div>{guild.title}</div>
+      <div>Lv. {guild.level}</div>
+      <div>Members: {formatPrimitiveValueToString(membersAmount)}</div>
+      <div>Upgrades: 0</div>
       <div className={styles.xpWrapper}>
-        <div className={styles.xpNumbers}>
-          {guild.xp.value}/{guild.xp.valueMax} XP
-        </div>
-        <div className={styles.xpProgress}>
+        <div>
           <ProgressBar 
             color='purple'
             max={guild.xp.valueMax}
             value={guild.xp.value}
-            showLabel={false}
-            showValues={false}
+            label='XP'
           />
         </div>
       </div>

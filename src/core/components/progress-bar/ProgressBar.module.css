@@ -11,7 +11,6 @@
 .label {
   width: 34px;
   flex-shrink: 0;
-  opacity: 0.85;
   text-align: right;
 }
 
@@ -49,10 +48,4 @@
 
   pointer-events: none;
   text-shadow: 0 1px 2px rgb(0, 0, 0);
-}
-
-.value {
-  width: 70px;
-  opacity: 0.85;
-  flex-shrink: 0;
 }

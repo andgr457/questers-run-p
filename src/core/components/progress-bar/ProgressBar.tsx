@@ -54,7 +54,7 @@ export default function ProgressBar({
 
       </div>
 
-      {showValues && <span className={styles.value}>
+      {showValues && <span>
         {safeValue.toFixed(0)}/{safeMax}
       </span>}
 

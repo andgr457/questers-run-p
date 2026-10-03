@@ -19,7 +19,7 @@ export default function GuildHallGuildDetail(props: Props){
   } = props
   return (
     <div
-      className={`${styles.wrapper} section`}
+      className={`section`}
     >
       <div className={styles.header}>
         <div className={styles.title}>
@@ -28,22 +28,31 @@ export default function GuildHallGuildDetail(props: Props){
         <div>
           Lv. {guild.level}
         </div>
-        <div>
-          {formatPrimitiveValueToString(guild.xp.value)}/{guild.xp.valueMax} XP
-        </div>
+
         <div>
           <Gold value={guild.gold} />
         </div>
       </div>
-      <div>
+
+      <div className={styles.header2}>
+        <div >
+          Guild Master {guildMaster.title}
+        </div>
+        <div >
+          Members: {formatPrimitiveValueToString(members.length)}
+        </div>
+        <div>
+          Upgrades: 0
+        </div>
+      </div>
+
+      <div className={styles.progress}>
         <ProgressBar 
           color='purple'
           max={guild.xp.valueMax}
           value={guild.xp.value}
+          label='XP'
         />
-      </div>
-      <div className={styles.guildMaster}>
-        Guild Master {guildMaster.title}
       </div>
     </div>
   )

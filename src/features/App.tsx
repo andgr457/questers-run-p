@@ -3,4 +3,5 @@ import World from './world/World'
 
 export default function App() {
   return <World />
+
 }

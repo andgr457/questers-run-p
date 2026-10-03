@@ -11,17 +11,19 @@ import GuildCreate from '../guild/create/GuildCreate'
 import GuildHall from '../guild/hall/GuildHall'
 import GuildList from '../guild/list/GuildList'
 import Settings from '../settings/Settings'
-import { WORLD_ACTION_CHARACTER_DETAIL, WORLD_ACTION_CHARACTER_LIST, WORLD_ACTION_CHARACTER_UPGRADES, WORLD_ACTION_SUMMON_CHARACTER } from './actions/data/WorldCharacterActions.data'
-import { WORLD_ACTION_GUILD_HALL, WORLD_ACTION_GUILD_LIST, WORLD_ACTION_GUILD_UPGRADES, WORLD_ACTION_REGISTER_GUILD } from './actions/data/WorldGuildActions.data'
+import { WORLD_ACTION_CHARACTER_DETAIL, WORLD_ACTION_CHARACTER_LIST, WORLD_ACTION_SUMMON_CHARACTER } from './actions/data/WorldCharacterActions.data'
+import { WORLD_ACTION_GUILD_HALL, WORLD_ACTION_GUILD_LIST, WORLD_ACTION_REGISTER_GUILD } from './actions/data/WorldGuildActions.data'
 import { WORLD_ACTION_NONE } from './actions/data/WorldActions.data'
 import { WORLD_ACTION_SETTINGS } from './actions/data/WorldSettingsActions.data'
 import { WORLD_ACTION_TOWN_HALL } from './actions/data/WorldTownActions.data'
 import { WORLD_ACTION_TAVERN_HALL } from './actions/data/WorldTavernActions.data'
 import Collapse from '../../core/components/collapse/Collapse'
 import { useState } from 'react'
+import CharacterDetail from '../character/detail/CharacterDetail'
+import type { Character } from '../../interfaces/Character.types'
 
 export default function World() {
-  const [navCollapsed, setNavCollapsed] = useState(true)
+  const [navCollapsed, setNavCollapsed] = useState(false)
   const {
     worldModeMain,
     // worldModeOverlay,
@@ -55,7 +57,7 @@ export default function World() {
       inactive: actionProps.inactive ?? false,
       text: actionProps.text ?? actionProps.detail.text,
       onClick: () => {
-        setNavCollapsed(true)
+        setNavCollapsed(worldModeMain === 'none' ? false : true)
         actionProps.detail.onClick()
       }
     }
@@ -150,6 +152,9 @@ export default function World() {
         {worldModeMain === 'character:create' && (
           <CharacterCreate />
         )}
+        {worldModeMain === 'character:detail' && (
+          <CharacterDetail character={contextCharacter as Character} />
+        )}        
         {worldModeMain === 'guild:create' && (
           <GuildCreate 
             characters={characters}

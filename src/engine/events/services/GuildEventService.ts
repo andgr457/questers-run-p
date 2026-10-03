@@ -30,9 +30,7 @@ class GuildEventService extends BaseEventService {
     const savedData = localStorage.getItem(
       GAME_LOCAL_STORAGE_KEYS.GUILDS
     )
-    if(!savedData){
-      this.guilds = {}
-    }
+
     if(savedData){
       const parsed = JSON.parse(savedData) as Guild[]
 
