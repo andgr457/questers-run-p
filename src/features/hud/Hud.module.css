@@ -1,0 +1,57 @@
+.hud {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.layout {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(100px, 1fr) minmax(0, 5fr) minmax(100px, 1fr);
+  grid-template-areas:
+    "character character character"
+    "navigation game actions"
+    "area area area";
+  gap: 8px;
+  width: 100%;
+  max-width: 1600px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.character {
+  grid-area: character;
+  min-width: 0;
+}
+
+.navigation {
+  grid-area: navigation;
+  min-height: 0;
+  align-self: center;
+}
+
+.game {
+  grid-area: game;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.actions {
+  grid-area: actions;
+  min-height: 0;
+  align-self: center;
+}
+
+.area {
+  grid-area: area;
+  min-width: 0;
+}
+
+@media (orientation: portrait) {
+  .layout {
+    display: none;
+  }
+}
