@@ -1,9 +1,0 @@
-.wrapper {
-  padding: 0;
-}
-
-
-.memberListItem {
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-}
