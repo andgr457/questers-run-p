@@ -18,7 +18,6 @@ input,
 select,
 textarea {
   font-family: inherit;
-  font-size: 0.5rem;
   letter-spacing: 1px;
   color: var(--input-text);
   background-color: var(--bg-dark-3);

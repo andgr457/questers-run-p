@@ -5,12 +5,15 @@
 .header {
   cursor: pointer;
   text-align: center;
+  align-items: center;
   background: var(--bg-dark-2);
   border: solid var(--bg-dark-3) 1px;
+  transition: border 0.25s ease;
 }
 
 .header:hover {
   border: solid var(--bg-dark-4) 1px;
+  transition: border 0.25s ease;
 }
 
 .body {

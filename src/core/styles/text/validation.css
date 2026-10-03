@@ -9,20 +9,17 @@
 }
 
 .validation-label {
-  font-size: 0.6rem;
   align-content: center;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .validation-length-text {
-  font-size: 0.5rem;
   align-content: center;
   letter-spacing: 2px;
 }
 
 .validation-section-rule-list {
-  font-size: 0.5rem;
   padding-top: 5px;
   display: flex;
   justify-content: space-around;

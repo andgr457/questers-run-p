@@ -4,16 +4,16 @@
   text-align: center;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  font-size: 1.5rem;
 }
 
 .header.main {
-  font-size: 1.2rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 3px;
 }
 
 .header.sub {
+  letter-spacing: 2px;
   font-size: 1rem;
-  letter-spacing: 0.1em;
 }
 
 
@@ -50,7 +50,6 @@
 
 .diamond {
   color: #fcba12;
-  font-size: 0.5rem;
   line-height: 1;
   text-shadow: 0 0 7px rgba(252, 186, 18, 0.4);
   animation: diamondGlow 4s ease-in-out infinite;

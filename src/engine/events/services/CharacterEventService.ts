@@ -101,21 +101,43 @@ class CharacterEventService extends BaseEventService {
 
     const attributes = event.meta.attributes
     if(!attributes) return
-
-    const emissions: (() => void)[] = []
-
     if(attributes.hp){
-
+      character.attributes.hp.value += attributes.hp.value
+      if(character.attributes.hp.value < 0){
+        character.attributes.hp.value = 0
+      }
+      if(character.attributes.hp.value > character.attributes.hp.valueMax){
+        character.attributes.hp.value = character.attributes.hp.valueMax
+      }
     }
     if(attributes.mana){
-
+      character.attributes.mana.value += attributes.mana.value
+      if(character.attributes.mana.value < 0){
+        character.attributes.mana.value = 0
+      }
+      if(character.attributes.mana.value > character.attributes.mana.valueMax){
+        character.attributes.mana.value = character.attributes.mana.valueMax
+      }
     }
     if(attributes.stamina){
-
+      character.attributes.stamina.value += attributes.stamina.value
+      if(character.attributes.stamina.value < 0){
+        character.attributes.stamina.value = 0
+      }
+      if(character.attributes.stamina.value > character.attributes.stamina.valueMax){
+        character.attributes.stamina.value = character.attributes.stamina.valueMax
+      }
     }
-    if(emissions.length){
-      emissions.forEach(fn => fn());
-    }
+    eventBus.emit({
+      id: crypto.randomUUID(),
+      parentEventId: event.id,
+      type: 'character:attributes:added',
+      meta: {
+        attributes: event.meta.attributes,
+        characterId: event.meta.characterId
+      },
+      created: clockRuntimeService.getNow()
+    })
   }
 
   private handleGoldAdd(event: GameEventOf<'character:gold:add'>){

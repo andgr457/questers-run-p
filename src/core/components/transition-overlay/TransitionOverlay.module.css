@@ -98,7 +98,6 @@
 .text span {
   color: var(--text);
   text-shadow: var(--bg-dark-1);
-  font-size: 1.1rem;
   font-weight: 300;
   letter-spacing: 10px;
   white-space: nowrap;
@@ -134,7 +133,6 @@
 .continue span {
   color: var(--text);
   text-shadow: var(--bg-dark-1);
-  font-size: 0.5rem;
   font-weight: 300;
   letter-spacing: 10px;
   white-space: nowrap;

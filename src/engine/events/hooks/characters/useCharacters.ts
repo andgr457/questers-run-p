@@ -16,6 +16,7 @@ export function useCharacters() {
         || event.type.includes(':saved')
         || event.type.includes(':created')
       ){
+        console.log('useCharacters event', event)
         setCharacters(
           characterEventService.getCharacters()
         )

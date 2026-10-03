@@ -9,11 +9,11 @@ interface Props {
 export default function Gold(props: Props){
 
   return <div className={styles.wrapper}>
+    <div className={styles.value}>
+      {formatPrimitiveValueToString(props.value)}
+    </div>
     <div className={styles.icon}>
       {GAME_ICONS.GOLD}
-    </div>
-    <div className={styles.value}>
-      {formatPrimitiveValueToString(props.value)}g
     </div>
   </div>
 }

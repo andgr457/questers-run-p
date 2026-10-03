@@ -1,17 +1,18 @@
 .wrapper {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  font-size: 0.6rem;
-  margin-bottom: 0.5rem;
-  letter-spacing: 2px;
+  padding: 0.5rem;
 }
 
 .header {
   color: gold;
+  text-align: center;
 }
 
 .text {
   color: var(--text);
   opacity: 0.8;
+  font-size: 0.75rem;
+  text-align: center;
 }

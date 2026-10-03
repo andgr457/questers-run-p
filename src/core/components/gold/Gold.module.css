@@ -1,7 +1,6 @@
 .wrapper {
   display: flex;
   gap: 0.2rem;
-  align-items: center;
 }
 
 .icon {
@@ -9,5 +8,5 @@
 }
 
 .value {
-  letter-spacing: 1px;
+  letter-spacing: 2px;
 }

@@ -63,14 +63,6 @@ export default function World() {
     }
   }
 
-  let hint = ''
-  if(!hasCharacters){
-    hint = 'Summon your first character!'
-  } else if(!hasGuild){
-    hint = 'Register your first guild!'
-  } else {
-    hint = 'Quest with guild members to level them, and the guild, up by gaining XP, gold, and loot!'
-  }
 
   const actions: ActionDetail[] = []
   const contextActions: ActionDetail[] = []
@@ -87,12 +79,12 @@ export default function World() {
     contextActions.push(buildAction({
       detail: WORLD_ACTION_GUILD_HALL,
       inactive: !contextGuild,
-      text: `${!contextGuild ? 'Guild Hall' : `${contextGuild.title} Hall`}`
+      text: `Guild ${!contextGuild ? '' : `: ${contextGuild.title}`}`
     }))
     contextActions.push(buildAction({
       detail: WORLD_ACTION_CHARACTER_DETAIL,
       inactive: !worldContext.characterId,
-      text: `${!contextCharacter ? 'Character Detail' : `${contextCharacter.title} Detail`}`
+      text: `Member ${!contextCharacter ? '' : `: ${contextCharacter.title}`}`
     }))
     actions.push(buildAction({
       detail: WORLD_ACTION_NONE
@@ -125,9 +117,7 @@ export default function World() {
         text={`Quester's Run`}
         type='main'
       />
-      {hint && (
-        <Hint text={hint} />
-      )}
+      
       <Collapse
         title='='
         collapsed={navCollapsed}
@@ -137,6 +127,7 @@ export default function World() {
           actions={actions}
         />
       </Collapse>
+      
       <div>
         <Actions
           actions={contextActions}
