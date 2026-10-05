@@ -1,0 +1,20 @@
+:root {
+  --button-border: #3b3b3b;
+  --button-border-hover: #4b4b4b;
+}
+
+
+button {
+  all: unset;
+  cursor: pointer;
+  border: solid 3px var(--button-border);
+  border-radius: 5px;
+  padding: 5px;
+  text-transform: uppercase;
+  transition: border 500ms ease;
+}
+
+button:hover {
+  border: solid 3px var(--button-border-hover);
+  transition: border 500ms ease;
+}

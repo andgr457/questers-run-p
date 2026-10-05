@@ -1,0 +1,10 @@
+:root {
+  --bg: #111111;
+  --fg: #e6e2d3;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: "Montserrat", sans-serif;
+}
